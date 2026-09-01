@@ -19,11 +19,11 @@ services:
     networks:
       - app-network
 
-  ingestion-service:
+  media-processing-service:
     build:
-      context: ./ingestion-service
+      context: ./media-processing-service
       dockerfile: Dockerfile
-    container_name: ingestion-service
+    container_name: media-processing-service
     ports:
       - "8080:8080"
     environment:
