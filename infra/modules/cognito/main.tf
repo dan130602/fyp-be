@@ -12,6 +12,10 @@ resource "aws_cognito_user_pool" "main" {
   }
   deletion_protection = "ACTIVE"
 
+  lifecycle {
+    ignore_changes = [schema]
+  }
+
   schema {
     attribute_data_type = "String"
     developer_only_attribute = false
@@ -26,18 +30,32 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "web" {
-  name         = "orange is the new black"
+  name         = "fyp-auth"
   user_pool_id = aws_cognito_user_pool.main.id
+
+  generate_secret = true
 
   # Hosted UI / OAuth
   allowed_oauth_flows                  = ["code"]
-  allowed_oauth_scopes                 = ["openid", "email", "profile", "phone"]
+  allowed_oauth_scopes                 = ["email", "openid", "phone"]
   allowed_oauth_flows_user_pool_client = true
 
   callback_urls = var.cognito_callback_urls
   logout_urls   = var.cognito_logout_urls
 
   supported_identity_providers = ["COGNITO"]
+
+  explicit_auth_flows = [
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_AUTH",
+    "ALLOW_USER_SRP_AUTH",
+  ]
+
+  prevent_user_existence_errors = "ENABLED"
+
+  access_token_validity  = 60
+  id_token_validity      = 60
+  refresh_token_validity = 5
 
   token_validity_units {
     access_token  = "minutes"

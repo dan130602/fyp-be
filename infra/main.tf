@@ -42,12 +42,12 @@ module "s3" {
   expiration_in_days = var.expiration_in_days
 
 }
-# module "cognito" {
-#   source = "./modules/cognito"
-#
-#   aws_region             = var.aws_region
-#   cognito_callback_urls  = var.cognito_callback_urls
-#   cognito_domain_prefix  = var.cognito_domain_prefix
-#   cognito_logout_urls    = var.cognito_logout_urls
-#   cognito_user_pool_name = var.cognito_user_pool_name
-# }
+module "cognito" {
+  source = "./modules/cognito"
+
+  aws_region             = var.aws_region
+  cognito_callback_urls  = var.cognito_callback_urls
+  cognito_domain_prefix  = var.cognito_domain_prefix
+  cognito_logout_urls    = var.cognito_logout_urls
+  cognito_user_pool_name = var.cognito_user_pool_name
+}
