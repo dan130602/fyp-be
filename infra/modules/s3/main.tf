@@ -4,9 +4,9 @@ locals {
   }
 }
 
-resource "aws_s3_bucket" "frontend" {
-  bucket = var.frontend_bucket_name
-}
+# resource "aws_s3_bucket" "frontend" {
+#   bucket = var.frontend_bucket_name
+# }
 
 resource "aws_s3_bucket" "ingestion_audio" {
   bucket = var.ingestion_audio_bucket_name
