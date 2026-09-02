@@ -20,4 +20,12 @@ public class S3Config {
                 .credentialsProvider(DefaultCredentialsProvider.builder().build())
                 .build();
     }
+
+    @Bean
+    public S3Presigner s3Presigner() {
+        return S3Presigner.builder()
+                .region(Region.of(region))
+                .credentialsProvider(DefaultCredentialsProvider.builder().build())
+                .build();
+    }
 }
