@@ -104,7 +104,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "secured_buckets_lifecycle" {
     filter {
       prefix = "uploads/"
     }
-    id     = "7 day expiry for uploaded videos"
+    id     = "7 day expiry for uploaded audio"
     status = "Enabled"
   }
 }
