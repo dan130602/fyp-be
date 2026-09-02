@@ -37,7 +37,7 @@ module "s3" {
 
   ingestion_audio_bucket_name  = var.ingestion_audio_bucket_name
   frontend_bucket_name         = var.frontend_bucket_name
-  frontend_origins             = "http://localhost:8081"
+  frontend_origins             = ["http://localhost:8081"]
 
   expiration_in_days = var.expiration_in_days
 
