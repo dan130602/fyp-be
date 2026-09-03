@@ -51,20 +51,21 @@ module "ecr" {
   github_repository = var.github_repository
 }
 
-# module "lambda" {
-#   source = "./modules/lambda"
-#
-#   lambda_function_name = var.transcribe_lambda_function_name
-#   ecr_repository_url   = module.ecr.repository_url
-#   image_tag            = var.transcribe_lambda_image_tag
-#
-#   input_bucket_id  = module.s3.ingestion_audio_bucket_id
-#   input_bucket_arn = module.s3.ingestion_audio_bucket_arn
-#
-#   output_bucket_id   = module.s3.ingestion_audio_output_bucket_id
-#   output_bucket_arn  = module.s3.ingestion_audio_output_bucket_arn
-#   output_bucket_name = module.s3.ingestion_audio_output_bucket_name
-# }
+module "lambda" {
+  source = "./modules/lambda"
+
+  lambda_function_name = var.transcribe_lambda_function_name
+  ecr_repository_url   = module.ecr.repository_url
+  ecr_repository_name  = module.ecr.repository_name
+  image_tag            = var.transcribe_lambda_image_tag
+
+  input_bucket_id  = module.s3.ingestion_audio_bucket_id
+  input_bucket_arn = module.s3.ingestion_audio_bucket_arn
+
+  output_bucket_id   = module.s3.ingestion_audio_output_bucket_id
+  output_bucket_arn  = module.s3.ingestion_audio_output_bucket_arn
+  output_bucket_name = module.s3.ingestion_audio_output_bucket_name
+}
 module "cognito" {
   source = "./modules/cognito"
 

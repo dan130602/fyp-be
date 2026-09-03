@@ -1,5 +1,11 @@
 data "aws_caller_identity" "current" {}
 
+# Resolved at plan time so `terraform apply` picks up whatever image CI sent recently
+data "aws_ecr_image" "this" {
+  repository_name = var.ecr_repository_name
+  image_tag       = var.image_tag
+}
+
 resource "aws_iam_role" "lambda" {
   name = "${var.lambda_function_name}-role"
 
@@ -18,9 +24,6 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Transcribe uses the caller's (this Lambda's) IAM credentials to read the
-# input media and write results, rather than a service-linked role — so the
-# execution role itself needs S3 access on both buckets.
 data "aws_iam_policy_document" "lambda" {
   statement {
     sid     = "ReadInputAudio"
@@ -67,7 +70,7 @@ resource "aws_lambda_function" "this" {
   role          = aws_iam_role.lambda.arn
 
   package_type = "Image"
-  image_uri    = "${var.ecr_repository_url}:${var.image_tag}"
+  image_uri    = "${var.ecr_repository_url}@${data.aws_ecr_image.this.image_digest}"
 
   timeout     = var.timeout
   memory_size = var.memory_size

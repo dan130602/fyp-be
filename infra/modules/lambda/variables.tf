@@ -8,6 +8,11 @@ variable "ecr_repository_url" {
   type        = string
 }
 
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository, used to resolve image_tag to a digest (from the ecr module)"
+  type        = string
+}
+
 variable "image_tag" {
   description = "Tag of the image in ECR to deploy (push it before the first apply)"
   type        = string
