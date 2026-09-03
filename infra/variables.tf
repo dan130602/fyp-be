@@ -55,23 +55,23 @@ variable "expiration_in_days" {
 #   default     = "audio-transcribe-trigger"
 # }
 #
-# variable "transcribe_ecr_repository_name" {
-#   description = "ECR repository holding the Transcribe Lambda's Docker image"
-#   type        = string
-#   default     = "audio-transcribe-lambda"
-# }
-#
+variable "transcribe_ecr_repository_name" {
+  description = "ECR repository holding the Transcribe Lambda's Docker image"
+  type        = string
+  default     = "audio-transcribe-lambda"
+}
+
 # variable "transcribe_lambda_image_tag" {
 #   description = "Image tag in ECR to deploy — push it before the first apply"
 #   type        = string
 #   default     = "latest"
 # }
-#
-# variable "github_repository" {
-#   description = "owner/repo allowed to push to the transcribe ECR repo via GitHub Actions OIDC"
-#   type        = string
-#   default     = "dan130602/fyp-be"
-# }
+
+variable "github_repository" {
+  description = "owner/repo allowed to push to the transcribe ECR repo via GitHub Actions OIDC"
+  type        = string
+  default     = "dan130602/fyp-be"
+}
 
 # -----------------------
 # Cognito
