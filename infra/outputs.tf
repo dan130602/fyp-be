@@ -12,6 +12,6 @@ output "transcribe_ecr_github_actions_role_arn" {
   value       = module.ecr.github_actions_role_arn
 }
 
-output "transcribe_lambda_function_name" {
-  value = module.lambda.lambda_function_name
-}
+# output "transcribe_lambda_function_name" {
+#   value = module.lambda.lambda_function_name
+# }
