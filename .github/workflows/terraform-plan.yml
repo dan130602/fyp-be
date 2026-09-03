@@ -2,7 +2,6 @@ name: Terraform Plan
 
 on:
  pull_request:
- push:
 
 env:
  TF_CLOUD_ORGANIZATION: ${{ vars.TF_ORGANISATION }}
@@ -28,7 +27,7 @@ jobs:
          organization: ${{ vars.TF_ORGANISATION }}
          token: ${{ secrets.TF_API_TOKEN }}
          workspace: ${{ vars.TF_WORKSPACE }}
-         directory: infra
+         directory: .
 
      - name: Create Plan Run
        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0

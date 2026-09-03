@@ -48,24 +48,24 @@ variable "expiration_in_days" {
 # -----------------------
 # Transcribe Lambda
 # -----------------------
-#
-# variable "transcribe_lambda_function_name" {
-#   description = "Name of the Lambda that starts Transcribe jobs on new S3 uploads"
-#   type        = string
-#   default     = "audio-transcribe-trigger"
-# }
-#
+
+variable "transcribe_lambda_function_name" {
+  description = "Name of the Lambda that starts Transcribe jobs on new S3 uploads"
+  type        = string
+  default     = "audio-transcribe-trigger"
+}
+
 variable "transcribe_ecr_repository_name" {
   description = "ECR repository holding the Transcribe Lambda's Docker image"
   type        = string
   default     = "audio-transcribe-lambda"
 }
 
-# variable "transcribe_lambda_image_tag" {
-#   description = "Image tag in ECR to deploy — push it before the first apply"
-#   type        = string
-#   default     = "latest"
-# }
+variable "transcribe_lambda_image_tag" {
+  description = "Image tag in ECR to deploy — push it before the first apply"
+  type        = string
+  default     = "latest"
+}
 
 variable "github_repository" {
   description = "owner/repo allowed to push to the transcribe ECR repo via GitHub Actions OIDC"
@@ -92,7 +92,7 @@ variable "cognito_callback_urls" {
 variable "cognito_logout_urls" {
   description = "Allowed sign-out URLs for the Cognito app client"
   type        = list(string)
-  default     = []
+  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
 }
 
 variable "cognito_user_pool_name" {
