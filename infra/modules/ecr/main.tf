@@ -25,10 +25,13 @@ resource "aws_ecr_lifecycle_policy" "this" {
   })
 }
 
-# Reuses the account's existing GitHub OIDC provider rather than creating a
-# new one — an AWS account may only have one provider per issuer URL.
 data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
+}
+
+locals {
+  github_owner = split("/", var.github_repository)[0]
+  github_repo  = split("/", var.github_repository)[1]
 }
 
 data "aws_iam_policy_document" "github_actions_assume_role" {
@@ -50,7 +53,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = [for ref in var.github_allowed_refs : "repo:${var.github_repository}:ref:${ref}"]
+      values   = [for ref in var.github_allowed_refs : "repo:${local.github_owner}*/${local.github_repo}*:ref:${ref}"]
     }
   }
 }
