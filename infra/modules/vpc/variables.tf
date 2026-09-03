@@ -57,6 +57,6 @@ variable "tags" {
 }
 
 variable "create_nat_gateway" {
-  type = bool
+  type    = bool
   default = false
 }

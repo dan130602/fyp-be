@@ -14,8 +14,8 @@ variable "cognito_logout_urls" {
 }
 
 variable "cognito_user_pool_name" {
-    description = "Name of the Cognito User Pool"
-    type        = string
+  description = "Name of the Cognito User Pool"
+  type        = string
 }
 
 variable "aws_region" {

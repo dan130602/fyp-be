@@ -7,7 +7,7 @@ resource "aws_vpc" "this" {
   enable_dns_support   = var.enable_dns_support
   enable_dns_hostnames = var.enable_dns_hostnames
 
-  tags ={
+  tags = {
     Name = "${var.name}-vpc"
   }
 }
@@ -16,7 +16,7 @@ resource "aws_internet_gateway" "this" {
   count  = var.create_internet_gateway && length(var.public_subnets) > 0 ? 1 : 0
   vpc_id = aws_vpc.this.id
 
-  tags =  {
+  tags = {
     Name = "${var.name}-igw"
   }
 }
@@ -43,7 +43,7 @@ resource "aws_subnet" "private" {
   availability_zone       = each.value.az
   map_public_ip_on_launch = false
 
-  tags =  {
+  tags = {
     Name = "${var.name}-${each.key}"
     Type = "private"
   }
@@ -54,7 +54,7 @@ resource "aws_route_table" "public" {
   count  = length(var.public_subnets) > 0 ? 1 : 0
   vpc_id = aws_vpc.this.id
 
-  tags =  {
+  tags = {
     Name = "${var.name}-public-rt"
   }
 }
@@ -75,7 +75,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_eip" "nat" {
-  count = var.create_nat_gateway && length(var.public_subnets) > 0 ? 1 : 0
+  count  = var.create_nat_gateway && length(var.public_subnets) > 0 ? 1 : 0
   domain = "vpc"
 
   tags = {
@@ -118,22 +118,22 @@ resource "aws_route_table_association" "private" {
 resource "aws_route" "private_internet_access" {
   for_each = var.create_nat_gateway && length(var.public_subnets) > 0 ? aws_route_table.private : {}
 
-  route_table_id = aws_route_table.private[each.key].id
+  route_table_id         = aws_route_table.private[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.this[0].id
+  nat_gateway_id         = aws_nat_gateway.this[0].id
 }
 
 resource "aws_vpc_endpoint" "s3" {
   count             = var.create_s3_gateway_endpoint ? 1 : 0
   vpc_id            = aws_vpc.this.id
-  service_name = "com.amazonaws.${data.aws_region.current.region}.s3"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.s3"
   vpc_endpoint_type = "Gateway"
 
   route_table_ids = [
     for rt in aws_route_table.private : rt.id
   ]
 
-  tags =  {
+  tags = {
     Name = "${var.name}-vpce-s3"
   }
 }

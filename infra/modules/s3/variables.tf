@@ -8,6 +8,11 @@ variable "ingestion_audio_bucket_name" {
   type        = string
 }
 
+variable "ingestion_audio_output_bucket_name" {
+  description = "S3 bucket for transcribed audio"
+  type        = string
+}
+
 variable "frontend_origins" {
   description = "Frontend origins allowed to upload directly to S3 via browser (CORS)"
   type        = list(string)

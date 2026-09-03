@@ -1,15 +1,20 @@
 locals {
   secured_buckets = {
-    ingestion_audio    = aws_s3_bucket.ingestion_audio
+    ingestion_audio                    = aws_s3_bucket.ingestion_audio
+    ingestion_audio_output_bucket_name = aws_s3_bucket.ingestion_audio_output
   }
 }
 
-# resource "aws_s3_bucket" "frontend" {
-#   bucket = var.frontend_bucket_name
-# }
+resource "aws_s3_bucket" "frontend" {
+  bucket = var.frontend_bucket_name
+}
 
 resource "aws_s3_bucket" "ingestion_audio" {
   bucket = var.ingestion_audio_bucket_name
+}
+
+resource "aws_s3_bucket" "ingestion_audio_output" {
+  bucket = var.ingestion_audio_output_bucket_name
 }
 
 

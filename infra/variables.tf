@@ -24,6 +24,10 @@ variable "ingestion_audio_bucket_name" {
   type = string
 }
 
+variable "ingestion_audio_output_bucket_name" {
+  type = string
+}
+
 variable "frontend_bucket_name" {
   type = string
 }
@@ -39,6 +43,34 @@ variable "presign_role_arn" {
 
 variable "expiration_in_days" {
   type = number
+}
+
+# -----------------------
+# Transcribe Lambda
+# -----------------------
+
+variable "transcribe_lambda_function_name" {
+  description = "Name of the Lambda that starts Transcribe jobs on new S3 uploads"
+  type        = string
+  default     = "audio-transcribe-trigger"
+}
+
+variable "transcribe_ecr_repository_name" {
+  description = "ECR repository holding the Transcribe Lambda's Docker image"
+  type        = string
+  default     = "audio-transcribe-lambda"
+}
+
+variable "transcribe_lambda_image_tag" {
+  description = "Image tag in ECR to deploy — push it before the first apply"
+  type        = string
+  default     = "latest"
+}
+
+variable "github_repository" {
+  description = "owner/repo allowed to push to the transcribe ECR repo via GitHub Actions OIDC"
+  type        = string
+  default     = "dan130602/fyp-be"
 }
 
 # -----------------------

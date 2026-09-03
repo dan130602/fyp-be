@@ -35,12 +35,35 @@
 module "s3" {
   source = "./modules/s3"
 
-  ingestion_audio_bucket_name  = var.ingestion_audio_bucket_name
-  frontend_bucket_name         = var.frontend_bucket_name
-  frontend_origins             = ["http://localhost:8081"]
+  ingestion_audio_bucket_name        = var.ingestion_audio_bucket_name
+  ingestion_audio_output_bucket_name = var.ingestion_audio_output_bucket_name
+  frontend_bucket_name               = var.frontend_bucket_name
+  frontend_origins                   = ["http://localhost:8081"]
 
   expiration_in_days = var.expiration_in_days
 
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  repository_name   = var.transcribe_ecr_repository_name
+  github_repository = var.github_repository
+}
+
+module "lambda" {
+  source = "./modules/lambda"
+
+  lambda_function_name = var.transcribe_lambda_function_name
+  ecr_repository_url   = module.ecr.repository_url
+  image_tag            = var.transcribe_lambda_image_tag
+
+  input_bucket_id  = module.s3.ingestion_audio_bucket_id
+  input_bucket_arn = module.s3.ingestion_audio_bucket_arn
+
+  output_bucket_id   = module.s3.ingestion_audio_output_bucket_id
+  output_bucket_arn  = module.s3.ingestion_audio_output_bucket_arn
+  output_bucket_name = module.s3.ingestion_audio_output_bucket_name
 }
 module "cognito" {
   source = "./modules/cognito"
