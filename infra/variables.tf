@@ -86,13 +86,13 @@ variable "cognito_domain_prefix" {
 variable "cognito_callback_urls" {
   description = "Allowed callback URLs for the Cognito app client"
   type        = list(string)
-  default     = ["http://localhost:8081"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
 }
 
 variable "cognito_logout_urls" {
   description = "Allowed sign-out URLs for the Cognito app client"
   type        = list(string)
-  default     = ["http://localhost:8081"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
 }
 
 variable "cognito_user_pool_name" {
