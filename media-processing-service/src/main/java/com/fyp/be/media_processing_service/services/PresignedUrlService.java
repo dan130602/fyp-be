@@ -11,8 +11,10 @@ import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
@@ -45,13 +47,15 @@ public class PresignedUrlService {
     private final List<String> allowedExtensions;
     private final String bucketName;
     private final long expiryMinutes;
+    private final long playbackExpiryMinutes;
 
     public PresignedUrlService(
             S3Presigner s3Presigner,
             MediaAssetRepository mediaAssetRepository,
             UploadProperties uploadProperties,
             @Value("${app.aws.s3.bucket}") String bucketName,
-            @Value("${app.aws.s3.presigned-url-expiry-minutes}") long expiryMinutes
+            @Value("${app.aws.s3.presigned-url-expiry-minutes}") long expiryMinutes,
+            @Value("${app.aws.s3.playback-url-expiry-minutes}") long playbackExpiryMinutes
     ) {
         this.s3Presigner = s3Presigner;
         this.mediaAssetRepository = mediaAssetRepository;
@@ -60,10 +64,29 @@ public class PresignedUrlService {
         this.allowedExtensions = normalize(uploadProperties.allowedExtensions());
         this.bucketName = bucketName;
         this.expiryMinutes = expiryMinutes;
+        this.playbackExpiryMinutes = playbackExpiryMinutes;
     }
 
     private static List<String> normalize(List<String> values) {
         return values.stream().map(v -> v.toLowerCase(Locale.ROOT)).toList();
+    }
+
+    public String generatePlaybackUrl(String objectKey) {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
+                .build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(playbackExpiryMinutes))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString();
+    }
+
+    public long getPlaybackExpiryMinutes() {
+        return playbackExpiryMinutes;
     }
 
     public PresignedUploadResponse generatePresignedUploads(UUID userId, List<FileUploadRequest> files) {
