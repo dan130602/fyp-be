@@ -36,12 +36,13 @@ public class UserService {
         user.setRole(newRole);
         user.setUpdatedAt(LocalDateTime.now());
         User saved = userRepository.save(user);
+        cognitoAdminService.setUserGroup(user.getEmail(), newRole);
         return toResponseDto(saved);
     }
 
     /** Creates both the Cognito login and the internal user record - only ever called from an ADMIN-only endpoint. */
     public UserResponseDto createUser(CreateUserRequest request) {
-        String cognitoSub = cognitoAdminService.createUser(request.email(), request.name());
+        String cognitoSub = cognitoAdminService.createUser(request.email(), request.name(), request.role());
 
         LocalDateTime now = LocalDateTime.now();
         User user = User.builder()

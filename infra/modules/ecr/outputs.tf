@@ -15,3 +15,8 @@ output "github_actions_role_arn" {
   description = "Set as the role-to-assume input for aws-actions/configure-aws-credentials in CI"
   value       = aws_iam_role.github_actions_push.arn
 }
+
+output "github_actions_role_name" {
+  description = "Lets callers attach extra inline policies (e.g. ecs:UpdateService) to the same CI role"
+  value       = aws_iam_role.github_actions_push.name
+}
