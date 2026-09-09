@@ -23,11 +23,6 @@ output "port" {
   value = aws_rds_cluster.this.port
 }
 
-output "master_user_secret_arn" {
-  description = "Managed master credentials — open the RDS console's Query Editor and connect with this secret to run SQL directly, or view/rotate it in Secrets Manager"
-  value       = aws_rds_cluster.this.master_user_secret[0].secret_arn
-}
-
 output "security_group_id" {
   value = aws_security_group.this.id
 }

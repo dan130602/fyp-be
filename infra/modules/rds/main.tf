@@ -33,7 +33,7 @@ resource "aws_security_group" "this" {
 
 # Aurora Serverless v2 Postgres. enable_http_endpoint turns on the RDS Data API,
 # which is what lets the RDS console's Query Editor run SQL against this cluster
-# with no VPN/bastion — it authenticates using the managed master secret below.
+# with no VPN/bastion — connect there using the secret from the secrets module.
 resource "aws_rds_cluster" "this" {
   cluster_identifier = "${var.name}-db"
   engine             = "aurora-postgresql"
@@ -41,8 +41,7 @@ resource "aws_rds_cluster" "this" {
   engine_version     = var.engine_version
   database_name      = var.database_name
   master_username    = var.master_username
-
-  manage_master_user_password = true
+  master_password    = var.master_password
 
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.this.id]

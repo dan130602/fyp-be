@@ -151,12 +151,6 @@ variable "bootstrap_admin_emails" {
   default = ""
 }
 
-variable "default_user_password" {
-  description = "Seed password for bootstrap-created users — set via a TFC workspace variable, never commit a real value here"
-  type        = string
-  sensitive   = true
-}
-
 # -----------------------
 # RDS (Aurora PostgreSQL Serverless v2)
 # -----------------------

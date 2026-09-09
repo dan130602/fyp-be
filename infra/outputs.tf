@@ -72,11 +72,14 @@ output "media_processing_ecs_log_group_name" {
   value       = module.media_processing_ecs.log_group_name
 }
 
-output "media_processing_rds_endpoint" {
-  value = module.media_processing_rds.cluster_endpoint
+# RDS is reinstated once these secrets are populated by hand — see infra/modules/rds.
+
+output "media_processing_rds_credentials_secret_arn" {
+  description = "Fill this in via the console with {\"username\": \"...\", \"password\": \"...\"} — then reconnect the rds module and it can read this back"
+  value       = module.media_processing_secrets.rds_credentials_secret_arn
 }
 
-output "media_processing_rds_secret_arn" {
-  description = "Managed master credentials — in the RDS console, open Query Editor on this cluster and connect with this secret to run SQL directly"
-  value       = module.media_processing_rds.master_user_secret_arn
+output "media_processing_default_user_password_secret_arn" {
+  description = "Fill this in via the console with the raw seed password string"
+  value       = module.media_processing_secrets.default_user_password_secret_arn
 }

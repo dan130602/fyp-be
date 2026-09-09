@@ -27,6 +27,12 @@ variable "master_username" {
   default = "postgres"
 }
 
+variable "master_password" {
+  description = "Master password, from the secrets module — kept out of this module so credential generation/storage lives in one place"
+  type        = string
+  sensitive   = true
+}
+
 variable "engine_version" {
   description = "Aurora PostgreSQL engine version — check `aws rds describe-db-engine-versions --engine aurora-postgresql` if this version isn't available in your region"
   type        = string

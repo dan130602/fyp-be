@@ -123,15 +123,14 @@ module "media_processing_ecr" {
   github_repository = var.github_repository
 }
 
-# Not read directly by Spring (Secrets Manager values aren't native datasource
-# config) — passed into the task as the DEFAULT_USER_PASSWORD secret instead.
-resource "aws_secretsmanager_secret" "default_user_password" {
-  name = "${local.media_processing_name}/default-user-password"
-}
+# Creates empty Secrets Manager placeholders for this service — the RDS
+# master credentials and the app's seed/default user password. No values are
+# set by Terraform; fill them in by hand via the console (see module outputs
+# for exactly what each one expects), then reinstate the rds module below.
+module "media_processing_secrets" {
+  source = "./modules/secrets"
 
-resource "aws_secretsmanager_secret_version" "default_user_password" {
-  secret_id     = aws_secretsmanager_secret.default_user_password.id
-  secret_string = var.default_user_password
+  name_prefix = local.media_processing_name
 }
 
 module "media_processing_alb" {
@@ -144,22 +143,8 @@ module "media_processing_alb" {
   health_check_path = "/api/health"
 }
 
-module "media_processing_rds" {
-  source = "./modules/rds"
-
-  name       = local.media_processing_name
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = values(module.vpc.private_subnet_ids)
-
-  # Tasks live in the private subnets, so scoping by CIDR (rather than the ECS
-  # tasks SG) avoids an rds <-> ecs module dependency cycle.
-  allowed_cidr_blocks = [for s in var.private_subnet_cidrs : s.cidr_block]
-
-  database_name   = var.db_name
-  master_username = var.db_master_username
-  min_capacity    = var.rds_min_capacity
-  max_capacity    = var.rds_max_capacity
-}
+# RDS is added back once the secrets above are populated manually via the
+# console — see modules/rds (kept on disk) for the module this will call.
 
 data "aws_iam_policy_document" "media_processing_task" {
   statement {
@@ -224,7 +209,8 @@ module "media_processing_ecs" {
   task_role_policy_json = data.aws_iam_policy_document.media_processing_task.json
 
   environment = {
-    SPRING_DATASOURCE_URL       = "jdbc:postgresql://${module.media_processing_rds.cluster_endpoint}:${module.media_processing_rds.port}/${module.media_processing_rds.database_name}"
+    # TODO: SPRING_DATASOURCE_URL, once RDS is reinstated:
+    # "jdbc:postgresql://${module.media_processing_rds.cluster_endpoint}:${module.media_processing_rds.port}/${module.media_processing_rds.database_name}"
     AWS_REGION                  = var.aws_region
     S3_BUCKET                   = module.s3.ingestion_audio_bucket_name
     TRANSCRIBE_OUTPUT_BUCKET    = module.s3.ingestion_audio_output_bucket_name
@@ -238,14 +224,14 @@ module "media_processing_ecs" {
   }
 
   secrets = {
-    DB_USERNAME           = "${module.media_processing_rds.master_user_secret_arn}:username::"
-    DB_PASSWORD           = "${module.media_processing_rds.master_user_secret_arn}:password::"
-    DEFAULT_USER_PASSWORD = aws_secretsmanager_secret.default_user_password.arn
+    DB_USERNAME           = "${module.media_processing_secrets.rds_credentials_secret_arn}:username::"
+    DB_PASSWORD           = "${module.media_processing_secrets.rds_credentials_secret_arn}:password::"
+    DEFAULT_USER_PASSWORD = module.media_processing_secrets.default_user_password_secret_arn
   }
 
   secret_arns_for_execution_role = [
-    module.media_processing_rds.master_user_secret_arn,
-    aws_secretsmanager_secret.default_user_password.arn,
+    module.media_processing_secrets.rds_credentials_secret_arn,
+    module.media_processing_secrets.default_user_password_secret_arn,
   ]
 
   depends_on = [module.media_processing_alb]
