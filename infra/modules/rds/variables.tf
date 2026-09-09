@@ -36,7 +36,7 @@ variable "master_password" {
 variable "engine_version" {
   description = "Aurora PostgreSQL engine version — check `aws rds describe-db-engine-versions --engine aurora-postgresql` if this version isn't available in your region"
   type        = string
-  default     = "16.6"
+  default     = "18.3"
 }
 
 variable "min_capacity" {
