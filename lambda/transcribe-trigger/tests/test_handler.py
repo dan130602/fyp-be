@@ -20,6 +20,9 @@ def s3_event(records):
     }
 
 
+DATA_ACCESS_ROLE_ARN = "arn:aws:iam::123456789012:role/transcribe-data-access"
+
+
 def expected_job_name(key):
     return f"transcribe-{hashlib.sha256(key.encode('utf-8')).hexdigest()}"
 
@@ -27,7 +30,7 @@ def expected_job_name(key):
 @pytest.fixture(autouse=True)
 def transcribe_env(monkeypatch):
     monkeypatch.setenv("TRANSCRIBE_OUTPUT_BUCKET", "output-bucket")
-    monkeypatch.setenv("TRANSCRIBE_LANGUAGE_CODE", "en-US")
+    monkeypatch.setenv("TRANSCRIBE_DATA_ACCESS_ROLE_ARN", DATA_ACCESS_ROLE_ARN)
 
 
 # -- _media_format_for_key ---------------------------------------------------
@@ -72,14 +75,15 @@ def test_start_job_calls_transcribe_with_expected_params():
         result = handler._start_job("input-bucket", key)
 
     assert result == job_name
-    mock_transcribe.start_transcription_job.assert_called_once_with(
-        TranscriptionJobName=job_name,
-        LanguageCode="en-US",
-        MediaFormat="mp3",
+    mock_transcribe.start_call_analytics_job.assert_called_once_with(
+        CallAnalyticsJobName=job_name,
         Media={"MediaFileUri": "s3://input-bucket/uploads/audio.mp3"},
-        OutputBucketName="output-bucket",
-        OutputKey=f"transcripts/{job_name}.json",
-        Settings={"ShowSpeakerLabels": True, "MaxSpeakerLabels": 2},
+        OutputLocation=f"s3://output-bucket/transcripts/{job_name}.json",
+        DataAccessRoleArn=DATA_ACCESS_ROLE_ARN,
+        ChannelDefinitions=[
+            {"ChannelId": 0, "ParticipantRole": "AGENT"},
+            {"ChannelId": 1, "ParticipantRole": "CUSTOMER"},
+        ],
     )
 
 
@@ -88,7 +92,7 @@ def test_start_job_skips_unsupported_format():
         job_name = handler._start_job("input-bucket", "uploads/notes.txt")
 
     assert job_name is None
-    mock_transcribe.start_transcription_job.assert_not_called()
+    mock_transcribe.start_call_analytics_job.assert_not_called()
 
 
 # -- handler ---------------------------------------------------------------
@@ -101,7 +105,7 @@ def test_handler_starts_job_for_valid_record():
         result = handler.handler(event, context=None)
 
     assert result == {"started_jobs": [expected_job_name(key)]}
-    mock_transcribe.start_transcription_job.assert_called_once()
+    mock_transcribe.start_call_analytics_job.assert_called_once()
 
 
 def test_handler_url_decodes_key():
@@ -110,7 +114,7 @@ def test_handler_url_decodes_key():
     with patch.object(handler, "transcribe") as mock_transcribe:
         handler.handler(event, context=None)
 
-    call_kwargs = mock_transcribe.start_transcription_job.call_args.kwargs
+    call_kwargs = mock_transcribe.start_call_analytics_job.call_args.kwargs
     assert call_kwargs["Media"]["MediaFileUri"] == "s3://input-bucket/uploads/my recording.mp3"
 
 
@@ -128,7 +132,7 @@ def test_handler_skips_directory_markers_and_unsupported_formats():
         result = handler.handler(event, context=None)
 
     assert result == {"started_jobs": [expected_job_name(key)]}
-    mock_transcribe.start_transcription_job.assert_called_once()
+    mock_transcribe.start_call_analytics_job.assert_called_once()
 
 
 def test_handler_ignores_records_missing_bucket_or_key():
@@ -138,7 +142,7 @@ def test_handler_ignores_records_missing_bucket_or_key():
         result = handler.handler(event, context=None)
 
     assert result == {"started_jobs": []}
-    mock_transcribe.start_transcription_job.assert_not_called()
+    mock_transcribe.start_call_analytics_job.assert_not_called()
 
 
 def test_handler_raises_after_processing_all_records_when_one_fails():
@@ -150,9 +154,9 @@ def test_handler_raises_after_processing_all_records_when_one_fails():
     )
 
     with patch.object(handler, "transcribe") as mock_transcribe:
-        mock_transcribe.start_transcription_job.side_effect = [None, Exception("boom")]
+        mock_transcribe.start_call_analytics_job.side_effect = [None, Exception("boom")]
 
         with pytest.raises(RuntimeError, match="Failed to start 1 Transcribe job"):
             handler.handler(event, context=None)
 
-    assert mock_transcribe.start_transcription_job.call_count == 2
+    assert mock_transcribe.start_call_analytics_job.call_count == 2

@@ -34,31 +34,35 @@ def _job_name_for_key(key):
 
 
 def _start_job(bucket, key):
-    media_format = _media_format_for_key(key)
-    if media_format is None:
+    # Call Analytics infers the media format from the file itself, so this is no longer
+    # an API parameter - it stays as the file-type gate that keeps folder markers and
+    # non-audio objects (.txt, .json) from starting jobs.
+    if _media_format_for_key(key) is None:
         logger.warning("Skipping s3://%s/%s: unsupported or unknown media format", bucket, key)
         return None
 
     job_name = _job_name_for_key(key)
     output_bucket = os.environ["TRANSCRIBE_OUTPUT_BUCKET"]
-    language_code = os.environ.get("TRANSCRIBE_LANGUAGE_CODE", "en-US")
-    max_speaker_labels = int(os.environ.get("TRANSCRIBE_MAX_SPEAKER_LABELS", "4"))
+    # Transcribe assumes this role to read the audio and write the transcript, minutes
+    # after this function has exited and its own credentials are gone. Mandatory for
+    # Call Analytics, unlike StartTranscriptionJob which managed bucket access itself.
+    data_access_role_arn = os.environ["TRANSCRIBE_DATA_ACCESS_ROLE_ARN"]
 
-    transcribe.start_transcription_job(
-        TranscriptionJobName=job_name,
-        LanguageCode=language_code,
-        MediaFormat=media_format,
+    transcribe.start_call_analytics_job(
+        CallAnalyticsJobName=job_name,
         Media={"MediaFileUri": f"s3://{bucket}/{key}"},
-        OutputBucketName=output_bucket,
-        OutputKey=f"transcripts/{job_name}.json",
-        # Diarization - who's speaking, not just what was said. Adds a top-level
-        # results.speaker_labels.segments array (spk_0, spk_1, ...) to the output JSON.
-        Settings={
-            "ShowSpeakerLabels": True,
-            "MaxSpeakerLabels": max_speaker_labels,
-        },
+        # Explicit key, not just a bucket, so the object lands exactly where
+        # TranscribeStatusPollingService (Java) expects to find it.
+        OutputLocation=f"s3://{output_bucket}/transcripts/{job_name}.json",
+        DataAccessRoleArn=data_access_role_arn,
+        # Post-call analytics reads participant roles off the audio channels rather than
+        # by diarization, so the recording must be two-channel with the parties separated.
+        ChannelDefinitions=[
+            {"ChannelId": 0, "ParticipantRole": "AGENT"},
+            {"ChannelId": 1, "ParticipantRole": "CUSTOMER"},
+        ],
     )
-    logger.info("Started Transcribe job %s for s3://%s/%s", job_name, bucket, key)
+    logger.info("Started Call Analytics job %s for s3://%s/%s", job_name, bucket, key)
     return job_name
 
 
