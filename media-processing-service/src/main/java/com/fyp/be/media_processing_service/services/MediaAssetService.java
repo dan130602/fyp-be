@@ -25,7 +25,7 @@ public class MediaAssetService {
     private final MediaAssetRepository mediaAssetRepository;
     private final PresignedUrlService presignedUrlService;
 
-    public MediaAssetService(MediaAssetRepository mediaAssetRepository) {
+    public MediaAssetService(MediaAssetRepository mediaAssetRepository, PresignedUrlService presignedUrlService) {
         this.mediaAssetRepository = mediaAssetRepository;
         this.presignedUrlService = presignedUrlService;
     }
@@ -73,6 +73,8 @@ public class MediaAssetService {
             asset.setUpdatedAt(LocalDateTime.now());
             mediaAssetRepository.save(asset);
         }, () -> log.warn("No MediaAsset found for transcribe job '{}': skipping", jobName));
+    }
+
     private MediaAssetResponse toResponse(MediaAsset asset) {
         return new MediaAssetResponse(
                 asset.getId(),
