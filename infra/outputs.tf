@@ -72,14 +72,17 @@ output "media_processing_ecs_log_group_name" {
   value       = module.media_processing_ecs.log_group_name
 }
 
-# RDS is reinstated once these secrets are populated by hand — see infra/modules/rds.
-
 output "media_processing_rds_credentials_secret_arn" {
-  description = "Fill this in via the console with {\"username\": \"...\", \"password\": \"...\"} — then reconnect the rds module and it can read this back"
+  description = "{\"username\": \"...\", \"password\": \"...\"} — edit this in Secrets Manager to rotate the master password (then re-apply)"
   value       = module.media_processing_secrets.rds_credentials_secret_arn
 }
 
 output "media_processing_default_user_password_secret_arn" {
-  description = "Fill this in via the console with the raw seed password string"
+  description = "Raw seed password string for Cognito-provisioned users — edit this in Secrets Manager to change it"
   value       = module.media_processing_secrets.default_user_password_secret_arn
+}
+
+output "media_processing_rds_endpoint" {
+  description = "Writer endpoint — also what SPRING_DATASOURCE_URL is built from"
+  value       = module.media_processing_rds.cluster_endpoint
 }
