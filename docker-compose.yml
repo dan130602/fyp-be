@@ -40,6 +40,9 @@ services:
       DEFAULT_USER_PASSWORD: ${DEFAULT_USER_PASSWORD:-ChangeMe123!}
       TRANSCRIBE_STATUS_QUEUE_URL: ${TRANSCRIBE_STATUS_QUEUE_URL:-}
       TRANSCRIBE_OUTPUT_BUCKET: ${TRANSCRIBE_OUTPUT_BUCKET:-ingestion-audio-output}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?set AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?set AWS_SECRET_ACCESS_KEY}
     depends_on:
       postgres:
         condition: service_healthy
