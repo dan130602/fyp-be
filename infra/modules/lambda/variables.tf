@@ -31,6 +31,24 @@ variable "memory_size" {
   default     = 512
 }
 
+variable "reserved_concurrent_executions" {
+  description = "Max concurrent executions of this Lambda - caps burst load from simultaneous S3 uploads against Transcribe's own account-level concurrent-job limit and cost"
+  type        = number
+  default     = 5
+}
+
+variable "async_max_retry_attempts" {
+  description = "Retries before a throttled/failed async S3-triggered invocation is sent to the DLQ"
+  type        = number
+  default     = 2
+}
+
+variable "dlq_message_retention_seconds" {
+  description = "How long failed invocation records are kept in the DLQ"
+  type        = number
+  default     = 1209600 # 14 days (SQS max)
+}
+
 variable "transcribe_language_code" {
   description = "Language code passed to StartTranscriptionJob"
   type        = string
