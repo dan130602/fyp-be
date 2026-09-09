@@ -212,6 +212,8 @@ data "aws_iam_policy_document" "media_processing_task" {
       "cognito-idp:AdminSetUserPassword",
       "cognito-idp:AdminGetUser",
       "cognito-idp:AdminDeleteUser",
+      "cognito-idp:AdminAddUserToGroup",
+      "cognito-idp:AdminRemoveUserFromGroup",
     ]
     resources = [module.cognito.cognito_user_pool_arn]
   }

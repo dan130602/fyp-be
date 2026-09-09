@@ -2,14 +2,17 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.exceptions.CognitoAdminException;
 import com.fyp.be.media_processing_service.exceptions.UserAlreadyExistsException;
+import com.fyp.be.media_processing_service.models.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminAddUserToGroupRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminRemoveUserFromGroupRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminSetUserPasswordRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.MessageActionType;
@@ -45,9 +48,10 @@ public class CognitoAdminService {
     /**
      * Returns the new user's Cognito sub. Sets defaultUserPassword as a permanent password
      * immediately (school-project convenience: log in right away, no invite-email/temp-password
-     * dance) - suppresses the invite email since it's no longer needed for that.
+     * dance) - suppresses the invite email since it's no longer needed for that. Also puts the
+     * user into the Cognito group matching role, so cognito:groups shows up in their tokens.
      */
-    public String createUser(String email, String name) {
+    public String createUser(String email, String name, Role role) {
         String username = (name != null && !name.isBlank()) ? name : UUID.randomUUID().toString();
 
         AdminCreateUserRequest createRequest = AdminCreateUserRequest.builder()
@@ -72,12 +76,53 @@ public class CognitoAdminService {
                     .permanent(true)
                     .build());
 
+            addUserToGroup(username, role);
+
             return sub;
         } catch (UsernameExistsException ex) {
             throw new UserAlreadyExistsException("A Cognito user with email '%s' already exists".formatted(email));
         } catch (Exception ex) {
             throw new CognitoAdminException("Failed to create Cognito user for email '%s'".formatted(email), ex);
         }
+    }
+
+    /**
+     * Adds a user (identified by their Cognito username, or any configured alias
+     * attribute such as email) to the group matching role.
+     */
+    public void addUserToGroup(String usernameOrAlias, Role role) {
+        try {
+            cognitoClient.adminAddUserToGroup(AdminAddUserToGroupRequest.builder()
+                    .userPoolId(userPoolId)
+                    .username(usernameOrAlias)
+                    .groupName(role.name())
+                    .build());
+        } catch (Exception ex) {
+            throw new CognitoAdminException(
+                    "Failed to add Cognito user '%s' to group '%s'".formatted(usernameOrAlias, role.name()), ex);
+        }
+    }
+
+    /**
+     * Moves a user to the group matching newRole, removing them from every other
+     * role group first - a user should only ever be in one role group at a time.
+     */
+    public void setUserGroup(String usernameOrAlias, Role newRole) {
+        try {
+            for (Role role : Role.values()) {
+                if (role != newRole) {
+                    cognitoClient.adminRemoveUserFromGroup(AdminRemoveUserFromGroupRequest.builder()
+                            .userPoolId(userPoolId)
+                            .username(usernameOrAlias)
+                            .groupName(role.name())
+                            .build());
+                }
+            }
+        } catch (Exception ex) {
+            throw new CognitoAdminException(
+                    "Failed to clear stale Cognito role groups for user '%s'".formatted(usernameOrAlias), ex);
+        }
+        addUserToGroup(usernameOrAlias, newRole);
     }
 
     private String extractSub(AdminCreateUserResponse response) {
