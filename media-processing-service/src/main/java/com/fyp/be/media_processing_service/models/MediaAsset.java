@@ -49,6 +49,15 @@ public class MediaAsset {
     @Column(name = "status", nullable = false, length = 30)
     private MediaAssetStatus status = MediaAssetStatus.PENDING;
 
+    @Column(name = "transcribe_job_name", length = 255)
+    private String transcribeJobName;
+
+    @Column(name = "transcript_uri", columnDefinition = "TEXT")
+    private String transcriptUri;
+
+    @Column(name = "failure_reason", columnDefinition = "TEXT")
+    private String failureReason;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

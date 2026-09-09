@@ -1,7 +1,7 @@
+import hashlib
 import logging
 import os
 import urllib.parse
-import uuid
 
 import boto3
 
@@ -26,11 +26,11 @@ def _media_format_for_key(key):
 
 
 def _job_name_for_key(key):
-    base = os.path.basename(key)
-    stem = base.rpartition(".")[0] or base
-    sanitized = "".join(c if c.isalnum() or c in "._-" else "-" for c in stem)
-    sanitized = sanitized[:150] or "job"
-    return f"{sanitized}-{uuid.uuid4().hex[:8]}"
+    """Deterministic - must match PresignedUrlService.jobNameForObjectKey (Java) exactly for
+    the same key, since that's the only correlation between a MediaAsset row and the Transcribe
+    job started here, with neither side ever calling the other directly."""
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    return f"transcribe-{digest}"
 
 
 def _start_job(bucket, key):

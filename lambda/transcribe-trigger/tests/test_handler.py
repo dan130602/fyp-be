@@ -1,3 +1,4 @@
+import hashlib
 from unittest.mock import patch
 
 import pytest
@@ -19,19 +20,14 @@ def s3_event(records):
     }
 
 
+def expected_job_name(key):
+    return f"transcribe-{hashlib.sha256(key.encode('utf-8')).hexdigest()}"
+
+
 @pytest.fixture(autouse=True)
 def transcribe_env(monkeypatch):
     monkeypatch.setenv("TRANSCRIBE_OUTPUT_BUCKET", "output-bucket")
     monkeypatch.setenv("TRANSCRIBE_LANGUAGE_CODE", "en-US")
-
-
-@pytest.fixture
-def fixed_uuid(monkeypatch):
-    class _FixedUUID:
-        hex = "deadbeef00000000"
-
-    monkeypatch.setattr(handler.uuid, "uuid4", lambda: _FixedUUID())
-    return _FixedUUID.hex[:8]
 
 
 # -- _media_format_for_key ---------------------------------------------------
@@ -53,29 +49,29 @@ def test_media_format_for_key(key, expected):
 
 # -- _job_name_for_key --------------------------------------------------------
 
-def test_job_name_for_key_sanitizes_and_suffixes(fixed_uuid):
-    job_name = handler._job_name_for_key("uploads/My Recording (final)!.mp3")
+def test_job_name_for_key_is_deterministic():
+    key = "uploads/My Recording (final)!.mp3"
 
-    assert job_name.startswith("My-Recording--final--")
-    assert job_name.endswith(fixed_uuid)
+    assert handler._job_name_for_key(key) == expected_job_name(key)
 
 
-def test_job_name_for_key_truncates_long_names(fixed_uuid):
+def test_job_name_for_key_has_constant_length_for_long_names():
     long_stem = "a" * 300
     job_name = handler._job_name_for_key(f"uploads/{long_stem}.mp3")
 
-    prefix, _, suffix = job_name.rpartition("-")
-    assert len(prefix) == 150
-    assert suffix == fixed_uuid
+    assert len(job_name) == len("transcribe-") + 64
 
 
 # -- _start_job ----------------------------------------------------------------
 
-def test_start_job_calls_transcribe_with_expected_params(fixed_uuid):
-    with patch.object(handler, "transcribe") as mock_transcribe:
-        job_name = handler._start_job("input-bucket", "uploads/audio.mp3")
+def test_start_job_calls_transcribe_with_expected_params():
+    key = "uploads/audio.mp3"
+    job_name = expected_job_name(key)
 
-    assert job_name == f"audio-{fixed_uuid}"
+    with patch.object(handler, "transcribe") as mock_transcribe:
+        result = handler._start_job("input-bucket", key)
+
+    assert result == job_name
     mock_transcribe.start_transcription_job.assert_called_once_with(
         TranscriptionJobName=job_name,
         LanguageCode="en-US",
@@ -96,17 +92,18 @@ def test_start_job_skips_unsupported_format():
 
 # -- handler ---------------------------------------------------------------
 
-def test_handler_starts_job_for_valid_record(fixed_uuid):
-    event = s3_event([("input-bucket", "uploads/audio.mp3")])
+def test_handler_starts_job_for_valid_record():
+    key = "uploads/audio.mp3"
+    event = s3_event([("input-bucket", key)])
 
     with patch.object(handler, "transcribe") as mock_transcribe:
         result = handler.handler(event, context=None)
 
-    assert result == {"started_jobs": [f"audio-{fixed_uuid}"]}
+    assert result == {"started_jobs": [expected_job_name(key)]}
     mock_transcribe.start_transcription_job.assert_called_once()
 
 
-def test_handler_url_decodes_key(fixed_uuid):
+def test_handler_url_decodes_key():
     event = s3_event([("input-bucket", "uploads/my+recording.mp3")])
 
     with patch.object(handler, "transcribe") as mock_transcribe:
@@ -116,19 +113,20 @@ def test_handler_url_decodes_key(fixed_uuid):
     assert call_kwargs["Media"]["MediaFileUri"] == "s3://input-bucket/uploads/my recording.mp3"
 
 
-def test_handler_skips_directory_markers_and_unsupported_formats(fixed_uuid):
+def test_handler_skips_directory_markers_and_unsupported_formats():
+    key = "uploads/audio.wav"
     event = s3_event(
         [
             ("input-bucket", "uploads/"),
             ("input-bucket", "uploads/readme.txt"),
-            ("input-bucket", "uploads/audio.wav"),
+            ("input-bucket", key),
         ]
     )
 
     with patch.object(handler, "transcribe") as mock_transcribe:
         result = handler.handler(event, context=None)
 
-    assert result == {"started_jobs": [f"audio-{fixed_uuid}"]}
+    assert result == {"started_jobs": [expected_job_name(key)]}
     mock_transcribe.start_transcription_job.assert_called_once()
 
 
@@ -142,7 +140,7 @@ def test_handler_ignores_records_missing_bucket_or_key():
     mock_transcribe.start_transcription_job.assert_not_called()
 
 
-def test_handler_raises_after_processing_all_records_when_one_fails(fixed_uuid):
+def test_handler_raises_after_processing_all_records_when_one_fails():
     event = s3_event(
         [
             ("input-bucket", "uploads/good.mp3"),

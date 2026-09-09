@@ -16,8 +16,12 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -137,9 +141,10 @@ public class PresignedUrlService {
 
             PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
 
-            recordMediaAsset(userId, objectKey, file);
+            MediaAsset asset = recordMediaAsset(userId, objectKey, file);
 
             return new FileUploadResponse(
+                    asset.getId(),
                     file.fileName(),
                     objectKey,
                     presigned.url().toString(),
@@ -150,18 +155,36 @@ public class PresignedUrlService {
         }
     }
 
-    private void recordMediaAsset(UUID userId, String objectKey, FileUploadRequest file) {
+    private MediaAsset recordMediaAsset(UUID userId, String objectKey, FileUploadRequest file) {
         LocalDateTime now = LocalDateTime.now();
-        mediaAssetRepository.save(MediaAsset.builder()
+        return mediaAssetRepository.save(MediaAsset.builder()
                 .id(UUID.randomUUID())
                 .userId(userId)
                 .objectKey(objectKey)
                 .originalFilename(file.fileName())
                 .contentType(file.contentType())
                 .fileSizeBytes(file.fileSize())
+                .transcribeJobName(jobNameForObjectKey(objectKey))
                 .createdAt(now)
                 .updatedAt(now)
                 .build());
+    }
+
+    /**
+     * Must produce byte-identical output to the trigger Lambda's _job_name_for_key
+     * (lambda/transcribe-trigger/app/handler.py) for the same object key - this is the only
+     * correlation between a MediaAsset row and the Transcribe job it eventually spawns, with
+     * neither side ever calling the other directly.
+     */
+    private static String jobNameForObjectKey(String objectKey) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            throw new IllegalStateException("SHA-256 not available", ex);
+        }
+        byte[] hash = digest.digest(objectKey.getBytes(StandardCharsets.UTF_8));
+        return "transcribe-" + HexFormat.of().formatHex(hash);
     }
 
     private String buildObjectKey(UUID userId, String fileName) {

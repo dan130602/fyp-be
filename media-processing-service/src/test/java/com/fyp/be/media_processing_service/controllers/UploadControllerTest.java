@@ -2,6 +2,7 @@ package com.fyp.be.media_processing_service.controllers;
 
 import com.fyp.be.media_processing_service.dtos.FileUploadRequest;
 import com.fyp.be.media_processing_service.dtos.PresignedUploadRequest;
+import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.Role;
 import com.fyp.be.media_processing_service.models.User;
 import com.fyp.be.media_processing_service.models.UserStatus;
@@ -62,6 +63,14 @@ class UploadControllerTest {
         when(presignedRequest.url()).thenReturn(URI.create("https://bucket.s3.amazonaws.com/uploads/mock").toURL());
         when(s3Presigner.presignPutObject(any(software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest.class)))
                 .thenReturn(presignedRequest);
+
+        when(mediaAssetRepository.save(any(MediaAsset.class))).thenAnswer(invocation -> {
+            MediaAsset asset = invocation.getArgument(0);
+            if (asset.getId() == null) {
+                asset.setId(UUID.randomUUID());
+            }
+            return asset;
+        });
     }
 
     private MockHttpServletRequestBuilder authorizedRequest(String sub, Role role, String body) {
