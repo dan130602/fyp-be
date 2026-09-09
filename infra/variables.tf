@@ -72,6 +72,11 @@ variable "github_repository" {
   type        = string
   default     = "dan130602/fyp-be"
 }
+variable "transcribe_max_speaker_labels"{
+  description = "Maximum number of speaker labels to detect in a transcription job"
+  type        = number
+  default     = 4
+}
 
 # -----------------------
 # Cognito
