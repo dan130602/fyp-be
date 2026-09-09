@@ -55,6 +55,11 @@ variable "transcribe_language_code" {
   default     = "en-US"
 }
 
+variable "transcribe_max_speaker_labels" {
+  description = "Max distinct speakers Transcribe's diarization will identify per job (2-30)"
+  type        = number
+}
+
 variable "input_bucket_id" {
   description = "ID of the S3 bucket that receives uploaded audio and triggers this Lambda"
   type        = string

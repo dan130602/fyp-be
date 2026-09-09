@@ -79,6 +79,7 @@ def test_start_job_calls_transcribe_with_expected_params():
         Media={"MediaFileUri": "s3://input-bucket/uploads/audio.mp3"},
         OutputBucketName="output-bucket",
         OutputKey=f"transcripts/{job_name}.json",
+        Settings={"ShowSpeakerLabels": True, "MaxSpeakerLabels": 2},
     )
 
 

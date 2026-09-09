@@ -92,8 +92,9 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      TRANSCRIBE_OUTPUT_BUCKET = var.output_bucket_name
-      TRANSCRIBE_LANGUAGE_CODE = var.transcribe_language_code
+      TRANSCRIBE_OUTPUT_BUCKET      = var.output_bucket_name
+      TRANSCRIBE_LANGUAGE_CODE      = var.transcribe_language_code
+      TRANSCRIBE_MAX_SPEAKER_LABELS = tostring(var.transcribe_max_speaker_labels)
     }
   }
 
