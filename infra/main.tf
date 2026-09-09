@@ -44,7 +44,6 @@ module "lambda" {
   ecr_repository_url   = module.ecr.repository_url
   ecr_repository_name  = module.ecr.repository_name
   image_tag            = var.transcribe_lambda_image_tag
-  transcribe_max_speaker_labels = var.transcribe_max_speaker_labels
 
   input_bucket_id  = module.s3.ingestion_audio_bucket_id
   input_bucket_arn = module.s3.ingestion_audio_bucket_arn
@@ -65,9 +64,9 @@ module "transcribe_status_events" {
   rule_name = "transcribe-job-state-change"
   event_pattern = jsonencode({
     source      = ["aws.transcribe"]
-    detail-type = ["Transcribe Job State Change"]
+    detail-type = ["Call Analytics Job State Change"]
     detail = {
-      TranscriptionJobStatus = ["COMPLETED", "FAILED"]
+      JobStatus = ["COMPLETED", "FAILED"]
     }
   })
   target_arn = module.transcribe_status_queue.queue_arn

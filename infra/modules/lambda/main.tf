@@ -29,6 +29,59 @@ resource "aws_sqs_queue" "dlq" {
   message_retention_seconds = var.dlq_message_retention_seconds
 }
 
+# Transcribe assumes this to read the input audio and write the transcript - work it does
+# minutes after the Lambda that started the job has exited and its credentials are gone,
+# so it cannot borrow the function's identity. StartCallAnalyticsJob requires it; plain
+# StartTranscriptionJob did not, which is why this role is new.
+resource "aws_iam_role" "transcribe_data_access" {
+  name = "${var.lambda_function_name}-transcribe-data-access"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "transcribe.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+data "aws_iam_policy_document" "transcribe_data_access" {
+  statement {
+    sid       = "ReadInputAudio"
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
+    resources = ["${var.input_bucket_arn}/*"]
+  }
+
+  statement {
+    sid     = "WriteTranscriptOutput"
+    effect  = "Allow"
+    actions = ["s3:PutObject"]
+
+    resources = ["${var.output_bucket_arn}/*"]
+  }
+
+  # ListBucket acts on the bucket, so it takes the bare ARN - object actions above take
+  # /*. Mixing the two up is the usual way this role looks right and fails at run time.
+  statement {
+    sid     = "ListBuckets"
+    effect  = "Allow"
+    actions = ["s3:ListBucket"]
+
+    resources = [
+      var.input_bucket_arn,
+      var.output_bucket_arn,
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "transcribe_data_access" {
+  name   = "${var.lambda_function_name}-transcribe-data-access-policy"
+  role   = aws_iam_role.transcribe_data_access.id
+  policy = data.aws_iam_policy_document.transcribe_data_access.json
+}
+
 data "aws_iam_policy_document" "lambda" {
   statement {
     sid     = "ReadInputAudio"
@@ -53,14 +106,19 @@ data "aws_iam_policy_document" "lambda" {
   }
 
   statement {
-    sid    = "RunTranscribeJobs"
-    effect = "Allow"
-    actions = [
-      "transcribe:StartTranscriptionJob",
-      "transcribe:GetTranscriptionJob",
-    ]
-
+    sid       = "RunCallAnalyticsJobs"
+    effect    = "Allow"
+    actions   = ["transcribe:StartCallAnalyticsJob"]
     resources = ["*"]
+  }
+
+  # Naming a role in StartCallAnalyticsJob is itself privileged - without this scope the
+  # function could hand Transcribe any role in the account and have it act as that role.
+  statement {
+    sid       = "PassTranscribeDataAccessRole"
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.transcribe_data_access.arn]
   }
 
   # Exercised by the Lambda service (not handler.py) when delivering an async
@@ -92,15 +150,15 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      TRANSCRIBE_OUTPUT_BUCKET      = var.output_bucket_name
-      TRANSCRIBE_LANGUAGE_CODE      = var.transcribe_language_code
-      TRANSCRIBE_MAX_SPEAKER_LABELS = tostring(var.transcribe_max_speaker_labels)
+      TRANSCRIBE_OUTPUT_BUCKET        = var.output_bucket_name
+      TRANSCRIBE_DATA_ACCESS_ROLE_ARN = aws_iam_role.transcribe_data_access.arn
     }
   }
 
   depends_on = [
     aws_iam_role_policy_attachment.lambda_basic_execution,
     aws_iam_role_policy.lambda,
+    aws_iam_role_policy.transcribe_data_access,
   ]
 }
 

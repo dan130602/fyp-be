@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 
 /**
- * Polls the SQS queue an EventBridge rule delivers "Transcribe Job State Change" events to
+ * Polls the SQS queue an EventBridge rule delivers "Call Analytics Job State Change" events to
  * (see infra/modules/transcribe_status) and flips the matching MediaAsset's status. Uses SQS
  * long-polling (waitTimeSeconds), so @Scheduled's fixedDelay is a safety buffer between calls,
  * not the actual poll interval - each receiveMessage call already blocks up to 20s.
@@ -79,8 +79,11 @@ public class TranscribeStatusPollingService {
 
     private void processMessage(Message message) throws Exception {
         JsonNode detail = objectMapper.readTree(message.body()).path("detail");
-        String jobName = detail.path("TranscriptionJobName").asText(null);
-        String status = detail.path("TranscriptionJobStatus").asText(null);
+        // Call Analytics events name these fields differently from standard Transcribe
+        // ("TranscriptionJobName"/"TranscriptionJobStatus"); a mismatch here is silent,
+        // since asText(null) just yields null and the event is dropped as malformed.
+        String jobName = detail.path("JobName").asText(null);
+        String status = detail.path("JobStatus").asText(null);
         if (jobName == null || status == null) {
             log.warn("Ignoring malformed Transcribe status event: {}", message.body());
             return;
