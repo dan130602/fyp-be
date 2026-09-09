@@ -40,7 +40,7 @@ class UserControllerTest {
 
     @Test
     void adminCanCreateAComplianceOfficer() throws Exception {
-        when(cognitoAdminService.createUser(eq("officer@example.com"), eq("Jane Doe")))
+        when(cognitoAdminService.createUser(eq("officer@example.com"), eq("Jane Doe"), eq(Role.COMPLIANCE_OFFICER)))
                 .thenReturn("new-cognito-sub");
         when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -77,7 +77,7 @@ class UserControllerTest {
     @Test
     void firstAdminCanBeCreatedWithoutAuthWhenNoUsersExist() throws Exception {
         when(userRepository.count()).thenReturn(0L);
-        when(cognitoAdminService.createUser(eq("owner@example.com"), eq("Owner")))
+        when(cognitoAdminService.createUser(eq("owner@example.com"), eq("Owner"), eq(Role.ADMIN)))
                 .thenReturn("owner-cognito-sub");
         when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 

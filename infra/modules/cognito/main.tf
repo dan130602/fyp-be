@@ -69,3 +69,10 @@ resource "aws_cognito_user_pool_domain" "domain" {
   user_pool_id          = aws_cognito_user_pool.main.id
   managed_login_version = 2
 }
+
+resource "aws_cognito_user_group" "roles" {
+  for_each = toset(var.user_roles)
+
+  name         = each.value
+  user_pool_id = aws_cognito_user_pool.main.id
+}

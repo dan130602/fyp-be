@@ -78,6 +78,12 @@ public class UserProvisioningService {
         Role role = isBootstrapAdmin(email) ? Role.ADMIN : DEFAULT_ROLE;
         log.info("Provisioning new internal user for cognitoSub={} with role={}", cognitoSub, role);
 
+        if (email != null) {
+            cognitoAdminService.addUserToGroup(email, role);
+        } else {
+            log.warn("No email resolved for cognitoSub={}; skipping Cognito group assignment", cognitoSub);
+        }
+
         LocalDateTime now = LocalDateTime.now();
         User user = User.builder()
                 .id(UUID.randomUUID())

@@ -24,6 +24,11 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_sqs_queue" "dlq" {
+  name                      = "${var.lambda_function_name}-dlq"
+  message_retention_seconds = var.dlq_message_retention_seconds
+}
+
 data "aws_iam_policy_document" "lambda" {
   statement {
     sid     = "ReadInputAudio"
@@ -57,6 +62,15 @@ data "aws_iam_policy_document" "lambda" {
 
     resources = ["*"]
   }
+
+  # Exercised by the Lambda service (not handler.py) when delivering an async
+  # on-failure destination record, using this function's own execution role.
+  statement {
+    sid       = "SendToDlq"
+    effect    = "Allow"
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.dlq.arn]
+  }
 }
 
 resource "aws_iam_role_policy" "lambda" {
@@ -72,13 +86,15 @@ resource "aws_lambda_function" "this" {
   package_type = "Image"
   image_uri    = "${var.ecr_repository_url}@${data.aws_ecr_image.this.image_digest}"
 
-  timeout     = var.timeout
-  memory_size = var.memory_size
+  timeout                        = var.timeout
+  memory_size                    = var.memory_size
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 
   environment {
     variables = {
-      TRANSCRIBE_OUTPUT_BUCKET = var.output_bucket_name
-      TRANSCRIBE_LANGUAGE_CODE = var.transcribe_language_code
+      TRANSCRIBE_OUTPUT_BUCKET      = var.output_bucket_name
+      TRANSCRIBE_LANGUAGE_CODE      = var.transcribe_language_code
+      TRANSCRIBE_MAX_SPEAKER_LABELS = tostring(var.transcribe_max_speaker_labels)
     }
   }
 
@@ -86,6 +102,19 @@ resource "aws_lambda_function" "this" {
     aws_iam_role_policy_attachment.lambda_basic_execution,
     aws_iam_role_policy.lambda,
   ]
+}
+
+# S3 invokes this Lambda asynchronously - a throttled (over reserved_concurrent_executions)
+# invocation that exhausts its retries is delivered here instead of silently vanishing.
+resource "aws_lambda_function_event_invoke_config" "this" {
+  function_name          = aws_lambda_function.this.function_name
+  maximum_retry_attempts = var.async_max_retry_attempts
+
+  destination_config {
+    on_failure {
+      destination = aws_sqs_queue.dlq.arn
+    }
+  }
 }
 
 resource "aws_lambda_permission" "allow_s3_invoke" {
