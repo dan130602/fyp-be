@@ -10,6 +10,8 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminAddUserToGroupRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDisableUserRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminEnableUserRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminRemoveUserFromGroupRequest;
@@ -52,7 +54,8 @@ public class CognitoAdminService {
      * user into the Cognito group matching role, so cognito:groups shows up in their tokens.
      */
     public String createUser(String email, String name, Role role) {
-        String username = (name != null && !name.isBlank()) ? name : UUID.randomUUID().toString();
+        // Opaque username: Cognito requires it unique, and email is an alias so it cannot be used here.
+        String username = UUID.randomUUID().toString();
 
         AdminCreateUserRequest createRequest = AdminCreateUserRequest.builder()
                 .userPoolId(userPoolId)
@@ -80,7 +83,7 @@ public class CognitoAdminService {
 
             return sub;
         } catch (UsernameExistsException ex) {
-            throw new UserAlreadyExistsException("A Cognito user with email '%s' already exists".formatted(email));
+            throw new UserAlreadyExistsException("A user with email '%s' already exists".formatted(email));
         } catch (Exception ex) {
             throw new CognitoAdminException("Failed to create Cognito user for email '%s'".formatted(email), ex);
         }
@@ -123,6 +126,30 @@ public class CognitoAdminService {
                     "Failed to clear stale Cognito role groups for user '%s'".formatted(usernameOrAlias), ex);
         }
         addUserToGroup(usernameOrAlias, newRole);
+    }
+
+    /** Disables a user's Cognito login, keyed on email (the alias attribute), so they can no longer get fresh tokens. */
+    public void disableUser(String email) {
+        try {
+            cognitoClient.adminDisableUser(AdminDisableUserRequest.builder()
+                    .userPoolId(userPoolId)
+                    .username(email)
+                    .build());
+        } catch (Exception ex) {
+            throw new CognitoAdminException("Failed to disable Cognito user '%s'".formatted(email), ex);
+        }
+    }
+
+    /** Re-enables a user's Cognito login, keyed on email (the alias attribute). */
+    public void enableUser(String email) {
+        try {
+            cognitoClient.adminEnableUser(AdminEnableUserRequest.builder()
+                    .userPoolId(userPoolId)
+                    .username(email)
+                    .build());
+        } catch (Exception ex) {
+            throw new CognitoAdminException("Failed to enable Cognito user '%s'".formatted(email), ex);
+        }
     }
 
     private String extractSub(AdminCreateUserResponse response) {

@@ -3,6 +3,7 @@ package com.fyp.be.media_processing_service.controllers;
 import com.fyp.be.media_processing_service.dtos.CreateUserRequest;
 import com.fyp.be.media_processing_service.dtos.FirstAdminRequest;
 import com.fyp.be.media_processing_service.dtos.UpdateUserRoleDto;
+import com.fyp.be.media_processing_service.dtos.UpdateUserStatusDto;
 import com.fyp.be.media_processing_service.dtos.UserResponseDto;
 import com.fyp.be.media_processing_service.services.CurrentUserService;
 import com.fyp.be.media_processing_service.services.UserService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,6 +38,12 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> me(Authentication authentication) {
         return ResponseEntity.ok(userService.toResponseDto(currentUserService.getCurrentUser(authentication)));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserResponseDto>> listUsers() {
+        return ResponseEntity.ok(userService.listUsers());
     }
 
     // Deliberately unauthenticated - see SecurityConfig's permitAll for this path - but
@@ -56,8 +64,19 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDto> updateRole(
             @PathVariable UUID userId,
-            @Valid @RequestBody UpdateUserRoleDto request
+            @Valid @RequestBody UpdateUserRoleDto request,
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(userService.updateRole(userId, request.role()));
+        return ResponseEntity.ok(userService.updateRole(userId, request.role(), currentUserService.getCurrentUser(authentication)));
+    }
+
+    @PatchMapping("/{userId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponseDto> updateStatus(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateUserStatusDto request,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(userService.updateStatus(userId, request.status(), currentUserService.getCurrentUser(authentication)));
     }
 }
