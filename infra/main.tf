@@ -280,7 +280,7 @@ module "media_processing_ecs" {
     CHECKLIST_JSON               = var.checklist_json
     AWS_COGNITO_REGION           = var.aws_region
     AWS_COGNITO_USER_POOL_ID     = module.cognito.cognito_user_pool_id
-    AWS_COGNITO_APP_CLIENT_ID    = module.cognito.cognito_user_pool_client_id
+    AWS_COGNITO_APP_CLIENT_ID    = "${module.cognito.cognito_user_pool_client_id},${var.frontend_spa_cognito_client_id}"
     AWS_COGNITO_ISSUER_URI       = module.cognito.cognito_issuer_uri
     CORS_ALLOWED_ORIGINS         = var.cors_allowed_origins
     BOOTSTRAP_ADMIN_EMAILS       = var.bootstrap_admin_emails

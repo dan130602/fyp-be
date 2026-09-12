@@ -36,6 +36,12 @@ variable "frontend_origins" {
   type = list(string)
 }
 
+variable "frontend_spa_cognito_client_id" {
+  description = "App client ID for the browser SPA frontend - a public client (no secret) created manually in the Cognito console, not managed by Terraform, since aws_cognito_user_pool_client.web in modules/cognito generates a confidential client unsuitable for a browser. Combined with that managed client's ID when configuring the backend's accepted client_id list."
+  type        = string
+  default     = "6jde2h1pb3cqjuvcn6gbqvqbdu"
+}
+
 variable "api_domain_name" {
   description = "Domain the media-processing-service ALB is served on over HTTPS. Route 53 records for it and for ACM validation are created manually, not by Terraform."
   type        = string
