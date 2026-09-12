@@ -198,8 +198,15 @@ public class PresignedUrlService {
      * (lambda/transcribe-trigger/app/handler.py) for the same object key - this is the only
      * correlation between a MediaAsset row and the Transcribe job it eventually spawns, with
      * neither side ever calling the other directly.
+     *
+     * userId is parsed back out of the key (index 1 of "uploads/{userId}/...") rather than
+     * passed in separately, so both languages derive it from the identical string - passing a
+     * typed UUID here and relying on toString() producing the same text would risk drifting
+     * from whatever Python's string split happens to see.
      */
     private static String jobNameForObjectKey(String objectKey) {
+        String userId = objectKey.split("/")[1];
+
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -207,7 +214,8 @@ public class PresignedUrlService {
             throw new IllegalStateException("SHA-256 not available", ex);
         }
         byte[] hash = digest.digest(objectKey.getBytes(StandardCharsets.UTF_8));
-        return "transcribe-" + HexFormat.of().formatHex(hash);
+        String shortDigest = HexFormat.of().formatHex(hash).substring(0, 16);
+        return "transcribe-" + userId + "-" + shortDigest;
     }
 
     private String buildObjectKey(UUID userId, String fileName) {

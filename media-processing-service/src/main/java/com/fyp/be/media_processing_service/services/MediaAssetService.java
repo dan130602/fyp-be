@@ -24,10 +24,16 @@ public class MediaAssetService {
 
     private final MediaAssetRepository mediaAssetRepository;
     private final PresignedUrlService presignedUrlService;
+    private final TranscriptHandoffService transcriptHandoffService;
 
-    public MediaAssetService(MediaAssetRepository mediaAssetRepository, PresignedUrlService presignedUrlService) {
+    public MediaAssetService(
+            MediaAssetRepository mediaAssetRepository,
+            PresignedUrlService presignedUrlService,
+            TranscriptHandoffService transcriptHandoffService
+    ) {
         this.mediaAssetRepository = mediaAssetRepository;
         this.presignedUrlService = presignedUrlService;
+        this.transcriptHandoffService = transcriptHandoffService;
     }
 
     public List<MediaAssetResponse> listForUser(UUID userId) {
@@ -63,7 +69,10 @@ public class MediaAssetService {
         return asset;
     }
 
-    /** Called by TranscribeStatusPollingService for each SQS message it successfully parses. */
+    /** Called by TranscribeStatusPollingService for each SQS message it successfully parses.
+     * On COMPLETED, also hands the transcript + checklist off to the next service - a failure
+     * there rolls back this whole update (see TranscriptHandoffService), so the incoming status
+     * message gets redelivered and retried rather than silently losing the handoff. */
     @Transactional
     public void applyTranscribeStatusUpdate(String jobName, MediaAssetStatus newStatus, String transcriptUri, String failureReason) {
         mediaAssetRepository.findByTranscribeJobName(jobName).ifPresentOrElse(asset -> {
@@ -72,6 +81,9 @@ public class MediaAssetService {
             asset.setFailureReason(failureReason);
             asset.setUpdatedAt(LocalDateTime.now());
             mediaAssetRepository.save(asset);
+            if (newStatus == MediaAssetStatus.COMPLETED) {
+                transcriptHandoffService.publish(asset);
+            }
         }, () -> log.warn("No MediaAsset found for transcribe job '{}': skipping", jobName));
     }
 

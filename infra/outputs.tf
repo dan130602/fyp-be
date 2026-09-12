@@ -39,6 +39,19 @@ output "transcribe_status_event_rule_arn" {
   value = module.transcribe_status_events.rule_arn
 }
 
+output "transcript_handoff_queue_url" {
+  description = "The next service reads its {mediaAssetId, transcriptUri, checklist} payload from here - set as TRANSCRIPT_HANDOFF_QUEUE_URL on media-processing-service, and consume it directly in whatever reads this from the other side"
+  value       = module.transcript_handoff_queue.queue_url
+}
+
+output "transcript_handoff_queue_arn" {
+  value = module.transcript_handoff_queue.queue_arn
+}
+
+output "transcript_handoff_dlq_url" {
+  value = module.transcript_handoff_queue.dlq_url
+}
+
 # -----------------------
 # Media Processing Service (ECS Fargate)
 # -----------------------
@@ -85,4 +98,30 @@ output "media_processing_default_user_password_secret_arn" {
 output "media_processing_rds_endpoint" {
   description = "Writer endpoint — also what SPRING_DATASOURCE_URL is built from"
   value       = module.media_processing_rds.cluster_endpoint
+}
+
+# -----------------------
+# Frontend (S3 + CloudFront + ACM)
+# -----------------------
+
+output "frontend_acm_certificate_arn" {
+  value = module.cloudfront.acm_certificate_arn
+}
+
+output "frontend_acm_domain_validation_options" {
+  description = "Create these as CNAME records manually in Route 53 to validate the cert (name -> value)"
+  value       = module.cloudfront.acm_domain_validation_options
+}
+
+output "frontend_cloudfront_distribution_id" {
+  value = module.cloudfront.distribution_id
+}
+
+output "frontend_cloudfront_domain_name" {
+  description = "Point a Route 53 ALIAS record at this (use frontend_cloudfront_hosted_zone_id as the alias target zone)"
+  value       = module.cloudfront.distribution_domain_name
+}
+
+output "frontend_cloudfront_hosted_zone_id" {
+  value = module.cloudfront.distribution_hosted_zone_id
 }

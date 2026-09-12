@@ -36,6 +36,11 @@ variable "frontend_origins" {
   type = list(string)
 }
 
+variable "frontend_domain_name" {
+  description = "Custom domain the frontend is served on via CloudFront (e.g. app.example.com). Route 53 records for it and for ACM validation are created manually, not by Terraform."
+  type        = string
+}
+
 variable "presign_role_arn" {
   type    = string
   default = null
@@ -72,6 +77,12 @@ variable "github_repository" {
   type        = string
   default     = "dan130602/fyp-be"
 }
+variable "transcribe_max_speaker_labels"{
+  description = "Maximum number of speaker labels to detect in a transcription job"
+  type        = number
+  default     = 2
+}
+
 # -----------------------
 # Networking
 # -----------------------
@@ -143,6 +154,12 @@ variable "cors_allowed_origins" {
 variable "bootstrap_admin_emails" {
   type    = string
   default = ""
+}
+
+variable "checklist_json" {
+  description = "Fixed compliance checklist forwarded to the next service with every completed transcript - override via tfvars, not per-upload"
+  type        = string
+  default     = "{}"
 }
 
 # -----------------------
