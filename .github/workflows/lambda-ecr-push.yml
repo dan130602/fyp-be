@@ -2,11 +2,6 @@ name: Push Transcribe Lambda Image to ECR
 
 on:
   push:
-    # The ECR push role's trust policy only accepts refs/heads/main (see
-    # infra/modules/ecr - github_allowed_refs), so on any other branch this job
-    # can only fail at the credentials step. Don't run it where it cannot work.
-    branches:
-      - main
     paths:
       - 'lambda/transcribe-trigger/**'
       - '.github/workflows/lambda-ecr-push.yml'
