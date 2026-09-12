@@ -31,8 +31,6 @@ output "acm_domain_validation_options" {
   }
 }
 
-# Uncomment alongside the https listener resource in main.tf once the cert is ISSUED.
-
-# output "https_listener_arn" {
-#   value = aws_lb_listener.https.arn
-# }
+output "https_listener_arn" {
+  value = aws_lb_listener.https.arn
+}

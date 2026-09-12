@@ -76,21 +76,15 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# --- Needs aws_acm_certificate.this to be ISSUED first ---
-# Add the DNS validation CNAME manually (see this module's outputs), wait for
-# AWS to validate, then uncomment and `terraform apply` again. Once this is
-# live, point the HTTP listener above at a redirect-to-HTTPS default_action
-# instead of forwarding.
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = aws_acm_certificate.this.arn
 
-# resource "aws_lb_listener" "https" {
-#   load_balancer_arn = aws_lb.this.arn
-#   port              = 443
-#   protocol          = "HTTPS"
-#   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-#   certificate_arn   = aws_acm_certificate.this.arn
-#
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.this.arn
-#   }
-# }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this.arn
+  }
+}
