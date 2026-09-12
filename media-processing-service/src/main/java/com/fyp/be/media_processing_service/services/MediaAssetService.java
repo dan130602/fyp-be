@@ -50,13 +50,13 @@ public class MediaAssetService {
         return new PlaybackUrlResponse(url, expiresIn);
     }
 
-    /** Owner or ADMIN only - not found (not forbidden) for anyone else, so existence isn't leaked. */
+    /** Owner or ADMIN/SUPER_ADMIN only - not found (not forbidden) for anyone else, so existence isn't leaked. */
     public MediaAsset getForUser(UUID id, User currentUser) {
         MediaAsset asset = mediaAssetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Media asset not found: " + id));
 
         boolean isOwner = asset.getUserId().equals(currentUser.getId());
-        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN || currentUser.getRole() == Role.SUPER_ADMIN;
         if (!isOwner && !isAdmin) {
             throw new ResourceNotFoundException("Media asset not found: " + id);
         }

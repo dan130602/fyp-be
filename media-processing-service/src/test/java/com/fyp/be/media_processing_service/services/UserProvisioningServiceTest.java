@@ -80,7 +80,7 @@ class UserProvisioningServiceTest {
 
         User result = service.resolveOrProvision("boss-sub", "boss@example.com", "Boss", "boss");
 
-        assertThat(result.getRole()).isEqualTo(Role.ADMIN);
+        assertThat(result.getRole()).isEqualTo(Role.SUPER_ADMIN);
     }
 
     @Test
@@ -105,7 +105,7 @@ class UserProvisioningServiceTest {
         User result = service.resolveOrProvision("access-token-sub", null, null, "boss-username");
 
         assertThat(result.getEmail()).isEqualTo("boss@example.com");
-        assertThat(result.getRole()).isEqualTo(Role.ADMIN);
+        assertThat(result.getRole()).isEqualTo(Role.SUPER_ADMIN);
     }
 
     @Test

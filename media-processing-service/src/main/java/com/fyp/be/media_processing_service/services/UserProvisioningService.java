@@ -21,12 +21,14 @@ import java.util.stream.Collectors;
 /**
  * New Cognito identities are provisioned here with a fixed, non-elevated
  * default role - the role is never taken from the token or any client input,
- * so a caller cannot self-assign ADMIN or COMPLIANCE_OFFICER on first login.
+ * so a caller cannot self-assign an elevated role on first login.
  *
  * The one exception is app.security.bootstrap-admin-emails: an operator-controlled
  * allowlist (env var, never client input) solving the RBAC bootstrap problem - with
- * zero admins in the table, nothing in the app itself could ever create the first
- * one. Only applies at first provisioning, only for pre-configured emails.
+ * zero users in the table, nothing in the app itself could ever create the first one.
+ * Grants SUPER_ADMIN specifically (not ADMIN) - since only a SUPER_ADMIN can ever grant
+ * ADMIN or SUPER_ADMIN through the app (see UserService), this is the only door in.
+ * Only applies at first provisioning, only for pre-configured emails.
  */
 @Slf4j
 @Service
@@ -75,7 +77,7 @@ public class UserProvisioningService {
             name = name != null ? name : attributes.get("name");
         }
 
-        Role role = isBootstrapAdmin(email) ? Role.ADMIN : DEFAULT_ROLE;
+        Role role = isBootstrapAdmin(email) ? Role.SUPER_ADMIN : DEFAULT_ROLE;
         log.info("Provisioning new internal user for cognitoSub={} with role={}", cognitoSub, role);
 
         if (email != null) {

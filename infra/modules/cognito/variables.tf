@@ -27,5 +27,5 @@ variable "aws_region" {
 variable "user_roles" {
   description = "Role names mirrored 1:1 as Cognito User Pool groups — must match com.fyp.be.media_processing_service.models.Role exactly, so update both together"
   type        = list(string)
-  default     = ["ADMIN", "COMPLIANCE_OFFICER", "MANAGER"]
+  default     = ["SUPER_ADMIN", "ADMIN", "COMPLIANCE_OFFICER", "MANAGER"]
 }
