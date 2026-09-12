@@ -32,7 +32,12 @@ module "s3" {
 
 module "cloudfront" {
   source = "./modules/cloudfront"
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
 
+  domain_name                          = var.frontend_domain_name
   frontend_bucket_id                   = module.s3.frontend_bucket_id
   frontend_bucket_arn                  = module.s3.frontend_bucket_arn
   frontend_bucket_regional_domain_name = module.s3.frontend_bucket_regional_domain_name
@@ -161,6 +166,7 @@ module "media_processing_alb" {
   public_subnet_ids = values(module.vpc.public_subnet_ids)
   container_port    = 8080
   health_check_path = "/api/health"
+  domain_name       = var.api_domain_name
 }
 
 # Reads back the {"username", "password"} you entered by hand into the
@@ -274,7 +280,7 @@ module "media_processing_ecs" {
     CHECKLIST_JSON               = var.checklist_json
     AWS_COGNITO_REGION           = var.aws_region
     AWS_COGNITO_USER_POOL_ID     = module.cognito.cognito_user_pool_id
-    AWS_COGNITO_APP_CLIENT_ID    = module.cognito.cognito_user_pool_client_id
+    AWS_COGNITO_APP_CLIENT_ID    = "${module.cognito.cognito_user_pool_client_id},${var.frontend_spa_cognito_client_id}"
     AWS_COGNITO_ISSUER_URI       = module.cognito.cognito_issuer_uri
     CORS_ALLOWED_ORIGINS         = var.cors_allowed_origins
     BOOTSTRAP_ADMIN_EMAILS       = var.bootstrap_admin_emails

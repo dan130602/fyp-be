@@ -1,5 +1,28 @@
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      version               = "~> 6.39"
+      configuration_aliases = [aws.us_east_1]
+    }
+  }
+}
+
+# CloudFront only ever reads ACM certs from us-east-1, regardless of which
+# region the rest of the stack runs in - hence the provider alias passed in
+# from the root module.
+resource "aws_acm_certificate" "frontend" {
+  provider          = aws.us_east_1
+  domain_name       = var.domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_cloudfront_origin_access_control" "frontend" {
-  name                              = "${var.name}-oac"
+  name                              = "${var.domain_name}-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -8,6 +31,7 @@ resource "aws_cloudfront_origin_access_control" "frontend" {
 resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   default_root_object = "index.html"
+  aliases             = [var.domain_name]
   price_class         = var.price_class
 
   origin {
@@ -52,10 +76,10 @@ resource "aws_cloudfront_distribution" "frontend" {
     }
   }
 
-  # No custom domain - served on the distribution's own *.cloudfront.net
-  # hostname with CloudFront's default, AWS-managed certificate.
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = aws_acm_certificate.frontend.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }
 

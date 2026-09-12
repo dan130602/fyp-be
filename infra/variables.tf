@@ -36,6 +36,24 @@ variable "frontend_origins" {
   type = list(string)
 }
 
+variable "frontend_spa_cognito_client_id" {
+  description = "App client ID for the browser SPA frontend - a public client (no secret) created manually in the Cognito console, not managed by Terraform, since aws_cognito_user_pool_client.web in modules/cognito generates a confidential client unsuitable for a browser. Combined with that managed client's ID when configuring the backend's accepted client_id list."
+  type        = string
+  default     = "6jde2h1pb3cqjuvcn6gbqvqbdu"
+}
+
+variable "api_domain_name" {
+  description = "Domain the media-processing-service ALB is served on over HTTPS. Route 53 records for it and for ACM validation are created manually, not by Terraform."
+  type        = string
+  default     = "api.clearcall-fyp-smu.com"
+}
+
+variable "frontend_domain_name" {
+  description = "Custom domain the frontend is served on via CloudFront. Route 53 records for it and for ACM validation are created manually, not by Terraform."
+  type        = string
+  default     = "clearcall-fyp-smu.com"
+}
+
 variable "presign_role_arn" {
   type    = string
   default = null
@@ -143,7 +161,7 @@ variable "media_processing_desired_count" {
 
 variable "cors_allowed_origins" {
   type    = string
-  default = "http://localhost:5173"
+  default = "http://localhost:5173,https://clearcall-fyp-smu.com"
 }
 
 variable "bootstrap_admin_emails" {
@@ -197,13 +215,13 @@ variable "cognito_domain_prefix" {
 variable "cognito_callback_urls" {
   description = "Allowed callback URLs for the Cognito app client"
   type        = list(string)
-  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net", "https://clearcall-fyp-smu.com"]
 }
 
 variable "cognito_logout_urls" {
   description = "Allowed sign-out URLs for the Cognito app client"
   type        = list(string)
-  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net", "https://clearcall-fyp-smu.com"]
 }
 
 variable "cognito_user_pool_name" {
