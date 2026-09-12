@@ -101,14 +101,34 @@ output "media_processing_rds_endpoint" {
 }
 
 # -----------------------
-# Frontend (S3 + CloudFront)
+# Frontend (S3 + CloudFront + ACM)
 # -----------------------
 
-output "frontend_cloudfront_distribution_id" {
-  value = module.cloudfront.distribution_id
+output "frontend_acm_certificate_arn" {
+  value = module.cloudfront.acm_certificate_arn
 }
 
-output "frontend_cloudfront_domain_name" {
-  description = "Serve/access the frontend at this CloudFront domain (e.g. set as CORS_ALLOWED_ORIGINS / Cognito callback URLs)"
-  value       = module.cloudfront.distribution_domain_name
+output "frontend_acm_certificate_status" {
+  description = "Stays PENDING_VALIDATION until the domain is live, Route 53 is delegated, and the validation CNAME below is created"
+  value       = module.cloudfront.acm_certificate_status
 }
+
+output "frontend_acm_domain_validation_options" {
+  description = "Create these as CNAME records manually in Route 53 to validate the cert (name -> value)"
+  value       = module.cloudfront.acm_domain_validation_options
+}
+
+# Uncomment alongside modules/cloudfront's distribution outputs once the cert is ISSUED.
+
+# output "frontend_cloudfront_distribution_id" {
+#   value = module.cloudfront.distribution_id
+# }
+#
+# output "frontend_cloudfront_domain_name" {
+#   description = "Point a Route 53 ALIAS record at this (use frontend_cloudfront_hosted_zone_id as the alias target zone)"
+#   value       = module.cloudfront.distribution_domain_name
+# }
+#
+# output "frontend_cloudfront_hosted_zone_id" {
+#   value = module.cloudfront.distribution_hosted_zone_id
+# }

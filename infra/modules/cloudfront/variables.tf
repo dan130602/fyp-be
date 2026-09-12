@@ -1,7 +1,6 @@
-variable "name" {
-  description = "Name prefix for CloudFront-related resources (e.g. the OAC)"
+variable "domain_name" {
+  description = "Custom domain the frontend is served on (e.g. app.example.com) - also used as the CloudFront alias and ACM cert CN"
   type        = string
-  default     = "frontend"
 }
 
 variable "frontend_bucket_id" {

@@ -36,6 +36,12 @@ variable "frontend_origins" {
   type = list(string)
 }
 
+variable "frontend_domain_name" {
+  description = "Custom domain the frontend is served on via CloudFront. Route 53 records for it and for ACM validation are created manually, not by Terraform."
+  type        = string
+  default     = "clearcall-fyp-smu.com"
+}
+
 variable "presign_role_arn" {
   type    = string
   default = null

@@ -32,7 +32,12 @@ module "s3" {
 
 module "cloudfront" {
   source = "./modules/cloudfront"
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
 
+  domain_name                          = var.frontend_domain_name
   frontend_bucket_id                   = module.s3.frontend_bucket_id
   frontend_bucket_arn                  = module.s3.frontend_bucket_arn
   frontend_bucket_regional_domain_name = module.s3.frontend_bucket_regional_domain_name

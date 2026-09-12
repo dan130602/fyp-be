@@ -26,3 +26,10 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
+
+# CloudFront only accepts ACM certs from us-east-1, regardless of the region
+# above - used solely by modules/cloudfront for the cert.
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
