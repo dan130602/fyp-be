@@ -72,6 +72,12 @@ variable "github_repository" {
   type        = string
   default     = "dan130602/fyp-be"
 }
+variable "transcribe_max_speaker_labels"{
+  description = "Maximum number of speaker labels to detect in a transcription job"
+  type        = number
+  default     = 2
+}
+
 # -----------------------
 # Networking
 # -----------------------
@@ -143,6 +149,12 @@ variable "cors_allowed_origins" {
 variable "bootstrap_admin_emails" {
   type    = string
   default = ""
+}
+
+variable "checklist_json" {
+  description = "Fixed compliance checklist forwarded to the next service with every completed transcript - override via tfvars, not per-upload"
+  type        = string
+  default     = "{}"
 }
 
 # -----------------------

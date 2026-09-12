@@ -30,6 +30,14 @@ module "s3" {
 
 }
 
+module "cloudfront" {
+  source = "./modules/cloudfront"
+
+  frontend_bucket_id                   = module.s3.frontend_bucket_id
+  frontend_bucket_arn                  = module.s3.frontend_bucket_arn
+  frontend_bucket_regional_domain_name = module.s3.frontend_bucket_regional_domain_name
+}
+
 module "ecr" {
   source = "./modules/ecr"
 
@@ -40,10 +48,11 @@ module "ecr" {
 module "lambda" {
   source = "./modules/lambda"
 
-  lambda_function_name = var.transcribe_lambda_function_name
-  ecr_repository_url   = module.ecr.repository_url
-  ecr_repository_name  = module.ecr.repository_name
-  image_tag            = var.transcribe_lambda_image_tag
+  lambda_function_name          = var.transcribe_lambda_function_name
+  ecr_repository_url            = module.ecr.repository_url
+  ecr_repository_name           = module.ecr.repository_name
+  image_tag                     = var.transcribe_lambda_image_tag
+  transcribe_max_speaker_labels = var.transcribe_max_speaker_labels
 
   input_bucket_id  = module.s3.ingestion_audio_bucket_id
   input_bucket_arn = module.s3.ingestion_audio_bucket_arn
@@ -64,9 +73,9 @@ module "transcribe_status_events" {
   rule_name = "transcribe-job-state-change"
   event_pattern = jsonencode({
     source      = ["aws.transcribe"]
-    detail-type = ["Call Analytics Job State Change"]
+    detail-type = ["Transcribe Job State Change"]
     detail = {
-      JobStatus = ["COMPLETED", "FAILED"]
+      TranscriptionJobStatus = ["COMPLETED", "FAILED"]
     }
   })
   target_arn = module.transcribe_status_queue.queue_arn
@@ -99,6 +108,17 @@ data "aws_iam_policy_document" "transcribe_status_queue_policy" {
 resource "aws_sqs_queue_policy" "transcribe_status" {
   queue_url = module.transcribe_status_queue.queue_url
   policy    = data.aws_iam_policy_document.transcribe_status_queue_policy.json
+}
+
+# Separate from transcribe_status_queue above - that one carries the raw Transcribe/Call
+# Analytics completion event for THIS service's own poller; this one carries the payload
+# (transcript pointer + checklist) that a downstream service consumes once we're done with it.
+# Only media-processing-service itself sends here (see TranscriptHandoffService), so unlike
+# transcribe_status_queue there's no EventBridge-facing queue policy needed.
+module "transcript_handoff_queue" {
+  source = "./modules/sqs"
+
+  queue_name = "transcript-handoff"
 }
 
 module "cognito" {
@@ -204,6 +224,13 @@ data "aws_iam_policy_document" "media_processing_task" {
   }
 
   statement {
+    sid       = "PublishTranscriptHandoff"
+    effect    = "Allow"
+    actions   = ["sqs:SendMessage"]
+    resources = [module.transcript_handoff_queue.queue_arn]
+  }
+
+  statement {
     sid    = "ManageCognitoUsers"
     effect = "Allow"
     actions = [
@@ -238,17 +265,19 @@ module "media_processing_ecs" {
   task_role_policy_json = data.aws_iam_policy_document.media_processing_task.json
 
   environment = {
-    SPRING_DATASOURCE_URL       = "jdbc:postgresql://${module.media_processing_rds.cluster_endpoint}:${module.media_processing_rds.port}/${module.media_processing_rds.database_name}"
-    AWS_REGION                  = var.aws_region
-    S3_BUCKET                   = module.s3.ingestion_audio_bucket_name
-    TRANSCRIBE_OUTPUT_BUCKET    = module.s3.ingestion_audio_output_bucket_name
-    TRANSCRIBE_STATUS_QUEUE_URL = module.transcribe_status_queue.queue_url
-    AWS_COGNITO_REGION          = var.aws_region
-    AWS_COGNITO_USER_POOL_ID    = module.cognito.cognito_user_pool_id
-    AWS_COGNITO_APP_CLIENT_ID   = module.cognito.cognito_user_pool_client_id
-    AWS_COGNITO_ISSUER_URI      = module.cognito.cognito_issuer_uri
-    CORS_ALLOWED_ORIGINS        = var.cors_allowed_origins
-    BOOTSTRAP_ADMIN_EMAILS      = var.bootstrap_admin_emails
+    SPRING_DATASOURCE_URL        = "jdbc:postgresql://${module.media_processing_rds.cluster_endpoint}:${module.media_processing_rds.port}/${module.media_processing_rds.database_name}"
+    AWS_REGION                   = var.aws_region
+    S3_BUCKET                    = module.s3.ingestion_audio_bucket_name
+    TRANSCRIBE_OUTPUT_BUCKET     = module.s3.ingestion_audio_output_bucket_name
+    TRANSCRIBE_STATUS_QUEUE_URL  = module.transcribe_status_queue.queue_url
+    TRANSCRIPT_HANDOFF_QUEUE_URL = module.transcript_handoff_queue.queue_url
+    CHECKLIST_JSON               = var.checklist_json
+    AWS_COGNITO_REGION           = var.aws_region
+    AWS_COGNITO_USER_POOL_ID     = module.cognito.cognito_user_pool_id
+    AWS_COGNITO_APP_CLIENT_ID    = module.cognito.cognito_user_pool_client_id
+    AWS_COGNITO_ISSUER_URI       = module.cognito.cognito_issuer_uri
+    CORS_ALLOWED_ORIGINS         = var.cors_allowed_origins
+    BOOTSTRAP_ADMIN_EMAILS       = var.bootstrap_admin_emails
   }
 
   secrets = {

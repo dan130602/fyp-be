@@ -9,6 +9,14 @@ resource "aws_s3_bucket" "frontend" {
   bucket = var.frontend_bucket_name
 }
 
+resource "aws_s3_bucket_public_access_block" "frontend" {
+  bucket                  = aws_s3_bucket.frontend.id
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket" "ingestion_audio" {
   bucket = var.ingestion_audio_bucket_name
 }

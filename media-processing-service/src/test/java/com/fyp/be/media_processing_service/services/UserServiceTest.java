@@ -64,11 +64,12 @@ class UserServiceTest {
     @Test
     void createUserPassesTheRequestedRoleStraightThrough() {
         UserService service = new UserService(userRepository, cognitoAdminService);
+        User caller = user(UUID.randomUUID(), Role.ADMIN, UserStatus.ACTIVE, "caller@example.com");
         CreateUserRequest request = new CreateUserRequest("new@example.com", "New User", Role.MANAGER);
         when(cognitoAdminService.createUser("new@example.com", "New User", Role.MANAGER)).thenReturn("new-sub");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UserResponseDto result = service.createUser(request);
+        UserResponseDto result = service.createUser(request, caller);
 
         assertThat(result.role()).isEqualTo(Role.MANAGER);
     }

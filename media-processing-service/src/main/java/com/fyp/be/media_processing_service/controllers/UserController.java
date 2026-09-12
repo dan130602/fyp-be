@@ -5,6 +5,7 @@ import com.fyp.be.media_processing_service.dtos.FirstAdminRequest;
 import com.fyp.be.media_processing_service.dtos.UpdateUserRoleDto;
 import com.fyp.be.media_processing_service.dtos.UpdateUserStatusDto;
 import com.fyp.be.media_processing_service.dtos.UserResponseDto;
+import com.fyp.be.media_processing_service.models.User;
 import com.fyp.be.media_processing_service.services.CurrentUserService;
 import com.fyp.be.media_processing_service.services.UserService;
 import jakarta.validation.Valid;
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<UserResponseDto>> listUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }
@@ -55,13 +56,17 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody CreateUserRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<UserResponseDto> createUser(
+            @Valid @RequestBody CreateUserRequest request,
+            Authentication authentication
+    ) {
+        User currentUser = currentUserService.getCurrentUser(authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request, currentUser));
     }
 
     @PatchMapping("/{userId}/role")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<UserResponseDto> updateRole(
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateUserRoleDto request,
@@ -71,7 +76,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<UserResponseDto> updateStatus(
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateUserStatusDto request,

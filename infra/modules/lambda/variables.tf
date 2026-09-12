@@ -1,5 +1,5 @@
 variable "lambda_function_name" {
-  description = "Name of the Lambda function that starts Call Analytics jobs"
+  description = "Name of the Lambda function that starts Transcribe jobs"
   type        = string
 }
 
@@ -47,6 +47,17 @@ variable "dlq_message_retention_seconds" {
   description = "How long failed invocation records are kept in the DLQ"
   type        = number
   default     = 1209600 # 14 days (SQS max)
+}
+
+variable "transcribe_language_code" {
+  description = "Language code passed to StartTranscriptionJob"
+  type        = string
+  default     = "en-US"
+}
+
+variable "transcribe_max_speaker_labels" {
+  description = "Max distinct speakers Transcribe's diarization will identify per job (2-30)"
+  type        = number
 }
 
 variable "input_bucket_id" {
