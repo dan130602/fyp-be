@@ -166,6 +166,7 @@ module "media_processing_alb" {
   public_subnet_ids = values(module.vpc.public_subnet_ids)
   container_port    = 8080
   health_check_path = "/api/health"
+  domain_name       = var.api_domain_name
 }
 
 # Reads back the {"username", "password"} you entered by hand into the

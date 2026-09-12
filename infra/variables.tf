@@ -36,6 +36,12 @@ variable "frontend_origins" {
   type = list(string)
 }
 
+variable "api_domain_name" {
+  description = "Domain the media-processing-service ALB is served on over HTTPS. Route 53 records for it and for ACM validation are created manually, not by Terraform."
+  type        = string
+  default     = "api.clearcall-fyp-smu.com"
+}
+
 variable "frontend_domain_name" {
   description = "Custom domain the frontend is served on via CloudFront. Route 53 records for it and for ACM validation are created manually, not by Terraform."
   type        = string

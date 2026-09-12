@@ -70,6 +70,20 @@ output "media_processing_alb_dns_name" {
   value       = module.media_processing_alb.alb_dns_name
 }
 
+output "media_processing_alb_acm_certificate_arn" {
+  value = module.media_processing_alb.acm_certificate_arn
+}
+
+output "media_processing_alb_acm_certificate_status" {
+  description = "Stays PENDING_VALIDATION until the validation CNAME below is created and AWS confirms it"
+  value       = module.media_processing_alb.acm_certificate_status
+}
+
+output "media_processing_alb_acm_domain_validation_options" {
+  description = "Create these as CNAME records manually in Route 53 to validate the cert (name -> value)"
+  value       = module.media_processing_alb.acm_domain_validation_options
+}
+
 output "media_processing_ecs_cluster_name" {
   description = "Set this as the ECS_CLUSTER_NAME repo variable in GitHub Actions"
   value       = module.media_processing_ecs.cluster_name
