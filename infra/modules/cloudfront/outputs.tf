@@ -1,22 +1,20 @@
-# Uncomment alongside the distribution resource in main.tf once the cert is ISSUED.
+output "distribution_id" {
+  value = aws_cloudfront_distribution.frontend.id
+}
 
-# output "distribution_id" {
-#   value = aws_cloudfront_distribution.frontend.id
-# }
-#
-# output "distribution_arn" {
-#   value = aws_cloudfront_distribution.frontend.arn
-# }
-#
-# output "distribution_domain_name" {
-#   description = "Point your Route 53 alias record (or CNAME) at this"
-#   value       = aws_cloudfront_distribution.frontend.domain_name
-# }
-#
-# output "distribution_hosted_zone_id" {
-#   description = "CloudFront's fixed hosted zone ID - needed for a Route 53 ALIAS record"
-#   value       = aws_cloudfront_distribution.frontend.hosted_zone_id
-# }
+output "distribution_arn" {
+  value = aws_cloudfront_distribution.frontend.arn
+}
+
+output "distribution_domain_name" {
+  description = "Point your Route 53 alias record (or CNAME) at this"
+  value       = aws_cloudfront_distribution.frontend.domain_name
+}
+
+output "distribution_hosted_zone_id" {
+  description = "CloudFront's fixed hosted zone ID - needed for a Route 53 ALIAS record"
+  value       = aws_cloudfront_distribution.frontend.hosted_zone_id
+}
 
 output "acm_certificate_arn" {
   value = aws_acm_certificate.frontend.arn

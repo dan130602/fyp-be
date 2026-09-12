@@ -149,7 +149,7 @@ variable "media_processing_desired_count" {
 
 variable "cors_allowed_origins" {
   type    = string
-  default = "http://localhost:5173"
+  default = "http://localhost:5173,https://clearcall-fyp-smu.com"
 }
 
 variable "bootstrap_admin_emails" {
@@ -203,13 +203,13 @@ variable "cognito_domain_prefix" {
 variable "cognito_callback_urls" {
   description = "Allowed callback URLs for the Cognito app client"
   type        = list(string)
-  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net", "https://clearcall-fyp-smu.com"]
 }
 
 variable "cognito_logout_urls" {
   description = "Allowed sign-out URLs for the Cognito app client"
   type        = list(string)
-  default     = ["https://d84l1y8p4kdic.cloudfront.net"]
+  default     = ["https://d84l1y8p4kdic.cloudfront.net", "https://clearcall-fyp-smu.com"]
 }
 
 variable "cognito_user_pool_name" {

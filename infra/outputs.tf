@@ -118,17 +118,15 @@ output "frontend_acm_domain_validation_options" {
   value       = module.cloudfront.acm_domain_validation_options
 }
 
-# Uncomment alongside modules/cloudfront's distribution outputs once the cert is ISSUED.
+output "frontend_cloudfront_distribution_id" {
+  value = module.cloudfront.distribution_id
+}
 
-# output "frontend_cloudfront_distribution_id" {
-#   value = module.cloudfront.distribution_id
-# }
-#
-# output "frontend_cloudfront_domain_name" {
-#   description = "Point a Route 53 ALIAS record at this (use frontend_cloudfront_hosted_zone_id as the alias target zone)"
-#   value       = module.cloudfront.distribution_domain_name
-# }
-#
-# output "frontend_cloudfront_hosted_zone_id" {
-#   value = module.cloudfront.distribution_hosted_zone_id
-# }
+output "frontend_cloudfront_domain_name" {
+  description = "Point a Route 53 ALIAS record at this (use frontend_cloudfront_hosted_zone_id as the alias target zone)"
+  value       = module.cloudfront.distribution_domain_name
+}
+
+output "frontend_cloudfront_hosted_zone_id" {
+  value = module.cloudfront.distribution_hosted_zone_id
+}
