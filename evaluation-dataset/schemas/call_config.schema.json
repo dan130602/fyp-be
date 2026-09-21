@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/call_config.schema.json",
+  "title": "Call Config",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.4.0"
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "target_duration_seconds": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "additionalProperties": false
+    },
+    "scenario_facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "value": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "intended_answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "expected": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "question_id",
+          "expected"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "$ref": "check_plan.schema.json#/$defs/answer_contract"
+          }
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "call_id",
+    "metadata",
+    "target_duration_seconds",
+    "scenario_facts",
+    "intended_answers"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "language",
+        "scenario"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/dialogue.schema.json",
+  "title": "Dialogue",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "turns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/turn"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "call_id",
+    "turns"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "turn": {
+      "type": "object",
+      "properties": {
+        "speaker": {
+          "enum": [
+            "EMPLOYEE",
+            "CLIENT"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "critical_tokens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "speaker",
+        "text",
+        "critical_tokens"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

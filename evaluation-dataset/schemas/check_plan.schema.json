@@ -1,0 +1,388 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/check_plan.schema.json",
+  "title": "Check Plan",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.4.0"
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "call_id",
+    "checks"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "expected": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "compliance"
+            },
+            "expected_verdict": {
+              "enum": [
+                "PASS",
+                "FAIL"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "expected_verdict"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "const": "text"
+            },
+            "expected_value": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "const": "integer"
+            },
+            "expected_value": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "const": "number"
+            },
+            "expected_value": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "const": "boolean"
+            },
+            "expected_value": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "const": "dob_dd_month_yyyy"
+            },
+            "expected_value": {
+              "type": "string",
+              "pattern": "^(0[1-9]|[12][0-9]|3[01]) (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{4}(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "planned_evidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "required_speaker": {
+          "enum": [
+            "EMPLOYEE",
+            "CLIENT"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "required_speaker",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_plan": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "presence"
+            },
+            "planned_evidence": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/planned_evidence"
+              },
+              "minItems": 1
+            },
+            "content_constraints": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "mode",
+            "planned_evidence",
+            "content_constraints"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "absence"
+            },
+            "scope": {
+              "const": "entire_dialogue"
+            },
+            "required_speaker": {
+              "enum": [
+                "EMPLOYEE",
+                "CLIENT",
+                "ANY"
+              ]
+            },
+            "absent_event": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "content_constraints": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "mode",
+            "scope",
+            "required_speaker",
+            "absent_event",
+            "content_constraints"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "question_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "expected": {
+          "type": "object"
+        },
+        "evidence_plan": {
+          "$ref": "#/$defs/evidence_plan"
+        }
+      },
+      "required": [
+        "question_id",
+        "expected",
+        "evidence_plan"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/answer_contract"
+        }
+      ]
+    },
+    "identification_expected": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "extraction"
+        },
+        "value_type": {
+          "const": "text"
+        },
+        "expected_value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[STFGM][0-9]{7}[A-Z](?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind",
+        "value_type",
+        "expected_value"
+      ],
+      "additionalProperties": false
+    },
+    "answer_contract": {
+      "$comment": "Revision 0.4.0: only K01 has a nullable identification extraction value. Python checks its checklist field and checksum invalidity.",
+      "if": {
+        "properties": {
+          "question_id": {
+            "const": "K01"
+          }
+        },
+        "required": [
+          "question_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "expected": {
+            "$ref": "#/$defs/identification_expected"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "expected": {
+                  "properties": {
+                    "expected_value": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "expected_value"
+                  ]
+                }
+              },
+              "required": [
+                "expected"
+              ]
+            },
+            "then": {
+              "properties": {
+                "evidence_plan": {
+                  "properties": {
+                    "mode": {
+                      "const": "absence"
+                    },
+                    "required_speaker": {
+                      "const": "ANY"
+                    }
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "evidence_plan": {
+                  "properties": {
+                    "mode": {
+                      "const": "presence"
+                    },
+                    "planned_evidence": {
+                      "items": {
+                        "properties": {
+                          "required_speaker": {
+                            "const": "CLIENT"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "else": {
+        "properties": {
+          "expected": {
+            "$ref": "#/$defs/expected"
+          }
+        }
+      }
+    }
+  }
+}
