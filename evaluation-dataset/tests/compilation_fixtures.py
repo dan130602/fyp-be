@@ -11,14 +11,14 @@ SCHEMAS = Path(__file__).resolve().parents[1] / "schemas"
 
 def compilation_inputs(*, null_identifier=False):
     checklist = [{"id": qid, "type": "COMPLIANCE", "requirement_type": "OBLIGATION",
-                  "text": "ARTIFICIAL marker check"} for qid in ("FIX_PRESENT", "FIX_ABSENT")]
+                  "question": "ARTIFICIAL marker check"} for qid in ("FIX_PRESENT", "FIX_ABSENT")]
     fields = [("K01", "CLIENT_KYC", "client_identification_number", "text"),
               ("FIX_DOB", "CLIENT_KYC", "dob", "dob_dd_month_yyyy"),
               ("FIX_INSTRUMENT", "TRANSACTION", "fixture_instrument", "text"),
               ("FIX_CURRENCY", "TRANSACTION", "fixture_currency", "text")]
     normalization = documents()["normalization"]
     for qid, category, field, kind in fields:
-        checklist.append({"id": qid, "type": category, "field": field, "text": "ARTIFICIAL extraction"})
+        checklist.append({"id": qid, "type": category, "field": field, "question": "ARTIFICIAL extraction"})
         normalization["rules"][kind] = {"operation": "exact", "value_type": kind}
         normalization["field_rules"][field] = kind
     cells = {"FIX_PRESENT": "PASS", "FIX_ABSENT": "FAIL",

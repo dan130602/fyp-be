@@ -21,7 +21,7 @@
               "PROHIBITION"
             ]
           },
-          "text": {
+          "question": {
             "type": "string",
             "minLength": 1,
             "pattern": "\\S"
@@ -31,7 +31,7 @@
           "id",
           "type",
           "requirement_type",
-          "text"
+          "question"
         ],
         "additionalProperties": false
       },
@@ -52,7 +52,7 @@
             "type": "string",
             "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
           },
-          "text": {
+          "question": {
             "type": "string",
             "minLength": 1,
             "pattern": "\\S"
@@ -62,12 +62,12 @@
           "id",
           "type",
           "field",
-          "text"
+          "question"
         ],
         "additionalProperties": false
       }
     ]
   },
   "minItems": 1,
-  "$comment": "Checklist contract revision 0.2.0. This authoritative array is projected to LangGraph id/question items; it is not sent directly."
+  "$comment": "Checklist contract revision 0.3.0. `question` replaces the earlier `text` property name so the source already matches the LangGraph id/question shape; the array is still filtered (type/requirement_type/field dropped), never sent directly."
 }

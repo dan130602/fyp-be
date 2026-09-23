@@ -24,7 +24,7 @@ def source(tmp_path):
     shutil.copytree(PROJECT / "schemas", project / "schemas")
     shutil.copytree(PROJECT / "configs", project / "configs")
     write(project / "evaluation_dataset/checklist.json", [
-        {"id": "FIX01", "type": "COMPLIANCE", "text": "ARTIFICIAL marker?", "requirement_type": "OBLIGATION"}
+        {"id": "FIX01", "type": "COMPLIANCE", "question": "ARTIFICIAL marker?", "requirement_type": "OBLIGATION"}
     ])
     for cid in ("CALL_001", "CALL_002"):
         gt = minimal_ground_truth(cid, [("EMPLOYEE", "Artificial greeting."), ("CLIENT", "Artificial reply.")])

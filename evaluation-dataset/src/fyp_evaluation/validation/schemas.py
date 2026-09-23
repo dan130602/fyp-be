@@ -222,13 +222,15 @@ def validate_checklist(checklist, normalization, schema_dir):
 
 
 def to_langgraph_checklist(checklist, schema_dir):
-    """Project a valid internal checklist without changing IDs, order or text.
+    """Select id/question from a valid internal checklist, dropping classification.
 
-    This pure adapter does not write a second checklist or call LangGraph.
+    The source already stores `question`; this pure adapter no longer renames
+    a field, only selects `id`/`question` and drops `type`/`requirement_type`/
+    `field`. It does not write a second checklist or call LangGraph.
     """
     if errors := validate(checklist, "checklist", schema_dir):
         raise ValueError("\n".join(errors))
-    return [{"id": item["id"], "question": item["text"]} for item in checklist]
+    return [{"id": item["id"], "question": item["question"]} for item in checklist]
 
 
 def validate_answers(data, schema_name, checklist, normalization, schema_dir):

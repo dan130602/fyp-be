@@ -36,7 +36,7 @@ predetermined and must not be reinterpreted from later dialogue.
 | `src/fyp_evaluation/scoring/` | Reserved for comparing pipeline predictions against gold. |
 | `scripts/` | Reserved for thin command-line workflow wrappers. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
-| `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `text`, plus `requirement_type` for compliance or `field` for extraction. |
+| `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `question`, plus `requirement_type` for compliance or `field` for extraction. |
 | `evaluation_dataset/calls/` | Canonical calls and separate render outputs. CALL_001 has a compiled `ground_truth.json`; CALL_002-CALL_005 hold only empty render placeholders pending Stage 5B. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
@@ -110,8 +110,8 @@ Each intended answer now requires `question_id`, `expected` and a nonblank
 and both evidence branches add required `forbidden_patterns`; ground truth
 inherits the evidence change by reference. No top-level ordering field is added
 to ground truth. The earlier shared-version convention ends at this revision.
-Normalization remains `0.3.0`. The package version is `0.5.0`. The checklist schema shape remains
-revision `0.2.0`; dialogue and timing envelopes remain `0.1.0`. Call IDs match
+Normalization remains `0.3.0`. The package version is `0.5.0`. The checklist schema shape is now
+revision `0.3.0` (its `question` property replaces the earlier `text`); dialogue and timing envelopes remain `0.1.0`. Call IDs match
 `CALL_` followed by at least three digits. Question/evidence/fact/rule/render
 identifiers start with a letter and contain letters, digits, `_` or `-`.
 The internal checklist remains an array without an envelope. It is projected
@@ -119,7 +119,7 @@ to the legacy LangGraph request shape; it must not be passed there directly.
 
 | Schema | Shape and key rules |
 | --- | --- |
-| `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `text`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `text`. |
+| `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `question`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `question`. |
 | `call_config` | Version, call ID, `metadata` (`language`, `scenario`), positive ordered target duration bounds in seconds, named `scenario_facts`, and nonempty `intended_answers`. Each answer requires `question_id`, typed `expected` and nonblank `scenario_intent`. |
 | `check_plan` | Version, call ID, nonempty `checks`, and required `ordering_constraints` (possibly empty). Each check has `question_id`, typed `expected`, and `evidence_plan`. No resolved turn IDs, critical tokens or render settings. |
 | `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT`. |
@@ -129,23 +129,26 @@ to the legacy LangGraph request shape; it must not be passed there directly.
 
 COMPLIANCE requires `requirement_type: "OBLIGATION"` or `"PROHIBITION"` and
 forbids `field`. CLIENT_KYC and TRANSACTION require `field` and forbid
-`requirement_type`. Checklist text must be nonblank. Fields follow the same
-identifier syntax as IDs. Gold answers, evidence, source passages, turn IDs,
-call-specific fields, `answer_type` and `depends_on` are forbidden.
+`requirement_type`. Checklist `question` text must be nonblank. Fields follow
+the same identifier syntax as IDs. Gold answers, evidence, source passages,
+turn IDs, call-specific fields, the retired `text` name, `answer_type` and
+`depends_on` are forbidden.
 
-The only LangGraph adapter is a deterministic, in-memory projection:
+The only LangGraph adapter is a deterministic, in-memory selection (revision
+0.3.0 stores `question` at the source, so this is no longer a rename):
 
 ```python
 langgraph_checklist = [
-    {"id": item["id"], "question": item["text"]}
+    {"id": item["id"], "question": item["question"]}
     for item in checklist
 ]
 ```
 
 `to_langgraph_checklist(checklist, schema_dir)` validates the internal shape
-before applying this projection. It preserves IDs, order and exact text,
-does not mutate its input, and never writes another checklist file or calls
-LangGraph. No production workflow changes are required.
+before applying this selection. It preserves IDs, order and exact question
+text, drops `type`/`requirement_type`/`field`, does not mutate its input, and
+never writes another checklist file or calls LangGraph. No production
+workflow changes are required.
 
 Expected answers use a tagged union:
 
@@ -790,6 +793,38 @@ answer-ID coverage. Core gold, evidence, DOB, turn-ID and timing tests remain.
 New projection tests ensure LangGraph still receives only `id` and `question`.
 Legacy internal `{id, question}` entries and old normalization configs now fail
 validation explicitly; no silent migration or dual checklist maintenance exists.
+
+### Checklist field rename at revision 0.3.0 (`question` replaces `text`)
+
+The richer `{id, type, text, requirement_type|field}` shape from the previous
+paragraph kept its free-text property named `text`, distinct from the
+LangGraph-only `question` name produced by `to_langgraph_checklist`. Manual
+testing against the actual LangGraph deployment (Studio) surfaced this as a
+real source of confusion: pasting the raw checklist directly into a Studio
+input field produced `KeyError('question')`, because Studio does not run any
+adapter for you. Rather than only document that workflow step, the checklist
+source itself was changed so it already matches the graph's field name.
+
+`evaluation_dataset/checklist.json`, `schemas/checklist.schema.json` and
+`to_langgraph_checklist` were updated together: every checklist item's prompt
+is now stored under `question` instead of `text`; `type`, `requirement_type`
+and `field` are unchanged. `to_langgraph_checklist` no longer renames a field,
+it only selects `id`/`question` and drops the classification fields. `text`
+is now itself an out-of-scope, `additionalProperties: false`-rejected legacy
+name — the inverse of the previous paragraph's migration, which rejected the
+old bare `{id, question}` shape for missing classification. Both remain true
+simultaneously: a bare `{id, question}` item is still rejected today, but now
+because `type`/`requirement_type`/`field` are missing, not because of the
+field's name.
+
+`fyp-ai/evaluation/fyp_evaluation_loader/dataset.py`'s independent
+`_project_checklist` (which deliberately reimplements this same selection
+without importing this package) and `fyp-ai/evaluation/README.md` were
+updated in lockstep so a published snapshot's `checklist.json` and its loader
+agree. `fyp-ai/evaluation/tests/test_dataset.py` exercises this against the
+committed `datasets/pilot/` snapshot; regenerating that snapshot (via
+`EXPORTING.md`) after this rename is future publication work, not part of
+this change.
 
 At revision `0.2.0`, `call_config`, `check_plan` and `ground_truth` already shared
 a compliance/extraction union, so their shapes needed no changes. Revision

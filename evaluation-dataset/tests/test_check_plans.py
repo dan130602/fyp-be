@@ -25,12 +25,12 @@ SCHEMAS = Path(__file__).resolve().parents[1] / "schemas"
 @pytest.fixture
 def inputs():
     checklist = [
-        {"id": qid, "type": "COMPLIANCE", "requirement_type": requirement, "text": "ARTIFICIAL check"}
+        {"id": qid, "type": "COMPLIANCE", "requirement_type": requirement, "question": "ARTIFICIAL check"}
         for qid, requirement in [("FIX_OP", "OBLIGATION"), ("FIX_OF", "OBLIGATION"),
                                   ("FIX_PP", "PROHIBITION"), ("FIX_PF", "PROHIBITION")]
     ] + [
-        {"id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number", "text": "ARTIFICIAL identifier"},
-        {"id": "FIX_NUMBER", "type": "TRANSACTION", "field": "fixture_number", "text": "ARTIFICIAL number"},
+        {"id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number", "question": "ARTIFICIAL identifier"},
+        {"id": "FIX_NUMBER", "type": "TRANSACTION", "field": "fixture_number", "question": "ARTIFICIAL number"},
     ]
     normalization = documents()["normalization"]
     normalization["rules"].update(fixture_text={"operation": "exact", "value_type": "text"},

@@ -4,15 +4,17 @@ Scope: this self-contained `fyp-be/evaluation-dataset` project only. Do not
 modify backend, infrastructure, LangGraph or unrelated files for dataset work.
 
 Read `README.md`, applicable schemas and `configs/normalization.json` before edits.
-The authoritative checklist contains `id`, `type`, `text`, plus
+The authoritative checklist contains `id`, `type`, `question`, plus
 `requirement_type` (OBLIGATION/PROHIBITION) only for COMPLIANCE or `field` only
-for CLIENT_KYC/TRANSACTION. Reject incompatible fields and extra properties.
+for CLIENT_KYC/TRANSACTION. `question` was renamed from `text` at checklist
+schema revision 0.3.0 so the source already matches the LangGraph id/question
+shape; `text` is now the retired/out-of-scope name. Reject incompatible fields and extra properties.
 Derive verdict versus extraction from `type`; do not maintain `answer_type`
 or a question metadata file. Reusable field-to-rule mappings belong in
 `configs/normalization.json`. Unmapped extraction fields fail validation.
 Validate rule references and exact downstream checklist-ID/type coverage.
-Derive LangGraph input as `{id: item.id, question: item.text}` preserving IDs
-and order. Do not store a second checklist or change production LangGraph.
+Derive LangGraph input as `{id: item.id, question: item.question}` preserving
+IDs and order. Do not store a second checklist or change production LangGraph.
 
 Preserve the workflow: approved checklist -> approved coverage matrix -> call
 config -> predetermined check plan -> dialogue -> independent verification ->

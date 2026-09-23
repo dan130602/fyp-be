@@ -94,7 +94,7 @@ def test_loader_rejects_reordered_approved_call_headers(tmp_path, artificial):
 ])
 def test_compilation_preserves_scalar_value_and_type(artificial, value_type, cell, value):
     _, normalization, _ = artificial
-    item = {"id": "FIX_VALUE", "type": "TRANSACTION", "field": "fixture", "text": "Artificial?"}
+    item = {"id": "FIX_VALUE", "type": "TRANSACTION", "field": "fixture", "question": "Artificial?"}
     normalization["field_rules"]["fixture"] = "rule"
     normalization["rules"]["rule"] = {"operation": "exact", "value_type": value_type}
     expected = compile_expected(item, normalization, cell)
