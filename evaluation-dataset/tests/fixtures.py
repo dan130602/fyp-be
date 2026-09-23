@@ -57,7 +57,7 @@ def documents():
                 "start_time": "0.0", "end_time": "0.0", "speaker_label": "spk_0",
             }],
         },
-        "speaker_roles": {"speaker_roles": {"spk_0": "RM"}},
+        "speaker_roles": {"spk_0": "RM"},
     })
 
 

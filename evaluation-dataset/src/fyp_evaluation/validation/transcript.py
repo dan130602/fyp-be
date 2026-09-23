@@ -54,12 +54,12 @@ def validate_transcript_pair(ground_truth, transcript, speaker_roles, schema_dir
         errors.append("transcripts[0].transcript does not match the deterministic full-transcript reconstruction")
 
     used_labels = {segment["speaker_label"] for segment in segments}
-    mapped_labels = set(speaker_roles["speaker_roles"])
+    mapped_labels = set(speaker_roles)
     if used_labels != mapped_labels:
         errors.append(
             f"speaker_roles labels {sorted(mapped_labels)} do not match transcript labels {sorted(used_labels)}"
         )
-    for label, role in speaker_roles["speaker_roles"].items():
+    for label, role in speaker_roles.items():
         expected_role = SPEAKER_ROLES.get(label)
         if expected_role is not None and role != expected_role:
             errors.append(f"{label}: speaker role {role!r} does not match expected {expected_role!r}")

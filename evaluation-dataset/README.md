@@ -1,5 +1,8 @@
 # FYP evaluation dataset foundations
 
+Prepared dataset export: see [EXPORTING.md](EXPORTING.md) for exporting the
+validated JSON snapshot to `fyp-ai`, manifest verification and safe updates.
+
 Independent evaluation contracts for **AI-Powered Regulatory Compliance
 Automation for Call Monitoring**. This project lives in the existing `fyp-be`
 repository. It does not import or change the production backend or `fyp-ai`.
@@ -440,7 +443,7 @@ evaluation_dataset/calls/CALL_XXX/
 per canonical dialogue turn (`id`, `transcript`, `start_time`, `end_time`,
 `speaker_label`), in original turn order. It has no outer `results`
 wrapper and no `speaker_roles` key. `speaker_roles.json` separately holds
-`{"speaker_roles": {"spk_0": "RM", "spk_1": "Customer"}}` — this key
+`{"spk_0": "RM", "spk_1": "Customer"}` — this key
 ordering/mapping is fixed (EMPLOYEE is always `spk_0`/RM, CLIENT is always
 `spk_1`/Customer) and independent of which speaker's turn comes first.
 Only labels actually present in the dialogue are emitted. `fyp-ai`'s

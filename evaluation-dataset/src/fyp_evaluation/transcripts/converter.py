@@ -84,11 +84,9 @@ def build_transcript_artifacts(ground_truth, *, timings=None, schema_dir=_SCHEMA
     # Fixed EMPLOYEE-then-CLIENT iteration keeps spk_0 before spk_1 in the
     # output regardless of which speaker's turn comes first in the dialogue.
     speaker_roles = {
-        "speaker_roles": {
-            SPEAKER_LABELS[speaker]: SPEAKER_ROLES[SPEAKER_LABELS[speaker]]
-            for speaker in ("EMPLOYEE", "CLIENT")
-            if speaker in present_speakers
-        }
+        SPEAKER_LABELS[speaker]: SPEAKER_ROLES[SPEAKER_LABELS[speaker]]
+        for speaker in ("EMPLOYEE", "CLIENT")
+        if speaker in present_speakers
     }
 
     if errors := validate(transcript, "transcript", schema_dir):
