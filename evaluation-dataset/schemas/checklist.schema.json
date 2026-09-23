@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/checklist.schema.json",
+  "title": "Checklist",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "type": {
+            "const": "COMPLIANCE"
+          },
+          "requirement_type": {
+            "enum": [
+              "OBLIGATION",
+              "PROHIBITION"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "requirement_type",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "type": {
+            "enum": [
+              "CLIENT_KYC",
+              "TRANSACTION"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "field",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    ]
+  },
+  "minItems": 1,
+  "$comment": "Checklist contract revision 0.2.0. This authoritative array is projected to LangGraph id/question items; it is not sent directly."
+}

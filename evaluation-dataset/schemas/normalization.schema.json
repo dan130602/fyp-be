@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/normalization.schema.json",
+  "title": "Normalization",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "rules",
+    "compliance_rule",
+    "field_rules"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.3.0"
+    },
+    "rules": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "value_type",
+          "operation"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "value_type": {
+            "$ref": "#/$defs/value_type"
+          },
+          "operation": {
+            "const": "exact"
+          }
+        }
+      }
+    },
+    "compliance_rule": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "field_rules": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+      }
+    }
+  },
+  "$defs": {
+    "value_type": {
+      "enum": [
+        "verdict",
+        "text",
+        "integer",
+        "number",
+        "boolean",
+        "dob_dd_month_yyyy"
+      ]
+    }
+  }
+}

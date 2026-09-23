@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/ground_truth.schema.json",
+  "title": "Ground Truth",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.6.0"
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "metadata": {
+      "$ref": "call_config.schema.json#/$defs/metadata"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "expected": {
+            "type": "object"
+          },
+          "evidence_plan": {
+            "$ref": "check_plan.schema.json#/$defs/evidence_plan"
+          },
+          "gold_evidence_turns": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "gold_evidence_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "expected",
+          "evidence_plan",
+          "gold_evidence_turns",
+          "gold_evidence_text"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "evidence_plan": {
+                  "properties": {
+                    "mode": {
+                      "const": "absence"
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "gold_evidence_turns": {
+                  "maxItems": 0
+                },
+                "gold_evidence_text": {
+                  "const": ""
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "gold_evidence_turns": {
+                  "minItems": 1
+                },
+                "gold_evidence_text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            }
+          },
+          {
+            "$ref": "check_plan.schema.json#/$defs/answer_contract"
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "dialogue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "turn_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speaker": {
+            "enum": [
+              "EMPLOYEE",
+              "CLIENT"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "critical_tokens": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "turn_id",
+          "speaker",
+          "text",
+          "critical_tokens"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "call_id",
+    "metadata",
+    "checks",
+    "dialogue"
+  ],
+  "additionalProperties": false
+}

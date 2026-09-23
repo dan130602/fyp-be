@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/speaker_roles.schema.json",
+  "title": "Speaker Roles",
+  "type": "object",
+  "properties": {
+    "speaker_roles": {
+      "type": "object",
+      "patternProperties": {
+        "^spk_[0-9]+$": {
+          "enum": [
+            "RM",
+            "Customer"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    }
+  },
+  "required": [
+    "speaker_roles"
+  ],
+  "additionalProperties": false
+}
