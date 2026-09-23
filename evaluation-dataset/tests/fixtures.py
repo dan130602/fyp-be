@@ -15,6 +15,7 @@ def documents():
                 "text": "artificial marker",
             }],
             "content_constraints": [],
+            "forbidden_patterns": [],
         },
     }
     turn = {"speaker": "EMPLOYEE", "text": "artificial marker", "critical_tokens": ["marker"]}
@@ -25,15 +26,16 @@ def documents():
             "text": "Was the artificial marker stated?",
         }],
         "call_config": {
-            **base, "schema_version": "0.4.0", "metadata": metadata,
+            **base, "schema_version": "0.5.0", "metadata": metadata,
             "target_duration_seconds": {"min": 1, "max": 2},
             "scenario_facts": [],
-            "intended_answers": [{"question_id": "FIX_MARKER", "expected": expected}],
+            "intended_answers": [{"question_id": "FIX_MARKER", "expected": expected,
+                                  "scenario_intent": "ARTIFICIAL fixture intent"}],
         },
-        "check_plan": {**base, "schema_version": "0.4.0", "checks": [check]},
+        "check_plan": {**base, "schema_version": "0.6.0", "checks": [check], "ordering_constraints": []},
         "dialogue": {**base, "turns": [turn]},
         "ground_truth": {
-            **base, "schema_version": "0.4.0", "metadata": metadata,
+            **base, "schema_version": "0.6.0", "metadata": metadata,
             "checks": [{**check, "gold_evidence_turns": [0], "gold_evidence_text": "artificial marker"}],
             "dialogue": [{"turn_id": 0, **turn}],
         },
@@ -48,6 +50,14 @@ def documents():
             "rules": {"fixture_exact": {"value_type": "verdict", "operation": "exact"}},
             "compliance_rule": "fixture_exact", "field_rules": {},
         },
+        "transcript": {
+            "transcripts": [{"transcript": "artificial marker"}],
+            "audio_segments": [{
+                "id": 0, "transcript": "artificial marker",
+                "start_time": "0.0", "end_time": "0.0", "speaker_label": "spk_0",
+            }],
+        },
+        "speaker_roles": {"speaker_roles": {"spk_0": "RM"}},
     })
 
 

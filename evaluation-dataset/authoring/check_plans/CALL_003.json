@@ -1,0 +1,235 @@
+{
+  "schema_version": "0.6.0",
+  "call_id": "CALL_003",
+  "checks": [
+    {
+      "question_id": "C01",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never establishes or confirms the client's investment objective, directly or indirectly, anywhere in the call; neither participant states an investment goal or horizon.",
+        "content_constraints": [
+          "Keep the callback reason, the loss-tolerance exchange, the recommendation and the final instruction free of any objective or horizon confirmation."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C02",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "C02_E1",
+            "required_speaker": "CLIENT",
+            "text": "I’d only be comfortable with a limited amount of loss on this — nothing too aggressive."
+          },
+          {
+            "evidence_id": "C02_E2",
+            "required_speaker": "EMPLOYEE",
+            "text": "Understood, so we’re working with a limited loss tolerance on this allocation."
+          }
+        ],
+        "content_constraints": [
+          "This exchange must occur before the C06 coaching attempt; the stated tolerance here is the client's genuine, uninflated preference and must not be revised afterwards.",
+          "Must not include an employee capital-loss explanation or an investment-objective discussion."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C03",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never explains that the client could lose invested capital, at any point, including during the C02 acknowledgement, the C06 coaching, or the recommendation and closing.",
+        "content_constraints": [
+          "No corrective capital-loss warning may appear after the false performance guarantee."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C04",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "C04_E1",
+            "required_speaker": "EMPLOYEE",
+            "text": "There's a one-off transaction fee of 0.5% on the subscription amount, charged separately."
+          }
+        ],
+        "content_constraints": [
+          "Must occur before the client's buy instruction."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C05",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "C05_E1",
+            "required_speaker": "EMPLOYEE",
+            "text": "This fund's past performance has been strong, and that guarantees you'll get similar positive returns in future."
+          }
+        ],
+        "content_constraints": [
+          "Must be an unqualified, uncorrected employee assertion, not a hope, forecast, or a rejected client claim."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C06",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "C06_E1",
+            "required_speaker": "EMPLOYEE",
+            "text": "If you tell the committee you're comfortable with substantial losses, it'll be much easier to get this approved — could you declare a higher risk tolerance than what you just said?"
+          }
+        ],
+        "content_constraints": [
+          "Must occur strictly after the C02 exchange; the client declines the inflation and the original C02 preference remains unchanged.",
+          "Must not be reframed as neutral clarification or a genuine change of client preference."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "K01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F7800003A"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "K01_E1",
+            "required_speaker": "CLIENT",
+            "text": "My identification number is F, 7, 8, 0, 0, 0, 0, 3, A."
+          }
+        ],
+        "content_constraints": [],
+        "forbidden_patterns": [
+          "S9100001X",
+          "S8400002X",
+          "G8800004A"
+        ]
+      }
+    },
+    {
+      "question_id": "K02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "22 November 1978"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "K02_E1",
+            "required_speaker": "CLIENT",
+            "text": "My date of birth is 22 November 1978."
+          }
+        ],
+        "content_constraints": [],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "T01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "TEST EUR Equity Fund"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "T01_E1",
+            "required_speaker": "CLIENT",
+            "text": "TEST EUR Equity Fund"
+          }
+        ],
+        "content_constraints": [
+          "This phrase and T02's evidence phrase must occur in the single, final client buy instruction turn, together with the order_notional amount 30,000; no second order, tentative instruction or unit price may appear anywhere else in the call."
+        ],
+        "forbidden_patterns": [
+          "TEST\\ SGD\\ Equity\\ Fund",
+          "TEST\\ USD\\ Equity\\ Fund",
+          "TEST\\ GBP\\ Equity\\ Fund",
+          "TEST\\ AUD\\ Equity\\ Fund"
+        ]
+      }
+    },
+    {
+      "question_id": "T02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "T02_E1",
+            "required_speaker": "CLIENT",
+            "text": "in EUR"
+          }
+        ],
+        "content_constraints": [
+          "Must occur in the same single client buy instruction turn as T01's evidence."
+        ],
+        "forbidden_patterns": [
+          "\\bSGD\\b",
+          "\\bUSD\\b",
+          "\\bGBP\\b",
+          "\\bAUD\\b"
+        ]
+      }
+    }
+  ],
+  "ordering_constraints": [
+    {
+      "before": "C02",
+      "after": "C06"
+    }
+  ]
+}

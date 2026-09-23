@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/transcript.schema.json",
+  "title": "Transcript",
+  "type": "object",
+  "properties": {
+    "transcripts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "transcript": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "transcript"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "audio_segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "transcript": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "start_time": {
+            "type": "string",
+            "pattern": "^[0-9]+(\\.[0-9]+)?$"
+          },
+          "end_time": {
+            "type": "string",
+            "pattern": "^[0-9]+(\\.[0-9]+)?$"
+          },
+          "speaker_label": {
+            "type": "string",
+            "pattern": "^spk_[0-9]+$"
+          }
+        },
+        "required": [
+          "id",
+          "transcript",
+          "start_time",
+          "end_time",
+          "speaker_label"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "transcripts",
+    "audio_segments"
+  ],
+  "additionalProperties": false
+}

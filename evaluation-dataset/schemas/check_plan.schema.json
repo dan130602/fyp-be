@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "schema_version": {
-      "const": "0.4.0"
+      "const": "0.6.0"
     },
     "call_id": {
       "type": "string",
@@ -17,12 +17,35 @@
         "$ref": "#/$defs/check"
       },
       "minItems": 1
+    },
+    "ordering_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "after": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
     }
   },
   "required": [
     "schema_version",
     "call_id",
-    "checks"
+    "checks",
+    "ordering_constraints"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -201,12 +224,23 @@
                 "pattern": "\\S"
               },
               "minItems": 0
+            },
+            "forbidden_patterns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S",
+                "description": "Python regular expression; syntax is checked with re.compile by the Python validator."
+              },
+              "minItems": 0
             }
           },
           "required": [
             "mode",
             "planned_evidence",
-            "content_constraints"
+            "content_constraints",
+            "forbidden_patterns"
           ],
           "additionalProperties": false
         },
@@ -239,6 +273,16 @@
                 "pattern": "\\S"
               },
               "minItems": 0
+            },
+            "forbidden_patterns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S",
+                "description": "Python regular expression; syntax is checked with re.compile by the Python validator."
+              },
+              "minItems": 0
             }
           },
           "required": [
@@ -246,7 +290,8 @@
             "scope",
             "required_speaker",
             "absent_event",
-            "content_constraints"
+            "content_constraints",
+            "forbidden_patterns"
           ],
           "additionalProperties": false
         }

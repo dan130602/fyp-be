@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "schema_version": {
-      "const": "0.4.0"
+      "const": "0.5.0"
     },
     "call_id": {
       "type": "string",
@@ -68,11 +68,17 @@
           },
           "expected": {
             "type": "object"
+          },
+          "scenario_intent": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "required": [
           "question_id",
-          "expected"
+          "expected",
+          "scenario_intent"
         ],
         "additionalProperties": false,
         "allOf": [

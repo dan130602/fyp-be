@@ -21,6 +21,39 @@ Never infer, revise or reinterpret gold answers from generated dialogue.
 Correct dialogue that violates the plan. Changes to gold require explicit
 upstream revision and reapproval, followed by regeneration.
 
+Stage 3A: the checklist and matrix are approved and read-only. All config
+expected answers must be compiled by Python from matrix cells, never authored
+or retyped by AI. The answer_contract governs representation only. Reuse
+authoring.coverage and authoring.call_configs; refuse existing output paths
+unless overwrite is explicitly requested. Call configs retain version 0.5.0.
+Each config answer requires scenario_intent. Initial scaffolds retain empty
+scenario_facts and TODO_AUTHOR_SCENARIO_INTENT for every question. Do not fill
+these narrative fields until separately authorized. No fact name may duplicate
+a checklist extraction field. Validate configs against the matrix in scaffold
+mode (complete=False); require complete=True before later check-plan authoring.
+Completeness checks do not replace semantic review. Preserve all matrix values.
+
+Stage 4 contracts: envelopes now version independently. Check plans and ground
+truth are 0.6.0; approved call configs and their schema remain 0.5.0 and read-only.
+Use artificial fixtures only in this tooling stage; create no real artifact.
+Compile expected from matrix cells and derive evidence mode; never choose mode.
+OBLIGATION PASS/FAIL -> presence/absence; PROHIBITION PASS/FAIL -> absence/presence.
+Non-null extraction -> presence; only null K01 -> absence. Python owns mode,
+absence scope/speaker, scaffold constants and evidence-ID allocation.
+Presence has per-item speakers only. Default one item, EMPLOYEE for compliance
+and CLIENT for extraction; C01/C02 exchanges can legitimately need both roles.
+Use the minimum sufficient evidence. Append QID_E2, QID_E3 after QID_E1; never
+renumber, reuse or delete IDs. Never fabricate a quote for an omission FAIL.
+Later AI authoring is limited to planned text, absent_event, content_constraints,
+forbidden_patterns and ordering_constraints. Empty pattern arrays are legitimate.
+Compile Python regexes for syntax only at this stage; regexes do not prove semantic
+absence. Ordering edges name existing presence checks only and must be acyclic.
+Follow README reference orthography for canonical text; keep SSML/pronunciation
+hints separate. The convention is chosen before generation, not a guarantee of
+ASR output. Later smoke tests must not change approved gold. EMPLOYEE/CLIENT are
+semantic roles, never assumed audio channels or diarization identities. Critical
+tokens belong only to Stage 5 dialogue turns, not check plans or planned evidence.
+
 An LLM must never directly author or overwrite final canonical ground truth.
 Only a future deterministic Python compiler may produce it from validated,
 approved and independently verified inputs. Structural validation alone does

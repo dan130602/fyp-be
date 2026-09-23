@@ -1,0 +1,180 @@
+{
+  "schema_version": "0.5.0",
+  "call_id": "CALL_005",
+  "metadata": {
+    "language": "en-SG",
+    "scenario": "private_banking_investment_advice_and_order"
+  },
+  "target_duration_seconds": {
+    "min": 120,
+    "max": 180
+  },
+  "scenario_facts": [
+    {
+      "name": "fictional_status",
+      "value": "All people, product characteristics, fees and operational details here are invented solely for this synthetic pilot; none is attributed to a real bank or regulatory source."
+    },
+    {
+      "name": "authoring_boundary",
+      "value": "Scenario facts are background world-state, not a script or a requirement to speak every fact. Follow each scenario_intent when deciding what may be said; facts subject to whole-call omission must not leak into introductions, recommendations, acknowledgements or the closing."
+    },
+    {
+      "name": "relationship_context",
+      "value": "The client has an existing private-banking relationship and an established account. This is a recorded investment-advisory call that includes a product discussion, an employee recommendation and one client buy instruction; it is not an execution-only call or a full onboarding exercise."
+    },
+    {
+      "name": "product_characteristics",
+      "value": "The single instrument referenced by T01 is a fictional unleveraged, diversified equity fund. Its unit value can fall and invested capital can be lost; it offers neither capital protection nor guaranteed returns. Discuss only this fund, with no competing instrument or second share class."
+    },
+    {
+      "name": "order_direction",
+      "value": "BUY"
+    },
+    {
+      "name": "order_basis",
+      "value": "The notional is the subscription amount before the bank's separate transaction fee, denominated solely in the currency supplied by T02. The order is expressed as a notional, not a unit count; no unit price, conversion or second order is needed."
+    },
+    {
+      "name": "transaction_fee_basis",
+      "value": "The fee_rate_percent is a one-off bank transaction fee on the order_notional, charged separately in the same order currency. It is a fictional scenario assumption, not an external fee schedule. Whether the fee is spoken is controlled solely by C04."
+    },
+    {
+      "name": "narrative_scope",
+      "value": "Keep the conversation to a short opening, the permitted advisory exchanges, brief client-data statements and one final client instruction. Avoid long onboarding, other products, other currencies, account numbers and execution-price or filled-trade claims. Product features need only a brief explanation."
+    },
+    {
+      "name": "employee_identity",
+      "value": "Serena Chua, fictional private-banking relationship manager."
+    },
+    {
+      "name": "client_identity",
+      "value": "Lucas Pereira, fictional existing private-banking client."
+    },
+    {
+      "name": "conversation_reason",
+      "value": "An advisory review after the client requested a small long-term growth allocation using surplus funds."
+    },
+    {
+      "name": "client_objective_context",
+      "value": "The client's genuine aim is long-term capital growth over at least five years using a small discretionary allocation. The employee must confirm this objective during the call."
+    },
+    {
+      "name": "client_loss_tolerance_context",
+      "value": "The client genuinely accepts only limited losses on this allocation and is unwilling to describe their loss appetite as high. The employee obtains and neutrally acknowledges this genuine preference before any improper coaching."
+    },
+    {
+      "name": "coaching_context",
+      "value": "After genuine confirmation, the employee urges the client to declare willingness to accept substantial losses to make investment approval easier. This is an improper administrative pretext, not a true bank or regulatory requirement. The client refuses to inflate their stated tolerance."
+    },
+    {
+      "name": "employee_recommendation_context",
+      "value": "The employee explains real capital-loss risk and recommends the sole fund as a small allocation to consider. The client chooses a modest notional despite that disclosed risk and rejects the later declaration coaching. No loss ceiling, protected capital, guaranteed return or promise of suitability is implied."
+    },
+    {
+      "name": "fee_rate_percent",
+      "value": 0.5
+    },
+    {
+      "name": "order_notional",
+      "value": 15000
+    },
+    {
+      "name": "fee_visibility",
+      "value": "The bank's transaction fee genuinely applies but remains undisclosed throughout the entire recorded conversation. Neither speaker gives a fee amount, rate, all-in total or fee-waiver statement."
+    },
+    {
+      "name": "client_data_scope",
+      "value": "An existing relationship allows a short client-data exchange without an identification-number request. Neither participant may state, spell, read back or invent any identification number anywhere in the call; omit account numbers as well."
+    },
+    {
+      "name": "narrative_arc",
+      "value": "Opening and objective confirmation, genuine limited loss-tolerance confirmation, fund recommendation and explicit capital-loss explanation, then improper declaration coaching and refusal, the permitted birth-date statement, and one final buy instruction. The closing adds neither a fee disclosure nor an identification number."
+    }
+  ],
+  "intended_answers": [
+    {
+      "question_id": "C01",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "scenario_intent": "Obtain and explicitly acknowledge the client's long-term capital-growth objective for the small discretionary allocation, with the client supplying or affirming the goal and horizon."
+    },
+    {
+      "question_id": "C02",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "scenario_intent": "Establish the client's genuine limited willingness to accept investment losses and neutrally acknowledge it before the employee makes the later C06 coaching attempt. Retain that original preference after the client refuses to inflate it."
+    },
+    {
+      "question_id": "C03",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "scenario_intent": "Clearly explain that the recommended fund's value can fall and the client may lose invested capital. Keep this explanation unqualified by a return guarantee, capital protection or a promised loss limit, including during the subsequent coaching and closing."
+    },
+    {
+      "question_id": "C04",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "scenario_intent": "The applicable transaction fee must not be disclosed anywhere in the call, including product discussion, order instruction and closing. Neither speaker states the amount or rate, claims a waiver, or provides an all-in charge total."
+    },
+    {
+      "question_id": "C05",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "scenario_intent": "Throughout the entire call, the employee must never claim or endorse that past investment performance guarantees future returns. Keep the recommendation and coaching free of historical-performance guarantees or other assurances that contradict the capital-loss explanation."
+    },
+    {
+      "question_id": "C06",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "scenario_intent": "Only after C02's genuine preference is established and acknowledged, the employee must encourage declaring willingness to accept substantial losses beyond the client's stated limited tolerance to ease investment approval. The client refuses; the attempt itself must remain clear and must not be reinterpreted as neutral clarification or a genuine preference change."
+    },
+    {
+      "question_id": "K01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": null
+      },
+      "scenario_intent": "Neither participant may state any identification number anywhere in the entire conversation. Do not request, spell, repeat, read back or invent one, and do not introduce an account number as a substitute. Leave the locked native-null expected value intact."
+    },
+    {
+      "question_id": "K02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "17 September 1995"
+      },
+      "scenario_intent": "Have the client state the date held in this entry's expected_value in natural spoken form, with an unambiguous day, full month and year matching the canonical date. Do not introduce another date of birth."
+    },
+    {
+      "question_id": "T01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "TEST AUD Equity Fund"
+      },
+      "scenario_intent": "In the single final client BUY instruction, have the client explicitly name the exact instrument in this entry's expected_value and specify the order_notional. The same instruction must also explicitly give T02's predetermined currency; do not introduce another instrument, tentative order or second instruction."
+    },
+    {
+      "question_id": "T02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "AUD"
+      },
+      "scenario_intent": "In that same single client BUY instruction used for T01, have the client explicitly identify this entry's expected currency, speaking its three-letter code unambiguously as the order currency. Do not infer it from the fund name, convert the notional, or introduce any other currency."
+    }
+  ]
+}

@@ -29,6 +29,7 @@ def identification_fixture(name, value):
                 "mode": "absence", "scope": "entire_dialogue", "required_speaker": "ANY",
                 "absent_event": "ARTIFICIAL fixture: no identification number stated",
                 "content_constraints": ["ARTIFICIAL fixture: no identifier anywhere"],
+                "forbidden_patterns": [],
             }
             if name == "ground_truth":
                 check.update(gold_evidence_turns=[], gold_evidence_text="")

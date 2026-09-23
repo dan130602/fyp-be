@@ -71,7 +71,7 @@ def test_absence_does_not_require_positive_quote(verdict):
     check["expected"]["expected_verdict"] = verdict
     check["evidence_plan"] = {
         "mode": "absence", "scope": "entire_dialogue", "required_speaker": "ANY",
-        "absent_event": "ARTIFICIAL missing marker", "content_constraints": [],
+        "absent_event": "ARTIFICIAL missing marker", "content_constraints": [], "forbidden_patterns": [],
     }
     check["gold_evidence_turns"] = []
     check["gold_evidence_text"] = ""

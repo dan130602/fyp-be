@@ -4,54 +4,60 @@ Independent evaluation contracts for **AI-Powered Regulatory Compliance
 Automation for Call Monitoring**. This project lives in the existing `fyp-be`
 repository. It does not import or change the production backend or `fyp-ai`.
 
-**Status: checklist updated as requested; five-call coverage matrix awaiting
-user review.** The package and call-answer contracts are now `0.4.0`;
-normalization remains `0.3.0` with the approved DOB format unchanged.
-No call configurations, gold check plans, dialogues, canonical ground truth or
-audio have been generated. Tests cover artificial contract fixtures, the actual
-checklist and the fixed pilot CSV. Matrix values are predetermined and must not
-be reinterpreted from later dialogue.
+**Status: checklist, matrix, five approved call configs and five approved check
+plans exist. CALL_001 additionally has an approved dialogue and a compiled
+canonical `ground_truth.json`, produced as the Stage 5A end-to-end pilot.
+CALL_002-CALL_005 dialogues and their compiled ground truth are Stage 5B work
+and do not exist yet. No audio has been generated.**
+Check-plan and ground-truth versions are `0.6.0`;
+approved call configs and their schema remain `0.5.0`, normalization remains `0.3.0`.
+Tests cover artificial contract fixtures, the actual
+checklist, the fixed pilot CSV, and regression cases mirroring the approved
+real artifacts without duplicating their content. Matrix values are
+predetermined and must not be reinterpreted from later dialogue.
 
 ## Layout
 
 | Location | Purpose |
 | --- | --- |
 | `schemas/` | Six core Draft 2020-12 data schemas plus reusable normalization rules. References resolve locally; `.invalid` schema IDs are identifiers, not network endpoints. |
-| `authoring/coverage_matrix.csv` | Ten question rows and five call columns of predetermined answers, awaiting approval before downstream authoring. |
-| `authoring/call_configs/` | Future per-call scenario configuration and matrix-derived answers. |
-| `authoring/check_plans/` | Future predetermined gold checks, created before dialogue. |
-| `authoring/dialogues/` | Future generated spoken dialogue, without turn IDs. |
+| `authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
+| `authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
+| `authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
+| `authoring/dialogues/` | CALL_001's approved spoken dialogue, without turn IDs. CALL_002-CALL_005 are Stage 5B work and do not exist yet. |
 | `configs/normalization.json` | Reusable exact-comparison rules, a compliance rule reference and extraction field-to-rule references. No question-ID mappings or scoring implementation. |
 | `configs/render.json` | Unset Polly rendering template, containing no credentials. |
-| `src/fyp_evaluation/validation/` | Read-only schema/integrity checks, checklist/normalization and answer compatibility validation, and a pure LangGraph checklist projection. |
-| `src/fyp_evaluation/authoring/` | Narrow K01 CSV-cell decoding; deterministic compilation and general CSV/cross-file validation remain future work. |
+| `src/fyp_evaluation/validation/` | Schema/integrity and cross-file checks, shared evidence matching, pilot spoken-value verification, independent annotation coverage, CLI and pure LangGraph checklist projection. |
+| `src/fyp_evaluation/authoring/` | CSV loading, deterministic expected-answer compilation, mode derivation, safe scaffold writers and canonical ground-truth compilation. |
 | `src/fyp_evaluation/rendering/` | Reserved for SSML, Polly, stitching and timings. |
 | `src/fyp_evaluation/scoring/` | Reserved for comparing pipeline predictions against gold. |
 | `scripts/` | Reserved for thin command-line workflow wrappers. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
 | `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `text`, plus `requirement_type` for compliance or `field` for extraction. |
-| `evaluation_dataset/calls/` | Canonical calls and separate render outputs. Five empty pilot call directories exist. |
+| `evaluation_dataset/calls/` | Canonical calls and separate render outputs. CALL_001 has a compiled `ground_truth.json`; CALL_002-CALL_005 hold only empty render placeholders pending Stage 5B. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
-Final artifacts will retain this layout (listed output files do **not** exist yet):
+Final artifacts retain this layout. `CALL_001/ground_truth.json` exists now
+(Stage 5A); the render files under `renders/` and the remaining four calls'
+`ground_truth.json` files do **not** exist yet:
 
 ```text
 evaluation_dataset/
 ├── checklist.json
 └── calls/
     ├── CALL_001/
-    │   ├── ground_truth.json
+    │   ├── ground_truth.json          (exists)
     │   └── renders/
     │       └── clean_voice_A/
-    │           ├── audio.mp3
-    │           ├── timings.json
+    │           ├── audio.mp3          (not yet — Stage 7)
+    │           ├── timings.json       (not yet — Stage 7)
     │           └── segments/
-    │               ├── 0.mp3
+    │               ├── 0.mp3          (not yet — Stage 7)
     │               └── ...
-    ├── CALL_002/
-    ├── CALL_003/
-    ├── CALL_004/
-    └── CALL_005/
+    ├── CALL_002/                      (ground_truth.json not yet — Stage 5B)
+    ├── CALL_003/                      (ground_truth.json not yet — Stage 5B)
+    ├── CALL_004/                      (ground_truth.json not yet — Stage 5B)
+    └── CALL_005/                      (ground_truth.json not yet — Stage 5B)
 ```
 
 The schema does not hard-code five calls, ten questions, or a maximum recording
@@ -71,15 +77,16 @@ duration. Additional calls and renders use the same contracts.
 6. Independently verify the dialogue against every predetermined check,
    including speaker, absence and content constraints. Revise nonconforming
    dialogue; never derive or adjust gold from the completed dialogue.
-7. A future Python compiler validates all inputs, assigns turn IDs and resolves
+7. The Python compiler validates all inputs, assigns turn IDs and resolves
    evidence deterministically, then writes canonical `ground_truth.json`.
-8. Generate per-turn SSML from canonical spoken-form text.
+8. Generate per-turn SSML from canonical reference text and separate pronunciation settings.
 9. Render Polly segments, stitch them, and write timings for that specific
    render. Canonical ground truth remains unchanged.
 10. Run the actual FYP system and compare its predictions against canonical
     gold. Evaluation outputs belong in `evaluation_runs/`.
 
-Only the validation foundations are implemented. No compiler, generation,
+Validation, deterministic config/check-plan scaffolding and canonical compilation are implemented.
+No narrative generation,
 semantic verification, LLM API, audio pipeline, AWS calls, Transcribe,
 LangGraph integration, or evaluation metrics are implemented. A structural
 validation pass is neither approval nor independent semantic verification.
@@ -92,9 +99,15 @@ independent verification record format remain to be designed.
 ## JSON contracts
 
 Objects reject unknown fields, except the explicitly keyed rule and field
-maps. The call-config, check-plan and ground-truth envelopes use
-`schema_version: "0.4.0"` for the K01-only nullable identification contract.
-Normalization remains `0.3.0`. The package version is `0.4.0`. The checklist schema shape remains
+maps. **Envelopes now version independently.** Call configs retain
+`schema_version: "0.5.0"`; check plans and ground truth use `0.6.0`.
+The approved call-config files and their schema have not been re-versioned.
+Each intended answer now requires `question_id`, `expected` and a nonblank
+`scenario_intent` string. Check plans add required `ordering_constraints`,
+and both evidence branches add required `forbidden_patterns`; ground truth
+inherits the evidence change by reference. No top-level ordering field is added
+to ground truth. The earlier shared-version convention ends at this revision.
+Normalization remains `0.3.0`. The package version is `0.5.0`. The checklist schema shape remains
 revision `0.2.0`; dialogue and timing envelopes remain `0.1.0`. Call IDs match
 `CALL_` followed by at least three digits. Question/evidence/fact/rule/render
 identifiers start with a letter and contain letters, digits, `_` or `-`.
@@ -104,9 +117,9 @@ to the legacy LangGraph request shape; it must not be passed there directly.
 | Schema | Shape and key rules |
 | --- | --- |
 | `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `text`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `text`. |
-| `call_config` | Version, call ID, `metadata` (`language`, `scenario`), positive ordered target duration bounds in seconds, named `scenario_facts`, and nonempty `intended_answers`. Each answer contains `question_id` and a typed `expected` object. |
-| `check_plan` | Version, call ID and nonempty `checks`. Each has `question_id`, typed `expected`, and `evidence_plan`. No resolved turn IDs or render settings. |
-| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, spoken-form `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT`. |
+| `call_config` | Version, call ID, `metadata` (`language`, `scenario`), positive ordered target duration bounds in seconds, named `scenario_facts`, and nonempty `intended_answers`. Each answer requires `question_id`, typed `expected` and nonblank `scenario_intent`. |
+| `check_plan` | Version, call ID, nonempty `checks`, and required `ordering_constraints` (possibly empty). Each check has `question_id`, typed `expected`, and `evidence_plan`. No resolved turn IDs, critical tokens or render settings. |
+| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT`. |
 | `ground_truth` | Version, call ID, metadata, checks preserving their expected answers and evidence plans, and `dialogue` with Python-assigned `turn_id`. Each check adds `gold_evidence_turns` and `gold_evidence_text`. |
 | `timings` | Version, call ID, `render_id`, `audio_file: "audio.mp3"`, total `duration_seconds`, and a `turns` array. Each has integer `turn_id`, start/end seconds and optional `words` array. Word entries contain text and start/end seconds. All times are offsets from the start of stitched audio. |
 | `normalization` | Version, named `rules`, `compliance_rule` and `field_rules`. Each rule declares its scalar `value_type` and `operation: "exact"`. Rules describe value representation, not question classification. |
@@ -192,7 +205,7 @@ Keep three representations separate:
 | Stage | DOB representation |
 | --- | --- |
 | Predetermined matrix and canonical expected value | Calendar-valid `DD Month YYYY` string, e.g. `13 May 2001` |
-| Future planned spoken evidence and dialogue | Natural spoken expression of that same date; authored only after the matrix is approved |
+| Future planned evidence and dialogue text | Reference orthography of the same naturally spoken date, e.g. `13 May 2001`; see the orthography policy below |
 | Model prediction | Raw value actually returned by the answering workflow; retained separately from gold |
 
 Future scoring must deterministically normalize equivalent predicted date
@@ -207,34 +220,124 @@ accepted forms and reject ambiguous/unparseable predictions rather than guess.
 Turn IDs are contiguous integers `0..n-1` in dialogue order, never `T001` or
 numeric strings. Evidence IDs label planned phrases; they are not turn IDs.
 Evidence turn arrays are sorted and unique. Critical tokens must occur verbatim
-in their turn's spoken text. Canonical objects cannot contain voice, prosody,
+in their turn's reference text. Canonical objects cannot contain voice, prosody,
 timestamps, render IDs or word timings.
 
-## Evidence contract and future resolution
+## Evidence contract and deterministic resolution
 
 The user has approved exact planned evidence phrases for the initial contracts.
 
 * Presence: `evidence_plan` has `mode: "presence"`, nonempty `planned_evidence`,
-  and a `content_constraints` array. Each planned item has a locally unique
+  `content_constraints` and `forbidden_patterns` arrays. Each planned item has a plan-wide unique
   `evidence_id`, `required_speaker` and exact `text`. No turn IDs are allowed.
 * Absence: the plan has `mode: "absence"`, `scope: "entire_dialogue"`,
   `required_speaker` (`EMPLOYEE`, `CLIENT` or `ANY`), an `absent_event`
-  description, and `content_constraints`. No positive quote is required.
+  description, `content_constraints` and `forbidden_patterns`. No positive quote is required.
   Either PASS or FAIL may be grounded in absence, depending on the question.
   This mode is also available for extraction checks. K01's absent value is
   native JSON null, with scope `entire_dialogue` and speaker `ANY`; canonical
   evidence is `gold_evidence_turns: []` and `gold_evidence_text: ""`.
   Other extraction fields still require concrete typed values.
 
-For each presence phrase, the future compiler must search **only** eligible
+### Deterministic evidence mode and ownership (Stage 4)
+
+`derive_evidence_mode(checklist_item, expected)` is pure. It does not choose a
+verdict or extraction value; `compile_expected` first obtains that answer from
+the approved matrix. The representation-only `answer_contract` cannot establish
+which answer or evidence mode is correct. The new cross-file validator does.
+
+| Checklist type | Requirement / value | Locked answer | Derived mode |
+| --- | --- | --- | --- |
+| COMPLIANCE | OBLIGATION | PASS | presence |
+| COMPLIANCE | OBLIGATION | FAIL | absence |
+| COMPLIANCE | PROHIBITION | PASS | absence |
+| COMPLIANCE | PROHIBITION | FAIL | presence |
+| CLIENT_KYC or TRANSACTION | Non-null extraction, including zero or false | Actual value | presence |
+| CLIENT_KYC K01 / client_identification_number | Null extraction | Native null | absence |
+| Any other extraction | Null | Unsupported | ValueError |
+
+Python owns `expected`, mode, absence scope (`entire_dialogue`), absence speaker
+(`ANY` for null K01, otherwise `EMPLOYEE`), evidence-ID allocation and every
+scaffold constant. Each presence scaffold starts with exactly one `<QID>_E1`
+item: CLIENT for extraction, EMPLOYEE for compliance. There is no presence-level
+`required_speaker`; every planned item carries its own role. K01's non-null
+evidence always uses CLIENT. Compliance exchanges may legitimately span roles.
+
+AI authors evidence text, absent-event descriptions, content constraints,
+forbidden patterns and ordering constraints only in later Stages 4C/4D.
+Current placeholders are `TODO_AUTHOR_PLANNED_EVIDENCE` and
+`TODO_AUTHOR_ABSENT_EVENT`; both constraint arrays and ordering start empty.
+No actual pilot plan has been built or written during this stage.
+
+Use the **minimum number of evidence items** sufficient for the locked answer.
+Default to one. Add items only if an answer needs multiple utterances or an
+exchange: C01 PASS and C02 PASS may require an employee prompt and a client
+response. Never add an item merely to give a FAIL positive evidence; an
+obligation FAIL by omission needs no fabricated quote.
+
+When more items are needed, Python allocates `<QID>_E2`, `<QID>_E3`, and so on,
+appended in order. Never renumber, reuse or delete an existing ID, and never
+alter expected answers or derived modes. The validator checks contiguous IDs
+starting at 1 within each check and uniqueness across the plan. Proving that an
+ID was not deleted/renumbered across revisions additionally requires comparison
+with the prior approved plan; a single-document check cannot prove that history.
+
+`ordering_constraints` contains only `{before: question_id, after: question_id}`
+pairs. Both endpoints must exist and be presence checks. Self-reference and
+cycles are rejected. These are evidence-order requirements, not applicability
+dependencies. Plan validation checks the graph; the Stage 4B compiler resolves
+turns and enforces `max(before_turns) < min(after_turns)`.
+
+`forbidden_patterns` is a limited safeguard. An empty array is always legitimate;
+never add a pattern without a precise, safe target. JSON Schema checks arrays
+and nonblank strings; Python `re.compile` checks regex syntax. Python patterns
+are not claimed to be ECMAScript regexes. Plan validation compiles patterns;
+Stage 4B dialogue-plan validation also searches the relevant turns. A contiguous identifier regex does not
+prove that no identifier was spoken with spaces, number words or other forms.
+Absence verdicts always require independent whole-dialogue semantic review.
+
+### Reference orthography for future canonical dialogue
+
+Canonical `text` is the reference transcript for later ASR evaluation, not an
+SSML script or a phonetic spelling guide. Choose the following written forms
+in advance for English pilot speech. This is our convention for the normalized
+forms we expect from Transcribe, **not a claim that Transcribe will reproduce
+them**. AWS documents context- and language-dependent number formatting in
+[Transcribing numbers and punctuation](https://docs.aws.amazon.com/transcribe/latest/dg/how-numbers.html).
+The choices below are project conventions, not promises from that documentation.
+
+| Content | Canonical reference-text convention |
+| --- | --- |
+| Amounts | Arabic digits with comma grouping for thousands and a decimal point when needed; omit unnecessary fractional zeroes for whole amounts. Keep an explicitly spoken currency code separate; do not add a currency that was only implied. |
+| Percentages | Numeric rate followed immediately by `%`; preserve meaningful decimal digits rather than spelling out number words. |
+| Currency codes | The explicitly spoken three-letter code in uppercase, contiguous letters without periods or spaces. Do not infer a code from the instrument name. |
+| Synthetic identifiers | The locked `expected_value` itself always stays the exact uppercase, contiguous nine-character string, preserving every digit and zero — this compact form is never altered. Planned spoken evidence and canonical dialogue text MAY instead spell the identifier's characters out separately (e.g. "S, 9, 1, 0, 0, 0, 0, 1, X"), which the Stage 4B verifier accepts via a separator-tolerant match against the same locked characters. Whichever form dialogue text uses, it stays literal, case-sensitive prose — not SSML or a phonetic spelling guide, and never a description of pronunciation. |
+| DOBs | Day number without ordinal suffix or leading zero, full title-case English month and four-digit year, separated by single spaces. The separately locked expected value remains `DD Month YYYY`, including its required two-digit day. |
+
+Use ordinary sentence punctuation and capitalization. Planned verbatim evidence
+must use the same reference orthography as eventual dialogue text. Pronunciation
+hints, phoneme spellings, SSML and voice/channel settings remain outside canonical
+text. A later smoke test will assess actual ASR output and these assumptions
+without altering approved gold answers or silently rewriting the reference to
+match predictions. The Stage 4B verifier accepts the limited authoring forms
+documented below without rewriting reference text. No smoke test is implemented.
+
+EMPLOYEE and CLIENT are semantic roles. The compiler assigns zero-based integer
+`turn_id` values later. Neither roles nor turn IDs are audio channels or diarization
+labels. Never assume a diarization label identifies the authored employee/client
+without verification; any channel mapping belongs in rendering configuration.
+AWS distinguishes diarization from speaker identification in its
+[Transcribe service card](https://docs.aws.amazon.com/ai/responsible-ai/transcribe-speech-recognition/overview.html).
+
+For each presence phrase, the shared matcher searches **only** eligible
 speaker turns for a case-sensitive verbatim substring. Zero matches fails.
 More than one eligible turn fails as ambiguous; never choose the first match.
 Multiple planned phrases may resolve to the same turn. The check's
 `gold_evidence_turns` is the sorted union of resolved turn IDs;
 `gold_evidence_text` is the planned phrases joined by a single newline, in
 plan order. These are exact excerpts, not newly inferred paraphrases. The
-current validator checks these invariants on supplied canonical fixtures;
-it does not assign IDs or compile output.
+canonical validator checks these invariants through the same matcher; the
+compiler additionally assigns IDs and requires nondecreasing resolved plan order.
 
 Absence checks have `gold_evidence_turns: []` and `gold_evidence_text: ""`.
 An empty array records no positive quote; it does **not** prove absence.
@@ -247,13 +350,15 @@ Keep the approved gold answer unchanged. A disambiguation protocol (or a
 permitted dialogue revision) needs explicit agreement before compilation can
 continue; this scaffold has no automatic disambiguation or semantic matching.
 
-## Coverage CSV contract (future Python validator)
+## Coverage CSV contract
 
-**JSON Schema does not validate this CSV.** The current fixed pilot is parsed
-with Python's `csv` module and checked by `tests/test_coverage_matrix.py`.
-Those tests are dataset-specific checks, not a reusable CSV validator or an
-implementation of the entire cross-file contract below. The future Python
-validator must enforce all of these rules:
+**JSON Schema does not validate this CSV.** `authoring.coverage.load_matrix`
+uses Python's `csv` module to check structure and approved IDs/columns.
+`compile_expected` checks cell types, while `validation.call_config.validate_call_config`
+checks matrix-to-config agreement. `validation.check_plan.validate_check_plan`
+also checks plans against their matrix and approved config. Pilot-specific tests
+check the frozen answer distribution. Canonical compilation is implemented;
+authoring chronology and approval provenance remain separate within the contract below:
 
 * UTF-8 CSV, parsed using Python's `csv` module. First header is `question_id`;
   remaining headers are unique call IDs. The template lists the five pilot
@@ -315,6 +420,75 @@ segment files agree. Current validation does not inspect media.
 Generated audio and run outputs are ignored by Git. Gold, schemas and timing
 JSON are not ignored. There are no fake output artifacts.
 
+## Transcript and speaker-role conversion
+
+Audio generation (Stages 7-9 above) has not run yet, so no real `timings.json`
+exists. `fyp_evaluation.transcripts` deterministically converts each call's
+canonical `ground_truth.json` into two separate prepared files the offline
+NLP evaluation framework in `fyp-ai` consumes, without an LLM, Polly, AWS
+Transcribe, Bedrock or any other network call:
+
+```text
+evaluation_dataset/calls/CALL_XXX/
+├── ground_truth.json      (unchanged)
+├── transcript.json        (generated)
+└── speaker_roles.json     (generated)
+```
+
+`transcript.json` is a normalized, AWS Transcribe-shaped results payload —
+`transcripts: [{transcript: <full text>}]` plus one `audio_segments` entry
+per canonical dialogue turn (`id`, `transcript`, `start_time`, `end_time`,
+`speaker_label`), in original turn order. It has no outer `results`
+wrapper and no `speaker_roles` key. `speaker_roles.json` separately holds
+`{"speaker_roles": {"spk_0": "RM", "spk_1": "Customer"}}` — this key
+ordering/mapping is fixed (EMPLOYEE is always `spk_0`/RM, CLIENT is always
+`spk_1`/Customer) and independent of which speaker's turn comes first.
+Only labels actually present in the dialogue are emitted. `fyp-ai`'s
+ingestion node (`langgraph-backend/compliance_pipeline/nodes/ingestion.py`)
+reconstructs its working transcript by joining diarized segments with two
+newlines (`_TURN_SEPARATOR = "\n\n"`); `transcripts[0].transcript` uses the
+same separator so the two representations agree.
+
+Because the audio pipeline has not run, every segment currently carries the
+documented temporary placeholder `"start_time": "0.0", "end_time": "0.0"`.
+These are not measurements. Once Stage 9 produces a real `timings.json`,
+the same converter is meant to regenerate `transcript.json` with real
+per-turn timing from `ground_truth.json` + `timings.json` together, rather
+than patching the placeholder file in place; that enrichment path is not
+implemented yet (`build_transcript_artifacts(..., timings=...)` raises
+`NotImplementedError` for any non-`None` value).
+
+Reusable API (`src/fyp_evaluation/transcripts/converter.py`, pure, no I/O):
+
+```python
+from fyp_evaluation.transcripts import build_transcript_artifacts
+
+transcript, speaker_roles = build_transcript_artifacts(ground_truth)
+```
+
+Cross-file agreement between a ground truth and its generated pair —
+segment count/order/ids, verbatim text, speaker-label mapping, the
+full-transcript reconstruction, and speaker-role correspondence — is
+checked by `fyp_evaluation.validation.transcript.validate_transcript_pair`
+(imported from that module directly, not re-exported from
+`fyp_evaluation.validation`, to avoid a package-init import cycle with
+`fyp_evaluation.transcripts`).
+
+```powershell
+python scripts/build_transcripts.py --call CALL_001
+python scripts/build_transcripts.py --all
+python scripts/build_transcripts.py --all --check       # read-only; writes nothing
+python scripts/build_transcripts.py --call CALL_001 --overwrite
+```
+
+Every selected call is built and cross-validated before anything is
+written, so one malformed call cannot leave the dataset with a partially
+updated or mismatched `transcript.json`/`speaker_roles.json` pair for
+another call; existing outputs are never replaced without `--overwrite`.
+Exit codes follow the `fyp-validate` convention: 0 success, 1 when
+`--check` loads existing files but finds them cross-file inconsistent, 2
+for input/usage errors and for a build that cannot produce a valid pair.
+
 ## Run validation and tests
 
 From `fyp-be/evaluation-dataset`, using Python 3.11 or newer:
@@ -340,6 +514,148 @@ four field mappings. This structural pass does not approve its policy content
 or establish that a complete dataset exists. Empty checklists remain invalid.
 The CLI returns 0 on success, 1 on invalid data, and 2 for input/usage errors.
 
+Stage 4 adds these command signatures using the same trailing inputs and optional
+`--call-ids` convention. They are documented for later authorized authoring;
+**do not run the scaffold command against real pilot data during this stage**:
+
+```text
+fyp-validate check-plan <path> <call_config> <matrix> <checklist> <normalization> [--complete]
+fyp-validate scaffold-check-plans <matrix> <output_dir> <checklist> <normalization> [--overwrite] [--only CALL_ID ...]
+```
+
+`--only` selects output files only. The loader still requires the complete
+approved matrix column list (five pilot calls by default); the writer validates
+all columns and their configs before writing any selected output. The CLI reads
+approved configs from `<matrix parent>/call_configs/<call_id>.json`, irrespective
+of output location. Both commands work through `python -m fyp_evaluation.validation`
+as well. Scaffolds pass without `--complete` and fail with it while placeholders
+remain. `check-plan --complete` also invokes the shared Stage 4B spoken-value
+verifier for non-null pilot text/DOB extractions, before any dialogue is needed.
+Regex syntax checks also run in the `json` and `answers` CLI commands for
+check plans and ground truth, after structural validation.
+
+Reusable Stage 4 APIs:
+
+* `authoring.check_plans.derive_evidence_mode(checklist_item, expected)` returns
+  the derived mode or raises `ValueError` for unsupported combinations.
+* `authoring.check_plans.build_check_plan(call_id, checklist, normalization, matrix)`
+  compiles expected objects and constructs constants/placeholders, without I/O.
+* `authoring.check_plans.write_check_plans(output_dir, checklist, normalization,
+  matrix, call_configs, schema_dir, *, only=None, overwrite=False)` takes a mapping
+  of all approved call IDs to config objects. It validates the complete batch,
+  preflights output paths, uses exclusive creation by default and writes LF newlines.
+  Existing regular files require explicit overwrite. As with the config writer,
+  symlinks are always refused and writes are per file, not a batch transaction.
+* `validation.check_plan.validate_check_plan(plan, call_config, checklist,
+  normalization, matrix, schema_dir, *, complete=False)` returns errors. It checks
+  internal config/plan ID equality first (reporting both IDs on mismatch), then
+  structure, matrix identity and typed value equality, derived modes,
+  speaker rules, evidence-ID sequences, regex syntax and an acyclic presence-only
+  ordering graph. Complete mode reuses the call-config placeholder detector on
+  evidence text, absent events and both authored constraint arrays. It also requires
+  at least one planned item to communicate each locked non-null text/DOB extraction
+  through the shared spoken-value verifier. Numeric/boolean scalar contracts keep
+  their existing checks; their spoken forms are outside this five-call pilot.
+* `validation.check_plan.validate_forbidden_patterns(document)` checks only regex
+  syntax in an already schema-valid check plan or ground-truth object. Direct
+  users of the low-level `validate`/`validate_answers` APIs must additionally call
+  it for ground truth; JSON Schema alone cannot enforce Python regex syntax.
+
+The shared placeholder detector was extracted unchanged from the call-config
+validator with user approval. Existing test fixtures/assertions were migrated
+for independent versions and required arrays. Stage 4B adds the tools below;
+Entity WER scoring remains unimplemented.
+
+### Stage 4B: deterministic compilation and separate annotation review
+
+These command signatures are for later authorized authoring. This stage runs
+them only on artificial test files, never on the approved pilot artifacts:
+
+```text
+fyp-validate dialogue-plan <dialogue> <check_plan>
+fyp-validate critical-tokens <dialogue> <matrix> <checklist> <normalization>
+fyp-validate compile-ground-truth <call_config> <check_plan> <dialogue> <output_path> <matrix> <checklist> <normalization> [--overwrite]
+```
+
+The matrix commands retain `--call-ids` (five pilot columns by default).
+`--schema-dir` precedes the subcommand. Compilation validates everything before
+opening the output. Existing regular files require `--overwrite`; symlinks and
+output paths that replace an input are refused. Output is UTF-8 JSON with LF
+newlines. Validation reports return exit 1; compilation refusals raise
+`ValueError` and return exit 2 under the existing CLI exception convention.
+No output is created on a validation refusal.
+
+Reusable APIs and return values:
+
+* `validation.evidence.resolve_evidence(evidence_plan, turns)` returns
+  `(resolved_ids, errors)`. Successful IDs are in planned-item order, including
+  repetitions when items share a turn. Structured errors contain `code`
+  (`not_found` or `ambiguous`), `evidence_id`, `matching_turn_ids` and `message`.
+  Candidates in errors are diagnostics, never a selected match. Repetition
+  inside one eligible turn is valid; matches in multiple eligible turns fail.
+* `validation.evidence.validate_dialogue_against_plan(dialogue, check_plan)`
+  returns error strings. It checks internal call-ID equality first, then exact
+  matches and nondecreasing evidence order. Schema validation is a separate
+  caller responsibility. This helper never reads or requires `critical_tokens`.
+  Absence patterns use the plan-level speaker (ANY means all); presence patterns
+  search all turns because presence has only item-level speakers.
+* `validation.spoken.verify_spoken_value(expected, planned_text)` returns
+  `None` for a permitted extraction form or an error string. It checks gold
+  authoring only and never alters the canonical answer or parses predictions.
+  Instrument text must occur verbatim, case-sensitively. Pilot currency codes
+  SGD/USD/EUR/GBP/AUD and identifier-shaped text permit only whitespace, commas,
+  periods and hyphens between canonical characters, retaining letter case.
+  Identifier digits may also use the closed zero–nine word table.
+  DOB forms use a padded day, bare day, cardinal word or the closed 1–31 ordinal
+  table, optionally followed by `of`, a full month and optional comma, then a
+  four-digit year or two-part spoken year for the pilot's 19xx dates. Generated
+  word compounds permit spaces or hyphens, e.g. `nineteen eighty-two`.
+  Thus locked `04 August 1991` accepts `the fourth of August, nineteen ninety-one`
+  and rejects `the fifth of August, nineteen ninety-one`. The expected object
+  still requires exact matrix-derived value and Python type; accepted spoken
+  forms never replace it. Exact phrase matching between plan and dialogue remains
+  separate from checking whether a phrase communicates the locked value.
+  DOB matching is case-insensitive and does not match fragments of larger days
+  or years. Null values need no evidence. Other scalar spoken forms, aliases,
+  phonetic letter names and general date parsing are outside this pilot scope.
+* `validation.tokens.validate_critical_token_coverage(dialogue, checklist,
+  normalization, matrix, *, schema_dir=...)` returns `(errors, advisory)`.
+  It reuses schema/integrity validation for nonblank, unique, own-turn literal
+  annotations. From the validated dialogue's internal ID it selects the matrix
+  column and requires at least one token anywhere in the dialogue to satisfy the
+  spoken verifier for each non-null extraction. A larger containing span counts;
+  null K01 is exempt. There is no token-count cap and no check-plan argument.
+  Annotations may sit outside all planned evidence, and evidence turns may have
+  empty token arrays. Separate advisory records (`turn_id`, `text`, `message`)
+  identify uncovered financial-looking digit, percentage, currency and amount
+  strings. They never fail validation or prove annotation completeness. Repeated
+  strings have no occurrence offsets; this is a review aid, not span tokenisation.
+* `authoring.compile.compile_ground_truth(call_config, check_plan, dialogue,
+  checklist, normalization, matrix, *, schema_dir=...)` returns a validated
+  canonical object or raises `ValueError`; it performs no I/O and mutates no
+  inputs. All three internal call IDs must agree and select an existing matrix
+  column before other validation. Config and plan must pass complete mode.
+  It independently rechecks each copied expected object against `compile_expected`
+  by Python type and value. Each non-null extraction must have at least one
+  planned evidence item denoting its full locked value. Independent annotation
+  coverage is also a compilation gate; advisories are nonblocking.
+
+The compiler assigns contiguous integer IDs from dialogue order, copies metadata,
+expected objects and evidence plans, uses sorted unique evidence IDs and
+newline-joined planned texts, and preserves text and token strings/order exactly.
+Absence checks retain `[]` and `""`. It enforces evidence-order edges, rejects
+ambiguity and pattern hits, and validates the finished canonical object. It never
+uses annotations to choose compliance outcomes, repairs answers, or infers
+semantic truth from the dialogue. Unencoded contradictions, free-text content
+constraints, whole-dialogue semantic absence and approval/provenance still need
+independent review in the later authoring stages.
+
+For installed use, explicitly supply the schema resource directory to the token
+validator and compiler. Their defaults locate `schemas/` in this source checkout;
+schemas are not bundled in the wheel. Tests cover the compiler only with clearly
+artificial inputs. No real check plan, dialogue, canonical gold, SSML or audio is
+created in Stage 4B. Schema files and all approved data remain unchanged.
+
 Without installing, in an environment with the declared dependencies:
 
 ```powershell
@@ -364,11 +680,96 @@ langgraph_checklist = to_langgraph_checklist(checklist, absolute_schema_director
 ```
 
 For CLI use outside this folder, pass `--schema-dir <absolute path>` before the
-subcommand. All validation is read-only. Tests cover the six core shapes,
+subcommand. Validation commands are read-only; `scaffold-call-configs`,
+`scaffold-check-plans` and `compile-ground-truth` explicitly write outputs.
+Tests cover the six core shapes,
 field-rule references, mixed checklist categories, legacy LangGraph projection,
 malformed data, and the most important structural
-invariants. They do not certify legal correctness, approval history, cross-file
-answer preservation, CSV content, or semantic evidence.
+invariants, malformed CSVs and matrix-to-config answer preservation.
+They do not certify legal correctness, approval history or semantic evidence.
+
+## Stage 3A: deterministic call-config scaffolding
+
+The approved CSV is the sole source of all 50 expected answers. The shared
+`answer_contract` specifies their JSON representation, never which answer is
+correct. Python copies/decodes each cell; AI must not author, retype, infer or
+change expected answers. Only later narrative fields may be authored.
+
+Each scaffold has this structure (shape notation, not another dataset artifact):
+
+```text
+schema_version: "0.5.0"
+call_id: the selected approved CSV column
+metadata:
+  language: "en-SG"
+  scenario: "private_banking_investment_advice_and_order"
+target_duration_seconds: {min: 120, max: 180}
+scenario_facts: []
+intended_answers: ten entries in checklist order
+  - question_id: checklist ID
+    expected: compiled from the corresponding matrix cell
+    scenario_intent: "TODO_AUTHOR_SCENARIO_INTENT"
+```
+
+The existing metadata, fact and duration structures and strict extra-property
+restrictions remain. Intent describes what should occur or be withheld; exact
+evidence belongs in a later check plan. No evidence, turn IDs, dialogue or timings
+are introduced here. Only the required intent field changes the call-config
+shape; the other two shared envelopes change version only.
+
+Reusable APIs:
+
+* `authoring.coverage.load_matrix(path, *, checklist=None, call_ids=PILOT_CALL_IDS)`
+  returns `{call_id: {question_id: raw_string_cell}}`. By default it reads the
+  authoritative checklist at `path.parent.parent/evaluation_dataset/checklist.json`
+  and requires CALL_001-CALL_005 in order. Pass the approved checklist and an
+  explicit ordered call-ID list for other layouts or larger datasets. Rejects
+  duplicate/unknown/missing IDs, duplicate/wrong/missing call headers, ragged rows,
+  blank cells, NULs and malformed CSV. Quoted commas/newlines and text whitespace
+  are preserved. Row identity is by ID; scaffold output follows checklist order.
+* `authoring.coverage.compile_expected(checklist_item, normalization, cell)`
+  preserves PASS/FAIL, text and calendar-valid DOB strings. It parses finite
+  numeric/boolean JSON scalars using the field rule without coercing types.
+  Only the existing K01 parser maps `NOT_STATED` to `None`/JSON null. Validate
+  the checklist and normalization before using this low-level function.
+* `authoring.call_configs.build_call_config(call_id, checklist, normalization, matrix)`
+  returns a deterministic unfilled object without mutating any input.
+* `validation.call_config.validate_call_config(data, checklist, normalization, matrix, schema_dir, *, complete=False)`
+  reuses schema and answer validation, then checks call-column membership, exact
+  checklist order, matrix value/type equality and that no fact name duplicates
+  an extraction field. Existing duration-order and unique-fact-name checks apply.
+  Returns an error list without changing inputs. Load the matrix with the
+  approved column list first.
+* `authoring.call_configs.write_call_configs(output_dir, checklist, normalization, matrix, schema_dir, *, overwrite=False)`
+  validates the whole batch and existing paths before writing. Exclusive file
+  creation refuses overwriting by default. Explicit `overwrite=True` or CLI
+  `--overwrite` is required to replace existing files. Symlink targets are refused.
+  Writes are per file, not transactional: an I/O failure can leave earlier
+  validated files in place; retrying will protect them from overwrite.
+
+`complete=False` permits empty facts and the designated intent placeholder.
+`complete=True` requires populated facts and authored intents. It rejects
+reserved TODO/TBD/FIXME/PLACEHOLDER markers (case-insensitive), plus bare
+TBC, PENDING, N/A, NONE, NULL, `...`, `-` and TO BE AUTHORED. Blank intents
+always fail the schema. Completeness is a mechanical check, not semantic review.
+All five fresh scaffolds pass scaffold mode and fail complete mode with exactly
+11 unfinished-content errors each: one empty fact list and ten placeholder intents.
+
+From this project directory, after installation (or setting `PYTHONPATH=src`):
+
+```powershell
+python -m fyp_evaluation.validation matrix authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation scaffold-call-configs authoring/coverage_matrix.csv authoring/call_configs evaluation_dataset/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json --complete
+```
+
+The generation command now refuses because the five files already exist; this
+is intentional. The final command failed for fresh Stage 3A scaffolds; it now
+passes for the approved, completed Stage 3B configs. The same subcommands are exposed through `fyp-validate`.
+Use `--call-ids CALL_... CALL_...` to explicitly select another approved column
+set; extra/missing/reordered columns otherwise fail. Normalization remains at
+`0.3.0`; approved checklist and CSV bytes are unchanged by this stage.
 
 ## Migration from the initial scaffold
 
@@ -393,8 +794,9 @@ a compliance/extraction union, so their shapes needed no changes. Revision
 Mixed-category artificial
 fixtures confirm that DOB strings, numeric values and text survive in each
 shape. This establishes contract compatibility along matrix -> config ->
-plan -> ground truth, not an implemented CSV parser or compiler. Comparing
-actual predetermined values across those stages remains future compiler work.
+plan -> ground truth. Stage 3A now implements CSV-to-config compilation and
+validation; comparison against plans is now implemented in Stage 4. Stage 4B
+implements canonical compilation. Comparing pipeline predictions remains future work.
 
 ## Pilot checklist interpretation and source review
 
@@ -529,7 +931,7 @@ answer cells, including one explicit K01 `NOT_STATED` cell, with no blank cells
 or N/A/UNCLEAR labels. The CSV contains
 answers only: no evidence sentences, speakers, turn IDs or timestamps.
 
-The matrix is the proposed frozen answer plan, awaiting user approval. It was
+The matrix is the approved frozen answer plan for Stage 3A. It was
 created after the revised checklist and normalization contracts passed
 validation. No downstream call artifacts were used to derive its values.
 
@@ -649,10 +1051,10 @@ the two selected pilot combination constraints above. Run these checks with:
 python -m pytest -q tests/test_coverage_matrix.py
 ```
 
-A reusable CSV validator, malformed-input CSV regression suite, approval
-provenance, cross-file value preservation, semantic verification and duration
-verification remain pending. The fixed pilot tests do not implement those
-features. The canonical date tests also cover full English month names, leading
+A reusable CSV loader, malformed-input regression tests and matrix-to-config
+preservation checks are now implemented in Stage 3A. Approval provenance,
+agreement with later artifacts, semantic verification and measured duration
+remain pending. The canonical date tests also cover full English month names, leading
 zeroes, Gregorian leap-year rules and rejection of legacy/numeric date forms.
 
 ### Contract migration at revision 0.3.0
@@ -682,7 +1084,8 @@ constraints enforce empty evidence IDs/text. Existing turn-ID rules are unchange
 
 Python additionally checks populated K01 checksum invalidity, requires K01's
 CLIENT_KYC identification field and exact-text rule, and provides the pure
-`parse_k01_cell` decoder. It does not implement a general CSV validator or compiler.
+`parse_k01_cell` decoder. At revision 0.4.0, a general CSV validator/compiler
+was not implemented; Stage 3A now adds CSV-to-config support using this decoder.
 Artificial regression tests cover null round-trips across all three contracts,
 rejection of string sentinels and null on other questions, evidence constraints,
 checksum-correct controls, and preservation of the other nine matrix rows.
@@ -696,19 +1099,21 @@ Exact planned evidence phrases remain as previously approved.
 
 The following drafted details still need approval before freezing contracts:
 
-* Review and approve the revised matrix before downstream authoring, including
-  the existing fictional fund assumptions. The K01 wording, deliberately invalid
-  identifiers and NOT_STATED/null convention implement the latest user task;
-  sponsor confirmation of regulatory/policy applicability remains separate.
-* Newline joining of multiple evidence excerpts and absence scope for checks
-  other than K01. K01's whole-dialogue absence requirement is established by
-  the current task. Agree how duplicate matches should be
-  resolved while preserving the predetermined answers and plan.
+* The checklist, matrix and completed call configs are approved. Review these
+  Stage 4 contract/tooling changes before authorizing any real plan scaffolding
+  or evidence authoring.
+  Sponsor confirmation of regulatory/policy applicability remains separate.
+* The future revision/reapproval protocol for resolving duplicate matches while
+  preserving predetermined answers and plans. Newline joining is now fixed by
+  the Stage 4B compiler contract; ambiguous matches are always refused.
+  Mode derivation, whole-dialogue absence scope and absence speakers are now
+  established by the Stage 4 contracts rather than awaiting a new convention.
 * How checklist/matrix approval and independent verification will be recorded
   and tied to specific input versions. These foundations cannot enforce the
   temporal authoring order on their own.
 
 Prediction treatment for unexpected N/A/UNCLEAR and actual render settings can
-be decided before their respective later stages. No call configs, check plans,
-dialogues, canonical ground truth or renders may be generated until the next
-authorization. Future evidence must follow the approved matrix, never revise it.
+be decided before their respective later stages. Do not fill scenario facts or
+intents or generate check plans, dialogues, canonical ground truth or renders
+without the next authorization. Future evidence must follow the approved matrix,
+never revise it.

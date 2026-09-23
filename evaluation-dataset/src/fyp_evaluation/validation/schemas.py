@@ -12,11 +12,12 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
 from .dates import is_canonical_dob
+from .evidence import resolve_evidence
 from .identification import is_invalid_test_identifier
 
 SCHEMA_NAMES = (
     "checklist", "call_config", "check_plan", "dialogue", "ground_truth", "timings",
-    "normalization",
+    "normalization", "transcript", "speaker_roles",
 )
 
 
@@ -140,21 +141,31 @@ def _integrity(data, name):
                 errors.append("gold_evidence_turns references a missing turn")
             plan = check["evidence_plan"]
             if plan["mode"] == "presence":
-                matched_ids = set()
-                for evidence in plan["planned_evidence"]:
-                    matches = [
-                        turn["turn_id"] for turn in data["dialogue"]
-                        if turn["speaker"] == evidence["required_speaker"]
-                        and evidence["text"] in turn["text"]
-                    ]
-                    if len(matches) != 1:
-                        errors.append("Planned evidence must match exactly one eligible turn")
-                    matched_ids.update(matches)
+                resolved, matching_errors = resolve_evidence(plan, data["dialogue"])
+                matched_ids = set(resolved)
+                for error in matching_errors:
+                    errors.append("Planned evidence must match exactly one eligible turn")
+                    # Preserve legacy diagnostics, including the ambiguous
+                    # candidate union. Candidates are never selected as gold.
+                    matched_ids.update(error["matching_turn_ids"])
                 if ids != sorted(matched_ids):
                     errors.append("gold_evidence_turns disagrees with planned evidence")
                 quote = "\n".join(e["text"] for e in plan["planned_evidence"])
                 if check["gold_evidence_text"] != quote:
                     errors.append("gold_evidence_text disagrees with planned evidence")
+    if name == "transcript":
+        segments = data["audio_segments"]
+        ids = [segment["id"] for segment in segments]
+        if len(ids) != len(set(ids)):
+            errors.append("audio_segments ids must be unique")
+        for segment in segments:
+            try:
+                begin, finish = float(segment["start_time"]), float(segment["end_time"])
+            except ValueError:
+                errors.append(f"audio_segments[{segment['id']}]: start_time/end_time must be numeric strings")
+                continue
+            if not math.isfinite(begin) or not math.isfinite(finish) or begin < 0 or finish < begin:
+                errors.append(f"audio_segments[{segment['id']}]: start_time/end_time must be finite and start_time <= end_time")
     if name == "timings":
         previous_end = 0
         for turn in data["turns"]:

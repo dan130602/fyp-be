@@ -1,0 +1,205 @@
+{
+  "schema_version": "0.6.0",
+  "call_id": "CALL_004",
+  "checks": [
+    {
+      "question_id": "C01",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never seeks, infers aloud, restates or confirms the client's investment objective anywhere in the call.",
+        "content_constraints": [
+          "The recommendation must not reveal or assume the client's objective through a personal-suitability statement or order rationale."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C02",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never asks about, infers aloud, or obtains any confirmation of the client's willingness to accept investment losses.",
+        "content_constraints": [
+          "No profile read-back or indirect risk-acceptance confirmation may appear."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C03",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never explains that the client could lose invested capital, including at the order stage.",
+        "content_constraints": [
+          "Limit product discussion to holdings and dealing mechanics only; no risk or principal-protection language."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C04",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never discloses the transaction fee — no amount, rate, waiver claim or all-in total from which the fee could be inferred — anywhere in the call.",
+        "content_constraints": [
+          "Do not describe the order as fee-free or provide a total from which the fee could be inferred by subtraction."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C05",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never claims or endorses that past investment performance guarantees future returns.",
+        "content_constraints": [
+          "The recommendation may reference the fund's approach without any performance-guarantee language."
+        ],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "C06",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_plan": {
+        "mode": "absence",
+        "scope": "entire_dialogue",
+        "required_speaker": "EMPLOYEE",
+        "absent_event": "The employee never encourages an inflated loss-tolerance declaration or introduces risk-questionnaire coaching.",
+        "content_constraints": [],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "K01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G8800004A"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "K01_E1",
+            "required_speaker": "CLIENT",
+            "text": "My identification number is G, 8, 8, 0, 0, 0, 0, 4, A."
+          }
+        ],
+        "content_constraints": [],
+        "forbidden_patterns": [
+          "S9100001X",
+          "S8400002X",
+          "F7800003A"
+        ]
+      }
+    },
+    {
+      "question_id": "K02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "09 February 1988"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "K02_E1",
+            "required_speaker": "CLIENT",
+            "text": "My date of birth is 9 February 1988."
+          }
+        ],
+        "content_constraints": [],
+        "forbidden_patterns": []
+      }
+    },
+    {
+      "question_id": "T01",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "TEST GBP Equity Fund"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "T01_E1",
+            "required_speaker": "CLIENT",
+            "text": "TEST GBP Equity Fund"
+          }
+        ],
+        "content_constraints": [
+          "This phrase and T02's evidence phrase must occur in the single, final client buy instruction turn, together with the order_notional amount 25,000; no second order, tentative instruction or unit price may appear anywhere else in the call."
+        ],
+        "forbidden_patterns": [
+          "TEST\\ SGD\\ Equity\\ Fund",
+          "TEST\\ USD\\ Equity\\ Fund",
+          "TEST\\ EUR\\ Equity\\ Fund",
+          "TEST\\ AUD\\ Equity\\ Fund"
+        ]
+      }
+    },
+    {
+      "question_id": "T02",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "GBP"
+      },
+      "evidence_plan": {
+        "mode": "presence",
+        "planned_evidence": [
+          {
+            "evidence_id": "T02_E1",
+            "required_speaker": "CLIENT",
+            "text": "in GBP"
+          }
+        ],
+        "content_constraints": [
+          "Must occur in the same single client buy instruction turn as T01's evidence."
+        ],
+        "forbidden_patterns": [
+          "\\bSGD\\b",
+          "\\bUSD\\b",
+          "\\bEUR\\b",
+          "\\bAUD\\b"
+        ]
+      }
+    }
+  ],
+  "ordering_constraints": []
+}
