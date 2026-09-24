@@ -144,3 +144,46 @@ output "frontend_cloudfront_domain_name" {
 output "frontend_cloudfront_hosted_zone_id" {
   value = module.cloudfront.distribution_hosted_zone_id
 }
+
+# -----------------------
+# fyp-ai (ECS Fargate)
+# -----------------------
+
+output "fyp_ai_ecr_repository_name" {
+  description = "Set this as the BACKEND_ECR_REPOSITORY_NAME repo variable in the fyp-ai GitHub repo"
+  value       = module.fyp_ai_ecr.repository_name
+}
+
+output "fyp_ai_ecr_repository_url" {
+  value = module.fyp_ai_ecr.repository_url
+}
+
+output "fyp_ai_ecr_github_actions_role_arn" {
+  description = "Set this as the BACKEND_ECR_PUSH_ROLE_ARN repo variable in the fyp-ai GitHub repo"
+  value       = module.fyp_ai_ecr.github_actions_role_arn
+}
+# PHASE 2 - uncomment once the fyp-ai image is in ECR and fyp-ai/langsmith-api-key has a value.
+#
+# output "fyp_ai_ecs_cluster_name" {
+#   description = "Set this as the ECS_CLUSTER_NAME repo variable in the fyp-ai GitHub repo"
+#   value       = module.fyp_ai_ecs.cluster_name
+# }
+#
+# output "fyp_ai_ecs_service_name" {
+#   description = "Set this as the ECS_SERVICE_NAME repo variable in the fyp-ai GitHub repo"
+#   value       = module.fyp_ai_ecs.service_name
+# }
+#
+# output "fyp_ai_ecs_log_group_name" {
+#   value = module.fyp_ai_ecs.log_group_name
+# }
+
+output "fyp_ai_base_url" {
+  description = "What media-processing-service calls (AI_BASE_URL) - resolvable only inside the VPC"
+  value       = local.fyp_ai_base_url
+}
+
+output "fyp_ai_langsmith_api_key_secret_arn" {
+  description = "Raw LangSmith API key string - fill in via Secrets Manager before the service first starts"
+  value       = aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn
+}

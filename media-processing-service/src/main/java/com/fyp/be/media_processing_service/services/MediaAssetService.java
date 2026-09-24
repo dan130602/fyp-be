@@ -87,6 +87,17 @@ public class MediaAssetService {
         }, () -> log.warn("No MediaAsset found for transcribe job '{}': skipping", jobName));
     }
 
+    /** Called by ComplianceAnalysisService once fyp-ai returns a report for this asset. */
+    @Transactional
+    public void saveComplianceReport(UUID assetId, String report) {
+        MediaAsset asset = mediaAssetRepository.findById(assetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Media asset not found: " + assetId));
+        asset.setComplianceReport(report);
+        asset.setComplianceAnalyzedAt(LocalDateTime.now());
+        asset.setUpdatedAt(LocalDateTime.now());
+        mediaAssetRepository.save(asset);
+    }
+
     private MediaAssetResponse toResponse(MediaAsset asset) {
         return new MediaAssetResponse(
                 asset.getId(),
