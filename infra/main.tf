@@ -431,7 +431,7 @@ module "ai_ecs" {
 
 # Lets fyp-ai's CI role roll the ECS service after pushing a new image
 # (see fyp-ai's .github/workflows/backend-ecr-push.yml).
-data "aws_iam_policy_document" "fyp_ai_ecs_deploy" {
+data "aws_iam_policy_document" "ai_ecs_deploy" {
   statement {
     effect = "Allow"
     actions = [
@@ -439,13 +439,13 @@ data "aws_iam_policy_document" "fyp_ai_ecs_deploy" {
       "ecs:DescribeServices",
     ]
     resources = [
-      "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.fyp_ai_ecs.cluster_name}/${module.fyp_ai_ecs.service_name}",
+      "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.ai_ecs.cluster_name}/${module.ai_ecs.service_name}",
     ]
   }
 }
 
-resource "aws_iam_role_policy" "fyp_ai_ecs_deploy" {
+resource "aws_iam_role_policy" "ai_ecs_deploy" {
   name   = "${var.fyp_ai_ecr_repository_name}-ecs-deploy"
   role   = module.fyp_ai_ecr.github_actions_role_name
-  policy = data.aws_iam_policy_document.fyp_ai_ecs_deploy.json
+  policy = data.aws_iam_policy_document.ai_ecs_deploy.json
 }
