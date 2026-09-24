@@ -390,63 +390,62 @@ data "aws_iam_policy_document" "fyp_ai_task" {
   }
 }
 
-# PHASE 2 - uncomment once the fyp-ai image is in ECR and fyp-ai/langsmith-api-key has a value.
-# module "fyp_ai_ecs" {
-#   source = "./modules/ecs"
-#
-#   name               = local.fyp_ai_name
-#   aws_region         = var.aws_region
-#   vpc_id             = module.vpc.vpc_id
-#   private_subnet_ids = values(module.vpc.private_subnet_ids)
-#
-#   container_image = "${module.fyp_ai_ecr.repository_url}:${var.fyp_ai_image_tag}"
-#   container_port  = local.fyp_ai_port
-#   cpu             = var.fyp_ai_cpu
-#   memory          = var.fyp_ai_memory
-#   desired_count   = var.fyp_ai_desired_count
-#
-#   # No ALB - only media-processing-service may call it, over Cloud Map DNS.
-#   ingress_security_group_ids     = [module.media_processing_ecs.security_group_id]
-#   service_discovery_namespace_id = aws_service_discovery_private_dns_namespace.internal.id
-#
-#   # python:3.12-slim has no wget/curl. /ok is the langgraph server's liveness endpoint.
-#   health_check_command      = ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${local.fyp_ai_port}/ok', timeout=4)\" || exit 1"]
-#   health_check_start_period = 180
-#
-#   task_role_policy_json = data.aws_iam_policy_document.fyp_ai_task.json
-#
-#   environment = {
-#     AWS_REGION        = var.aws_region
-#     LANGSMITH_TRACING = tostring(var.fyp_ai_langsmith_tracing)
-#     LANGSMITH_PROJECT = var.fyp_ai_langsmith_project
-#   }
-#
-#   secrets = {
-#     LANGSMITH_API_KEY = aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn
-#   }
-#
-#   secret_arns_for_execution_role = [
-#     aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn,
-#   ]
-# }
-#
-# # Lets fyp-ai's CI role roll the ECS service after pushing a new image
-# # (see fyp-ai's .github/workflows/backend-ecr-push.yml).
-# data "aws_iam_policy_document" "fyp_ai_ecs_deploy" {
-#   statement {
-#     effect = "Allow"
-#     actions = [
-#       "ecs:UpdateService",
-#       "ecs:DescribeServices",
-#     ]
-#     resources = [
-#       "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.fyp_ai_ecs.cluster_name}/${module.fyp_ai_ecs.service_name}",
-#     ]
-#   }
-# }
-#
-# resource "aws_iam_role_policy" "fyp_ai_ecs_deploy" {
-#   name   = "${var.fyp_ai_ecr_repository_name}-ecs-deploy"
-#   role   = module.fyp_ai_ecr.github_actions_role_name
-#   policy = data.aws_iam_policy_document.fyp_ai_ecs_deploy.json
-# }
+module "ai_ecs" {
+  source = "./modules/ecs"
+
+  name               = local.fyp_ai_name
+  aws_region         = var.aws_region
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = values(module.vpc.private_subnet_ids)
+
+  container_image = "${module.fyp_ai_ecr.repository_url}:${var.fyp_ai_image_tag}"
+  container_port  = local.fyp_ai_port
+  cpu             = var.fyp_ai_cpu
+  memory          = var.fyp_ai_memory
+  desired_count   = var.fyp_ai_desired_count
+
+  # No ALB - only media-processing-service may call it, over Cloud Map DNS.
+  ingress_security_group_ids     = [module.media_processing_ecs.security_group_id]
+  service_discovery_namespace_id = aws_service_discovery_private_dns_namespace.internal.id
+
+  # python:3.12-slim has no wget/curl. /ok is the langgraph server's liveness endpoint.
+  health_check_command      = ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${local.fyp_ai_port}/ok', timeout=4)\" || exit 1"]
+  health_check_start_period = 180
+
+  task_role_policy_json = data.aws_iam_policy_document.fyp_ai_task.json
+
+  environment = {
+    AWS_REGION        = var.aws_region
+    LANGSMITH_TRACING = tostring(var.fyp_ai_langsmith_tracing)
+    LANGSMITH_PROJECT = var.fyp_ai_langsmith_project
+  }
+
+  secrets = {
+    LANGSMITH_API_KEY = aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn
+  }
+
+  secret_arns_for_execution_role = [
+    aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn,
+  ]
+}
+
+# Lets fyp-ai's CI role roll the ECS service after pushing a new image
+# (see fyp-ai's .github/workflows/backend-ecr-push.yml).
+data "aws_iam_policy_document" "fyp_ai_ecs_deploy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecs:UpdateService",
+      "ecs:DescribeServices",
+    ]
+    resources = [
+      "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.fyp_ai_ecs.cluster_name}/${module.fyp_ai_ecs.service_name}",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "fyp_ai_ecs_deploy" {
+  name   = "${var.fyp_ai_ecr_repository_name}-ecs-deploy"
+  role   = module.fyp_ai_ecr.github_actions_role_name
+  policy = data.aws_iam_policy_document.fyp_ai_ecs_deploy.json
+}

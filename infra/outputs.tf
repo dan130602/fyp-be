@@ -162,21 +162,20 @@ output "fyp_ai_ecr_github_actions_role_arn" {
   description = "Set this as the BACKEND_ECR_PUSH_ROLE_ARN repo variable in the fyp-ai GitHub repo"
   value       = module.fyp_ai_ecr.github_actions_role_arn
 }
-# PHASE 2 - uncomment once the fyp-ai image is in ECR and fyp-ai/langsmith-api-key has a value.
-#
-# output "fyp_ai_ecs_cluster_name" {
-#   description = "Set this as the ECS_CLUSTER_NAME repo variable in the fyp-ai GitHub repo"
-#   value       = module.fyp_ai_ecs.cluster_name
-# }
-#
-# output "fyp_ai_ecs_service_name" {
-#   description = "Set this as the ECS_SERVICE_NAME repo variable in the fyp-ai GitHub repo"
-#   value       = module.fyp_ai_ecs.service_name
-# }
-#
-# output "fyp_ai_ecs_log_group_name" {
-#   value = module.fyp_ai_ecs.log_group_name
-# }
+
+output "fyp_ai_ecs_cluster_name" {
+  description = "Set this as the ECS_CLUSTER_NAME repo variable in the fyp-ai GitHub repo"
+  value       = module.ai_ecs.cluster_name
+}
+
+output "fyp_ai_ecs_service_name" {
+  description = "Set this as the ECS_SERVICE_NAME repo variable in the fyp-ai GitHub repo"
+  value       = module.ai_ecs.service_name
+}
+
+output "fyp_ai_ecs_log_group_name" {
+  value = module.ai_ecs.log_group_name
+}
 
 output "fyp_ai_base_url" {
   description = "What media-processing-service calls (AI_BASE_URL) - resolvable only inside the VPC"
