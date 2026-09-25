@@ -2,13 +2,13 @@
 data "aws_caller_identity" "current" {}
 
 locals {
-  media_processing_name = "media-processing-service"
-  fyp_ai_name           = "fyp-ai"
-  fyp_ai_port           = 2024
+  media_processing_name     = "media-processing-service"
+  ai_reasoning_service_name = "ai-reasoning-service"
+  ai_reasoning_service_port = 2024
 
   # Built from plain strings rather than module outputs, so media-processing-service's env
-  # doesn't depend on the fyp-ai module (which itself depends on media-processing-service's SG).
-  fyp_ai_base_url = "http://${local.fyp_ai_name}.${var.service_discovery_namespace}:${local.fyp_ai_port}"
+  # doesn't depend on the ai-reasoning-service module (which itself depends on media-processing-service's SG).
+  ai_reasoning_service_base_url = "http://${local.ai_reasoning_service_name}.${var.service_discovery_namespace}:${local.ai_reasoning_service_port}"
 }
 
 module "vpc" {
@@ -127,7 +127,7 @@ resource "aws_sqs_queue_policy" "transcribe_status" {
 # Only media-processing-service itself sends here (see TranscriptHandoffService), so unlike
 # transcribe_status_queue there's no EventBridge-facing queue policy needed.
 # Consumed by media-processing-service's ComplianceAnalysisService, which holds each message
-# for the whole synchronous fyp-ai /runs/wait call (one LLM call per checklist item) - the
+# for the whole synchronous ai-reasoning-service /runs/wait call (one LLM call per checklist item) - the
 # visibility timeout has to outlast that, or SQS redelivers it mid-run.
 module "transcript_handoff_queue" {
   source = "./modules/sqs"
@@ -307,7 +307,7 @@ module "media_processing_ecs" {
     AWS_COGNITO_ISSUER_URI       = module.cognito.cognito_issuer_uri
     CORS_ALLOWED_ORIGINS         = var.cors_allowed_origins
     BOOTSTRAP_ADMIN_EMAILS       = var.bootstrap_admin_emails
-    AI_BASE_URL                  = local.fyp_ai_base_url
+    AI_BASE_URL                  = local.ai_reasoning_service_base_url
   }
 
   secrets = {
@@ -346,36 +346,36 @@ resource "aws_iam_role_policy" "media_processing_ecs_deploy" {
 }
 
 # -----------------------
-# fyp-ai (LangGraph compliance pipeline, ECS Fargate)
+# ai-reasoning-service (LangGraph compliance pipeline, ECS Fargate)
 # -----------------------
 
-# Private DNS for service-to-service calls inside the VPC - fyp-ai registers here as
-# fyp-ai.<namespace>, and Cloud Map keeps that A record pointed at whatever IP its current
+# Private DNS for service-to-service calls inside the VPC - ai-reasoning-service registers here as
+# ai-reasoning-service.<namespace>, and Cloud Map keeps that A record pointed at whatever IP its current
 # task has (Fargate tasks get a new one on every restart/deploy).
 resource "aws_service_discovery_private_dns_namespace" "internal" {
   name = var.service_discovery_namespace
   vpc  = module.vpc.vpc_id
 }
 
-module "fyp_ai_ecr" {
+module "ai_reasoning_service_ecr" {
   source = "./modules/ecr"
 
-  repository_name     = var.fyp_ai_ecr_repository_name
-  github_repository   = var.fyp_ai_github_repository
-  github_allowed_refs = var.fyp_ai_github_allowed_refs
+  repository_name     = var.ai_reasoning_service_ecr_repository_name
+  github_repository   = var.ai_reasoning_service_github_repository
+  github_allowed_refs = var.ai_reasoning_service_github_allowed_refs
 }
 
 # Empty placeholder, same as modules/secrets - fill the raw API key in by hand via the console
 # BEFORE the first apply that creates the service, or the task fails to start pulling it.
-resource "aws_secretsmanager_secret" "fyp_ai_langsmith_api_key" {
-  name        = "${local.fyp_ai_name}/langsmith-api-key"
-  description = "LangSmith API key for fyp-ai tracing (raw string)"
+resource "aws_secretsmanager_secret" "ai_reasoning_service_langsmith_api_key" {
+  name        = "${local.ai_reasoning_service_name}/langsmith-api-key"
+  description = "LangSmith API key for ai-reasoning-service tracing (raw string)"
 }
 
 # Bedrock credentials come from this task role - no AWS_BEARER_TOKEN_BEDROCK needed in ECS.
 # Foundation-model ARNs are region-wildcarded because the apac.* cross-region inference
 # profiles route requests to other APAC regions.
-data "aws_iam_policy_document" "fyp_ai_task" {
+data "aws_iam_policy_document" "ai_reasoning_service_task" {
   statement {
     sid    = "InvokeBedrockModels"
     effect = "Allow"
@@ -390,48 +390,48 @@ data "aws_iam_policy_document" "fyp_ai_task" {
   }
 }
 
-module "ai_ecs" {
+module "ai_reasoning_service_ecs" {
   source = "./modules/ecs"
 
-  name               = local.fyp_ai_name
+  name               = local.ai_reasoning_service_name
   aws_region         = var.aws_region
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = values(module.vpc.private_subnet_ids)
 
-  container_image = "${module.fyp_ai_ecr.repository_url}:${var.fyp_ai_image_tag}"
-  container_port  = local.fyp_ai_port
-  cpu             = var.fyp_ai_cpu
-  memory          = var.fyp_ai_memory
-  desired_count   = var.fyp_ai_desired_count
+  container_image = "${module.ai_reasoning_service_ecr.repository_url}:${var.ai_reasoning_service_image_tag}"
+  container_port  = local.ai_reasoning_service_port
+  cpu             = var.ai_reasoning_service_cpu
+  memory          = var.ai_reasoning_service_memory
+  desired_count   = var.ai_reasoning_service_desired_count
 
   # No ALB - only media-processing-service may call it, over Cloud Map DNS.
   ingress_security_group_ids     = [module.media_processing_ecs.security_group_id]
   service_discovery_namespace_id = aws_service_discovery_private_dns_namespace.internal.id
 
   # python:3.12-slim has no wget/curl. /ok is the langgraph server's liveness endpoint.
-  health_check_command      = ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${local.fyp_ai_port}/ok', timeout=4)\" || exit 1"]
+  health_check_command      = ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${local.ai_reasoning_service_port}/ok', timeout=4)\" || exit 1"]
   health_check_start_period = 180
 
-  task_role_policy_json = data.aws_iam_policy_document.fyp_ai_task.json
+  task_role_policy_json = data.aws_iam_policy_document.ai_reasoning_service_task.json
 
   environment = {
     AWS_REGION        = var.aws_region
-    LANGSMITH_TRACING = tostring(var.fyp_ai_langsmith_tracing)
-    LANGSMITH_PROJECT = var.fyp_ai_langsmith_project
+    LANGSMITH_TRACING = tostring(var.ai_reasoning_service_langsmith_tracing)
+    LANGSMITH_PROJECT = var.ai_reasoning_service_langsmith_project
   }
 
   secrets = {
-    LANGSMITH_API_KEY = aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn
+    LANGSMITH_API_KEY = aws_secretsmanager_secret.ai_reasoning_service_langsmith_api_key.arn
   }
 
   secret_arns_for_execution_role = [
-    aws_secretsmanager_secret.fyp_ai_langsmith_api_key.arn,
+    aws_secretsmanager_secret.ai_reasoning_service_langsmith_api_key.arn,
   ]
 }
 
-# Lets fyp-ai's CI role roll the ECS service after pushing a new image
-# (see fyp-ai's .github/workflows/backend-ecr-push.yml).
-data "aws_iam_policy_document" "ai_ecs_deploy" {
+# Lets ai-reasoning-service's CI role roll the ECS service after pushing a new image
+# (see ai-reasoning-service's .github/workflows/backend-ecr-push.yml).
+data "aws_iam_policy_document" "ai_reasoning_service_ecs_deploy" {
   statement {
     effect = "Allow"
     actions = [
@@ -439,13 +439,13 @@ data "aws_iam_policy_document" "ai_ecs_deploy" {
       "ecs:DescribeServices",
     ]
     resources = [
-      "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.ai_ecs.cluster_name}/${module.ai_ecs.service_name}",
+      "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${module.ai_reasoning_service_ecs.cluster_name}/${module.ai_reasoning_service_ecs.service_name}",
     ]
   }
 }
 
-resource "aws_iam_role_policy" "ai_ecs_deploy" {
-  name   = "${var.fyp_ai_ecr_repository_name}-ecs-deploy"
-  role   = module.fyp_ai_ecr.github_actions_role_name
-  policy = data.aws_iam_policy_document.ai_ecs_deploy.json
+resource "aws_iam_role_policy" "ai_reasoning_service_ecs_deploy" {
+  name   = "${var.ai_reasoning_service_ecr_repository_name}-ecs-deploy"
+  role   = module.ai_reasoning_service_ecr.github_actions_role_name
+  policy = data.aws_iam_policy_document.ai_reasoning_service_ecs_deploy.json
 }

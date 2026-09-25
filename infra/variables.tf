@@ -231,61 +231,61 @@ variable "cognito_user_pool_name" {
 }
 
 # -----------------------
-# fyp-ai (ECS Fargate)
+# ai-reasoning-service (ECS Fargate)
 # -----------------------
 
 variable "service_discovery_namespace" {
-  description = "Cloud Map private DNS namespace for service-to-service calls; fyp-ai is reachable at fyp-ai.<this>"
+  description = "Cloud Map private DNS namespace for service-to-service calls; ai-reasoning-service is reachable at ai-reasoning-service.<this>"
   type        = string
   default     = "clearcall.local"
 }
 
-variable "fyp_ai_ecr_repository_name" {
+variable "ai_reasoning_service_ecr_repository_name" {
   type    = string
-  default = "fyp-ai"
+  default = "ai-reasoning-service"
 }
 
-variable "fyp_ai_github_repository" {
-  description = "owner/repo allowed to push to the fyp-ai ECR repo via GitHub Actions OIDC"
+variable "ai_reasoning_service_github_repository" {
+  description = "owner/repo allowed to push to the ai-reasoning-service ECR repo via GitHub Actions OIDC"
   type        = string
   default     = "gnlyrad/fyp-ai"
 }
 
-variable "fyp_ai_github_allowed_refs" {
-  description = "Branches of fyp_ai_github_repository allowed to assume the push/deploy role"
+variable "ai_reasoning_service_github_allowed_refs" {
+  description = "Branches of ai_reasoning_service_github_repository allowed to assume the push/deploy role"
   type        = list(string)
   default     = ["refs/heads/main", "refs/heads/langgraph-backend"]
 }
 
-variable "fyp_ai_image_tag" {
+variable "ai_reasoning_service_image_tag" {
   type    = string
   default = "latest"
 }
 
-variable "fyp_ai_cpu" {
+variable "ai_reasoning_service_cpu" {
   description = "Fargate task vCPU units (1024 = 1 vCPU)"
   type        = number
   default     = 1024
 }
 
-variable "fyp_ai_memory" {
+variable "ai_reasoning_service_memory" {
   description = "Fargate task memory, in MiB - holds the FAISS index plus the langgraph server"
   type        = number
   default     = 3072
 }
 
-variable "fyp_ai_desired_count" {
+variable "ai_reasoning_service_desired_count" {
   description = "Keep at 1 - langgraph dev keeps run state in memory"
   type        = number
   default     = 1
 }
 
-variable "fyp_ai_langsmith_tracing" {
+variable "ai_reasoning_service_langsmith_tracing" {
   type    = bool
   default = true
 }
 
-variable "fyp_ai_langsmith_project" {
+variable "ai_reasoning_service_langsmith_project" {
   type    = string
-  default = "fyp-ai"
+  default = "ai-reasoning-service"
 }

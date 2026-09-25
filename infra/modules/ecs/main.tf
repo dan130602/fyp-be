@@ -27,7 +27,7 @@ resource "aws_security_group" "tasks" {
     }
   }
 
-  # Service-to-service callers (e.g. media-processing-service -> fyp-ai), not via the ALB.
+  # Service-to-service callers (e.g. media-processing-service -> ai-reasoning-service), not via the ALB.
   dynamic "ingress" {
     for_each = length(var.ingress_security_group_ids) > 0 ? [1] : []
     content {
