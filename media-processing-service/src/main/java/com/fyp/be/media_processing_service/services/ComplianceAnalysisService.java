@@ -1,5 +1,7 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.models.Checklist;
+import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +25,9 @@ import java.util.UUID;
 
 /**
  * Consumes the transcript-handoff queue TranscriptHandoffService publishes to: for each
- * {mediaAssetId, transcriptUri, checklist} message, loads the Transcribe output JSON from S3,
- * runs fyp-ai's compliance graph on it via POST /runs/wait, and stores the returned report on
- * the MediaAsset.
+ * {mediaAssetId, transcriptUri, checklistId} message, loads the Transcribe output JSON from S3
+ * and the referenced Checklist row, runs fyp-ai's compliance graph on it via POST /runs/wait, and
+ * stores the returned report in t_langgraph_output.
  *
  * Takes one message per receive - each /runs/wait call can take minutes, and the queue's
  * visibility timeout (see infra) is sized for one run, not a batch of them.
@@ -45,7 +47,8 @@ public class ComplianceAnalysisService {
     private final SqsClient sqsClient;
     private final S3Client s3Client;
     private final RestClient aiRestClient;
-    private final MediaAssetService mediaAssetService;
+    private final ChecklistRepository checklistRepository;
+    private final ChecklistService checklistService;
     private final ObjectMapper objectMapper;
     private final String queueUrl;
 
@@ -53,14 +56,16 @@ public class ComplianceAnalysisService {
             SqsClient sqsClient,
             S3Client s3Client,
             @Qualifier("aiRestClient") RestClient aiRestClient,
-            MediaAssetService mediaAssetService,
+            ChecklistRepository checklistRepository,
+            ChecklistService checklistService,
             ObjectMapper objectMapper,
             @Value("${app.aws.sqs.transcript-handoff-queue-url:}") String queueUrl
     ) {
         this.sqsClient = sqsClient;
         this.s3Client = s3Client;
         this.aiRestClient = aiRestClient;
-        this.mediaAssetService = mediaAssetService;
+        this.checklistRepository = checklistRepository;
+        this.checklistService = checklistService;
         this.objectMapper = objectMapper;
         this.queueUrl = queueUrl;
     }
@@ -92,8 +97,14 @@ public class ComplianceAnalysisService {
 
     private void processMessage(Message message) {
         JsonNode body = objectMapper.readTree(message.body());
+        // Kept for the log line only - no DB write in this class needs it anymore, since the
+        // AI response is now stored against the checklist, not the media asset.
         UUID mediaAssetId = UUID.fromString(body.path("mediaAssetId").asText());
+        UUID checklistId = UUID.fromString(body.path("checklistId").asText());
         String transcriptUri = body.path("transcriptUri").asText();
+
+        Checklist checklist = checklistRepository.findById(checklistId)
+                .orElseThrow(() -> new IllegalStateException("Checklist " + checklistId + " not found"));
 
         JsonNode results = readTranscript(transcriptUri).path("results");
         if (results.isMissingNode()) {
@@ -102,26 +113,26 @@ public class ComplianceAnalysisService {
 
         ObjectNode input = objectMapper.createObjectNode();
         input.set("results", results);
-        // The deployment-wide checklist defaults to "{}" - only forward a real list of items,
+        // The deployment-wide default checklist is "{}" - only forward a real list of items,
         // otherwise let fyp-ai fall back to its built-in checklist.
-        JsonNode checklist = body.path("checklist");
-        if (checklist.isArray() && !checklist.isEmpty()) {
-            input.set("checklist", checklist);
+        JsonNode checklistItems = objectMapper.readTree(checklist.getChecklist());
+        if (checklistItems.isArray() && !checklistItems.isEmpty()) {
+            input.set("checklist", checklistItems);
         }
 
         ObjectNode request = objectMapper.createObjectNode();
         request.put("assistant_id", ASSISTANT_ID);
         request.set("input", input);
 
-        log.info("Running compliance analysis for media asset {}", mediaAssetId);
-        String report = aiRestClient.post()
+        log.info("Running compliance analysis for media asset {} (checklist {})", mediaAssetId, checklistId);
+        String output = aiRestClient.post()
                 .uri("/runs/wait")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(objectMapper.writeValueAsString(request))
                 .retrieve()
                 .body(String.class);
 
-        mediaAssetService.saveComplianceReport(mediaAssetId, report);
+        checklistService.saveLanggraphOutput(checklistId, output);
     }
 
     /** transcriptUri is s3://bucket/key, as built by TranscribeStatusPollingService. */

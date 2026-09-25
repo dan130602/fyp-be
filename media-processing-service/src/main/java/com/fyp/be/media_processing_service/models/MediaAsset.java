@@ -7,8 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -59,14 +57,6 @@ public class MediaAsset {
 
     @Column(name = "failure_reason", columnDefinition = "TEXT")
     private String failureReason;
-
-    /** Raw fyp-ai /runs/wait response - see ComplianceAnalysisService. */
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "compliance_report", columnDefinition = "jsonb")
-    private String complianceReport;
-
-    @Column(name = "compliance_analyzed_at")
-    private LocalDateTime complianceAnalyzedAt;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
