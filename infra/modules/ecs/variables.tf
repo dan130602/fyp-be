@@ -78,3 +78,27 @@ variable "log_retention_days" {
   type    = number
   default = 14
 }
+
+variable "health_check_command" {
+  description = "Container health check command. Leave null for the default wget against /api/health (needs wget in the image)."
+  type        = list(string)
+  default     = null
+}
+
+variable "health_check_start_period" {
+  description = "Seconds of grace before failed health checks count against a starting container"
+  type        = number
+  default     = 60
+}
+
+variable "ingress_security_group_ids" {
+  description = "Security groups (e.g. other ECS services' task SGs) allowed to reach the task directly on container_port"
+  type        = list(string)
+  default     = []
+}
+
+variable "service_discovery_namespace_id" {
+  description = "Cloud Map private DNS namespace to register the service in as <name>.<namespace>. Leave null to skip."
+  type        = string
+  default     = null
+}

@@ -27,6 +27,17 @@ resource "aws_security_group" "tasks" {
     }
   }
 
+  # Service-to-service callers (e.g. media-processing-service -> ai-reasoning-service), not via the ALB.
+  dynamic "ingress" {
+    for_each = length(var.ingress_security_group_ids) > 0 ? [1] : []
+    content {
+      from_port       = var.container_port
+      to_port         = var.container_port
+      protocol        = "tcp"
+      security_groups = var.ingress_security_group_ids
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -118,11 +129,11 @@ resource "aws_ecs_task_definition" "this" {
       ]
 
       healthCheck = {
-        command     = ["CMD-SHELL", "wget -qO- http://localhost:${var.container_port}/api/health || exit 1"]
+        command     = var.health_check_command != null ? var.health_check_command : ["CMD-SHELL", "wget -qO- http://localhost:${var.container_port}/api/health || exit 1"]
         interval    = 30
         timeout     = 5
         retries     = 3
-        startPeriod = 60
+        startPeriod = var.health_check_start_period
       }
 
       logConfiguration = {
@@ -137,8 +148,28 @@ resource "aws_ecs_task_definition" "this" {
   ])
 }
 
+# Private DNS A record (<name>.<namespace>) that tracks the service's current task IPs, so
+# other services can call it at a stable hostname without going through a load balancer.
+resource "aws_service_discovery_service" "this" {
+  count = var.service_discovery_namespace_id == null ? 0 : 1
+  name  = var.name
+
+  dns_config {
+    namespace_id   = var.service_discovery_namespace_id
+    routing_policy = "MULTIVALUE"
+
+    dns_records {
+      type = "A"
+      ttl  = 10
+    }
+  }
+
+  # Lets ECS's own container health checks drive registration.
+  health_check_custom_config {}
+}
+
 resource "aws_ecs_service" "this" {
-  name            = "${var.name}-service"
+  name            = var.name
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
   desired_count   = var.desired_count
@@ -156,6 +187,13 @@ resource "aws_ecs_service" "this" {
       target_group_arn = var.target_group_arn
       container_name   = var.name
       container_port   = var.container_port
+    }
+  }
+
+  dynamic "service_registries" {
+    for_each = aws_service_discovery_service.this
+    content {
+      registry_arn = service_registries.value.arn
     }
   }
 
