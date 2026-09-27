@@ -23,6 +23,7 @@ public class AiConfig {
             @Value("${app.ai.read-timeout-seconds}") long readTimeoutSeconds
     ) {
         HttpClient httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
