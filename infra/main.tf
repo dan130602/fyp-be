@@ -372,6 +372,11 @@ resource "aws_secretsmanager_secret" "ai_reasoning_service_langsmith_api_key" {
   description = "LangSmith API key for ai-reasoning-service tracing (raw string)"
 }
 
+resource "aws_secretsmanager_secret" "ai_reasoning_service_google_api_key" {
+  name        = "${local.ai_reasoning_service_name}/google-api-key"
+  description = "Google API key for ai-reasoning-service (raw string)"
+}
+
 # Bedrock credentials come from this task role - no AWS_BEARER_TOKEN_BEDROCK needed in ECS.
 # Foundation-model ARNs are region-wildcarded because the apac.* cross-region inference
 # profiles route requests to other APAC regions.
@@ -422,10 +427,12 @@ module "ai_reasoning_service_ecs" {
 
   secrets = {
     LANGSMITH_API_KEY = aws_secretsmanager_secret.ai_reasoning_service_langsmith_api_key.arn
+    GOOGLE_API_KEY    = aws_secretsmanager_secret.ai_reasoning_service_google_api_key.arn
   }
 
   secret_arns_for_execution_role = [
     aws_secretsmanager_secret.ai_reasoning_service_langsmith_api_key.arn,
+    aws_secretsmanager_secret.ai_reasoning_service_google_api_key.arn,
   ]
 }
 

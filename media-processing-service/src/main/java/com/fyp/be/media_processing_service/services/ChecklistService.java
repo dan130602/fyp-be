@@ -1,5 +1,6 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.dtos.ChecklistItemRequest;
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
@@ -8,8 +9,10 @@ import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepositor
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,16 +24,44 @@ public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
     private final LanggraphOutputRepository langgraphOutputRepository;
+    private final ObjectMapper objectMapper;
     private final String defaultChecklistJson;
 
     public ChecklistService(
             ChecklistRepository checklistRepository,
             LanggraphOutputRepository langgraphOutputRepository,
+            ObjectMapper objectMapper,
             @Value("${app.checklist-json}") String defaultChecklistJson
     ) {
         this.checklistRepository = checklistRepository;
         this.langgraphOutputRepository = langgraphOutputRepository;
+        this.objectMapper = objectMapper;
         this.defaultChecklistJson = defaultChecklistJson;
+    }
+
+    /**
+     * Creates the checklist for a newly-uploaded MediaAsset, called at upload time (not lazily
+     * at transcript handoff). If the uploader supplied their own checklist items, those are
+     * recorded as their submission; otherwise falls back to the deployment default, still
+     * attributed to the uploader since they're the one who submitted this upload request.
+     */
+    @Transactional
+    public Checklist createForUpload(UUID mediaAssetId, UUID submittedBy, List<ChecklistItemRequest> checklistItems) {
+        LocalDateTime now = LocalDateTime.now();
+        String checklistJson = (checklistItems == null || checklistItems.isEmpty())
+                ? defaultChecklistJson
+                : objectMapper.writeValueAsString(checklistItems);
+
+        Checklist checklist = Checklist.builder()
+                .id(UUID.randomUUID())
+                .mediaAssetId(mediaAssetId)
+                .submittedBy(submittedBy)
+                .checklist(checklistJson)
+                .status(ChecklistStatus.SUBMITTED)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+        return checklistRepository.save(checklist);
     }
 
     /**
