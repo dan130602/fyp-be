@@ -46,6 +46,7 @@ public class PresignedUrlService {
 
     private final S3Presigner s3Presigner;
     private final MediaAssetRepository mediaAssetRepository;
+    private final ChecklistService checklistService;
     private final UploadProperties uploadProperties;
     private final List<String> allowedContentTypes;
     private final List<String> allowedExtensions;
@@ -56,6 +57,7 @@ public class PresignedUrlService {
     public PresignedUrlService(
             S3Presigner s3Presigner,
             MediaAssetRepository mediaAssetRepository,
+            ChecklistService checklistService,
             UploadProperties uploadProperties,
             @Value("${app.aws.s3.bucket}") String bucketName,
             @Value("${app.aws.s3.presigned-url-expiry-minutes}") long expiryMinutes,
@@ -63,6 +65,7 @@ public class PresignedUrlService {
     ) {
         this.s3Presigner = s3Presigner;
         this.mediaAssetRepository = mediaAssetRepository;
+        this.checklistService = checklistService;
         this.uploadProperties = uploadProperties;
         this.allowedContentTypes = normalize(uploadProperties.allowedContentTypes());
         this.allowedExtensions = normalize(uploadProperties.allowedExtensions());
@@ -180,7 +183,7 @@ public class PresignedUrlService {
 
     private MediaAsset recordMediaAsset(UUID userId, String objectKey, FileUploadRequest file) {
         LocalDateTime now = LocalDateTime.now();
-        return mediaAssetRepository.save(MediaAsset.builder()
+        MediaAsset asset = mediaAssetRepository.save(MediaAsset.builder()
                 .id(UUID.randomUUID())
                 .userId(userId)
                 .objectKey(objectKey)
@@ -191,6 +194,8 @@ public class PresignedUrlService {
                 .createdAt(now)
                 .updatedAt(now)
                 .build());
+        checklistService.createForUpload(asset.getId(), userId, file.checklist());
+        return asset;
     }
 
     /**
