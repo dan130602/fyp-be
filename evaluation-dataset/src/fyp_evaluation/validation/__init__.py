@@ -4,6 +4,7 @@ from .schemas import (
     check_schemas, load_json, to_langgraph_checklist, validate, validate_answers,
     validate_checklist,
 )
+from .dialogue import validate_speaker_alternation
 from .evidence import resolve_evidence, validate_dialogue_against_plan
 from .spoken import verify_spoken_value
 
@@ -16,5 +17,6 @@ from .spoken import verify_spoken_value
 __all__ = [
     "check_schemas", "load_json", "to_langgraph_checklist", "validate",
     "validate_answers", "validate_checklist",
-    "resolve_evidence", "validate_dialogue_against_plan", "verify_spoken_value",
+    "resolve_evidence", "validate_dialogue_against_plan", "validate_speaker_alternation",
+    "verify_spoken_value",
 ]

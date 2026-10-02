@@ -77,6 +77,10 @@ duration. Additional calls and renders use the same contracts.
    answers must equal the matrix and configuration answers.
 5. Generate employee/client dialogue around the plan, using ChatGPT Work
    separately during the pilot. Include planned presence phrases verbatim.
+   Speakers must strictly alternate: a turn is one uninterrupted stretch of
+   speech, so an employee who continues (acknowledgement, recommendation, risk
+   warning, ...) speaks in one turn, never two consecutive `EMPLOYEE` turns.
+   `dialogue-plan` and the compiler reject consecutive same-speaker turns.
 6. Independently verify the dialogue against every predetermined check,
    including speaker, absence and content constraints. Revise nonconforming
    dialogue; never derive or adjust gold from the completed dialogue.
@@ -122,7 +126,7 @@ to the legacy LangGraph request shape; it must not be passed there directly.
 | `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `question`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `question`. |
 | `call_config` | Version, call ID, `metadata` (`language`, `scenario`), positive ordered target duration bounds in seconds, named `scenario_facts`, and nonempty `intended_answers`. Each answer requires `question_id`, typed `expected` and nonblank `scenario_intent`. |
 | `check_plan` | Version, call ID, nonempty `checks`, and required `ordering_constraints` (possibly empty). Each check has `question_id`, typed `expected`, and `evidence_plan`. No resolved turn IDs, critical tokens or render settings. |
-| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT`. |
+| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT` and must strictly alternate (no two consecutive turns by the same speaker; merge them). |
 | `ground_truth` | Version, call ID, metadata, checks preserving their expected answers and evidence plans, and `dialogue` with Python-assigned `turn_id`. Each check adds `gold_evidence_turns` and `gold_evidence_text`. |
 | `timings` | Version, call ID, `render_id`, `audio_file: "audio.mp3"`, total `duration_seconds`, and a `turns` array. Each has integer `turn_id`, start/end seconds and optional `words` array. Word entries contain text and start/end seconds. All times are offsets from the start of stitched audio. |
 | `normalization` | Version, named `rules`, `compliance_rule` and `field_rules`. Each rule declares its scalar `value_type` and `operation: "exact"`. Rules describe value representation, not question classification. |

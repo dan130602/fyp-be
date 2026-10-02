@@ -61,6 +61,11 @@ Only a future deterministic Python compiler may produce it from validated,
 approved and independently verified inputs. Structural validation alone does
 not establish approval, correct semantics, chronology or provenance.
 
+Dialogue turns must strictly alternate EMPLOYEE/CLIENT: never two consecutive
+turns by the same speaker. Merge continued speech into one turn. Turn IDs are
+positions, so this is also what makes evidence turn IDs and the fyp-ai evaluator's
+turn-level scoring meaningful. `validate_speaker_alternation` enforces it in
+`dialogue-plan` and `compile-ground-truth`; fix the dialogue, never the check.
 Use zero-based integer turn IDs. Intermediate dialogue and predetermined plans
 must not contain resolved turn IDs; Python assigns IDs after dialogue creation.
 Exact planned phrases and required speakers govern positive evidence. Missing

@@ -11,6 +11,7 @@ from .schemas import (
 )
 from .call_config import validate_call_config
 from .check_plan import validate_check_plan, validate_forbidden_patterns
+from .dialogue import validate_speaker_alternation
 from .evidence import validate_dialogue_against_plan
 from .tokens import validate_critical_token_coverage
 from fyp_evaluation.authoring.coverage import PILOT_CALL_IDS, compile_expected, load_matrix
@@ -84,7 +85,8 @@ def main():
                 errors = validate(dialogue, "dialogue", args.schema_dir)
                 errors.extend(validate(plan, "check_plan", args.schema_dir))
                 if not errors:
-                    errors = validate_dialogue_against_plan(dialogue, plan)
+                    errors = validate_speaker_alternation(dialogue)
+                    errors.extend(validate_dialogue_against_plan(dialogue, plan))
         elif args.command in {"critical-tokens", "compile-ground-truth"}:
             dialogue = load_json(args.dialogue)
             approved_checklist = load_json(args.checklist)

@@ -59,7 +59,7 @@ def test_tokens_reuse_schema_uniqueness_and_own_turn_rules():
     turn["critical_tokens"] *= 2
     assert "non-unique" in " ".join(coverage(inputs)[0])
     turn["critical_tokens"] = ["ARTIFICIAL affirmative marker."]  # Exists only in another turn.
-    assert coverage(inputs)[0] == ["Turn 4: critical token is not in spoken text"]
+    assert coverage(inputs)[0] == [f"Turn {len(inputs[2]['turns']) - 1}: critical token is not in spoken text"]
 
 
 def test_matrix_selection_from_validated_internal_id():
