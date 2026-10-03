@@ -2,6 +2,7 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,6 +69,13 @@ public class ComplianceAnalysisService {
         this.checklistService = checklistService;
         this.objectMapper = objectMapper;
         this.queueUrl = queueUrl;
+    }
+
+    @PostConstruct
+    void warnIfQueueUnset() {
+        if (queueUrl == null || queueUrl.isBlank()) {
+            log.warn("TRANSCRIPT_HANDOFF_QUEUE_URL is not set; completed transcripts will not be analysed and no compliance report will be stored");
+        }
     }
 
     @Scheduled(fixedDelay = 1000)
