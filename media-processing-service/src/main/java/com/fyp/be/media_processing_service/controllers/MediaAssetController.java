@@ -1,5 +1,6 @@
 package com.fyp.be.media_processing_service.controllers;
 
+import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.dtos.PlaybackUrlResponse;
 import com.fyp.be.media_processing_service.models.User;
@@ -42,5 +43,12 @@ public class MediaAssetController {
     public ResponseEntity<PlaybackUrlResponse> playbackUrl(@PathVariable UUID id, Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);
         return ResponseEntity.ok(mediaAssetService.getPlaybackUrl(id, currentUser.getId()));
+    }
+
+    @GetMapping("/{id}/analysis")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id, Authentication authentication) {
+        User currentUser = currentUserService.getCurrentUser(authentication);
+        return ResponseEntity.ok(mediaAssetService.getAnalysis(id, currentUser.getId()));
     }
 }
