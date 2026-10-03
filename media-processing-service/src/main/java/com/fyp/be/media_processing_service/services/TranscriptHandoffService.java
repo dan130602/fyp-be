@@ -2,6 +2,8 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.MediaAsset;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -35,6 +37,7 @@ import tools.jackson.databind.node.ObjectNode;
  * TranscribeStatusPollingService's guard for the same reason (local dev without this infra
  * wired up shouldn't fail).
  */
+@Slf4j
 @Service
 public class TranscriptHandoffService {
 
@@ -53,6 +56,13 @@ public class TranscriptHandoffService {
         this.objectMapper = objectMapper;
         this.queueUrl = queueUrl;
         this.checklistService = checklistService;
+    }
+
+    @PostConstruct
+    void warnIfQueueUnset() {
+        if (queueUrl == null || queueUrl.isBlank()) {
+            log.warn("TRANSCRIPT_HANDOFF_QUEUE_URL is not set; completed transcripts will not be handed off for AI analysis");
+        }
     }
 
     public void publish(MediaAsset asset) {
