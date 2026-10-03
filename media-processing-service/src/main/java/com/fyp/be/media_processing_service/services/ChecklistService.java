@@ -1,6 +1,7 @@
 package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.ChecklistItemRequest;
+import com.fyp.be.media_processing_service.dtos.ChecklistItemResponse;
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
@@ -9,9 +10,11 @@ import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepositor
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +40,18 @@ public class ChecklistService {
         this.langgraphOutputRepository = langgraphOutputRepository;
         this.objectMapper = objectMapper;
         this.defaultChecklistJson = defaultChecklistJson;
+    }
+
+    /** The deployment default checklist (app.checklist-json); empty when unset or not a JSON array. */
+    public List<ChecklistItemResponse> getDefaultChecklist() {
+        if (defaultChecklistJson == null || defaultChecklistJson.isBlank()) return List.of();
+        JsonNode root = objectMapper.readTree(defaultChecklistJson);
+        if (!root.isArray()) return List.of();
+        List<ChecklistItemResponse> items = new ArrayList<>();
+        for (JsonNode node : root) {
+            items.add(new ChecklistItemResponse(node.path("id").asText(), node.path("question").asText()));
+        }
+        return items;
     }
 
     /**
