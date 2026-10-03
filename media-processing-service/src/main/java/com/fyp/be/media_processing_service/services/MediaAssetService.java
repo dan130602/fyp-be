@@ -1,5 +1,6 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.dtos.ApiTime;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.dtos.PlaybackUrlResponse;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
@@ -94,7 +95,7 @@ public class MediaAssetService {
                 asset.getContentType(),
                 asset.getFileSizeBytes(),
                 asset.getStatus(),
-                asset.getCreatedAt()
+                ApiTime.of(asset.getCreatedAt())
         );
     }
 }

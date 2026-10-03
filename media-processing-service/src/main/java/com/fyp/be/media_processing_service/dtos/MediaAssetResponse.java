@@ -2,7 +2,7 @@ package com.fyp.be.media_processing_service.dtos;
 
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record MediaAssetResponse(
@@ -11,5 +11,5 @@ public record MediaAssetResponse(
         String contentType,
         Long fileSizeBytes,
         MediaAssetStatus status,
-        LocalDateTime createdAt
+        OffsetDateTime createdAt
 ) {}
