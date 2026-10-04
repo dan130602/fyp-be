@@ -423,6 +423,24 @@ JSON are not ignored. There are no fake output artifacts.
 
 ### Generate audio with Amazon Polly
 
+To convert text into SSML locally, run these commands from `evaluation-dataset`:
+
+```powershell
+python scripts/convert_ssml.py --all
+python scripts/convert_ssml.py --call CALL_001
+python scripts/convert_ssml.py --input example.txt
+python scripts/convert_ssml.py --text "Hello and welcome." --output example.ssml
+```
+
+Call conversion preserves turn IDs and speakers and writes
+`renders/<render_id>/segments/<turn_id>.ssml` plus `ssml_manifest.json`.
+Use `--render-id` to select another render folder. Text files produce a sibling
+`.ssml` file by default; `--text` prints SSML when no output file is specified.
+The converter wraps XML-escaped text in `<speak>` and makes no AWS requests.
+It refuses to replace an existing text output or differing call SSML unless
+`--overwrite` is supplied. Plain text conversion uses one selected Polly voice;
+use call conversion for a dialogue with separate employee/client turns.
+
 `scripts/render_polly.py` reads the canonical `ground_truth.json` dialogue for
 each call. It assigns the employee and client separate voices, synthesizes each
 turn, inserts 400 ms of silence between turns, and writes a stitched `audio.mp3`,
