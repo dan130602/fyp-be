@@ -4,11 +4,10 @@ Independent evaluation contracts for **AI-Powered Regulatory Compliance
 Automation for Call Monitoring**. This project lives in the existing `fyp-be`
 repository. It does not import or change the production backend or `fyp-ai`.
 
-**Status: checklist, matrix, five approved call configs and five approved check
-plans exist. CALL_001 additionally has an approved dialogue and a compiled
-canonical `ground_truth.json`, produced as the Stage 5A end-to-end pilot.
-CALL_002-CALL_005 dialogues and their compiled ground truth are Stage 5B work
-and do not exist yet. No audio has been generated.**
+**Status: the checklist, matrix, five call configs, five check plans, five
+dialogues, and five compiled canonical `ground_truth.json` files exist. Polly
+audio has been generated locally for all five calls. Turn timing JSON, SSML,
+and speaker manifests are versioned; MP3 files are ignored by Git.**
 Check-plan and ground-truth versions are `0.6.0`;
 approved call configs and their schema remain `0.5.0`, normalization remains `0.3.0`.
 Tests cover artificial contract fixtures, the actual
@@ -24,40 +23,41 @@ predetermined and must not be reinterpreted from later dialogue.
 | `authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
 | `authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
 | `authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
-| `authoring/dialogues/` | CALL_001's approved spoken dialogue, without turn IDs. CALL_002-CALL_005 are Stage 5B work and do not exist yet. |
+| `authoring/dialogues/` | Five spoken dialogues without turn IDs. |
 | `configs/normalization.json` | Reusable exact-comparison rules, a compliance rule reference and extraction field-to-rule references. No question-ID mappings or scoring implementation. |
 | `configs/render.json` | Unset Polly rendering template, containing no credentials. |
 | `src/fyp_evaluation/validation/` | Schema/integrity and cross-file checks, shared evidence matching, pilot spoken-value verification, independent annotation coverage, CLI and pure LangGraph checklist projection. |
 | `src/fyp_evaluation/authoring/` | CSV loading, deterministic expected-answer compilation, mode derivation, safe scaffold writers and canonical ground-truth compilation. |
-| `src/fyp_evaluation/rendering/` | Reserved for SSML, Polly, stitching and timings. |
+| `src/fyp_evaluation/rendering/` | Reserved for reusable rendering modules; `scripts/render_polly.py` provides the current Polly workflow. |
 | `src/fyp_evaluation/scoring/` | Reserved for comparing pipeline predictions against gold. |
-| `scripts/` | Reserved for thin command-line workflow wrappers. |
+| `scripts/` | Command-line workflow wrappers, including Polly rendering and SSML export. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
 | `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `text`, plus `requirement_type` for compliance or `field` for extraction. |
-| `evaluation_dataset/calls/` | Canonical calls and separate render outputs. CALL_001 has a compiled `ground_truth.json`; CALL_002-CALL_005 hold only empty render placeholders pending Stage 5B. |
+| `evaluation_dataset/calls/` | Five canonical calls and separate render outputs. Each call has ground truth, turn timing JSON, and per-turn SSML. Generated MP3 files stay local. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
-Final artifacts retain this layout. `CALL_001/ground_truth.json` exists now
-(Stage 5A); the render files under `renders/` and the remaining four calls'
-`ground_truth.json` files do **not** exist yet:
+All five calls have the following layout. The MP3 files are generated locally
+and ignored by Git; timing JSON, SSML, and manifests are versioned:
 
 ```text
 evaluation_dataset/
 ├── checklist.json
 └── calls/
     ├── CALL_001/
-    │   ├── ground_truth.json          (exists)
+    │   ├── ground_truth.json
     │   └── renders/
     │       └── clean_voice_A/
-    │           ├── audio.mp3          (not yet — Stage 7)
-    │           ├── timings.json       (not yet — Stage 7)
+    │           ├── audio.mp3          (local only)
+    │           ├── timings.json
+    │           ├── ssml_manifest.json
     │           └── segments/
-    │               ├── 0.mp3          (not yet — Stage 7)
+    │               ├── 0.mp3          (local only)
+    │               ├── 0.ssml
     │               └── ...
-    ├── CALL_002/                      (ground_truth.json not yet — Stage 5B)
-    ├── CALL_003/                      (ground_truth.json not yet — Stage 5B)
-    ├── CALL_004/                      (ground_truth.json not yet — Stage 5B)
-    └── CALL_005/                      (ground_truth.json not yet — Stage 5B)
+    ├── CALL_002/
+    ├── CALL_003/
+    ├── CALL_004/
+    └── CALL_005/
 ```
 
 The schema does not hard-code five calls, ten questions, or a maximum recording
@@ -87,8 +87,8 @@ duration. Additional calls and renders use the same contracts.
 
 Validation, deterministic config/check-plan scaffolding and canonical compilation are implemented.
 No narrative generation,
-semantic verification, LLM API, audio pipeline, AWS calls, Transcribe,
-LangGraph integration, or evaluation metrics are implemented. A structural
+semantic verification, LLM API, Transcribe, LangGraph integration, or evaluation
+metrics are implemented. The five Polly renders were generated locally. A structural
 validation pass is neither approval nor independent semantic verification.
 
 If a predetermined answer must change, explicitly revise and reapprove the
@@ -402,9 +402,10 @@ represents absence of an extractable value, not inapplicability or compliance FA
 ## Rendering boundary
 
 `configs/render.json` intentionally has null voice, region, engine, sample rate,
-prosody and silence settings. It is not runnable. Choose settings before any
-render; never add credentials. Voice choices, speech rate, pitch, SSML and
-render-specific settings belong outside canonical ground truth.
+prosody and silence settings. The template is not runnable. The rendering script
+instead takes explicit command-line options with documented defaults; never add
+credentials. Voice choices, speech rate, pitch, SSML and render-specific settings
+belong outside canonical ground truth.
 
 Python assigns canonical turn IDs after dialogue generation and before
 rendering. Amazon Polly must never assign, renumber or change those IDs; it
@@ -420,10 +421,52 @@ segment files agree. Current validation does not inspect media.
 Generated audio and run outputs are ignored by Git. Gold, schemas and timing
 JSON are not ignored. There are no fake output artifacts.
 
+### Generate audio with Amazon Polly
+
+`scripts/render_polly.py` reads the canonical `ground_truth.json` dialogue for
+each call. It assigns the employee and client separate voices, synthesizes each
+turn, inserts 400 ms of silence between turns, and writes a stitched `audio.mp3`,
+per-turn MP3 segments and turn-level `timings.json` under
+`evaluation_dataset/calls/CALL_XXX/renders/clean_voice_A/`. It does not change
+canonical ground truth or the prepared transcripts. Word timings are not
+generated; listen to each render and check the spoken identifiers, amounts and
+dates before using the audio for ASR evaluation.
+
+The committed `clean_voice_A/timings.json` files describe the original
+`clean_voice_A/audio.mp3` files. Keep those exact MP3 files in separate storage
+for evaluation. A new Polly synthesis can have different durations and must use
+its own timing file and render ID.
+
+To save the exact SSML sent for each turn without making another Polly request,
+run `python scripts/export_ssml.py --all`. Each render then has
+`segments/<turn_id>.ssml` plus `ssml_manifest.json`, which maps turn IDs to
+EMPLOYEE or CLIENT. The SSML wraps XML-escaped canonical text in `<speak>`;
+the voice is selected by the Polly API request, not embedded in the SSML.
+
+Install the rendering dependencies and configure an AWS profile with permission
+to call `polly:DescribeVoices` and `polly:SynthesizeSpeech`. No AWS credentials
+belong in this repository. Then run from this directory:
+
+```powershell
+python -m pip install -e ".[render]"
+python scripts/render_polly.py --all
+python scripts/render_polly.py --all --render-id clean_voice_B --execute
+```
+
+The command previews by default; `--execute` makes billable AWS calls. Defaults
+are `ap-southeast-1`, neural engine, Jasmine for EMPLOYEE and Matthew for CLIENT.
+Use `--region`, `--engine`, `--employee-voice`, `--client-voice`,
+`--silence-ms` or `--render-id` to select another render. Existing audio is
+protected unless `--overwrite` is passed; `--skip-existing` leaves completed
+renders alone when rendering the batch. Do not overwrite the committed
+`clean_voice_A` timings when creating a new audio version. Polly returns 16 kHz PCM, which the
+script stitches before encoding the MP3 files with FFmpeg supplied by
+`imageio-ffmpeg`.
+
 ## Transcript and speaker-role conversion
 
-Audio generation (Stages 7-9 above) has not run yet, so no real `timings.json`
-exists. `fyp_evaluation.transcripts` deterministically converts each call's
+The five `timings.json` files contain render-specific turn timings.
+`fyp_evaluation.transcripts` deterministically converts each call's
 canonical `ground_truth.json` into two separate prepared files the offline
 NLP evaluation framework in `fyp-ai` consumes, without an LLM, Polly, AWS
 Transcribe, Bedrock or any other network call:
@@ -449,10 +492,9 @@ reconstructs its working transcript by joining diarized segments with two
 newlines (`_TURN_SEPARATOR = "\n\n"`); `transcripts[0].transcript` uses the
 same separator so the two representations agree.
 
-Because the audio pipeline has not run, every segment currently carries the
-documented temporary placeholder `"start_time": "0.0", "end_time": "0.0"`.
-These are not measurements. Once Stage 9 produces a real `timings.json`,
-the same converter is meant to regenerate `transcript.json` with real
+The prepared transcript files still carry the documented temporary placeholder
+`"start_time": "0.0", "end_time": "0.0"`. These are not measurements. The
+same converter is meant to regenerate `transcript.json` with real
 per-turn timing from `ground_truth.json` + `timings.json` together, rather
 than patching the placeholder file in place; that enrichment path is not
 implemented yet (`build_transcript_artifacts(..., timings=...)` raises
