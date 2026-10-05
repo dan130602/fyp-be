@@ -154,6 +154,10 @@ resource "aws_service_discovery_service" "this" {
   count = var.service_discovery_namespace_id == null ? 0 : 1
   name  = var.name
 
+  # ECS deregisters task IPs asynchronously, so on destroy a stale instance can outlive the ECS
+  # service and make DeleteService fail with ResourceInUse. This deregisters them first.
+  force_destroy = true
+
   dns_config {
     namespace_id   = var.service_discovery_namespace_id
     routing_policy = "MULTIVALUE"
