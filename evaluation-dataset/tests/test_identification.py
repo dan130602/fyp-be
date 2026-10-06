@@ -134,7 +134,7 @@ def test_pre_nullable_contract_versions_need_explicit_migration(name):
 
 
 def test_pilot_k01_question_wording():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     assert next(item for item in checklist if item["id"] == "K01") == {
         "id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number",
         "question": "What is the client's NRIC or FIN number?",

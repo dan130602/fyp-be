@@ -4,7 +4,7 @@ Scope: this self-contained `fyp-be/evaluation-dataset` project only. Do not
 modify backend, infrastructure, LangGraph or unrelated files for dataset work.
 
 Read `README.md`, applicable schemas and `configs/normalization.json` before edits.
-The authoritative checklist contains `id`, `type`, `question`, plus
+Each dataset release has one authoritative checklist containing `id`, `type`, `question`, plus
 `requirement_type` (OBLIGATION/PROHIBITION) only for COMPLIANCE or `field` only
 for CLIENT_KYC/TRANSACTION. `question` was renamed from `text` at checklist
 schema revision 0.3.0 so the source already matches the LangGraph id/question
@@ -14,7 +14,7 @@ or a question metadata file. Reusable field-to-rule mappings belong in
 `configs/normalization.json`. Unmapped extraction fields fail validation.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
-IDs and order. Do not store a second checklist or change production LangGraph.
+IDs and order. Do not duplicate a checklist within a release or change production LangGraph.
 
 Preserve the workflow: approved checklist -> approved coverage matrix -> call
 config -> predetermined check plan -> dialogue -> independent verification ->
@@ -23,7 +23,7 @@ Never infer, revise or reinterpret gold answers from generated dialogue.
 Correct dialogue that violates the plan. Changes to gold require explicit
 upstream revision and reapproval, followed by regeneration.
 
-Stage 3A: the checklist and matrix are approved and read-only. All config
+Legacy pilot Stage 3A: the checklist and matrix are approved and read-only. All config
 expected answers must be compiled by Python from matrix cells, never authored
 or retyped by AI. The answer_contract governs representation only. Reuse
 authoring.coverage and authoring.call_configs; refuse existing output paths
@@ -94,7 +94,7 @@ other matrix answer. Null is not N/A, inapplicability or compliance FAIL.
 A later scorer reports PASS/FAIL for extraction comparison and deterministically
 normalizes equivalent predicted date forms without changing canonical gold.
 Do not accept N/A or UNCLEAR predictions as new gold labels. No applicability
-gating or depends_on logic in the pilot.
+gating or depends_on logic in the legacy pilot.
 
 Do not generate real checklist questions, matrix rows, scenarios, check plans,
 dialogues or dataset artifacts without user approval. Test fixtures must be

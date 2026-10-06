@@ -14,6 +14,8 @@ from .validation.transcript import validate_transcript_pair
 
 FORMAT = "fyp-nlp-dataset-v1"
 CALL_FILES = ("ground_truth.json", "transcript.json", "speaker_roles.json")
+DEFAULT_DATASET_ROOT = Path("datasets/legacy_pilot_v1")
+DATASET_MANIFEST_VERSION = "0.1.0"
 
 
 def digest(data):
@@ -37,16 +39,36 @@ def no_links(path):
             raise ValueError(f"Refusing symlink/junction: {part}")
 
 
-def prepare_snapshot(project):
+def resolve_dataset_root(project, dataset_root=DEFAULT_DATASET_ROOT):
+    project = Path(project).resolve()
+    dataset = Path(dataset_root)
+    return (dataset if dataset.is_absolute() else project / dataset).resolve()
+
+
+def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT):
     """Validate the prepared source and return deterministic snapshot bytes."""
     project = Path(project).resolve()
     repo = Path(git(project, "rev-parse", "--show-toplevel").decode().strip())
     commit = git(repo, "rev-parse", "HEAD").decode().strip()
-    dataset = project / "evaluation_dataset"
+    dataset = resolve_dataset_root(project, dataset_root)
     schemas = project / "schemas"
     calls = sorted(p for p in (dataset / "calls").iterdir() if p.is_dir())
     if not calls:
         raise ValueError("No call directories found")
+    source_manifest_path = dataset / "dataset_manifest.json"
+    source_manifest = load_json(source_manifest_path)
+    required_manifest_keys = {"schema_version", "dataset_id", "checklist_id", "call_ids"}
+    if set(source_manifest) != required_manifest_keys:
+        raise ValueError("dataset_manifest.json must contain exactly schema_version, dataset_id, checklist_id and call_ids")
+    if source_manifest["schema_version"] != DATASET_MANIFEST_VERSION:
+        raise ValueError(f"Unsupported dataset manifest version: {source_manifest['schema_version']}")
+    for key in ("dataset_id", "checklist_id"):
+        if not isinstance(source_manifest[key], str) or not re.fullmatch(r"[a-z][a-z0-9_]*", source_manifest[key]):
+            raise ValueError(f"dataset_manifest.json {key} must be a lowercase identifier")
+    discovered_call_ids = [call.name for call in calls]
+    if source_manifest["call_ids"] != discovered_call_ids:
+        raise ValueError("dataset_manifest.json call_ids must exactly match sorted call directories")
+
     paths = {"checklist.json": dataset / "checklist.json"}
     for call in calls:
         if not re.fullmatch(r"CALL_[0-9]{3,}", call.name):
@@ -56,7 +78,7 @@ def prepare_snapshot(project):
 
     # Validate the exact local bytes, and require them to match HEAD. This also
     # detects ignored/untracked inputs and works with Git's CRLF checkout rules.
-    inputs = list(paths.values()) + [project / "configs/normalization.json"] + list(schemas.glob("*.json"))
+    inputs = [source_manifest_path, *paths.values(), project / "configs/normalization.json", *schemas.glob("*.json")]
     for path in inputs:
         no_links(path)
         relative = path.relative_to(repo).as_posix()
@@ -82,8 +104,13 @@ def prepare_snapshot(project):
     files = {name: serialize(load_json(path)) for name, path in sorted(paths.items())}
     manifest = {
         "format": FORMAT,
-        "source": {"git_commit": commit, "dataset_path": dataset.relative_to(repo).as_posix()},
-        "call_ids": [p.name for p in calls],
+        "source": {
+            "git_commit": commit,
+            "dataset_path": dataset.relative_to(repo).as_posix(),
+            "dataset_id": source_manifest["dataset_id"],
+            "checklist_id": source_manifest["checklist_id"],
+        },
+        "call_ids": discovered_call_ids,
         "timing_status": "placeholder_zero",
         "files": {name: digest(data) for name, data in files.items()},
     }
@@ -126,14 +153,14 @@ def verify_snapshot(destination):
     return manifest
 
 
-def export_snapshot(project, destination, *, overwrite=False):
+def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False):
     destination = Path(destination).absolute()
     no_links(destination)
     destination = destination.resolve()
     project = Path(project).resolve()
     if destination == project or project in destination.parents or destination in project.parents:
         raise ValueError("Destination must be outside the dataset project")
-    files = prepare_snapshot(project)  # Complete validation before any writes.
+    files = prepare_snapshot(project, dataset_root)  # Complete validation before any writes.
     if destination.exists():
         if not overwrite:
             raise ValueError("Destination exists; use --overwrite for a verified snapshot update")
@@ -174,13 +201,22 @@ def export_snapshot(project, destination, *, overwrite=False):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-dir", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument(
+        "--dataset-root",
+        type=Path,
+        default=DEFAULT_DATASET_ROOT,
+        help="Source dataset release, relative to --project-dir unless absolute",
+    )
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--check", action="store_true", help="Verify destination only; write nothing")
     args = parser.parse_args(argv)
     try:
         manifest = verify_snapshot(args.destination) if args.check else export_snapshot(
-            args.project_dir, args.destination, overwrite=args.overwrite
+            args.project_dir,
+            args.destination,
+            dataset_root=args.dataset_root,
+            overwrite=args.overwrite,
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(f"Export error: {error}", file=sys.stderr)

@@ -10,6 +10,7 @@ from fyp_evaluation.transcripts.converter import build_transcript_artifacts
 from transcript_fixtures import minimal_ground_truth
 
 PROJECT = Path(__file__).resolve().parents[1]
+DATASET_ROOT = Path("datasets/legacy_pilot_v1")
 
 
 def write(path, value):
@@ -23,14 +24,20 @@ def source(tmp_path):
     project = tmp_path / "source"
     shutil.copytree(PROJECT / "schemas", project / "schemas")
     shutil.copytree(PROJECT / "configs", project / "configs")
-    write(project / "evaluation_dataset/checklist.json", [
+    write(project / DATASET_ROOT / "checklist.json", [
         {"id": "FIX01", "type": "COMPLIANCE", "question": "ARTIFICIAL marker?", "requirement_type": "OBLIGATION"}
     ])
+    write(project / DATASET_ROOT / "dataset_manifest.json", {
+        "schema_version": "0.1.0",
+        "dataset_id": "artificial_pilot_v1",
+        "checklist_id": "artificial_checklist_v1",
+        "call_ids": ["CALL_001", "CALL_002"],
+    })
     for cid in ("CALL_001", "CALL_002"):
         gt = minimal_ground_truth(cid, [("EMPLOYEE", "Artificial greeting."), ("CLIENT", "Artificial reply.")])
         transcript, roles = build_transcript_artifacts(gt, schema_dir=project / "schemas")
         for name, data in zip(exporting.CALL_FILES, (gt, transcript, roles)):
-            write(project / "evaluation_dataset/calls" / cid / name, data)
+            write(project / DATASET_ROOT / "calls" / cid / name, data)
     def git(*args):
         subprocess.run(["git", "-C", str(project), *args], check=True, capture_output=True)
     git("init")
@@ -47,6 +54,7 @@ def test_export_deterministic_and_separate_inputs(source, tmp_path):
     after = {p.relative_to(destination): p.read_bytes() for p in destination.rglob("*") if p.is_file()}
     assert before == after
     assert manifest["call_ids"] == ["CALL_001", "CALL_002"]
+    assert manifest["source"]["dataset_id"] == "artificial_pilot_v1"
     assert len(before) == 8
     transcript = json.loads((destination / "calls/CALL_001/transcript.json").read_text())
     assert set(transcript) == {"transcripts", "audio_segments"}
@@ -55,7 +63,7 @@ def test_export_deterministic_and_separate_inputs(source, tmp_path):
 
 @pytest.mark.parametrize("damage", ["dirty", "missing", "mismatch"])
 def test_invalid_source_writes_nothing(source, tmp_path, damage):
-    path = source / "evaluation_dataset/calls/CALL_002/transcript.json"
+    path = source / DATASET_ROOT / "calls/CALL_002/transcript.json"
     if damage == "missing":
         path.unlink()
     else:
@@ -92,6 +100,20 @@ def test_overwrite_must_be_explicit(source, tmp_path):
     exporting.export_snapshot(source, dest)
     with pytest.raises(ValueError, match="--overwrite"):
         exporting.export_snapshot(source, dest)
+
+
+def test_source_manifest_must_match_calls(source, tmp_path):
+    manifest_path = source / DATASET_ROOT / "dataset_manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["call_ids"] = ["CALL_001"]
+    write(manifest_path, manifest)
+    subprocess.run(["git", "-C", str(source), "add", "."], check=True, capture_output=True)
+    subprocess.run([
+        "git", "-C", str(source), "-c", "user.name=Test", "-c",
+        "user.email=test@example.invalid", "commit", "-m", "Bad manifest",
+    ], check=True, capture_output=True)
+    with pytest.raises(ValueError, match="call_ids"):
+        exporting.export_snapshot(source, tmp_path / "out")
 
 
 def test_install_failure_restores_existing_snapshot(source, tmp_path, monkeypatch):

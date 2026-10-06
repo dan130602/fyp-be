@@ -39,13 +39,13 @@ def check_matrix(matrix, checklist, *, call_ids=None):
 def load_matrix(path, *, checklist=None, call_ids=PILOT_CALL_IDS):
     """Load UTF-8 CSV as call -> question -> unchanged string cell.
 
-    By default, use the project checklist adjacent to authoring/ and the five
+    By default, use the dataset checklist adjacent to authoring/ and the five
     pilot columns. Other repositories/call sets can explicitly supply their
     approved checklist and call_ids. No copied question-ID catalogue is kept.
     """
     path = Path(path)
     if checklist is None:
-        checklist = load_json(path.parent.parent / "evaluation_dataset/checklist.json")
+        checklist = load_json(path.parent.parent / "checklist.json")
     try:
         with path.open(encoding="utf-8-sig", newline="") as file:
             rows = list(csv.reader(file, strict=True))

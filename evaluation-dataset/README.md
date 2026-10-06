@@ -23,10 +23,10 @@ predetermined and must not be reinterpreted from later dialogue.
 | Location | Purpose |
 | --- | --- |
 | `schemas/` | Six core Draft 2020-12 data schemas plus reusable normalization rules. References resolve locally; `.invalid` schema IDs are identifiers, not network endpoints. |
-| `authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
-| `authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
-| `authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
-| `authoring/dialogues/` | Five spoken dialogues without turn IDs. |
+| `datasets/legacy_pilot_v1/authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
+| `datasets/legacy_pilot_v1/authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
+| `datasets/legacy_pilot_v1/authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
+| `datasets/legacy_pilot_v1/authoring/dialogues/` | Five spoken dialogues without turn IDs. |
 | `configs/normalization.json` | Reusable exact-comparison rules, a compliance rule reference and extraction field-to-rule references. No question-ID mappings or scoring implementation. |
 | `configs/render.json` | Unset Polly rendering template, containing no credentials. |
 | `src/fyp_evaluation/validation/` | Schema/integrity and cross-file checks, shared evidence matching, pilot spoken-value verification, independent annotation coverage, CLI and pure LangGraph checklist projection. |
@@ -35,17 +35,20 @@ predetermined and must not be reinterpreted from later dialogue.
 | `src/fyp_evaluation/scoring/` | Reserved for comparing pipeline predictions against gold. |
 | `scripts/` | Command-line workflow wrappers, including Polly rendering and SSML export. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
-| `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `question`, plus `requirement_type` for compliance or `field` for extraction. |
-| `evaluation_dataset/calls/` | Five canonical calls and separate render outputs. Each call has ground truth, turn timing JSON, and per-turn SSML. Generated MP3 files stay local. |
+| `datasets/legacy_pilot_v1/` | Frozen five-call pilot release. Its manifest identifies the dataset/checklist and enumerates calls; its checklist, authoring inputs, canonical calls and renders move together. |
+| `datasets/advisory_execution_pilot_v1/` | New advisory/execution checklist release scaffold. Its checklist is present, but authoring inputs and calls are intentionally empty pending approval and normalization work. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
 All five calls have the following layout. The MP3 files are generated locally
 and ignored by Git; timing JSON, SSML, and manifests are versioned:
 
 ```text
-evaluation_dataset/
-├── checklist.json
-└── calls/
+datasets/
+├── legacy_pilot_v1/
+│   ├── dataset_manifest.json
+│   ├── checklist.json
+│   ├── authoring/
+│   └── calls/
     ├── CALL_001/
     │   ├── ground_truth.json
     │   └── renders/
@@ -60,7 +63,12 @@ evaluation_dataset/
     ├── CALL_002/
     ├── CALL_003/
     ├── CALL_004/
-    └── CALL_005/
+│       └── CALL_005/
+└── advisory_execution_pilot_v1/
+    ├── dataset_manifest.json
+    ├── checklist.json
+    ├── authoring/
+    └── calls/
 ```
 
 The schema does not hard-code five calls, ten questions, or a maximum recording
@@ -436,8 +444,8 @@ JSON are not ignored. There are no fake output artifacts.
 To convert text into SSML locally, run these commands from `evaluation-dataset`:
 
 ```powershell
-python scripts/convert_ssml.py --all
-python scripts/convert_ssml.py --call CALL_001
+python scripts/convert_ssml.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/convert_ssml.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001
 python scripts/convert_ssml.py --input example.txt
 python scripts/convert_ssml.py --text "Hello and welcome." --output example.ssml
 ```
@@ -455,7 +463,7 @@ use call conversion for a dialogue with separate employee/client turns.
 each call. It assigns the employee and client separate voices, synthesizes each
 turn, inserts 400 ms of silence between turns, and writes a stitched `audio.mp3`,
 per-turn MP3 segments and turn-level `timings.json` under
-`evaluation_dataset/calls/CALL_XXX/renders/clean_voice_A/`. It does not change
+`datasets/legacy_pilot_v1/calls/CALL_XXX/renders/clean_voice_A/`. It does not change
 canonical ground truth or the prepared transcripts. Word timings are not
 generated; listen to each render and check the spoken identifiers, amounts and
 dates before using the audio for ASR evaluation.
@@ -466,7 +474,8 @@ for evaluation. A new Polly synthesis can have different durations and must use
 its own timing file and render ID.
 
 To save the exact SSML sent for each turn without making another Polly request,
-run `python scripts/export_ssml.py --all`. Each render then has
+run `python scripts/export_ssml.py --dataset-root datasets/legacy_pilot_v1 --all`.
+Each render then has
 `segments/<turn_id>.ssml` plus `ssml_manifest.json`, which maps turn IDs to
 EMPLOYEE or CLIENT. The SSML wraps XML-escaped canonical text in `<speak>`;
 the voice is selected by the Polly API request, not embedded in the SSML.
@@ -477,8 +486,8 @@ belong in this repository. Then run from this directory:
 
 ```powershell
 python -m pip install -e ".[render]"
-python scripts/render_polly.py --all
-python scripts/render_polly.py --all --render-id clean_voice_B --execute
+python scripts/render_polly.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/render_polly.py --dataset-root datasets/legacy_pilot_v1 --all --render-id clean_voice_B --execute
 ```
 
 The command previews by default; `--execute` makes billable AWS calls. Defaults
@@ -500,7 +509,7 @@ NLP evaluation framework in `fyp-ai` consumes, without an LLM, Polly, AWS
 Transcribe, Bedrock or any other network call:
 
 ```text
-evaluation_dataset/calls/CALL_XXX/
+datasets/legacy_pilot_v1/calls/CALL_XXX/
 ├── ground_truth.json      (unchanged)
 ├── transcript.json        (generated)
 └── speaker_roles.json     (generated)
@@ -545,10 +554,10 @@ checked by `fyp_evaluation.validation.transcript.validate_transcript_pair`
 `fyp_evaluation.transcripts`).
 
 ```powershell
-python scripts/build_transcripts.py --call CALL_001
-python scripts/build_transcripts.py --all
-python scripts/build_transcripts.py --all --check       # read-only; writes nothing
-python scripts/build_transcripts.py --call CALL_001 --overwrite
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --all --check
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001 --overwrite
 ```
 
 Every selected call is built and cross-validated before anything is
@@ -574,9 +583,9 @@ Once authoring documents exist, validate JSON files, checklist/rule links and
 downstream expected-answer compatibility with:
 
 ```powershell
-fyp-validate json check_plan authoring/check_plans/CALL_001.json
-fyp-validate checklist evaluation_dataset/checklist.json configs/normalization.json
-fyp-validate answers check_plan authoring/check_plans/CALL_001.json evaluation_dataset/checklist.json configs/normalization.json
+fyp-validate json check_plan datasets/legacy_pilot_v1/authoring/check_plans/CALL_001.json
+fyp-validate checklist datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+fyp-validate answers check_plan datasets/legacy_pilot_v1/authoring/check_plans/CALL_001.json datasets/legacy_pilot_v1/checklist.json configs/normalization.json
 ```
 
 The checklist command validates the updated pilot checklist and its
@@ -791,7 +800,7 @@ Reusable APIs:
 
 * `authoring.coverage.load_matrix(path, *, checklist=None, call_ids=PILOT_CALL_IDS)`
   returns `{call_id: {question_id: raw_string_cell}}`. By default it reads the
-  authoritative checklist at `path.parent.parent/evaluation_dataset/checklist.json`
+  checklist adjacent to that dataset's `authoring/` directory
   and requires CALL_001-CALL_005 in order. Pass the approved checklist and an
   explicit ordered call-ID list for other layouts or larger datasets. Rejects
   duplicate/unknown/missing IDs, duplicate/wrong/missing call headers, ragged rows,
@@ -828,10 +837,10 @@ All five fresh scaffolds pass scaffold mode and fail complete mode with exactly
 From this project directory, after installation (or setting `PYTHONPATH=src`):
 
 ```powershell
-python -m fyp_evaluation.validation matrix authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation scaffold-call-configs authoring/coverage_matrix.csv authoring/call_configs evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json --complete
+python -m fyp_evaluation.validation matrix datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation scaffold-call-configs datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/authoring/call_configs datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config datasets/legacy_pilot_v1/authoring/call_configs/CALL_001.json datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config datasets/legacy_pilot_v1/authoring/call_configs/CALL_001.json datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json --complete
 ```
 
 The generation command now refuses because the five files already exist; this
@@ -869,7 +878,7 @@ input field produced `KeyError('question')`, because Studio does not run any
 adapter for you. Rather than only document that workflow step, the checklist
 source itself was changed so it already matches the graph's field name.
 
-`evaluation_dataset/checklist.json`, `schemas/checklist.schema.json` and
+`datasets/legacy_pilot_v1/checklist.json`, `schemas/checklist.schema.json` and
 `to_langgraph_checklist` were updated together: every checklist item's prompt
 is now stored under `question` instead of `text`; `type`, `requirement_type`
 and `field` are unchanged. `to_langgraph_checklist` no longer renames a field,
@@ -902,7 +911,8 @@ implements canonical compilation. Comparing pipeline predictions remains future 
 
 ## Pilot checklist interpretation and source review
 
-The sole authoritative question text is in `evaluation_dataset/checklist.json`.
+The legacy pilot's authoritative question text is in
+`datasets/legacy_pilot_v1/checklist.json`.
 Its ordered IDs are C01-C06, K01-K02 and T01-T02: four compliance obligations,
 two compliance prohibitions, two KYC extractions and two transaction extractions.
 This section records proposed interpretation and sources, not per-call gold
@@ -1027,7 +1037,7 @@ the integer/number/boolean rules remain available but unused by this checklist.
 
 ## Five-call coverage matrix review
 
-`authoring/coverage_matrix.csv` now contains the predetermined answers for
+`datasets/legacy_pilot_v1/authoring/coverage_matrix.csv` contains the predetermined answers for
 C01-C06, K01-K02 and T01-T02 across CALL_001 through CALL_005. There are 50 gold
 answer cells, including one explicit K01 `NOT_STATED` cell, with no blank cells
 or N/A/UNCLEAR labels. The CSV contains

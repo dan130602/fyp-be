@@ -48,11 +48,13 @@ def test_call_conversion_keeps_turn_ids_and_speaker_roles(tmp_path, monkeypatch)
         {"turn_id": 0, "speaker": "EMPLOYEE", "text": "Welcome & hello."},
         {"turn_id": 1, "speaker": "CLIENT", "text": "Thank you."},
     ]
-    monkeypatch.setattr(convert_ssml, "CALLS", tmp_path)
-    monkeypatch.setattr(export_ssml, "CALLS", tmp_path)
-    monkeypatch.setattr(export_ssml, "load_turns", lambda call_id: turns)
-    assert convert_ssml.main(["--call", "CALL_999"]) == 0
-    render = tmp_path / "CALL_999" / "renders" / "clean_voice_A"
+    dataset_root = tmp_path / "dataset"
+    calls_dir = dataset_root / "calls"
+    monkeypatch.setattr(export_ssml, "load_turns", lambda call_id, _calls_dir: turns)
+    assert convert_ssml.main([
+        "--dataset-root", str(dataset_root), "--call", "CALL_999"
+    ]) == 0
+    render = calls_dir / "CALL_999" / "renders" / "clean_voice_A"
     manifest = json.loads((render / "ssml_manifest.json").read_text(encoding="utf-8"))
     assert [(turn["turn_id"], turn["speaker"]) for turn in manifest["turns"]] == [
         (0, "EMPLOYEE"), (1, "CLIENT")

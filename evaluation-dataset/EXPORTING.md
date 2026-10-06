@@ -3,7 +3,7 @@
 Run from `fyp-be/evaluation-dataset` in CMD or PowerShell:
 
 ```bat
-python -B scripts/export_dataset.py --destination "../../fyp-ai/evaluation/datasets/pilot"
+python -B scripts/export_dataset.py --dataset-root "datasets/legacy_pilot_v1" --destination "../../fyp-ai/evaluation/datasets/pilot"
 ```
 
 The script creates all destination folders. It does not create Git branches,
@@ -31,7 +31,9 @@ schemas, checklist coverage/types, call identity, exact transcript text, segment
 IDs, speakers and full-transcript consistency using existing validators. These
 checks do not prove semantic correctness of gold answers or regulatory reasoning.
 
-Source JSON, normalization config and schemas must match committed `HEAD` data.
+The selected dataset's `dataset_manifest.json`, source JSON, normalization
+config and schemas must match committed `HEAD` data. The source manifest's
+ordered `call_ids` must exactly match the discovered call directories.
 Commit prepared-data corrections before exporting. Uncommitted exporter/docs
 changes do not block export; commit the exporter too before sharing the tooling.
 Git must trust the source checkout under your user account. No dependencies are
@@ -39,8 +41,9 @@ added beyond the project's existing Python requirements and Git.
 
 ## Manifest
 
-`format` versions the snapshot contract. `source.git_commit` and
-`source.dataset_path` identify the source inside `fyp-be`.
+`format` versions the snapshot contract. `source.git_commit`,
+`source.dataset_path`, `source.dataset_id` and `source.checklist_id` identify
+the release inside `fyp-be`.
 `call_ids` lists the calls. `timing_status` explicitly says `placeholder_zero`.
 `files` maps each data file to its SHA-256 hash of canonical JSON; formatting,
 object-key ordering and Windows Git line-ending conversion do not change hashes.
@@ -63,7 +66,7 @@ python -B scripts/export_dataset.py --destination "../../fyp-ai/evaluation/datas
 After committing source updates, deliberately replace a verified snapshot:
 
 ```bat
-python -B scripts/export_dataset.py --destination "../../fyp-ai/evaluation/datasets/pilot" --overwrite
+python -B scripts/export_dataset.py --dataset-root "datasets/legacy_pilot_v1" --destination "../../fyp-ai/evaluation/datasets/pilot" --overwrite
 ```
 
 Existing destinations require a supported manifest with matching files/hashes.
@@ -86,3 +89,7 @@ Export only prepares files. It does not make HTTP requests, import LangGraph,
 or execute the answering workflow. The future evaluator in `fyp-ai` owns
 loading these files and calling the actual graph directly. Ground truth is
 for scoring; the manifest is for dataset identity. Neither is model input.
+
+`datasets/advisory_execution_pilot_v1` is currently a release scaffold, not an
+exportable snapshot: it has no approved calls, and its new extraction fields
+still require explicit normalization rules before checklist validation can pass.

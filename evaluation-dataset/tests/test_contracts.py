@@ -209,7 +209,7 @@ def test_cli_rejects_incomplete_dataset(monkeypatch, tmp_path):
 
 
 def test_pilot_checklist_ids_categories_and_schema():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     assert [item["id"] for item in checklist] == [
         "C01", "C02", "C03", "C04", "C05", "C06", "K01", "K02", "T01", "T02",
     ]
@@ -219,7 +219,7 @@ def test_pilot_checklist_ids_categories_and_schema():
 
 
 def test_pilot_extraction_fields_use_existing_exact_rules():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
     assert {item["id"]: item["field"] for item in checklist[6:]} == {
         "K01": "client_identification_number", "K02": "dob",
@@ -280,7 +280,7 @@ def test_old_contract_versions_require_explicit_migration(name):
 
 
 def test_pilot_langgraph_projection_is_lossless_and_read_only():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     before = deepcopy(checklist)
     projected = to_langgraph_checklist(checklist, SCHEMAS)
     assert projected == [{"id": item["id"], "question": item["question"]} for item in checklist]

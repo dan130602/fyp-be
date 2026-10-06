@@ -8,7 +8,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 from export_ssml import export_call
-from render_polly import CALLS, make_ssml
+from render_polly import DEFAULT_DATASET_ROOT, make_ssml
 
 
 def convert_text(text: str) -> str:
@@ -32,6 +32,7 @@ def save_ssml(path: Path, ssml: str, *, overwrite: bool = False) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--text", help="Plain text to convert; prints SSML unless --output is given")
     source.add_argument("--input", type=Path, help="UTF-8 text file; defaults to a sibling .ssml file")
@@ -51,14 +52,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.call or args.all:
+            calls_dir = args.dataset_root.resolve() / "calls"
             calls = ([args.call] if args.call else
-                     [path.name for path in sorted(CALLS.glob("CALL_*")) if path.is_dir()])
+                     [path.name for path in sorted(calls_dir.glob("CALL_*")) if path.is_dir()])
             if not calls:
                 raise ValueError("No canonical calls found")
             for call_id in calls:
-                count = export_call(call_id, args.render_id, overwrite=args.overwrite)
+                count = export_call(call_id, args.render_id, calls_dir, overwrite=args.overwrite)
                 print(f"{call_id}: {count} SSML files and ssml_manifest.json under "
-                      f"{CALLS / call_id / 'renders' / args.render_id}")
+                      f"{calls_dir / call_id / 'renders' / args.render_id}")
         else:
             text = args.input.read_text(encoding="utf-8-sig") if args.input else args.text
             ssml = convert_text(text)
