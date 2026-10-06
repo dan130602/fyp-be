@@ -1,5 +1,6 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.dtos.ApiTime;
 import com.fyp.be.media_processing_service.dtos.CreateUserRequest;
 import com.fyp.be.media_processing_service.dtos.UserResponseDto;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
@@ -33,7 +34,7 @@ public class UserService {
     }
 
     public UserResponseDto toResponseDto(User user) {
-        return new UserResponseDto(user.getId(), user.getEmail(), user.getName(), user.getRole(), user.getStatus(), user.getCreatedAt());
+        return new UserResponseDto(user.getId(), user.getEmail(), user.getName(), user.getRole(), user.getStatus(), ApiTime.of(user.getCreatedAt()));
     }
 
     public List<UserResponseDto> listUsers() {

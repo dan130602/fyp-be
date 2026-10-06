@@ -3,7 +3,7 @@ package com.fyp.be.media_processing_service.dtos;
 import com.fyp.be.media_processing_service.models.Role;
 import com.fyp.be.media_processing_service.models.UserStatus;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record UserResponseDto(
@@ -12,5 +12,5 @@ public record UserResponseDto(
         String name,
         Role role,
         UserStatus status,
-        LocalDateTime createdAt
+        OffsetDateTime createdAt
 ) {}

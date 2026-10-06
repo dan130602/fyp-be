@@ -25,3 +25,8 @@ output "security_group_id" {
 output "log_group_name" {
   value = aws_cloudwatch_log_group.this.name
 }
+
+output "service_discovery_name" {
+  description = "Hostname prefix registered in Cloud Map (null when service discovery is off)"
+  value       = one(aws_service_discovery_service.this[*].name)
+}

@@ -41,10 +41,14 @@ services:
       TRANSCRIBE_STATUS_QUEUE_URL: ${TRANSCRIBE_STATUS_QUEUE_URL:-}
       TRANSCRIPT_HANDOFF_QUEUE_URL: ${TRANSCRIPT_HANDOFF_QUEUE_URL:-}
       CHECKLIST_JSON: ${CHECKLIST_JSON:-{}}
+      # fyp-ai running on the host (docker run -p 2024:2024 ...)
+      AI_BASE_URL: ${AI_BASE_URL:-http://host.docker.internal:2024}
       TRANSCRIBE_OUTPUT_BUCKET: ${TRANSCRIBE_OUTPUT_BUCKET:-ingestion-audio-output}
       AWS_REGION: ${AWS_REGION:-ap-southeast-1}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?set AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?set AWS_SECRET_ACCESS_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy

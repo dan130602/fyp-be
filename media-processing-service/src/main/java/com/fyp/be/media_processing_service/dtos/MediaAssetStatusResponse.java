@@ -3,7 +3,7 @@ package com.fyp.be.media_processing_service.dtos;
 import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record MediaAssetStatusResponse(
@@ -13,7 +13,7 @@ public record MediaAssetStatusResponse(
         MediaAssetStatus status,
         String transcriptUri,
         String failureReason,
-        LocalDateTime updatedAt
+        OffsetDateTime updatedAt
 ) {
     public static MediaAssetStatusResponse from(MediaAsset asset) {
         return new MediaAssetStatusResponse(
@@ -23,7 +23,7 @@ public record MediaAssetStatusResponse(
                 asset.getStatus(),
                 asset.getTranscriptUri(),
                 asset.getFailureReason(),
-                asset.getUpdatedAt()
+                ApiTime.of(asset.getUpdatedAt())
         );
     }
 }

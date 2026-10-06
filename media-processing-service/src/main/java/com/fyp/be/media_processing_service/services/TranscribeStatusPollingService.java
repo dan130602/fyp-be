@@ -4,6 +4,7 @@ import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,13 @@ public class TranscribeStatusPollingService {
         this.objectMapper = objectMapper;
         this.queueUrl = queueUrl;
         this.transcriptOutputBucket = transcriptOutputBucket;
+    }
+
+    @PostConstruct
+    void warnIfQueueUnset() {
+        if (queueUrl == null || queueUrl.isBlank()) {
+            log.warn("TRANSCRIBE_STATUS_QUEUE_URL is not set; transcription results will not be picked up and uploads will stay PENDING");
+        }
     }
 
     @Scheduled(fixedDelay = 1000)
