@@ -1,0 +1,358 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "description": "Release-local normalization contract for advisory_execution_pilot_v1. It owns canonical gold forms, aliases, spoken/reference-text forms and prediction-comparison steps for every extraction profile referenced by check_semantics.json. The legacy configs/normalization.json is not used by this release. This file is declarative: no parser, spoken-form verifier or scorer implements these steps yet.",
+  "implementation_status": "DECLARATIVE_ONLY",
+  "compliance_verdicts": [
+    "PASS",
+    "FAIL"
+  ],
+  "profiles": {
+    "synthetic_nric_fin": {
+      "value_type": "text",
+      "description": "Synthetic Singapore NRIC/FIN-shaped identifier used for K01.",
+      "canonical": {
+        "format": "One uppercase prefix letter, seven digits and one uppercase suffix letter, with no spaces or punctuation.",
+        "pattern": "^[STFGM][0-9]{7}[A-Z]$"
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "SPOKEN_CHARACTERS_TO_SYMBOLS",
+          "REMOVE_SEPARATORS",
+          "UPPERCASE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "SPOKEN_CHARACTERS_TO_SYMBOLS covers digit words zero-nine, 'oh' for zero, and 'double'/'triple' digit runs.",
+          "Checksum validity is never repaired or used for comparison."
+        ]
+      },
+      "reference_text": {
+        "default_form": "CHARACTER_BY_CHARACTER",
+        "notes": [
+          "Letters and digits are spoken individually, every zero included."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "CHARACTER_BY_CHARACTER",
+          "usage": "DEFAULT",
+          "description": "Each letter and digit is spoken separately."
+        },
+        {
+          "id": "OH_FOR_ZERO",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "The digit zero is spoken as 'oh'.",
+          "enabled_by_edge_case": "EC_OH_VS_ZERO"
+        },
+        {
+          "id": "DOUBLE_OR_TRIPLE_DIGIT",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "A run of two or three identical digits is spoken as 'double' or 'triple' followed by the digit.",
+          "enabled_by_edge_case": "EC_DOUBLE_TRIPLE_DIGITS"
+        }
+      ]
+    },
+    "dob_dd_month_yyyy": {
+      "value_type": "dob_dd_month_yyyy",
+      "description": "Client date of birth used for K02.",
+      "canonical": {
+        "format": "DD Month YYYY: two-digit day, full title-case English month name, four-digit year, single spaces.",
+        "pattern": "^(0[1-9]|[12][0-9]|3[01]) (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{4}$",
+        "calendar_valid": true
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "PARSE_CALENDAR_DATE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "Equivalent spoken or written forms of the same calendar date compare equal after parsing to the canonical form.",
+          "All-numeric dates whose day/month order is ambiguous are rejected, never guessed."
+        ]
+      },
+      "reference_text": {
+        "default_form": "DAY_MONTH_YEAR",
+        "notes": [
+          "Reference text writes D Month YYYY with no leading zero on the day, for example '4 February 2001'; the locked gold value keeps the two-digit day."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "DAY_MONTH_YEAR",
+          "usage": "DEFAULT",
+          "description": "Day number without a leading zero, full month name and four-digit year."
+        },
+        {
+          "id": "ORDINAL_DAY",
+          "usage": "PERMITTED",
+          "description": "Ordinal day, optionally with 'of', for example 'the fourth of February'."
+        }
+      ]
+    },
+    "synthetic_product_name": {
+      "value_type": "text",
+      "description": "Synthetic investment product name used for T01.",
+      "canonical": {
+        "format": "Exact product name as listed in the release product pool.",
+        "values_source": "authoring/generation_plan.json extraction_distribution.product_pool[].name"
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "COLLAPSE_WHITESPACE",
+          "CASE_FOLD",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "No partial, abbreviated or fuzzy product-name matching."
+        ]
+      },
+      "reference_text": {
+        "default_form": "FULL_PRODUCT_NAME"
+      },
+      "spoken_forms": [
+        {
+          "id": "FULL_PRODUCT_NAME",
+          "usage": "DEFAULT",
+          "description": "The full canonical product name."
+        }
+      ]
+    },
+    "currency_iso_4217_alpha3": {
+      "value_type": "text",
+      "description": "Transaction currency used for T02.",
+      "canonical": {
+        "format": "Uppercase ISO 4217 alphabetic code.",
+        "allowed_values": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      "aliases": {
+        "SGD": [
+          "Singapore dollars",
+          "SGD"
+        ],
+        "USD": [
+          "US dollars",
+          "USD"
+        ],
+        "EUR": [
+          "euros",
+          "EUR"
+        ],
+        "CNY": [
+          "Chinese yuan",
+          "yuan",
+          "renminbi",
+          "CNY"
+        ],
+        "JPY": [
+          "Japanese yen",
+          "yen",
+          "JPY"
+        ]
+      },
+      "rejected_surface_forms": [
+        {
+          "form": "dollars",
+          "reason": "Ambiguous between SGD and USD."
+        },
+        {
+          "form": "dollar",
+          "reason": "Ambiguous between SGD and USD."
+        }
+      ],
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "CASE_FOLD",
+          "MAP_ALIASES",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT"
+      },
+      "reference_text": {
+        "default_form": "NATURAL_NAME",
+        "notes": [
+          "This release prefers natural currency names in dialogue; the gold value is always the three-letter code.",
+          "This overrides the legacy pilot convention of speaking the three-letter code."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_NAME",
+          "usage": "DEFAULT",
+          "description": "A natural currency name listed in aliases, for example 'Singapore dollars'."
+        },
+        {
+          "id": "ISO_CODE",
+          "usage": "PERMITTED",
+          "description": "The three-letter code itself."
+        }
+      ]
+    },
+    "monetary_amount": {
+      "value_type": "number",
+      "description": "Transaction monetary amount used for T03, in major currency units.",
+      "canonical": {
+        "format": "Finite positive number without currency marker or thousands separators.",
+        "exclusive_minimum": 0
+      },
+      "magnitude_words": {
+        "k": 1000,
+        "thousand": 1000,
+        "m": 1000000,
+        "mn": 1000000,
+        "million": 1000000
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "STRIP_CURRENCY_MARKERS",
+          "REMOVE_THOUSANDS_SEPARATORS",
+          "EXPAND_MAGNITUDE_WORDS",
+          "PARSE_NUMBER_WORDS",
+          "NUMERIC_EQUAL"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT"
+      },
+      "reference_text": {
+        "default_form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+        "notes": [
+          "Default reference text uses Arabic digits with comma grouping, for example '50,000'."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "usage": "DEFAULT",
+          "description": "Digits with comma grouping."
+        },
+        {
+          "id": "FINANCIAL_SHORTHAND",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Shorthand magnitude suffix, for example '50k'.",
+          "enabled_by_edge_case": "EC_FINANCIAL_SHORTHAND"
+        },
+        {
+          "id": "MAGNITUDE_EXPRESSION",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Magnitude word, optionally with a decimal, for example '1.2 million'.",
+          "enabled_by_edge_case": "EC_LARGE_NUMBER_EXPRESSION"
+        }
+      ]
+    },
+    "integer_quantity": {
+      "value_type": "integer",
+      "description": "Transaction quantity used for T04.",
+      "canonical": {
+        "format": "Positive integer number of units.",
+        "minimum": 1
+      },
+      "unit_words": [
+        "unit",
+        "units",
+        "share",
+        "shares"
+      ],
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "STRIP_UNIT_WORDS",
+          "REMOVE_THOUSANDS_SEPARATORS",
+          "PARSE_NUMBER_WORDS",
+          "NUMERIC_EQUAL"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "Fractional quantities are rejected."
+        ]
+      },
+      "reference_text": {
+        "default_form": "DIGITS_WITH_THOUSANDS_SEPARATORS"
+      },
+      "spoken_forms": [
+        {
+          "id": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "usage": "DEFAULT",
+          "description": "Digits with comma grouping."
+        }
+      ]
+    },
+    "transaction_direction": {
+      "value_type": "text",
+      "description": "Transaction direction used for T05.",
+      "canonical": {
+        "format": "Uppercase direction keyword.",
+        "allowed_values": [
+          "BUY",
+          "SELL"
+        ]
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "UPPERCASE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "No synonyms are declared for v1; add aliases here explicitly if needed."
+        ]
+      },
+      "reference_text": {
+        "default_form": "NATURAL_VERB"
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_VERB",
+          "usage": "DEFAULT",
+          "description": "The client says buy or sell in natural speech."
+        }
+      ]
+    },
+    "order_type": {
+      "value_type": "text",
+      "description": "Order type used for T06.",
+      "canonical": {
+        "format": "Uppercase order-type keyword.",
+        "allowed_values": [
+          "MARKET",
+          "LIMIT"
+        ]
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "UPPERCASE",
+          "STRIP_ORDER_SUFFIX",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "STRIP_ORDER_SUFFIX maps 'market order' to MARKET and 'limit order' to LIMIT."
+        ]
+      },
+      "reference_text": {
+        "default_form": "NATURAL_PHRASE"
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_PHRASE",
+          "usage": "DEFAULT",
+          "description": "Natural phrase such as 'at market' or 'a limit order'."
+        }
+      ]
+    }
+  }
+}

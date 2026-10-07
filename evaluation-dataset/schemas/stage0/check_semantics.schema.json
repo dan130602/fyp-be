@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage0/check_semantics.schema.json",
+  "title": "Release Check Semantics",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "description",
+    "checks",
+    "cross_check_rules"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "description": {
+      "$ref": "#/$defs/text"
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/compliance_check"
+          },
+          {
+            "$ref": "#/$defs/extraction_check"
+          }
+        ]
+      }
+    },
+    "cross_check_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cross_check_rule"
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "text_list": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "compliance_check": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "pass_condition",
+        "fail_condition",
+        "speaker_scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "pass_condition": {
+          "$ref": "#/$defs/text"
+        },
+        "fail_condition": {
+          "$ref": "#/$defs/text"
+        },
+        "speaker_scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "EMPLOYEE",
+              "CLIENT"
+            ]
+          }
+        },
+        "notes": {
+          "$ref": "#/$defs/text_list"
+        },
+        "counterexamples": {
+          "$ref": "#/$defs/text_list"
+        }
+      }
+    },
+    "extraction_check": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "resolution_rule",
+        "normalization_profile",
+        "ignore_as_final_value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "resolution_rule": {
+          "$ref": "#/$defs/text"
+        },
+        "normalization_profile": {
+          "$ref": "#/$defs/identifier"
+        },
+        "ignore_as_final_value": {
+          "$ref": "#/$defs/text_list"
+        },
+        "notes": {
+          "$ref": "#/$defs/text_list"
+        }
+      }
+    },
+    "verdict_condition": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "verdict"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "verdict": {
+          "$ref": "#/$defs/verdict"
+        }
+      }
+    },
+    "cross_check_rule": {
+      "type": "object",
+      "required": [
+        "id",
+        "if",
+        "then",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "if": {
+          "$ref": "#/$defs/verdict_condition"
+        },
+        "then": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/verdict_condition"
+          }
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage0/edge_case_catalog.schema.json",
+  "title": "Release Edge-Case Catalog",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "description",
+    "edge_cases",
+    "documentation_examples_are_non_binding"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "description": {
+      "$ref": "#/$defs/text"
+    },
+    "edge_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/edge_case"
+      }
+    },
+    "documentation_examples_are_non_binding": {
+      "const": true
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "edge_case_id": {
+      "type": "string",
+      "pattern": "^EC_[A-Z0-9_]+$"
+    },
+    "symbol": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "verdict_map": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/verdict"
+      }
+    },
+    "edge_case": {
+      "type": "object",
+      "required": [
+        "id",
+        "family",
+        "description",
+        "allowed_target_question_ids",
+        "required_parameters",
+        "gold_constraints",
+        "plan_template",
+        "documentation_examples",
+        "examples_for_documentation_only"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/edge_case_id"
+        },
+        "family": {
+          "enum": [
+            "CORRECTION_SUPERSESSION",
+            "DISTRACTOR_COMPETING_VALUES",
+            "REFERENCE_RESOLUTION",
+            "SPOKEN_NUMERIC_NORMALISATION",
+            "DIALOGUE_STRUCTURE",
+            "COMPLIANCE_SEMANTICS"
+          ]
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "allowed_target_question_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "target_scope": {
+          "enum": [
+            "TRANSACTION_BUNDLE",
+            "MULTI_QUESTION"
+          ]
+        },
+        "required_parameters": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "gold_constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "plan_template": {
+          "$ref": "#/$defs/plan_template"
+        },
+        "documentation_examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "examples_for_documentation_only": {
+          "const": true
+        },
+        "mutually_exclusive_with": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/edge_case_id"
+          }
+        },
+        "allowed_antecedent_speakers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "CLIENT",
+              "EMPLOYEE"
+            ]
+          }
+        },
+        "gold_prerequisites": {
+          "$ref": "#/$defs/gold_prerequisites"
+        },
+        "verdict_requirements": {
+          "$ref": "#/$defs/verdict_map"
+        },
+        "target_verdict_requirement": {
+          "$ref": "#/$defs/verdict"
+        }
+      }
+    },
+    "plan_template": {
+      "type": "object",
+      "required": [
+        "evidence_mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidence_mode": {
+          "enum": [
+            "STATE_TRANSITION",
+            "ORDER_REPLACEMENT",
+            "DISTRACTOR_PLUS_TARGET",
+            "REFERENCE_RESOLUTION",
+            "SPOKEN_FORM_NORMALISATION",
+            "DISFLUENT_INSTRUCTION",
+            "DISTRIBUTED_EVIDENCE",
+            "SEMANTIC_NEGATION",
+            "PARAPHRASED_PRESENCE",
+            "CROSS_CHECK_DISTINCTION",
+            "CONFIRMATION_STRENGTH"
+          ]
+        },
+        "same_turn": {
+          "type": "boolean"
+        },
+        "min_intervening_turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minimum_state_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "event_sequence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/symbol"
+          }
+        },
+        "requires_prior_explicit_antecedent": {
+          "type": "boolean"
+        },
+        "default_min_turn_gap": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "required_related_gold": {
+          "$ref": "#/$defs/verdict_map"
+        },
+        "strength": {
+          "enum": [
+            "WEAK"
+          ]
+        }
+      }
+    },
+    "gold_prerequisites": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "minimum_run_length"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "REPEATED_DIGIT_RUN"
+            },
+            "minimum_run_length": {
+              "type": "integer",
+              "minimum": 2
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "character"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "CONTAINS_CHARACTER"
+            },
+            "character": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "minimum",
+            "multiple_of"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "NUMERIC_MINIMUM_AND_MULTIPLE"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "multiple_of": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "minimum"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "NUMERIC_MINIMUM"
+            },
+            "minimum": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

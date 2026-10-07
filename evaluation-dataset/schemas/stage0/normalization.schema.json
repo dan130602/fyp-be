@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage0/normalization.schema.json",
+  "title": "Release Normalization Profiles",
+  "description": "Release-local, declarative normalization contract. Distinct from the legacy schemas/normalization.schema.json used by configs/normalization.json.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "description",
+    "implementation_status",
+    "compliance_verdicts",
+    "profiles"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "description": {
+      "$ref": "#/$defs/text"
+    },
+    "implementation_status": {
+      "const": "DECLARATIVE_ONLY"
+    },
+    "compliance_verdicts": {
+      "const": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/profile"
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "text_list": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "value_type",
+        "description",
+        "canonical",
+        "comparison",
+        "reference_text",
+        "spoken_forms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value_type": {
+          "enum": [
+            "text",
+            "integer",
+            "number",
+            "dob_dd_month_yyyy"
+          ]
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "canonical": {
+          "type": "object",
+          "required": [
+            "format"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "format": {
+              "$ref": "#/$defs/text"
+            },
+            "pattern": {
+              "$ref": "#/$defs/text"
+            },
+            "allowed_values": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "values_source": {
+              "$ref": "#/$defs/text"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "exclusive_minimum": {
+              "type": "number"
+            },
+            "calendar_valid": {
+              "const": true
+            }
+          }
+        },
+        "aliases": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "rejected_surface_forms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "form",
+              "reason"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "form": {
+                "$ref": "#/$defs/text"
+              },
+              "reason": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "magnitude_words": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 10
+          }
+        },
+        "unit_words": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "comparison": {
+          "type": "object",
+          "required": [
+            "steps",
+            "on_ambiguous_or_unparseable"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "steps": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "enum": [
+                  "TRIM",
+                  "COLLAPSE_WHITESPACE",
+                  "CASE_FOLD",
+                  "UPPERCASE",
+                  "REMOVE_SEPARATORS",
+                  "SPOKEN_CHARACTERS_TO_SYMBOLS",
+                  "MAP_ALIASES",
+                  "PARSE_CALENDAR_DATE",
+                  "STRIP_CURRENCY_MARKERS",
+                  "STRIP_UNIT_WORDS",
+                  "STRIP_ORDER_SUFFIX",
+                  "REMOVE_THOUSANDS_SEPARATORS",
+                  "EXPAND_MAGNITUDE_WORDS",
+                  "PARSE_NUMBER_WORDS",
+                  "EXACT_MATCH",
+                  "NUMERIC_EQUAL"
+                ]
+              }
+            },
+            "on_ambiguous_or_unparseable": {
+              "const": "REJECT"
+            },
+            "notes": {
+              "$ref": "#/$defs/text_list"
+            }
+          }
+        },
+        "reference_text": {
+          "type": "object",
+          "required": [
+            "default_form"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "default_form": {
+              "$ref": "#/$defs/text"
+            },
+            "notes": {
+              "$ref": "#/$defs/text_list"
+            }
+          }
+        },
+        "spoken_forms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/spoken_form"
+          }
+        }
+      }
+    },
+    "spoken_form": {
+      "type": "object",
+      "required": [
+        "id",
+        "usage",
+        "description"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "usage": {
+          "enum": [
+            "DEFAULT",
+            "PERMITTED",
+            "EDGE_CASE_ONLY"
+          ]
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "enabled_by_edge_case": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "if": {
+        "properties": {
+          "usage": {
+            "const": "EDGE_CASE_ONLY"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "enabled_by_edge_case"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "enabled_by_edge_case"
+          ]
+        }
+      }
+    }
+  }
+}

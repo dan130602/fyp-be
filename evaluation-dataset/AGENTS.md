@@ -10,8 +10,27 @@ for CLIENT_KYC/TRANSACTION. `question` was renamed from `text` at checklist
 schema revision 0.3.0 so the source already matches the LangGraph id/question
 shape; `text` is now the retired/out-of-scope name. Reject incompatible fields and extra properties.
 Derive verdict versus extraction from `type`; do not maintain `answer_type`
-or a question metadata file. Reusable field-to-rule mappings belong in
+or a question metadata file. The legacy pilot's field-to-rule mappings belong in
 `configs/normalization.json`. Unmapped extraction fields fail validation.
+
+advisory_execution_pilot_v1 (G0 Stage 0): its five contracts are `checklist.json`,
+`check_semantics.json`, `normalization.json`, `edge_case_catalog.json` and
+`authoring/generation_plan.json`, validated by `validation.stage0` against
+`schemas/stage0/`. Its release-local `normalization.json` owns canonical,
+alias, spoken-form and comparison profiles; `check_semantics.json` owns only
+semantic/final-state rules and names a profile per extraction question. Never
+route this release through `configs/normalization.json`. The normalization file
+is declarative: do not implement its steps until authorized. All 20 questions
+apply to every call; call intents are multi-label and descriptive only; the
+only hard compliance dependency is C03 PASS => C02 PASS. G1 rules: at most one
+edge case per question per call (EC_LONG_DISTANCE_DEPENDENCY exempt); superseded,
+distractor and initial-order values stay inside the configured domains and realism
+constraints; no fee amount/rate distractor when C04 is FAIL; every other choice is
+seeded, balanced and stably tie-broken. No applicability,
+N/A or NOT_APPLICABLE. Pipeline names: G0 contracts, G1 deterministic planning,
+G2 call_spec, G2B event_skeleton, G3 call_config, G4A check_plan_skeleton,
+G4B check_plan, G5 plan verification, G6 dialogue, G7 dialogue verification,
+G8 ground truth, G9 audio and evaluation. Do not implement G1 until approved.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
 IDs and order. Do not duplicate a checklist within a release or change production LangGraph.
