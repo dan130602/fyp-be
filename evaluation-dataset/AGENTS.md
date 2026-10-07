@@ -30,7 +30,9 @@ seeded, balanced and stably tie-broken. No applicability,
 N/A or NOT_APPLICABLE. Pipeline names: G0 contracts, G1 deterministic planning,
 G2 call_spec, G2B event_skeleton, G3 call_config, G4A check_plan_skeleton,
 G4B check_plan, G5 plan verification, G6 dialogue, G7 dialogue verification,
-G8 ground truth, G9 audio and evaluation. Do not implement G1 until approved.
+G8 ground truth, G9 audio and evaluation. G1 (`fyp_evaluation.planning`,
+`scripts/plan_dataset.py`) generates the four planning outputs; never hand-edit
+them, regenerate instead. Do not implement G2 or any LLM stage until approved.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
 IDs and order. Do not duplicate a checklist within a release or change production LangGraph.

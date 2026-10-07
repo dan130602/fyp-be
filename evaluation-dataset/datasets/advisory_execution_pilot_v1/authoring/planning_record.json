@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "stage": "G1",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "generator": {
+    "package": "fyp_evaluation.planning",
+    "version": "1.1.0",
+    "rng": "Python random.Random (MT19937) per named decision stream; stream seed = first 8 bytes (big-endian) of SHA-256('<random_seed>|<attempt>|<stream name>')."
+  },
+  "random_seed": 42,
+  "attempts": {
+    "accepted_attempt": 0,
+    "rejected_attempts": []
+  },
+  "hashing": "SHA-256 over UTF-8 bytes with CRLF normalised to LF",
+  "inputs": {
+    "checklist.json": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics.json": "61dd54ffccd6e553cd4c3df7df7df68ff2b6322f1bcba98b8951a2ef6aa56b92",
+    "normalization.json": "edc7918c4fbd05f5490b3b772ff1b678c3f67c75bb90c1c7b227fd23b0782dca",
+    "edge_case_catalog.json": "a6b1f6f62c10ff26ecb23a84c57a30b1bc734a7eb5ae18986e5f1f70989f731e",
+    "authoring/generation_plan.json": "349a08b63a3bb0b9148eb28c341faf5c7758f72e82e0d617c3463ddeb7090e45"
+  },
+  "outputs": {
+    "authoring/call_manifest.csv": "7573dd3d948c212c58aa5e6a982c50a8dadbdc707bb3ef2244d585c2f6e3a73e",
+    "authoring/coverage_matrix.csv": "e7c949702419b7bd3b2a39cf5f2e8cdc12fd241949d73bfd2a0752dae5b68f0d",
+    "authoring/edge_case_assignments.csv": "8ba89637aba83106be159714bf2ae0a0fd6d4b410250af18615bbca8c2d998c4"
+  },
+  "summary": {
+    "calls": 50,
+    "duration_profiles": {
+      "SHORT": 45,
+      "LONG": 5
+    },
+    "call_composition": {
+      "all_pass_without_edge_cases": 5,
+      "all_pass_with_edge_cases": 5,
+      "some_fail_without_edge_cases": 5,
+      "some_fail_with_edge_cases": 35
+    },
+    "compliance_verdicts": {
+      "C01": {
+        "PASS": 42,
+        "FAIL": 8
+      },
+      "C02": {
+        "PASS": 44,
+        "FAIL": 6
+      },
+      "C03": {
+        "PASS": 40,
+        "FAIL": 10
+      },
+      "C04": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C05": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C06": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C07": {
+        "PASS": 42,
+        "FAIL": 8
+      },
+      "C08": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C09": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C10": {
+        "PASS": 42,
+        "FAIL": 8
+      },
+      "C11": {
+        "PASS": 43,
+        "FAIL": 7
+      },
+      "C12": {
+        "PASS": 42,
+        "FAIL": 8
+      }
+    },
+    "fails_per_call": {
+      "0": 10,
+      "1": 10,
+      "2": 15,
+      "3": 10,
+      "4": 5
+    },
+    "total_compliance_fail_pairs": 90,
+    "total_edge_case_assignments": 90,
+    "transaction_direction": {
+      "BUY": 25,
+      "SELL": 25
+    },
+    "order_type": {
+      "MARKET": 25,
+      "LIMIT": 25
+    },
+    "transaction_currency": {
+      "SGD": 10,
+      "USD": 10,
+      "EUR": 10,
+      "CNY": 10,
+      "JPY": 10
+    },
+    "transaction_instrument": {
+      "Orion Global Income Fund": 7,
+      "Meridian Asia Equity Fund": 7,
+      "Atlas USD Corporate Bond 2031": 5,
+      "Harbor SGD Bond Fund": 6,
+      "Summit Global Equity ETF": 6,
+      "Nova Technology Equity Fund": 6,
+      "Pioneer Balanced Opportunities Fund": 6,
+      "Crest Emerging Markets Bond Fund": 7
+    },
+    "edge_case_families": {
+      "CORRECTION_SUPERSESSION": 18,
+      "DISTRACTOR_COMPETING_VALUES": 16,
+      "REFERENCE_RESOLUTION": 10,
+      "SPOKEN_NUMERIC_NORMALISATION": 16,
+      "DIALOGUE_STRUCTURE": 14,
+      "COMPLIANCE_SEMANTICS": 16
+    },
+    "edge_case_ids": {
+      "EC_CORRECTION_SAME_TURN": 3,
+      "EC_CORRECTION_CROSS_TURN": 3,
+      "EC_MULTIPLE_CORRECTIONS": 3,
+      "EC_EMPLOYEE_READBACK_ERROR": 3,
+      "EC_ONE_FIELD_READBACK_ERROR": 3,
+      "EC_COMPLETE_ORDER_REPLACEMENT": 3,
+      "EC_MULTIPLE_CURRENCIES": 8,
+      "EC_MULTIPLE_MONETARY_VALUES": 8,
+      "EC_PREVIOUS_CURRENCY_REFERENCE": 4,
+      "EC_PRODUCT_REFERENCE": 3,
+      "EC_PREVIOUS_QUANTITY_REFERENCE": 3,
+      "EC_DOUBLE_TRIPLE_DIGITS": 4,
+      "EC_OH_VS_ZERO": 4,
+      "EC_FINANCIAL_SHORTHAND": 4,
+      "EC_LARGE_NUMBER_EXPRESSION": 4,
+      "EC_FALSE_START": 7,
+      "EC_LONG_DISTANCE_DEPENDENCY": 7,
+      "EC_GUARANTEE_REQUEST_REFUSAL": 4,
+      "EC_PARAPHRASED_COMPLIANCE_STATEMENT": 4,
+      "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED": 4,
+      "EC_WEAK_CONFIRMATION": 4
+    },
+    "edge_case_target_questions": {
+      "C01": 1,
+      "C03": 4,
+      "C04": 1,
+      "C06": 1,
+      "C07": 1,
+      "C08": 4,
+      "C12": 4,
+      "K01": 9,
+      "K02": 3,
+      "T01": 10,
+      "T02": 20,
+      "T03": 23,
+      "T04": 7,
+      "T05": 7,
+      "T06": 6
+    },
+    "edge_cases_per_call": {
+      "0": 10,
+      "1": 10,
+      "2": 15,
+      "3": 10,
+      "4": 5
+    }
+  }
+}

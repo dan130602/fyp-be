@@ -141,13 +141,13 @@
     "compliance_distribution": {
       "type": "object",
       "required": [
-        "failures_per_non_all_pass_call",
+        "fail_count_per_call_counts",
         "min_fail_cases_per_check"
       ],
       "additionalProperties": false,
       "properties": {
-        "failures_per_non_all_pass_call": {
-          "$ref": "#/$defs/positive_range"
+        "fail_count_per_call_counts": {
+          "$ref": "#/$defs/per_call_counts"
         },
         "min_fail_cases_per_check": {
           "$ref": "#/$defs/count"
@@ -157,14 +157,14 @@
     "edge_case_distribution": {
       "type": "object",
       "required": [
-        "edge_cases_per_non_clean_call",
+        "edge_cases_per_call_counts",
         "selection_strategy_within_family",
         "family_quotas"
       ],
       "additionalProperties": false,
       "properties": {
-        "edge_cases_per_non_clean_call": {
-          "$ref": "#/$defs/positive_range"
+        "edge_cases_per_call_counts": {
+          "$ref": "#/$defs/per_call_counts"
         },
         "selection_strategy_within_family": {
           "const": "BALANCED"
@@ -487,22 +487,15 @@
         "$ref": "#/$defs/count"
       }
     },
-    "positive_range": {
+    "per_call_counts": {
+      "description": "Number of calls having exactly N items, keyed by the decimal string of N.",
       "type": "object",
-      "required": [
-        "min",
-        "max"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "min": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "max": {
-          "type": "integer",
-          "minimum": 1
-        }
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/count"
       }
     }
   }

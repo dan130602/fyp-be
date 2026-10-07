@@ -80,9 +80,7 @@
         "T01",
         "T02",
         "T03",
-        "T04",
-        "T05",
-        "T06"
+        "T04"
       ],
       "required_parameters": [
         "superseded_values",
@@ -90,7 +88,8 @@
       ],
       "gold_constraints": [
         "at least two superseded values",
-        "final_value must equal the target question's gold value"
+        "final_value must equal the target question's gold value",
+        "targets must have at least three distinct configured values so two superseded values can differ from each other and from the final value"
       ],
       "plan_template": {
         "evidence_mode": "STATE_TRANSITION",
@@ -219,11 +218,14 @@
       ],
       "required_parameters": [
         "distractor_currency",
+        "distractor_role",
         "final_currency"
       ],
       "gold_constraints": [
         "final_currency must equal T02 gold",
-        "distractor_currency must differ from final_currency"
+        "distractor_currency must differ from final_currency",
+        "distractor_role must be one of the configured currency distractor roles",
+        "a fee-currency distractor role is not allowed when C04 is FAIL"
       ],
       "plan_template": {
         "evidence_mode": "DISTRACTOR_PLUS_TARGET"

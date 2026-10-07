@@ -222,6 +222,12 @@ def _catalog(checklist, catalog, semantics, normalization):
             errors.append(f"{where}: antecedent_speaker parameter and allowed_antecedent_speakers must appear together")
         if case.get("target_scope") == "MULTI_QUESTION" and "target_question_ids" not in case["required_parameters"]:
             errors.append(f"{where}: MULTI_QUESTION scope requires a target_question_ids parameter")
+        if "superseded_values" in case["required_parameters"]:
+            for target in targets:
+                allowed = (profile_of.get(target) or {}).get("canonical", {}).get("allowed_values")
+                if allowed is not None and len(allowed) < 3:
+                    errors.append(f"{where}: {target} has only {len(allowed)} allowed values; "
+                                  "two superseded values plus the final value need at least three")
         requirements = case.get("verdict_requirements", {})
         for question_id in requirements:
             if items.get(question_id, {}).get("type") != "COMPLIANCE":
@@ -309,15 +315,23 @@ def _generation_plan(checklist, plan, catalog, semantics, normalization):
     require_total("call composition", composition.values())
     some_fail = composition["some_fail_without_edge_cases"] + composition["some_fail_with_edge_cases"]
     with_edges = composition["all_pass_with_edge_cases"] + composition["some_fail_with_edge_cases"]
-    failures = plan["compliance_distribution"]["failures_per_non_all_pass_call"]
-    per_call = plan["edge_case_distribution"]["edge_cases_per_non_clean_call"]
-    for label, bounds in (("failures_per_non_all_pass_call", failures), ("edge_cases_per_non_clean_call", per_call)):
-        if bounds["min"] > bounds["max"]:
-            errors.append(f"{where}: {label} min exceeds max")
+    all_pass = composition["all_pass_without_edge_cases"] + composition["all_pass_with_edge_cases"]
+    without_edges = composition["all_pass_without_edge_cases"] + composition["some_fail_without_edge_cases"]
+    fail_counts = {int(k): v for k, v in plan["compliance_distribution"]["fail_count_per_call_counts"].items()}
+    require_total("fail_count_per_call", fail_counts.values())
+    if fail_counts.get(0, 0) != all_pass:
+        errors.append(f"{where}: calls with 0 FAILs ({fail_counts.get(0, 0)}) must equal all-PASS calls ({all_pass})")
     compliance_count = sum(item["type"] == "COMPLIANCE" for item in checklist)
+    if fail_counts and max(fail_counts) > compliance_count:
+        errors.append(f"{where}: a call cannot have more FAILs than the {compliance_count} compliance questions")
+    total_fails = sum(number * count for number, count in fail_counts.items())
     needed = plan["compliance_distribution"]["min_fail_cases_per_check"] * compliance_count
-    if needed > some_fail * failures["max"]:
-        errors.append(f"{where}: {needed} required FAIL cells exceed capacity {some_fail * failures['max']}")
+    if needed > total_fails:
+        errors.append(f"{where}: {needed} required FAIL cells exceed the {total_fails} planned FAIL cells")
+    edge_counts = {int(k): v for k, v in plan["edge_case_distribution"]["edge_cases_per_call_counts"].items()}
+    require_total("edge_cases_per_call", edge_counts.values())
+    if edge_counts.get(0, 0) != without_edges:
+        errors.append(f"{where}: calls with 0 edge cases ({edge_counts.get(0, 0)}) must equal calls without edge cases ({without_edges})")
 
     case_ids = {case["id"] for case in catalog["edge_cases"]}
     if unknown := sorted(set(plan["planning_rules"]["per_question_limit_exempt_edge_cases"]) - case_ids):
@@ -327,9 +341,9 @@ def _generation_plan(checklist, plan, catalog, semantics, normalization):
     if set(quotas) != families:
         errors.append(f"{where}: family_quotas keys must equal catalog families {sorted(families)}")
     quota_total = sum(quotas.values())
-    if not with_edges * per_call["min"] <= quota_total <= with_edges * per_call["max"]:
-        errors.append(f"{where}: {quota_total} edge-case assignments cannot fill {with_edges} calls "
-                      f"at {per_call['min']}-{per_call['max']} each")
+    planned_edge_cases = sum(number * count for number, count in edge_counts.items())
+    if quota_total != planned_edge_cases:
+        errors.append(f"{where}: family_quotas total {quota_total} must equal per-call edge-case total {planned_edge_cases}")
     forces_fail = ["FAIL" in case.get("verdict_requirements", {}).values() for case in catalog["edge_cases"]]
     if composition["all_pass_with_edge_cases"] and all(forces_fail):
         errors.append(f"{where}: all-PASS calls with edge cases need an edge case that forces no FAIL")

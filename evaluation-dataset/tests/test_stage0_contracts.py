@@ -117,12 +117,16 @@ def test_approved_generation_plan(release_documents):
         "some_fail_without_edge_cases": 5, "some_fail_with_edge_cases": 35,
     }
     assert plan["compliance_distribution"] == {
-        "failures_per_non_all_pass_call": {"min": 1, "max": 3}, "min_fail_cases_per_check": 5,
+        "fail_count_per_call_counts": {"0": 10, "1": 10, "2": 15, "3": 10, "4": 5},
+        "min_fail_cases_per_check": 6,
     }
+    assert plan["edge_case_distribution"]["edge_cases_per_call_counts"] == {"0": 10, "1": 10, "2": 15, "3": 10, "4": 5}
     assert plan["edge_case_distribution"]["family_quotas"] == {
-        "CORRECTION_SUPERSESSION": 12, "DISTRACTOR_COMPETING_VALUES": 10, "REFERENCE_RESOLUTION": 6,
-        "SPOKEN_NUMERIC_NORMALISATION": 10, "DIALOGUE_STRUCTURE": 8, "COMPLIANCE_SEMANTICS": 10,
+        "CORRECTION_SUPERSESSION": 18, "DISTRACTOR_COMPETING_VALUES": 16, "REFERENCE_RESOLUTION": 10,
+        "SPOKEN_NUMERIC_NORMALISATION": 16, "DIALOGUE_STRUCTURE": 14, "COMPLIANCE_SEMANTICS": 16,
     }
+    assert sum(int(n) * c for n, c in plan["compliance_distribution"]["fail_count_per_call_counts"].items()) == 90
+    assert sum(plan["edge_case_distribution"]["family_quotas"].values()) == 90
     nric = plan["extraction_distribution"]["synthetic_kyc"]["nric_fin"]
     assert nric["require_checksum_invalid"] and nric["unique_within_dataset"]
     assert plan["extraction_distribution"]["synthetic_kyc"]["dob"]["unique_within_dataset"]
@@ -141,6 +145,14 @@ def test_approved_generation_plan(release_documents):
 
     collect(plan)
     assert not [key for key in keys if "fraction" in key]
+
+
+def test_catalog_declares_every_parameter_g1_produces(release_documents):
+    assert _case(release_documents, "EC_MULTIPLE_CURRENCIES")["required_parameters"] == [
+        "distractor_currency", "distractor_role", "final_currency",
+    ]
+    multiple = _case(release_documents, "EC_MULTIPLE_CORRECTIONS")
+    assert multiple["allowed_target_question_ids"] == ["K01", "K02", "T01", "T02", "T03", "T04"]
 
 
 def test_edge_case_catalog_structure_preserved(release_documents):
@@ -244,12 +256,34 @@ INVALID = {
         "must name the DEFAULT spoken form"),
     "cross rule on extraction": (
         _set(("check_semantics", "cross_check_rules", 0, "then", 0, "question_id"), "T01"), "not a compliance question"),
-    "fail capacity": (_set(("generation_plan", "compliance_distribution", "min_fail_cases_per_check"), 11), "exceed capacity"),
+    "fail capacity": (
+        _set(("generation_plan", "compliance_distribution", "min_fail_cases_per_check"), 8), "exceed the 90 planned FAIL cells"),
+    "fail counts total": (
+        _set(("generation_plan", "compliance_distribution", "fail_count_per_call_counts", "4"), 4), "fail_count_per_call counts sum"),
+    "zero-FAIL calls differ from all-PASS calls": (
+        lambda d: d["generation_plan"]["compliance_distribution"]["fail_count_per_call_counts"].update({"0": 9, "1": 11}),
+        "must equal all-PASS calls"),
+    "too many FAILs for one call": (
+        lambda d: d["generation_plan"]["compliance_distribution"]["fail_count_per_call_counts"].update({"4": 4, "13": 1}),
+        "more FAILs than the 12 compliance questions"),
+    "edge counts total": (
+        _set(("generation_plan", "edge_case_distribution", "edge_cases_per_call_counts", "3"), 9), "edge_cases_per_call counts sum"),
+    "zero-edge calls differ from clean calls": (
+        lambda d: d["generation_plan"]["edge_case_distribution"]["edge_cases_per_call_counts"].update({"0": 9, "1": 11}),
+        "must equal calls without edge cases"),
+    "quota total differs from per-call total": (
+        _set(("generation_plan", "edge_case_distribution", "family_quotas", "DIALOGUE_STRUCTURE"), 13),
+        "must equal per-call edge-case total"),
+    "binary field cannot take two superseded values": (
+        _edit_case("EC_MULTIPLE_CORRECTIONS", lambda c: c["allowed_target_question_ids"].append("T05")),
+        "two superseded values plus the final value need at least three"),
+    "fractional per-call count": (
+        _set(("generation_plan", "edge_case_distribution", "edge_cases_per_call_counts", "2"), 15.5), "generation_plan: $.edge_case_distribution"),
     "missing family quota": (
         lambda d: d["generation_plan"]["edge_case_distribution"]["family_quotas"].pop("REFERENCE_RESOLUTION"),
         "family_quotas keys"),
     "edge quota overflow": (
-        _set(("generation_plan", "edge_case_distribution", "family_quotas", "CORRECTION_SUPERSESSION"), 100), "cannot fill"),
+        _set(("generation_plan", "edge_case_distribution", "family_quotas", "CORRECTION_SUPERSESSION"), 100), "must equal per-call edge-case total"),
     "direction values": (
         _set((*EXTRACTION, "transaction_direction_counts"), {"BUY": 25, "HOLD": 25}), "normalization allowed_values"),
     "nric prefix": (_set((*EXTRACTION, "synthetic_kyc", "nric_fin", "prefixes"), ["S", "X"]), "prefix X"),

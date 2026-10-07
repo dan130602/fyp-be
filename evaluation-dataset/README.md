@@ -36,7 +36,7 @@ predetermined and must not be reinterpreted from later dialogue.
 | `scripts/` | Command-line workflow wrappers, including Polly rendering and SSML export. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
 | `datasets/legacy_pilot_v1/` | Frozen five-call pilot release. Its manifest identifies the dataset/checklist and enumerates calls; its checklist, authoring inputs, canonical calls and renders move together. |
-| `datasets/advisory_execution_pilot_v1/` | New advisory/execution release. Its five G0 (Stage 0) contracts are present (see below); planning outputs and calls are intentionally empty until G1 is approved. |
+| `datasets/advisory_execution_pilot_v1/` | New advisory/execution release. Its five G0 (Stage 0) contracts and the G1 planning outputs (`authoring/call_manifest.csv`, `coverage_matrix.csv`, `edge_case_assignments.csv`, `planning_record.json`) are present; calls are empty until later stages. |
 | `schemas/stage0/` | Schemas for the release-level Stage 0 contracts (check semantics, release normalization, edge-case catalog, generation plan). Kept out of the top-level `schemas/*.json` set used by the legacy exporter. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
@@ -83,7 +83,7 @@ duration. Additional calls and renders use the same contracts.
 | `check_semantics.json` | PASS/FAIL conditions, extraction final-state resolution, and the single hard dependency C03 PASS => C02 PASS. Each extraction question names a `normalization_profile`. |
 | `normalization.json` | Release-local canonical forms, aliases, spoken/reference-text forms and comparison steps. Declarative only (`DECLARATIVE_ONLY`); nothing implements these steps yet. The legacy `configs/normalization.json` is not used by this release. |
 | `edge_case_catalog.json` | Edge-case targets, required parameters, verdict requirements, gold prerequisites, antecedent speakers and the readback mutual exclusion. |
-| `authoring/generation_plan.json` | Exact-count G1 distribution: 50 calls (45 SHORT at 180-300 s, 5 LONG at 1801-3600 s), the 5/5/5/35 composition grid, failure and edge-case budgets, value pools and product currencies. |
+| `authoring/generation_plan.json` | Exact-count G1 distribution: 50 calls (45 SHORT at 180-300 s, 5 LONG at 1801-3600 s), the 5/5/5/35 composition grid, exact per-call counts of compliance FAILs (0/1/2/3/4 FAILs in 10/10/15/10/5 calls, at least 6 FAILs per check) and of edge cases (0/1/2/3/4 in 10/10/15/10/5 calls, 90 in total), value pools and product currencies. |
 
 All 20 questions apply to every call. Call intents (`["ADVISORY", "EXECUTION"]`)
 are multi-label and descriptive only: `ADVISORY|EXECUTION` in CSV, a JSON array
@@ -98,7 +98,14 @@ python -m pytest -q tests/test_stage0_contracts.py
 Pipeline names for this release: G0 contracts, G1 deterministic planning, G2
 call_spec, G2B event_skeleton, G3 call_config, G4A check_plan_skeleton, G4B
 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
-verification, G8 ground truth, G9 audio and evaluation. G1 is not implemented.
+verification, G8 ground truth, G9 audio and evaluation. G1 is implemented by
+`fyp_evaluation.planning` (no LLM); G2 onwards is not implemented.
+
+```powershell
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1 --check     # byte-for-byte reproduction
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1 --validate  # validate files on disk
+```
 
 ## Required generation order
 
