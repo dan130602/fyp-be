@@ -107,6 +107,19 @@ python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1 --validate  # validate files on disk
 ```
 
+G2A (`fyp_evaluation.call_specs`, no LLM) compiles the frozen G1 outputs into one immutable
+`authoring/call_specs/CALL_XXX.json` per call plus `authoring/call_spec_record.json`. It is a pure
+join: nothing is sampled, normalized or invented, and it refuses to run unless G0 and G1 validate
+on disk. Its strongest invariant is that the 50 specs project back to the three G1 CSVs
+byte-for-byte (via G1's own serializer), with hashes matching `planning_record.json`. Schemas live
+in `schemas/stage2/`, outside the legacy top-level schema set.
+
+```powershell
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --overwrite  # replace the full set; refuses without the flag
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk against G1
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
+```
+
 ## Required generation order
 
 1. Create and approve the fixed internal checklist. Establish reusable
