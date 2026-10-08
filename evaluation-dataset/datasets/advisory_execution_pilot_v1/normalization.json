@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "dataset_id": "advisory_execution_pilot_v1",
-  "description": "Release-local normalization contract for advisory_execution_pilot_v1. It owns canonical gold forms, aliases, spoken/reference-text forms and prediction-comparison steps for every extraction profile referenced by check_semantics.json. The legacy configs/normalization.json is not used by this release. This file is declarative: no parser, spoken-form verifier or scorer implements these steps yet.",
+  "description": "Release-local normalization contract for advisory_execution_pilot_v1. It owns canonical gold forms, aliases, spoken/reference-text forms and prediction-comparison steps for every extraction profile referenced by check_semantics.json. The legacy configs/normalization.json is not used by this release. This file is declarative: no parser, spoken-form verifier or scorer implements these steps yet. Spoken forms marked EDGE_CASE_ONLY are REQUIRED on the targeted value when their edge case is assigned (applies_to states which characters they cover) and FORBIDDEN in every call where it is not.",
   "implementation_status": "DECLARATIVE_ONLY",
   "compliance_verdicts": [
     "PASS",
@@ -13,7 +13,11 @@
       "description": "Synthetic Singapore NRIC/FIN-shaped identifier used for K01.",
       "canonical": {
         "format": "One uppercase prefix letter, seven digits and one uppercase suffix letter, with no spaces or punctuation.",
-        "pattern": "^[STFGM][0-9]{7}[A-Z]$"
+        "pattern": "^[STFGM][0-9]{7}[A-NP-Z]$",
+        "excluded_characters": [
+          "O"
+        ],
+        "excluded_characters_reason": "The letter O is acoustically ambiguous with the digit zero spoken as 'oh'."
       },
       "comparison": {
         "steps": [
@@ -44,14 +48,18 @@
         {
           "id": "OH_FOR_ZERO",
           "usage": "EDGE_CASE_ONLY",
-          "description": "The digit zero is spoken as 'oh'.",
-          "enabled_by_edge_case": "EC_OH_VS_ZERO"
+          "description": "Every zero digit in the identifier is spoken as 'oh'; all other characters stay character by character.",
+          "enabled_by_edge_case": "EC_OH_VS_ZERO",
+          "applies_to": "ALL_ZERO_DIGITS",
+          "remaining_characters_form": "CHARACTER_BY_CHARACTER"
         },
         {
           "id": "DOUBLE_OR_TRIPLE_DIGIT",
           "usage": "EDGE_CASE_ONLY",
-          "description": "A run of two or three identical digits is spoken as 'double' or 'triple' followed by the digit.",
-          "enabled_by_edge_case": "EC_DOUBLE_TRIPLE_DIGITS"
+          "description": "Every maximal run of identical digits whose length equals the assigned variant (DOUBLE = 2, TRIPLE = 3) is spoken as 'double' or 'triple' followed by the digit; all other characters stay character by character.",
+          "enabled_by_edge_case": "EC_DOUBLE_TRIPLE_DIGITS",
+          "applies_to": "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH",
+          "remaining_characters_form": "CHARACTER_BY_CHARACTER"
         }
       ]
     },
@@ -242,13 +250,15 @@
           "id": "FINANCIAL_SHORTHAND",
           "usage": "EDGE_CASE_ONLY",
           "description": "Shorthand magnitude suffix, for example '50k'.",
-          "enabled_by_edge_case": "EC_FINANCIAL_SHORTHAND"
+          "enabled_by_edge_case": "EC_FINANCIAL_SHORTHAND",
+          "applies_to": "WHOLE_VALUE"
         },
         {
           "id": "MAGNITUDE_EXPRESSION",
           "usage": "EDGE_CASE_ONLY",
           "description": "Magnitude word, optionally with a decimal, for example '1.2 million'.",
-          "enabled_by_edge_case": "EC_LARGE_NUMBER_EXPRESSION"
+          "enabled_by_edge_case": "EC_LARGE_NUMBER_EXPRESSION",
+          "applies_to": "WHOLE_VALUE"
         }
       ]
     },

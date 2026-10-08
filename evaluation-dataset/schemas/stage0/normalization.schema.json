@@ -115,6 +115,19 @@
             },
             "calendar_valid": {
               "const": true
+            },
+            "excluded_characters": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1
+              }
+            },
+            "excluded_characters_reason": {
+              "$ref": "#/$defs/text"
             }
           }
         },
@@ -254,6 +267,16 @@
         },
         "enabled_by_edge_case": {
           "$ref": "#/$defs/identifier"
+        },
+        "applies_to": {
+          "enum": [
+            "ALL_ZERO_DIGITS",
+            "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH",
+            "WHOLE_VALUE"
+          ]
+        },
+        "remaining_characters_form": {
+          "$ref": "#/$defs/identifier"
         }
       },
       "if": {
@@ -265,13 +288,28 @@
       },
       "then": {
         "required": [
-          "enabled_by_edge_case"
+          "enabled_by_edge_case",
+          "applies_to"
         ]
       },
       "else": {
         "not": {
-          "required": [
-            "enabled_by_edge_case"
+          "anyOf": [
+            {
+              "required": [
+                "enabled_by_edge_case"
+              ]
+            },
+            {
+              "required": [
+                "applies_to"
+              ]
+            },
+            {
+              "required": [
+                "remaining_characters_form"
+              ]
+            }
           ]
         }
       }

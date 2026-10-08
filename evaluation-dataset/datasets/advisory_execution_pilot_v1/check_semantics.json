@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "description": "Semantic and final-state contracts for the 20-question advisory_execution_pilot_v1 checklist. Gold verdicts and values must be derivable from the dialogue and the same inputs available to the evaluated pipeline. Question type is owned by checklist.json. Canonical forms, aliases, spoken forms and comparison steps are owned by this release's normalization.json; each extraction question names its profile in normalization_profile. All questions apply to every call; there is no applicability routing.",
+  "description": "Semantic and final-state contracts for the 20-question advisory_execution_pilot_v1 checklist. Gold verdicts and values must be derivable from the dialogue and the same inputs available to the evaluated pipeline. Question type is owned by checklist.json. Canonical forms, aliases, spoken forms and comparison steps are owned by this release's normalization.json; each extraction question names its profile in normalization_profile. All questions apply to every call; there is no applicability routing. Compliance checks declare a presence_pattern (EMPLOYEE_ONLY, EXCHANGE or ANY_SPEAKER); ordering_rules hold the only explicit relative orderings.",
   "checks": [
     {
       "question_id": "C01",
@@ -9,6 +9,7 @@
       "speaker_scope": [
         "EMPLOYEE"
       ],
+      "presence_pattern": "EMPLOYEE_ONLY",
       "notes": [
         "If the client volunteers an objective, the employee should acknowledge or confirm it for PASS."
       ]
@@ -20,6 +21,7 @@
       "speaker_scope": [
         "EMPLOYEE"
       ],
+      "presence_pattern": "EMPLOYEE_ONLY",
       "notes": [
         "V1 assesses whether a concrete product-specific risk is explained.",
         "V1 does not assess completeness against an external product-risk taxonomy or hidden product database."
@@ -33,6 +35,7 @@
         "EMPLOYEE",
         "CLIENT"
       ],
+      "presence_pattern": "EXCHANGE",
       "notes": [
         "For v1 synthetic gold, do not use ambiguous acknowledgements such as 'okay' as the decisive evidence."
       ]
@@ -43,14 +46,19 @@
       "fail_condition": "The fee/charge is omitted or only referred to vaguely without an amount or rate.",
       "speaker_scope": [
         "EMPLOYEE"
-      ]
+      ],
+      "presence_pattern": "EMPLOYEE_ONLY"
     },
     {
       "question_id": "C05",
       "pass_condition": "The employee explicitly explains that the client may lose some or all of the invested capital.",
-      "fail_condition": "The employee does not communicate the possibility of losing some or all invested capital.",
+      "fail_condition": "The employee does not explicitly explain that the client may lose some or all of the invested capital. Merely implying loss, for example by asking about loss tolerance, is not an explicit explanation.",
       "speaker_scope": [
         "EMPLOYEE"
+      ],
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "notes": [
+        "FAIL is the exact complement of PASS: any call without an explicit explanation of possible capital loss fails, including calls that only imply loss."
       ]
     },
     {
@@ -61,6 +69,7 @@
         "EMPLOYEE",
         "CLIENT"
       ],
+      "presence_pattern": "EXCHANGE",
       "notes": [
         "Use an unambiguous client response in v1 synthetic gold."
       ]
@@ -72,6 +81,7 @@
       "speaker_scope": [
         "EMPLOYEE"
       ],
+      "presence_pattern": "EMPLOYEE_ONLY",
       "notes": [
         "V1 evaluates whether the recommendation rationale is explained in the call.",
         "V1 does not independently determine objective product suitability using hidden client or product data."
@@ -85,6 +95,7 @@
         "EMPLOYEE",
         "CLIENT"
       ],
+      "presence_pattern": "EXCHANGE",
       "notes": [
         "The confirmed instruction must be the final state after all corrections or replacement orders."
       ]
@@ -97,6 +108,7 @@
         "EMPLOYEE",
         "CLIENT"
       ],
+      "presence_pattern": "ANY_SPEAKER",
       "notes": [
         "This is a call-level red-flag presence check, not a check of whether the employee stopped the transaction."
       ]
@@ -108,7 +120,8 @@
       "speaker_scope": [
         "EMPLOYEE",
         "CLIENT"
-      ]
+      ],
+      "presence_pattern": "ANY_SPEAKER"
     },
     {
       "question_id": "C11",
@@ -116,7 +129,8 @@
       "fail_condition": "The employee encourages, pressures, or coaches the client to overstate willingness to accept investment losses.",
       "speaker_scope": [
         "EMPLOYEE"
-      ]
+      ],
+      "presence_pattern": "EMPLOYEE_ONLY"
     },
     {
       "question_id": "C12",
@@ -125,6 +139,7 @@
       "speaker_scope": [
         "EMPLOYEE"
       ],
+      "presence_pattern": "EMPLOYEE_ONLY",
       "counterexamples": [
         "The client asks whether returns are guaranteed.",
         "The employee states that returns are not guaranteed."
@@ -209,6 +224,33 @@
         "superseded order types",
         "employee readback errors corrected by the client"
       ]
+    }
+  ],
+  "ordering_rules": [
+    {
+      "id": "C03_AFTER_C02_DISCLOSURE",
+      "question_id": "C03",
+      "after": {
+        "type": "CHECK_EVIDENCE",
+        "question_id": "C02"
+      },
+      "reason": "C03 verifies understanding after the key risks are disclosed, so its evidence follows the C02 risk disclosure."
+    },
+    {
+      "id": "C08_AFTER_FINAL_TRANSACTION_STATE",
+      "question_id": "C08",
+      "after": {
+        "type": "FINAL_STATE",
+        "question_ids": [
+          "T01",
+          "T02",
+          "T03",
+          "T04",
+          "T05",
+          "T06"
+        ]
+      },
+      "reason": "C08 confirms the final transaction instruction, so its evidence follows all corrections and replacements of the order."
     }
   ],
   "cross_check_rules": [

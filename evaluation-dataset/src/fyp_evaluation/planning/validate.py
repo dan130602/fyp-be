@@ -9,7 +9,7 @@ from collections import Counter, defaultdict
 
 from fyp_evaluation.authoring.coverage import check_matrix, compile_expected
 from fyp_evaluation.validation.schemas import validate_checklist
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, numeric_prerequisite_met
 
 from .adapter import legacy_normalization
 from .domain import (
@@ -209,12 +209,12 @@ def _assignment_errors(a, cases, gold, domain, exempt, question_index):
     if prerequisite:
         for target in targets:
             value = row[target]
-            ok = {
-                "CONTAINS_CHARACTER": lambda: prerequisite.get("character", "") in value[1:-1],
-                "REPEATED_DIGIT_RUN": lambda: max(maximal_digit_runs(value[1:-1])) >= prerequisite.get("minimum_run_length", 2),
-                "NUMERIC_MINIMUM": lambda: value >= prerequisite["minimum"],
-                "NUMERIC_MINIMUM_AND_MULTIPLE": lambda: value >= prerequisite["minimum"] and value % prerequisite["multiple_of"] == 0,
-            }[prerequisite["kind"]]()
+            if prerequisite["kind"] == "CONTAINS_CHARACTER":
+                ok = prerequisite.get("character", "") in value[1:-1]
+            elif prerequisite["kind"] == "REPEATED_DIGIT_RUN":
+                ok = max(maximal_digit_runs(value[1:-1])) >= prerequisite.get("minimum_run_length", 2)
+            else:
+                ok = numeric_prerequisite_met(prerequisite, value)
             if not ok:
                 errors.append(f"{target} gold {value!r} fails {prerequisite['kind']}")
     if "antecedent_speaker" in params and params["antecedent_speaker"] not in case["allowed_antecedent_speakers"]:

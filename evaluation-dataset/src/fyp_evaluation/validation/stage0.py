@@ -99,6 +99,11 @@ def _check_semantics(checklist, semantics, normalization):
             errors.append(f"check_semantics: {item['id']}: {item['type']} requires {kind}")
             continue
         if is_compliance:
+            scope = entry["speaker_scope"]
+            if entry["presence_pattern"] == "EMPLOYEE_ONLY" and scope != ["EMPLOYEE"]:
+                errors.append(f"check_semantics: {item['id']}: EMPLOYEE_ONLY requires speaker_scope [EMPLOYEE]")
+            if entry["presence_pattern"] in {"EXCHANGE", "ANY_SPEAKER"} and set(scope) != {"EMPLOYEE", "CLIENT"}:
+                errors.append(f"check_semantics: {item['id']}: {entry['presence_pattern']} requires both speakers in speaker_scope")
             continue
         profile_id = entry["normalization_profile"]
         referenced.add(profile_id)
@@ -109,6 +114,35 @@ def _check_semantics(checklist, semantics, normalization):
             errors.append(f"check_semantics: {item['id']}: field {item['field']} cannot use value_type {profile['value_type']}")
     if unused := sorted(profiles.keys() - referenced):
         errors.append(f"normalization: profiles not referenced by check_semantics: {unused}")
+    ordering_ids = [rule["id"] for rule in semantics["ordering_rules"]]
+    if len(ordering_ids) != len(set(ordering_ids)):
+        errors.append("check_semantics: duplicate ordering_rules id")
+    graph = {}
+    for rule in semantics["ordering_rules"]:
+        subject = items.get(rule["question_id"])
+        if subject is None or subject["type"] != "COMPLIANCE":
+            errors.append(f"check_semantics: {rule['id']}: {rule['question_id']} is not a compliance question")
+        after = rule["after"]
+        if after["type"] == "CHECK_EVIDENCE":
+            referenced = [after["question_id"]]
+            if any(items.get(q, {}).get("type") != "COMPLIANCE" for q in referenced):
+                errors.append(f"check_semantics: {rule['id']}: CHECK_EVIDENCE must name a compliance question")
+        else:
+            referenced = after["question_ids"]
+            if any(items.get(q, {}).get("type") != "TRANSACTION" for q in referenced):
+                errors.append(f"check_semantics: {rule['id']}: FINAL_STATE must name transaction questions")
+        if rule["question_id"] in referenced:
+            errors.append(f"check_semantics: {rule['id']}: a rule cannot order a question after itself")
+        graph.setdefault(rule["question_id"], set()).update(q for q in referenced if q in items)
+    for start_node in graph:
+        seen, stack = set(), [start_node]
+        while stack:
+            for nxt in graph.get(stack.pop(), ()):
+                if nxt == start_node:
+                    errors.append(f"check_semantics: ordering_rules form a cycle through {start_node}")
+                if nxt not in seen:
+                    seen.add(nxt)
+                    stack.append(nxt)
     rule_ids = [rule["id"] for rule in semantics["cross_check_rules"]]
     if len(rule_ids) != len(set(rule_ids)):
         errors.append("check_semantics: duplicate cross_check_rules id")
@@ -148,6 +182,14 @@ def _normalization(normalization, catalog, semantics):
             errors.append(f"{where}: magnitude_words require value_type number")
         if "unit_words" in profile and value_type not in {"integer", "number"}:
             errors.append(f"{where}: unit_words require a numeric value_type")
+        excluded = canonical.get("excluded_characters", [])
+        if excluded and "pattern" in canonical:
+            probe = re.compile(canonical["pattern"])
+            for character in excluded:
+                if any(probe.fullmatch(prefix + "0" * 7 + character) for prefix in "STFGM"):
+                    errors.append(f"{where}: canonical pattern still accepts excluded character {character}")
+        if ("excluded_characters" in canonical) != ("excluded_characters_reason" in canonical):
+            errors.append(f"{where}: excluded_characters and excluded_characters_reason must appear together")
         aliases = profile.get("aliases", {})
         if aliases and set(aliases) - set(canonical.get("allowed_values", [])):
             errors.append(f"{where}: alias keys must be canonical allowed_values")
@@ -178,6 +220,15 @@ def _normalization(normalization, catalog, semantics):
         elif profile["reference_text"]["default_form"] != defaults[0]:
             errors.append(f"{where}: reference_text.default_form must name the DEFAULT spoken form")
         for form in forms:
+            remaining = form.get("remaining_characters_form")
+            if remaining is not None:
+                target = next((f for f in forms if f["id"] == remaining), None)
+                if target is None or target["usage"] != "DEFAULT":
+                    errors.append(f"{where}: {form['id']}: remaining_characters_form must name the DEFAULT spoken form")
+                if form.get("applies_to") == "WHOLE_VALUE":
+                    errors.append(f"{where}: {form['id']}: WHOLE_VALUE leaves no remaining characters")
+            elif form.get("applies_to") in {"ALL_ZERO_DIGITS", "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH"}:
+                errors.append(f"{where}: {form['id']}: partial coverage requires remaining_characters_form")
             case_id = form.get("enabled_by_edge_case")
             if case_id is None:
                 continue
@@ -228,6 +279,18 @@ def _catalog(checklist, catalog, semantics, normalization):
                 if allowed is not None and len(allowed) < 3:
                     errors.append(f"{where}: {target} has only {len(allowed)} allowed values; "
                                   "two superseded values plus the final value need at least three")
+        template = case["plan_template"]
+        if ("allowed_distractor_speakers" in case) != (template["evidence_mode"] == "DISTRACTOR_PLUS_TARGET"):
+            errors.append(f"{where}: allowed_distractor_speakers must appear exactly on DISTRACTOR_PLUS_TARGET cases")
+        if template.get("fragment_must_be_incomplete") and template.get("same_turn") is not True:
+            errors.append(f"{where}: an incomplete false-start fragment requires same_turn true")
+        if ("min_readback_fields" in template) != ("readback_wrong_fields" in template):
+            errors.append(f"{where}: min_readback_fields and readback_wrong_fields must appear together")
+        if "min_readback_fields" in template and (
+                template["min_readback_fields"] > len(targets) or any(items[q]["type"] != "TRANSACTION" for q in targets)):
+            errors.append(f"{where}: a readback needs at least min_readback_fields transaction questions to draw from")
+        if "wording_constraint" in template and not compliance_family:
+            errors.append(f"{where}: wording_constraint applies only to compliance cases")
         requirements = case.get("verdict_requirements", {})
         for question_id in requirements:
             if items.get(question_id, {}).get("type") != "COMPLIANCE":
@@ -268,12 +331,16 @@ def _coherent_pairs(extraction, currency):
     ]
 
 
-def _meets(prerequisite, value):
-    if prerequisite["kind"] == "NUMERIC_MINIMUM":
+def numeric_prerequisite_met(prerequisite, value):
+    """True when a numeric gold value satisfies one numeric gold prerequisite."""
+    kind = prerequisite["kind"]
+    if kind == "NUMERIC_MINIMUM":
         return value >= prerequisite["minimum"]
-    if prerequisite["kind"] == "NUMERIC_MINIMUM_AND_MULTIPLE":
+    if kind == "NUMERIC_MINIMUM_AND_MULTIPLE":
         return value >= prerequisite["minimum"] and value % prerequisite["multiple_of"] == 0
-    return True
+    if kind == "NUMERIC_MINIMUM_NOT_MULTIPLE":
+        return value >= prerequisite["minimum"] and value % prerequisite["not_multiple_of"] != 0
+    raise ValueError(f"Not a numeric gold prerequisite: {kind}")
 
 
 def _generation_plan(checklist, plan, catalog, semantics, normalization):
@@ -388,7 +455,7 @@ def _generation_plan(checklist, plan, catalog, semantics, normalization):
             field = next((f for f, q in fields.items() if q == target), None)
             pairs = [pair for currency in currencies for pair in _coherent_pairs(extraction, currency)]
             index = {"transaction_amount": 0, "transaction_quantity": 1}.get(field)
-            if index is not None and not any(_meets(prerequisite, pair[index]) for pair in pairs):
+            if index is not None and not any(numeric_prerequisite_met(prerequisite, pair[index]) for pair in pairs):
                 errors.append(f"{where}: no coherent {field} value satisfies {case['id']} prerequisites")
 
     kyc = extraction["synthetic_kyc"]
@@ -397,9 +464,13 @@ def _generation_plan(checklist, plan, catalog, semantics, normalization):
     nric = kyc["nric_fin"]
     if pattern:
         for prefix in nric["prefixes"]:
-            sample = prefix + "0" * nric["digit_count"] + nric["suffix_letters"][0]
-            if not re.fullmatch(pattern, sample):
-                errors.append(f"{where}: NRIC/FIN prefix {prefix} does not fit the canonical pattern")
+            for suffix in nric["suffix_letters"]:
+                if not re.fullmatch(pattern, prefix + "0" * nric["digit_count"] + suffix):
+                    errors.append(f"{where}: NRIC/FIN prefix {prefix} with suffix {suffix} does not fit the canonical pattern")
+                    break
+    excluded = (identifier or {}).get("canonical", {}).get("excluded_characters", [])
+    if clash := sorted(set(excluded) & (set(nric["suffix_letters"]) | set(nric["prefixes"]))):
+        errors.append(f"{where}: NRIC/FIN pools contain excluded characters {clash}")
     if len(set(nric["suffix_letters"])) != len(nric["suffix_letters"]):
         errors.append(f"{where}: suffix_letters must not repeat")
     try:

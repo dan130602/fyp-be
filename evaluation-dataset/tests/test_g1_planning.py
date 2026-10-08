@@ -5,6 +5,7 @@ Uses the approved advisory_execution_pilot_v1 G0 inputs. No LLM, network or AWS.
 
 from copy import deepcopy
 import json
+import re
 import shutil
 from collections import Counter
 from pathlib import Path
@@ -110,6 +111,48 @@ def test_no_fee_distractor_where_c04_fails(parsed):
             assert a["parameters"]["distractor_role"] != "FEE_CURRENCY"
         if a["edge_case_id"] == "EC_MULTIPLE_MONETARY_VALUES":
             assert all("FEE" not in d["role"] for d in a["parameters"]["distractor_values"])
+
+
+def test_k01_never_uses_letter_o(parsed):
+    _, matrix, _ = parsed
+    assert all(cells["K01"][-1] != "O" and cells["K01"][0] != "O" for cells in matrix.values())
+    assert len({cells["K01"] for cells in matrix.values()}) == 50
+
+
+def test_large_number_cases_are_audibly_distinct(parsed):
+    _, matrix, assignments = parsed
+    large = [a for a in assignments if a["edge_case_id"] == "EC_LARGE_NUMBER_EXPRESSION"]
+    assert len(large) == 4
+    for a in large:
+        amount = int(matrix[a["call_id"]]["T03"])
+        assert amount >= 1_000_000 and amount % 1_000_000 != 0
+        assert a["parameters"]["canonical_value"] == amount and a["parameters"]["spoken_form"].endswith(" million")
+
+
+def test_oh_and_double_triple_prerequisites_hold(parsed):
+    _, matrix, assignments = parsed
+    for a in assignments:
+        digits = matrix[a["call_id"]]["K01"][1:-1]
+        if a["edge_case_id"] == "EC_OH_VS_ZERO":
+            assert "0" in digits
+        if a["edge_case_id"] == "EC_DOUBLE_TRIPLE_DIGITS":
+            runs = [len(m.group(0)) for m in re.finditer(r"([0-9])\1*", digits)]
+            assert {"DOUBLE": 2, "TRIPLE": 3}[a["parameters"]["variant"]] in runs
+
+
+def test_letter_o_suffix_is_rejected(documents, parsed):
+    _, matrix, _ = parsed
+    matrix["CALL_001"]["K01"] = matrix["CALL_001"]["K01"][:-1] + "O"
+    errors = validate_plan(documents, *parsed, SCHEMAS)
+    assert any("K01" in e for e in errors), errors
+
+
+def test_non_multiple_prerequisite_is_enforced(documents, parsed):
+    _, matrix, assignments = parsed
+    a = next(a for a in assignments if a["edge_case_id"] == "EC_LARGE_NUMBER_EXPRESSION")
+    matrix[a["call_id"]]["T03"] = "5000000"
+    errors = validate_plan(documents, *parsed, SCHEMAS)
+    assert any("NUMERIC_MINIMUM_NOT_MULTIPLE" in e for e in errors), errors
 
 
 def test_distribution_deviations_are_rejected(documents, parsed):

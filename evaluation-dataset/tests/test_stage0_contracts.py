@@ -6,6 +6,7 @@ choose no gold answers and implement no spoken-form normalization.
 
 from copy import deepcopy
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -155,6 +156,67 @@ def test_catalog_declares_every_parameter_g1_produces(release_documents):
     assert multiple["allowed_target_question_ids"] == ["K01", "K02", "T01", "T02", "T03", "T04"]
 
 
+def test_k01_suffix_pool_excludes_letter_o(release_documents):
+    plan = release_documents["generation_plan"]["extraction_distribution"]["synthetic_kyc"]["nric_fin"]
+    assert "O" not in plan["suffix_letters"] and "O" not in plan["prefixes"]
+    assert len(plan["suffix_letters"]) == 25
+    canonical = release_documents["normalization"]["profiles"]["synthetic_nric_fin"]["canonical"]
+    assert canonical["excluded_characters"] == ["O"]
+    assert not re.fullmatch(canonical["pattern"], "S1234567O") and re.fullmatch(canonical["pattern"], "S1234567P")
+
+
+def test_presence_patterns_and_ordering_rules(release_documents):
+    semantics = release_documents["check_semantics"]
+    patterns = {c["question_id"]: c["presence_pattern"] for c in semantics["checks"] if "presence_pattern" in c}
+    assert patterns == {
+        **{q: "EMPLOYEE_ONLY" for q in ("C01", "C02", "C04", "C05", "C07", "C11", "C12")},
+        **{q: "EXCHANGE" for q in ("C03", "C06", "C08")},
+        **{q: "ANY_SPEAKER" for q in ("C09", "C10")},
+    }
+    assert [(r["id"], r["question_id"], r["after"]) for r in semantics["ordering_rules"]] == [
+        ("C03_AFTER_C02_DISCLOSURE", "C03", {"type": "CHECK_EVIDENCE", "question_id": "C02"}),
+        ("C08_AFTER_FINAL_TRANSACTION_STATE", "C08",
+         {"type": "FINAL_STATE", "question_ids": ["T01", "T02", "T03", "T04", "T05", "T06"]}),
+    ]
+    assert "turn" not in json.dumps(semantics["ordering_rules"]).replace("transaction", "")
+
+
+def test_c05_fail_is_the_complement_of_pass(release_documents):
+    c05 = _semantics(release_documents, "C05")
+    assert "does not explicitly explain" in c05["fail_condition"]
+    assert "Merely implying loss" in c05["fail_condition"] and "loss tolerance" in c05["fail_condition"]
+    assert "communicate" not in c05["fail_condition"]
+
+
+def test_relative_structure_only_catalog_additions(release_documents):
+    assert _case(release_documents, "EC_MULTIPLE_CORRECTIONS")["plan_template"]["superseded_states_before_final"] is True
+    false_start = _case(release_documents, "EC_FALSE_START")["plan_template"]
+    assert false_start["same_turn"] is True and false_start["fragment_must_be_incomplete"] is True
+    readback = _case(release_documents, "EC_ONE_FIELD_READBACK_ERROR")["plan_template"]
+    assert readback["min_readback_fields"] == 2 and readback["readback_wrong_fields"] == "TARGET_ONLY"
+    for case_id in ("EC_MULTIPLE_CURRENCIES", "EC_MULTIPLE_MONETARY_VALUES"):
+        assert _case(release_documents, case_id)["allowed_distractor_speakers"] == ["CLIENT", "EMPLOYEE"]
+    assert _case(release_documents, "EC_PARAPHRASED_COMPLIANCE_STATEMENT")["plan_template"]["wording_constraint"] == "NOT_VERBATIM_CHECKLIST"
+    large = _case(release_documents, "EC_LARGE_NUMBER_EXPRESSION")["gold_prerequisites"]
+    assert large == {"kind": "NUMERIC_MINIMUM_NOT_MULTIPLE", "minimum": 1000000, "not_multiple_of": 1000000}
+    # No exact turn numbers or arbitrary gaps beyond the two pre-existing, intrinsic minimums.
+    gaps = {c["id"]: c["plan_template"].get("min_intervening_turns", c["plan_template"].get("default_min_turn_gap"))
+            for c in release_documents["edge_case_catalog"]["edge_cases"]
+            if {"min_intervening_turns", "default_min_turn_gap"} & set(c["plan_template"])}
+    assert gaps == {"EC_CORRECTION_SAME_TURN": 0, "EC_CORRECTION_CROSS_TURN": 2, "EC_LONG_DISTANCE_DEPENDENCY": 6}
+
+
+def test_spoken_forms_are_deterministic(release_documents):
+    forms = {f["id"]: f for p in release_documents["normalization"]["profiles"].values() for f in p["spoken_forms"]}
+    assert forms["OH_FOR_ZERO"]["applies_to"] == "ALL_ZERO_DIGITS"
+    assert forms["DOUBLE_OR_TRIPLE_DIGIT"]["applies_to"] == "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH"
+    for form_id in ("OH_FOR_ZERO", "DOUBLE_OR_TRIPLE_DIGIT"):
+        assert forms[form_id]["remaining_characters_form"] == "CHARACTER_BY_CHARACTER"
+        assert forms[form_id]["usage"] == "EDGE_CASE_ONLY"
+    assert forms["FINANCIAL_SHORTHAND"]["applies_to"] == forms["MAGNITUDE_EXPRESSION"]["applies_to"] == "WHOLE_VALUE"
+    assert all("applies_to" not in f for f in forms.values() if f["usage"] != "EDGE_CASE_ONLY")
+
+
 def test_edge_case_catalog_structure_preserved(release_documents):
     catalog = release_documents["edge_case_catalog"]
     assert all("parameter_builder" not in case for case in catalog["edge_cases"])
@@ -296,6 +358,67 @@ INVALID = {
     "fee distractor rule disabled": (
         _set(("generation_plan", "planning_rules", "no_fee_distractor_when_c04_fail"), False),
         "generation_plan: $.planning_rules"),
+    "O reintroduced into suffix pool": (
+        lambda d: d["generation_plan"]["extraction_distribution"]["synthetic_kyc"]["nric_fin"].update(
+            suffix_letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        "does not fit the canonical pattern"),
+    "excluded characters without reason": (
+        _profile("synthetic_nric_fin", lambda p: p["canonical"].pop("excluded_characters_reason")),
+        "must appear together"),
+    "canonical pattern accepts excluded character": (
+        _profile("synthetic_nric_fin", lambda p: p["canonical"].update(pattern="^[STFGM][0-9]{7}[A-Z]$")),
+        "canonical pattern still accepts excluded character O"),
+    "edge-case form without applies_to": (
+        _profile("synthetic_nric_fin", lambda p: p["spoken_forms"][1].pop("applies_to")),
+        "normalization: $.profiles"),
+    "partial coverage without remaining form": (
+        _profile("synthetic_nric_fin", lambda p: p["spoken_forms"][1].pop("remaining_characters_form")),
+        "partial coverage requires remaining_characters_form"),
+    "remaining form is not the default": (
+        _profile("synthetic_nric_fin", lambda p: p["spoken_forms"][1].update(remaining_characters_form="DOUBLE_OR_TRIPLE_DIGIT")),
+        "remaining_characters_form must name the DEFAULT spoken form"),
+    "default form carries applies_to": (
+        _profile("synthetic_nric_fin", lambda p: p["spoken_forms"][0].update(applies_to="ALL_ZERO_DIGITS")),
+        "normalization: $.profiles"),
+    "missing presence_pattern": (
+        _edit_semantics("C03", lambda entry: entry.pop("presence_pattern")), "check_semantics: $.checks"),
+    "EMPLOYEE_ONLY with both speakers": (
+        _edit_semantics("C01", lambda entry: entry.update(speaker_scope=["EMPLOYEE", "CLIENT"])),
+        "EMPLOYEE_ONLY requires speaker_scope [EMPLOYEE]"),
+    "EXCHANGE with one speaker": (
+        _edit_semantics("C03", lambda entry: entry.update(speaker_scope=["EMPLOYEE"])), "EXCHANGE requires both speakers"),
+    "ordering rule on extraction question": (
+        _set(("check_semantics", "ordering_rules", 0, "question_id"), "T01"), "is not a compliance question"),
+    "ordering after itself": (
+        _set(("check_semantics", "ordering_rules", 0, "after", "question_id"), "C03"), "cannot order a question after itself"),
+    "FINAL_STATE names compliance question": (
+        _set(("check_semantics", "ordering_rules", 1, "after", "question_ids"), ["C02"]), "FINAL_STATE must name transaction questions"),
+    "ordering cycle": (
+        lambda d: d["check_semantics"]["ordering_rules"].append({
+            "id": "C02_AFTER_C03", "question_id": "C02", "after": {"type": "CHECK_EVIDENCE", "question_id": "C03"},
+            "reason": "artificial cycle"}),
+        "form a cycle"),
+    "distractor speakers removed": (
+        _edit_case("EC_MULTIPLE_CURRENCIES", lambda c: c.pop("allowed_distractor_speakers")),
+        "allowed_distractor_speakers must appear exactly on DISTRACTOR_PLUS_TARGET cases"),
+    "distractor speakers on wrong case": (
+        _edit_case("EC_FALSE_START", lambda c: c.update(allowed_distractor_speakers=["CLIENT"])),
+        "allowed_distractor_speakers must appear exactly on DISTRACTOR_PLUS_TARGET cases"),
+    "incomplete fragment outside same turn": (
+        _edit_case("EC_FALSE_START", lambda c: c["plan_template"].update(same_turn=False)),
+        "incomplete false-start fragment requires same_turn true"),
+    "readback minimum without wrong-field rule": (
+        _edit_case("EC_ONE_FIELD_READBACK_ERROR", lambda c: c["plan_template"].pop("readback_wrong_fields")),
+        "must appear together"),
+    "readback minimum exceeds fields": (
+        _edit_case("EC_ONE_FIELD_READBACK_ERROR", lambda c: c["plan_template"].update(min_readback_fields=7)),
+        "needs at least min_readback_fields"),
+    "wording constraint on extraction case": (
+        _edit_case("EC_FALSE_START", lambda c: c["plan_template"].update(wording_constraint="NOT_VERBATIM_CHECKLIST")),
+        "wording_constraint applies only to compliance cases"),
+    "large-number prerequisite unsatisfiable": (
+        _edit_case("EC_LARGE_NUMBER_EXPRESSION", lambda c: c["gold_prerequisites"].update(not_multiple_of=1)),
+        "satisfies EC_LARGE_NUMBER_EXPRESSION"),
     "parameter builder": (
         _edit_case("EC_FALSE_START", lambda c: c.update(parameter_builder="x")), "edge_case_catalog: $.edge_cases"),
     "compliance target on extraction family": (

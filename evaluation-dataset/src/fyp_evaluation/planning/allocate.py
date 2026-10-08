@@ -12,7 +12,7 @@ import random
 from collections import Counter
 from datetime import timedelta
 
-from fyp_evaluation.validation.stage0 import validate_stage0
+from fyp_evaluation.validation.stage0 import numeric_prerequisite_met, validate_stage0
 
 from .domain import Domain, format_dob, maximal_digit_runs
 from .edge_params import (
@@ -323,8 +323,8 @@ def _attempt(documents, domain, seed, attempt):
         products = sorted(shuffled(products, transaction_rng), key=lambda p: usage[("product", p)])
         pairs = [
             (amount, quantity) for amount, quantity in domain.coherent_pairs(cur)
-            if all(_numeric_prerequisite_met(p, amount) for p in prerequisites[domain.t03])
-            and all(_numeric_prerequisite_met(p, quantity) for p in prerequisites[domain.t04])
+            if all(numeric_prerequisite_met(p, amount) for p in prerequisites[domain.t03])
+            and all(numeric_prerequisite_met(p, quantity) for p in prerequisites[domain.t04])
         ]
         pairs = sorted(shuffled(pairs, transaction_rng),
                        key=lambda pair: usage[("amount", cur, pair[0])] + usage[("quantity", pair[1])])
@@ -379,14 +379,6 @@ def _k01_prerequisite_met(prerequisite, value):
         return prerequisite["character"] in value[1:-1]
     if prerequisite["kind"] == "REPEATED_DIGIT_RUN":
         return max(maximal_digit_runs(value[1:-1])) >= prerequisite["minimum_run_length"]
-    return True
-
-
-def _numeric_prerequisite_met(prerequisite, value):
-    if prerequisite["kind"] == "NUMERIC_MINIMUM":
-        return value >= prerequisite["minimum"]
-    if prerequisite["kind"] == "NUMERIC_MINIMUM_AND_MULTIPLE":
-        return value >= prerequisite["minimum"] and value % prerequisite["multiple_of"] == 0
     return True
 
 

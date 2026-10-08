@@ -89,11 +89,13 @@
       "gold_constraints": [
         "at least two superseded values",
         "final_value must equal the target question's gold value",
-        "targets must have at least three distinct configured values so two superseded values can differ from each other and from the final value"
+        "targets must have at least three distinct configured values so two superseded values can differ from each other and from the final value",
+        "superseded states must occur in order before the FINAL state; no turn numbers or gaps are prescribed"
       ],
       "plan_template": {
         "evidence_mode": "STATE_TRANSITION",
-        "minimum_state_count": 3
+        "minimum_state_count": 3,
+        "superseded_states_before_final": true
       },
       "documentation_examples": [
         "A field passes through two or more superseded values before the final value.",
@@ -158,14 +160,17 @@
       ],
       "gold_constraints": [
         "only the assigned target field should be wrong in the readback",
-        "final_value must equal the target question's gold value"
+        "final_value must equal the target question's gold value",
+        "the readback includes at least two transaction fields; exactly the assigned target is wrong and every other included field equals the final order"
       ],
       "plan_template": {
         "evidence_mode": "STATE_TRANSITION",
         "event_sequence": [
           "EMPLOYEE_MULTI_FIELD_READBACK_WITH_ONE_ERROR",
           "CLIENT_SINGLE_FIELD_CORRECTION"
-        ]
+        ],
+        "min_readback_fields": 2,
+        "readback_wrong_fields": "TARGET_ONLY"
       },
       "documentation_examples": [
         "A multi-field order readback is correct except for one field, which the client corrects."
@@ -233,7 +238,11 @@
       "documentation_examples": [
         "Another currency is discussed for an account, fee or comparison while the final transaction uses a different currency."
       ],
-      "examples_for_documentation_only": true
+      "examples_for_documentation_only": true,
+      "allowed_distractor_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ]
     },
     {
       "id": "EC_MULTIPLE_MONETARY_VALUES",
@@ -256,7 +265,11 @@
       "documentation_examples": [
         "The call contains multiple monetary values with different roles, such as transaction amount, fee and limit price."
       ],
-      "examples_for_documentation_only": true
+      "examples_for_documentation_only": true,
+      "allowed_distractor_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ]
     },
     {
       "id": "EC_PREVIOUS_CURRENCY_REFERENCE",
@@ -432,7 +445,8 @@
         "canonical_value"
       ],
       "gold_constraints": [
-        "canonical_value must equal T03 gold"
+        "canonical_value must equal T03 gold",
+        "the amount is at least 1,000,000 and not a whole multiple of 1,000,000, so its magnitude wording differs audibly from the default digits"
       ],
       "plan_template": {
         "evidence_mode": "SPOKEN_FORM_NORMALISATION"
@@ -442,8 +456,9 @@
       ],
       "examples_for_documentation_only": true,
       "gold_prerequisites": {
-        "kind": "NUMERIC_MINIMUM",
-        "minimum": 1000000
+        "kind": "NUMERIC_MINIMUM_NOT_MULTIPLE",
+        "minimum": 1000000,
+        "not_multiple_of": 1000000
       }
     },
     {
@@ -465,10 +480,13 @@
       ],
       "gold_constraints": [
         "final_value must equal the target question's gold value",
-        "the false start must not become the committed final instruction"
+        "the false start must not become the committed final instruction",
+        "the false-start fragment and the final committed value occur in the same turn, and the fragment states no complete value"
       ],
       "plan_template": {
-        "evidence_mode": "DISFLUENT_INSTRUCTION"
+        "evidence_mode": "DISFLUENT_INSTRUCTION",
+        "same_turn": true,
+        "fragment_must_be_incomplete": true
       },
       "documentation_examples": [
         "The speaker starts stating a value or instruction, abandons it, and then gives the committed value."
@@ -544,10 +562,12 @@
       ],
       "required_parameters": [],
       "gold_constraints": [
-        "target compliance check must be PASS"
+        "target compliance check must be PASS",
+        "the target is satisfied semantically without reproducing the checklist sentence verbatim; a semantic verifier judges the realised wording"
       ],
       "plan_template": {
-        "evidence_mode": "PARAPHRASED_PRESENCE"
+        "evidence_mode": "PARAPHRASED_PRESENCE",
+        "wording_constraint": "NOT_VERBATIM_CHECKLIST"
       },
       "documentation_examples": [
         "A required employee statement is expressed naturally without copying checklist wording."
