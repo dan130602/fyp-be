@@ -95,11 +95,11 @@ python -c "from fyp_evaluation.validation.stage0 import validate_stage0_release 
 python -m pytest -q tests/test_stage0_contracts.py
 ```
 
-Pipeline names for this release: G0 contracts, G1 deterministic planning, G2
-call_spec, G2B event_skeleton, G3 call_config, G4A check_plan_skeleton, G4B
-check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
-verification, G8 ground truth, G9 audio and evaluation. G1 is implemented by
-`fyp_evaluation.planning` (no LLM); G2 onwards is not implemented.
+Pipeline names for this release: G0 contracts, G1 deterministic planning, G2A
+call_spec (immutable call specifications), G2B check_plan_skeleton (deterministic check-plan
+skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
+verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
+G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`), all without an LLM. G3 onwards is not yet implemented.
 
 ```powershell
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
@@ -118,6 +118,40 @@ in `schemas/stage2/`, outside the legacy top-level schema set.
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --overwrite  # replace the full set; refuses without the flag
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk against G1
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
+```
+
+G2B (`fyp_evaluation.check_plan_skeletons`, no LLM) turns each immutable call spec plus the frozen
+G0 semantics, edge-case catalog and normalization profiles into
+`authoring/check_plan_skeletons/CALL_XXX.json` and `authoring/check_plan_skeleton_record.json`. A
+skeleton is a purely structural evidence blueprint with three parts: `planned_events` (symbolic
+records with closed kinds and statuses, `allowed_speakers`, relative references and provider-independent
+spoken-form requirements), `checks` (all 20 questions: evidence mode, condition references, FINAL events,
+gold-restatement policy) and `constraints` (only ORDER, SAME_TURN, NOT_SAME_TURN and
+MIN_INTERVENING_TURNS, each with provenance). It contains no wording, turn numbers or SSML. G2B reads
+business truth only from the call specs and G0, and refuses to run unless G0, G1 and G2A validate on disk.
+Each planned event is realised later as one contiguous span within a single turn. Every catalog edge case
+has exactly one compiler in `edge_cases.py`; a contradictory combination (for example a long-distance gap
+between questions that share one FINAL event) fails loudly instead of being silently relaxed.
+
+G2B conventions the code fixes (structural, not business truth; nothing here changes gold):
+
+- Speakers: extraction evidence (VALUE_STATEMENT, VALUE_CORRECTION, ORDER_STATEMENT, REFERENCE_SELECTION) is CLIENT;
+  READBACK is EMPLOYEE; ORDER_INVALIDATION, GUARANTEE_REQUEST and WEAK_ACKNOWLEDGEMENT are CLIENT; GUARANTEE_REFUSAL is
+  EMPLOYEE. Compliance patterns: EMPLOYEE_ONLY events are EMPLOYEE; EXCHANGE is an EMPLOYEE ACT then a CLIENT RESPONSE
+  ordered ACT before RESPONSE; ANY_SPEAKER allows `[CLIENT, EMPLOYEE]`. Speakers are sorted arrays.
+- Granularity: each planned event is one contiguous span in one turn; a plain extraction field is one FINAL
+  VALUE_STATEMENT with no ordering against other fields. Distractors carry no ordering relation to FINAL events.
+- Failures by omission (for example C03 or C08 FAIL) create no compliance events; ABSENCE checks carry no evidence events.
+- Ordering rules: the C03 rule orders the C03 ACT after C02 events; the C08 rule orders the C08 request ACT after
+  the distinct FINAL transaction events.
+- Constraints: exact duplicates (same type, endpoints, parameters and provenance) are merged; event pairs are stored
+  sorted by event ID; the same endpoints with different provenance stay separate.
+- Spoken-form IDs come from `normalization.json`; readbacks use `min_field_count` 1 (error) or the catalog value (one-field).
+
+```powershell
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --overwrite  # replace the full set; refuses without the flag
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk (independent re-derivation + canonical bytes)
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
 ```
 
 ## Required generation order

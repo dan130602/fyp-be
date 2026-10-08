@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage2/check_plan_skeleton_record.schema.json",
+  "title": "G2B Check Plan Skeleton Record",
+  "description": "Provenance for one deterministic G2B run: the G2A and G0 input hashes and a hash for every skeleton. Contains no timestamps or environment values.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "generator",
+    "hashing",
+    "g2a_inputs",
+    "g0_inputs",
+    "skeletons",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "stage": {
+      "const": "G2B"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "generator": {
+      "type": "object",
+      "required": [
+        "package",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "package": {
+          "const": "fyp_evaluation.check_plan_skeletons"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
+    },
+    "hashing": {
+      "const": "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
+    },
+    "g2a_inputs": {
+      "type": "object",
+      "required": [
+        "call_spec_record_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "call_spec_record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "g0_inputs": {
+      "type": "object",
+      "required": [
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "skeletons": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^CALL_[0-9]{3,}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "call_spec_sha256",
+          "skeleton_sha256"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "call_spec_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "skeleton_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "skeletons",
+        "checks_per_skeleton",
+        "planned_events",
+        "constraints",
+        "event_kinds",
+        "event_statuses",
+        "constraint_types",
+        "edge_case_assignments"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "skeletons": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "checks_per_skeleton": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "planned_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "constraints": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "event_kinds": {
+          "$ref": "#/$defs/counts"
+        },
+        "event_statuses": {
+          "$ref": "#/$defs/counts"
+        },
+        "constraint_types": {
+          "$ref": "#/$defs/counts"
+        },
+        "edge_case_assignments": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  }
+}

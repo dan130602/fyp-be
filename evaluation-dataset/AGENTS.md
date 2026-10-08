@@ -28,13 +28,16 @@ distractor and initial-order values stay inside the configured domains and reali
 constraints; no fee amount/rate distractor when C04 is FAIL; every other choice is
 seeded, balanced and stably tie-broken. No applicability,
 N/A or NOT_APPLICABLE. Pipeline names: G0 contracts, G1 deterministic planning,
-G2 call_spec, G2B event_skeleton, G3 call_config, G4A check_plan_skeleton,
-G4B check_plan, G5 plan verification, G6 dialogue, G7 dialogue verification,
+G2A call_spec, G2B check_plan_skeleton, G3 call_config, G4 check_plan wording,
+G5 plan verification, G6 dialogue, G7 dialogue verification,
 G8 ground truth, G9 audio and evaluation. G1 (`fyp_evaluation.planning`,
 `scripts/plan_dataset.py`) generates the four planning outputs; never hand-edit
 them, regenerate instead. G2A (`fyp_evaluation.call_specs`, `scripts/compile_call_specs.py`) compiles
 immutable `authoring/call_specs/CALL_XXX.json` by pure join of the G1 files; never hand-edit them and
-never let a later stage change a call spec. Do not implement G2B or any LLM stage until approved.
+never let a later stage change a call spec. G2B (`fyp_evaluation.check_plan_skeletons`,
+`scripts/build_check_plan_skeletons.py`) builds `authoring/check_plan_skeletons/CALL_XXX.json` from the call specs and
+G0 only: structural events, checks and relative constraints, never wording, turn numbers or SSML. Implemented: G0, G1, G2A, G2B. Not yet implemented: G3 onwards
+(do not implement G3 or any LLM stage until approved). G2B conventions (speakers, run structure) are in the README.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
 IDs and order. Do not duplicate a checklist within a release or change production LangGraph.
