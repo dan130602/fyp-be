@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .coverage import compile_expected
 from fyp_evaluation.validation.call_config import validate_call_config
+from fyp_evaluation.validation.dialogue import validate_speaker_alternation
 from fyp_evaluation.validation.check_plan import _same_value, validate_check_plan
 from fyp_evaluation.validation.evidence import resolve_evidence, validate_dialogue_against_plan
 from fyp_evaluation.validation.schemas import validate
@@ -34,7 +35,8 @@ def compile_ground_truth(call_config, check_plan, dialogue, checklist, normaliza
     errors.extend(validate(dialogue, "dialogue", schema_dir))
     if errors:
         raise ValueError("\n".join(errors))
-    errors = validate_dialogue_against_plan(dialogue, check_plan)
+    errors = validate_speaker_alternation(dialogue)
+    errors.extend(validate_dialogue_against_plan(dialogue, check_plan))
     if errors:
         raise ValueError("\n".join(errors))
     turns = [{"turn_id": index, **deepcopy(turn)} for index, turn in enumerate(dialogue["turns"])]

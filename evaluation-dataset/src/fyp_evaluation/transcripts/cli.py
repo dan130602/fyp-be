@@ -18,7 +18,7 @@ from fyp_evaluation.validation.transcript import validate_transcript_pair
 
 from .converter import build_transcript_artifacts
 
-DEFAULT_CALLS_DIR = Path("evaluation_dataset/calls")
+DEFAULT_DATASET_ROOT = Path("datasets/legacy_pilot_v1")
 DEFAULT_SCHEMA_DIR = Path("schemas")
 OUTPUT_NAMES = ("transcript.json", "speaker_roles.json")
 
@@ -165,7 +165,12 @@ def _check_command(call_ids, calls_dir, schema_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--schema-dir", type=Path, default=DEFAULT_SCHEMA_DIR)
-    parser.add_argument("--calls-dir", type=Path, default=DEFAULT_CALLS_DIR)
+    parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
+    parser.add_argument(
+        "--calls-dir",
+        type=Path,
+        help="Explicit calls directory override; normally derived from --dataset-root",
+    )
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--call", metavar="CALL_ID", help="Convert/check a single call")
     selection.add_argument("--all", action="store_true", help="Convert/check every discovered call")
@@ -174,18 +179,19 @@ def main(argv=None):
     parser.add_argument("--overwrite", action="store_true",
                         help="Explicitly replace existing transcript.json/speaker_roles.json")
     args = parser.parse_args(argv)
+    calls_dir = args.calls_dir or args.dataset_root / "calls"
 
     if args.all:
-        call_ids = _discover_calls(args.calls_dir)
+        call_ids = _discover_calls(calls_dir)
         if not call_ids:
-            print(f"No calls with ground_truth.json found under {args.calls_dir}", file=sys.stderr)
+            print(f"No calls with ground_truth.json found under {calls_dir}", file=sys.stderr)
             return 2
     else:
         call_ids = [args.call]
 
     if args.check:
-        return _check_command(call_ids, args.calls_dir, args.schema_dir)
-    return _build_command(call_ids, args.calls_dir, args.schema_dir, args.overwrite)
+        return _check_command(call_ids, calls_dir, args.schema_dir)
+    return _build_command(call_ids, calls_dir, args.schema_dir, args.overwrite)
 
 
 if __name__ == "__main__":

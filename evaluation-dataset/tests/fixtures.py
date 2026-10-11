@@ -23,7 +23,7 @@ def documents():
     return deepcopy({
         "checklist": [{
             "id": "FIX_MARKER", "type": "COMPLIANCE", "requirement_type": "OBLIGATION",
-            "text": "Was the artificial marker stated?",
+            "question": "Was the artificial marker stated?",
         }],
         "call_config": {
             **base, "schema_version": "0.5.0", "metadata": metadata,
@@ -57,7 +57,7 @@ def documents():
                 "start_time": "0.0", "end_time": "0.0", "speaker_label": "spk_0",
             }],
         },
-        "speaker_roles": {"speaker_roles": {"spk_0": "RM"}},
+        "speaker_roles": {"spk_0": "RM"},
     })
 
 
@@ -72,7 +72,7 @@ def mixed_documents():
     for question_id, category, field, value_type, value in values:
         data["checklist"].append({
             "id": question_id, "type": category, "field": field,
-            "text": f"ARTIFICIAL fixture extraction: {field}?",
+            "question": f"ARTIFICIAL fixture extraction: {field}?",
         })
         rule_id = f"fixture_{value_type}"
         data["normalization"]["rules"][rule_id] = {"value_type": value_type, "operation": "exact"}

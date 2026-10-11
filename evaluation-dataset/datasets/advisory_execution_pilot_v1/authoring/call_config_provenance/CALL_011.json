@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_011",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_011-G3-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac8c73794bc819085191cc2bbe3434e",
+      "provider_response_id": "resp_059052a17fac2ec1016ac8c792314c87d1a7141402a74eabb1",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+      "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+      "request_sha256": "5d5f372d4327f6ee86d9bc13b29b4ec9579fb2170887c642bffa8f9f23d492c1",
+      "upstream_sha256": {
+        "call_spec": "9680a05d38f4ce82e1fbf78896cab53f720e99d6ebb5f660869db96a445cb35a",
+        "check_plan_skeleton": "8608481461a15673220e7f6fc0cdc1dd2b0f85fec08b1c904bda0b71524832c1",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 3886,
+        "cached_tokens": 2868,
+        "cache_write_tokens": 1015,
+        "output_tokens": 804,
+        "reasoning_tokens": 71
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.005435,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T10:51:32Z",
+      "finished_at": "2026-10-09T10:55:55Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "parsed_response": {
+      "client": {
+        "name": "Adrian Tan",
+        "background": "Adrian Tan is a business owner who prefers delegating routine investment administration but likes to retain control over trading decisions. He sometimes consults outdated personal notes when answering administrative questions.",
+        "investment_objective": "Build long-term wealth through diversified exposure rather than relying heavily on a single market segment.",
+        "loss_attitude": "He is hesitant about investment losses and initially gravitates towards reducing exposure. He can accept some investment losses, but feels uncomfortable expressing that willingness and is susceptible to pressure to sound more confident than he feels."
+      },
+      "employee": {
+        "name": "Michelle Koh"
+      },
+      "setting": {
+        "call_reason": "The client calls to review his existing fund holding and place an instruction, with an initial decision to reduce exposure subsequently withdrawn before execution.",
+        "conversation_style": "A compact, professional private-banking call in natural Singapore English. The client is decisive about administrative details but noticeably less assured when discussing investment uncertainty."
+      },
+      "final_product": {
+        "description": "Pioneer Balanced Opportunities Fund is a multi-asset fund combining equity and fixed-income exposure, with its allocation managed across those asset classes.",
+        "concrete_risks": [
+          "Equity-market declines can reduce the value of the fund's equity allocation.",
+          "Rising interest rates can depress the value of the fund's fixed-income holdings.",
+          "Equity and fixed-income holdings can fall together during market stress, reducing the protection expected from diversification."
+        ],
+        "recommendation_basis": "Adding to the fund provides diversified participation across equity and fixed-income markets, supporting the client's preference for spreading exposure rather than concentrating it in a single market segment. A limit instruction also accommodates his preference for controlling the purchase price."
+      },
+      "other_products": [],
+      "holding_context": "The client already holds Pioneer Balanced Opportunities Fund and had considered reducing that position before deciding to add to it instead.",
+      "fee_disclosure": {
+        "basis": "RATE",
+        "value": 0.5,
+        "currency": null
+      },
+      "limit_prices": {
+        "final": 100.0,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_015",
+          "motivation": "The client relies on an inaccurate personal note for his birth details, then corrects himself from memory before checking a more reliable personal record."
+        },
+        {
+          "assignment_id": "EA_016",
+          "motivation": "The client initially wants to reduce an existing holding because recent fluctuations have unsettled him. Before execution, he changes his mind and withdraws that instruction in favour of adding to the holding with control over the purchase price."
+        },
+        {
+          "assignment_id": "EA_017",
+          "motivation": "The client's discomfort with uncertainty prompts him to seek an assurance that the investment outcome cannot disappoint him."
+        },
+        {
+          "assignment_id": "EA_018",
+          "motivation": "The client is focused on completing the revised instruction around his business commitments and tends to move quickly from investment characteristics to order logistics."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's preference for telephone appointments",
+        "Balancing business commitments with personal administration"
+      ]
+    },
+    "parsed_response_sha256": "3da9df274d02228540cd04c6458059ffc2a339531792f4a3719271b4f2e23814",
+    "artifact_sha256": "d38bcb9225a097e926662e7fc8b0ec2f80d0b7304e1f9497f3d6995da2a38bda"
+  },
+  "accepted_history": []
+}

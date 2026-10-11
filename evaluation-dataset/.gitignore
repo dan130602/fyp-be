@@ -10,5 +10,11 @@ dist/
 !.env.example
 evaluation_runs/*
 !evaluation_runs/.gitkeep
-evaluation_dataset/calls/*/renders/*/audio.mp3
-evaluation_dataset/calls/*/renders/*/segments/*.mp3
+datasets/*/calls/*/renders/*/audio.mp3
+datasets/*/calls/*/renders/*/segments/*.mp3
+.pytest-tmp/
+# G3 operational audit store (raw provider envelopes, live attempt state); never committed
+.llm_audit/
+
+# short cross-stage write lock (crash leftovers must be deleted by hand after confirming no run is active)
+datasets/*/.stage_write.lock

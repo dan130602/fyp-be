@@ -1,0 +1,746 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage2/check_plan_skeleton.schema.json",
+  "title": "G2B Check Plan Skeleton",
+  "description": "Deterministic structural evidence blueprint for one call. No natural wording, no turn IDs and no absolute positions: only symbolic events, relative constraints and provider-independent spoken-form requirements. Each planned event is realised later as one contiguous span inside a single dialogue turn.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "call_spec_sha256",
+    "source",
+    "planned_events",
+    "checks",
+    "constraints"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "stage": {
+      "const": "G2B"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "call_spec_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "planned_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/compliance_check"
+          },
+          {
+            "$ref": "#/$defs/extraction_check"
+          }
+        ]
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/constraint"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "symbol": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^EV_[0-9]{3,}$"
+    },
+    "assignment_id": {
+      "type": "string",
+      "pattern": "^EA_[0-9]{3,}$"
+    },
+    "condition_ref": {
+      "type": "string",
+      "pattern": "^C[0-9]{2}\\.(pass_condition|fail_condition)$"
+    },
+    "speakers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "CLIENT",
+          "EMPLOYEE"
+        ]
+      }
+    },
+    "scalar": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "spoken_form": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "requirement",
+            "forms"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement": {
+              "const": "ONE_OF"
+            },
+            "forms": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/symbol"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "requirement",
+            "form",
+            "applies_to"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement": {
+              "const": "REQUIRED"
+            },
+            "form": {
+              "$ref": "#/$defs/symbol"
+            },
+            "applies_to": {
+              "enum": [
+                "ALL_ZERO_DIGITS",
+                "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH",
+                "WHOLE_VALUE"
+              ]
+            },
+            "remaining_characters_form": {
+              "$ref": "#/$defs/symbol"
+            },
+            "variant": {
+              "enum": [
+                "DOUBLE",
+                "TRIPLE"
+              ]
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "requirement"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement": {
+              "const": "NOT_EXPLICIT"
+            }
+          }
+        }
+      ]
+    },
+    "value_entry": {
+      "type": "object",
+      "required": [
+        "value",
+        "spoken_form"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "spoken_form": {
+          "$ref": "#/$defs/spoken_form"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "event_id",
+        "kind",
+        "status",
+        "allowed_speakers",
+        "question_ids",
+        "assignment_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "kind": {
+          "enum": [
+            "COMPLIANCE_ACT",
+            "VALUE_STATEMENT",
+            "VALUE_CORRECTION",
+            "READBACK",
+            "ORDER_STATEMENT",
+            "ORDER_INVALIDATION",
+            "DISTRACTOR_MENTION",
+            "ANTECEDENT_MENTION",
+            "REFERENCE_SELECTION",
+            "FALSE_START",
+            "GUARANTEE_REQUEST",
+            "GUARANTEE_REFUSAL",
+            "WEAK_ACKNOWLEDGEMENT"
+          ]
+        },
+        "status": {
+          "enum": [
+            "FINAL",
+            "STATED",
+            "SUPERSEDED",
+            "REJECTED",
+            "DISTRACTOR",
+            "ANTECEDENT",
+            "ABANDONED",
+            "CONTEXT"
+          ]
+        },
+        "allowed_speakers": {
+          "$ref": "#/$defs/speakers"
+        },
+        "question_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "assignment_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assignment_id"
+          }
+        },
+        "role": {
+          "enum": [
+            "ACT",
+            "RESPONSE"
+          ]
+        },
+        "condition_ref": {
+          "$ref": "#/$defs/condition_ref"
+        },
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/value_entry"
+          }
+        },
+        "corrects_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "invalidates_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "refers_to_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "readback": {
+          "type": "object",
+          "required": [
+            "must_include_question_ids",
+            "min_field_count",
+            "wrong_question_id",
+            "wrong_value",
+            "wrong_value_spoken_form",
+            "other_included_fields_must_match_final",
+            "other_included_fields_must_follow_their_final_events"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "must_include_question_ids": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/identifier"
+              }
+            },
+            "min_field_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "wrong_question_id": {
+              "$ref": "#/$defs/identifier"
+            },
+            "wrong_value": {
+              "$ref": "#/$defs/scalar"
+            },
+            "wrong_value_spoken_form": {
+              "$ref": "#/$defs/spoken_form"
+            },
+            "other_included_fields_must_match_final": {
+              "const": true
+            },
+            "other_included_fields_must_follow_their_final_events": {
+              "const": true
+            }
+          }
+        },
+        "distractor_role": {
+          "$ref": "#/$defs/symbol"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "incomplete": {
+          "const": true
+        },
+        "strength": {
+          "const": "WEAK"
+        }
+      }
+    },
+    "compliance_check": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "kind",
+        "expected",
+        "evidence_mode",
+        "presence_pattern",
+        "evidence_event_ids",
+        "assignment_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "const": "COMPLIANCE"
+        },
+        "expected": {
+          "type": "object",
+          "required": [
+            "kind",
+            "expected_verdict"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "compliance"
+            },
+            "expected_verdict": {
+              "enum": [
+                "PASS",
+                "FAIL"
+              ]
+            }
+          }
+        },
+        "evidence_mode": {
+          "enum": [
+            "PRESENCE",
+            "ABSENCE"
+          ]
+        },
+        "presence_pattern": {
+          "enum": [
+            "EMPLOYEE_ONLY",
+            "EXCHANGE",
+            "ANY_SPEAKER"
+          ]
+        },
+        "required_condition_ref": {
+          "$ref": "#/$defs/condition_ref"
+        },
+        "forbidden_condition_ref": {
+          "$ref": "#/$defs/condition_ref"
+        },
+        "absence": {
+          "type": "object",
+          "required": [
+            "scope"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "scope": {
+              "const": "ENTIRE_DIALOGUE"
+            }
+          }
+        },
+        "evidence_event_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/event_id"
+          }
+        },
+        "wording_constraint": {
+          "const": "NOT_VERBATIM_CHECKLIST"
+        },
+        "assignment_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assignment_id"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "evidence_mode": {
+                "const": "PRESENCE"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "required_condition_ref"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "forbidden_condition_ref"
+                  ]
+                },
+                {
+                  "required": [
+                    "absence"
+                  ]
+                }
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "forbidden_condition_ref",
+              "absence"
+            ],
+            "not": {
+              "required": [
+                "required_condition_ref"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "extraction_check": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "kind",
+        "expected",
+        "evidence_mode",
+        "resolution_ref",
+        "evidence_event_ids",
+        "final_event_id",
+        "gold_restatement",
+        "non_gold_spoken_form",
+        "forbidden_spoken_forms",
+        "assignment_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "const": "EXTRACTION"
+        },
+        "expected": {
+          "type": "object",
+          "required": [
+            "kind",
+            "value_type",
+            "expected_value"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "extraction"
+            },
+            "value_type": {
+              "enum": [
+                "text",
+                "integer",
+                "number",
+                "dob_dd_month_yyyy"
+              ]
+            },
+            "expected_value": {
+              "$ref": "#/$defs/scalar"
+            }
+          }
+        },
+        "evidence_mode": {
+          "const": "PRESENCE"
+        },
+        "resolution_ref": {
+          "type": "string",
+          "pattern": "^[A-Z][0-9]{2}\\.resolution_rule$"
+        },
+        "evidence_event_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/event_id"
+          }
+        },
+        "final_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "gold_restatement": {
+          "type": "object",
+          "required": [
+            "policy",
+            "spoken_form"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "policy": {
+              "enum": [
+                "ANY_PERMITTED_FORM",
+                "ASSIGNED_FORM_ONLY"
+              ]
+            },
+            "spoken_form": {
+              "$ref": "#/$defs/spoken_form"
+            }
+          }
+        },
+        "non_gold_spoken_form": {
+          "$ref": "#/$defs/spoken_form"
+        },
+        "forbidden_spoken_forms": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/symbol"
+          }
+        },
+        "assignment_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assignment_id"
+          }
+        }
+      }
+    },
+    "constraint_source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "EDGE_ASSIGNMENT"
+            },
+            "id": {
+              "$ref": "#/$defs/assignment_id"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "ORDERING_RULE"
+            },
+            "id": {
+              "$ref": "#/$defs/identifier"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "question_id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "PRESENCE_PATTERN"
+            },
+            "question_id": {
+              "$ref": "#/$defs/identifier"
+            }
+          }
+        }
+      ]
+    },
+    "constraint": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "before",
+            "after",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "ORDER"
+            },
+            "before": {
+              "$ref": "#/$defs/event_id"
+            },
+            "after": {
+              "$ref": "#/$defs/event_id"
+            },
+            "source": {
+              "$ref": "#/$defs/constraint_source"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "events",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "SAME_TURN",
+                "NOT_SAME_TURN"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/event_id"
+              }
+            },
+            "source": {
+              "$ref": "#/$defs/constraint_source"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "events",
+            "turns",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "MIN_INTERVENING_TURNS"
+            },
+            "events": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/event_id"
+              }
+            },
+            "turns": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "source": {
+              "$ref": "#/$defs/constraint_source"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

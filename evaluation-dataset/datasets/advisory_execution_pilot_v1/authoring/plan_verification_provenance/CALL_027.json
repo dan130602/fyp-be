@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_027",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_027-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "7f80dc16a1e25507c6e617f78549f035cd4336949b0fe007a7eaacbf7e8dbc6f",
+      "upstream_sha256": {
+        "call_spec": "7975de8992993a278838138ecc024e08d2a8c8c9111bc50a4634cf58ad624748",
+        "check_plan_skeleton": "0bbacf6a01e892777159b6559db83bc11d951dd6fc40a756776dfcb0a5360375",
+        "call_config": "e94836093569605d073eb1e890f71bad3c9c6d19542f0dc6ee9e33ac4172a286",
+        "check_plan": "4f6ee8846a53319965e7e2a19e9537c75000c3c4aea8d0ffb20e33a341af5f59",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 10681,
+        "cached_tokens": 8893,
+        "output_tokens": 2472,
+        "thought_tokens": 960,
+        "total_tokens": 14113
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.007439,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:26:15Z",
+      "finished_at": "2026-10-11T08:28:29Z",
+      "send_count": 3,
+      "sends": [
+        {
+          "at": "2026-10-11T08:26:19Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        },
+        {
+          "at": "2026-10-11T08:26:50Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your objective is long-term wealth growth through diversified global equity exposure, rather than funding immediate spending, and you prefer a straightforward holding without frequent monitoring."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call in EV_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "With Summit Global Equity ETF, a broad decline in global share markets can pull down the value of its underlying holdings and the fund itself. Diversification may not protect you when markets fall together."
+            }
+          ],
+          "rationale": "The employee explains a concrete risk specifically associated with the recommended ETF in EV_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand that the fund can fall in value during a global market decline, even though its holdings are diversified?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand that diversification does not prevent the fund from falling when global markets decline together."
+            }
+          ],
+          "rationale": "Following the risk explanation, the employee checks understanding in EV_003 and obtains an unambiguous demonstration and confirmation of understanding from the client in EV_004.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee is 0.2% of the trade amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee rate as 0.2% in EV_005.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose part or even all of the capital you invest."
+            }
+          ],
+          "rationale": "The employee explicitly explains the potential loss of some or all invested capital in EV_006.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Knowing that, are you willing to accept investment losses in pursuing your long-term growth objective?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I am willing to accept investment losses and market fluctuations in pursuit of long-term growth."
+            }
+          ],
+          "rationale": "The employee asks about willingness to accept investment losses in EV_007, and the client unambiguously confirms acceptance in EV_008.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend Summit Global Equity ETF because its diversified global equity exposure supports your long-term growth objective. It also gives you a straightforward holding instead of having to select and monitor individual companies."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking product features to the client's objective and preferences in EV_009.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Please confirm your final instruction: buy 100 units of Summit Global Equity ETF using a market order, with a transaction amount of 5,000,000 in Japanese yen. Shall I proceed on that basis?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that is my final transaction instruction. Please proceed as stated."
+            }
+          ],
+          "rationale": "The employee summarizes the complete final instruction in EV_010 and obtains the client's explicit confirmation in EV_011.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the scenario or planned dialogue events.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no transaction instructions based on material non-public or inside information anywhere in the scenario or planned dialogue events.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach or encourage the client to overstate their willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no statement guaranteeing future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is F one six three five eight nine eight D."
+            }
+          ],
+          "rationale": "The client states their FIN as F1635898D in EV_012, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is the fourth of November nineteen fifty-two."
+            }
+          ],
+          "rationale": "The client states their date of birth as 04 November 1952 in EV_013, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The investment I want to transact in is Summit Global Equity ETF."
+            }
+          ],
+          "rationale": "The client instructs the transaction in Summit Global Equity ETF in EV_014, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Please use Japanese yen as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies Japanese yen (JPY) as the transaction currency in EV_015, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The amount I am committing to this transaction is 5,000,000."
+            }
+          ],
+          "rationale": "The client specifies the transaction amount as 5,000,000 in EV_016, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Please set the transaction quantity at 100 units."
+            }
+          ],
+          "rationale": "The client specifies the transaction quantity as 100 units in EV_017, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to buy those units."
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as BUY in EV_018, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client specifies the order type as MARKET in EV_019, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "bac3c930547769da64f0ccc94aa751e9ddfb77af3f3ccfc3a77655ff549c8807",
+    "artifact_sha256": "82344983b27fd7ed2ff0d88c00bfab05aebdbdca768b53eb0882323e68ab2693"
+  },
+  "accepted_history": []
+}

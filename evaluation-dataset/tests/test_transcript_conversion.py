@@ -72,7 +72,7 @@ def test_employee_maps_to_spk_0_and_rm_client_to_spk_1_and_customer():
     labels = {turn["speaker"]: segment["speaker_label"]
               for turn, segment in zip(ground["dialogue"], transcript["audio_segments"])}
     assert labels == {"EMPLOYEE": "spk_0", "CLIENT": "spk_1"}
-    assert speaker_roles == {"speaker_roles": {"spk_0": "RM", "spk_1": "Customer"}}
+    assert speaker_roles == {"spk_0": "RM", "spk_1": "Customer"}
 
 
 def test_client_first_conversation_still_maps_client_to_spk_1_and_customer():
@@ -80,16 +80,16 @@ def test_client_first_conversation_still_maps_client_to_spk_1_and_customer():
     transcript, speaker_roles = build_transcript_artifacts(ground, schema_dir=SCHEMAS)
     first_turn_segment = transcript["audio_segments"][0]
     assert first_turn_segment["speaker_label"] == "spk_1"  # CLIENT, despite speaking first
-    assert speaker_roles["speaker_roles"] == {"spk_1": "Customer", "spk_0": "RM"}
+    assert speaker_roles == {"spk_0": "RM", "spk_1": "Customer"}
     # Fixed EMPLOYEE-before-CLIENT key order, independent of speaking order.
-    assert list(speaker_roles["speaker_roles"]) == ["spk_0", "spk_1"]
+    assert list(speaker_roles) == ["spk_0", "spk_1"]
 
 
 def test_single_speaker_call_maps_only_the_present_speaker():
     ground = _minimal_ground_truth("CALL_993", [("CLIENT", "Hello?"), ("CLIENT", "Anyone there?")])
     transcript, speaker_roles = build_transcript_artifacts(ground, schema_dir=SCHEMAS)
     assert {segment["speaker_label"] for segment in transcript["audio_segments"]} == {"spk_1"}
-    assert speaker_roles == {"speaker_roles": {"spk_1": "Customer"}}
+    assert speaker_roles == {"spk_1": "Customer"}
 
 
 # --- Separate file contracts ----------------------------------------------
@@ -107,7 +107,7 @@ def test_transcript_has_no_results_wrapper_and_no_speaker_roles():
 def test_speaker_roles_file_has_no_dialogue_or_segments():
     ground = _compiled_ground_truth()
     _, speaker_roles = build_transcript_artifacts(ground, schema_dir=SCHEMAS)
-    assert set(speaker_roles.keys()) == {"speaker_roles"}
+    assert set(speaker_roles) == {"spk_0", "spk_1"}
     assert "audio_segments" not in speaker_roles
     assert "dialogue" not in speaker_roles
     assert "transcripts" not in speaker_roles
@@ -165,7 +165,7 @@ def test_generated_pair_passes_cross_file_validation():
 def test_cross_file_validation_rejects_speaker_label_without_a_role():
     ground = _compiled_ground_truth()
     transcript, speaker_roles = build_transcript_artifacts(ground, schema_dir=SCHEMAS)
-    del speaker_roles["speaker_roles"]["spk_1"]
+    del speaker_roles["spk_1"]
     errors = validate_transcript_pair(ground, transcript, speaker_roles, SCHEMAS)
     assert any("do not match transcript labels" in error for error in errors)
 
@@ -181,7 +181,7 @@ def test_cross_file_validation_rejects_mismatched_segment_text():
 def test_cross_file_validation_rejects_wrong_role_for_a_label():
     ground = _compiled_ground_truth()
     transcript, speaker_roles = build_transcript_artifacts(ground, schema_dir=SCHEMAS)
-    speaker_roles["speaker_roles"]["spk_0"] = "Customer"
+    speaker_roles["spk_0"] = "Customer"
     errors = validate_transcript_pair(ground, transcript, speaker_roles, SCHEMAS)
     assert any("does not match expected" in error for error in errors)
 

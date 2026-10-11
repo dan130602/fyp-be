@@ -1,5 +1,8 @@
 # FYP evaluation dataset foundations
 
+Prepared dataset export: see [EXPORTING.md](EXPORTING.md) for exporting the
+validated JSON snapshot to `fyp-ai`, manifest verification and safe updates.
+
 Independent evaluation contracts for **AI-Powered Regulatory Compliance
 Automation for Call Monitoring**. This project lives in the existing `fyp-be`
 repository. It does not import or change the production backend or `fyp-ai`.
@@ -20,10 +23,10 @@ predetermined and must not be reinterpreted from later dialogue.
 | Location | Purpose |
 | --- | --- |
 | `schemas/` | Six core Draft 2020-12 data schemas plus reusable normalization rules. References resolve locally; `.invalid` schema IDs are identifiers, not network endpoints. |
-| `authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
-| `authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
-| `authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
-| `authoring/dialogues/` | Five spoken dialogues without turn IDs. |
+| `datasets/legacy_pilot_v1/authoring/coverage_matrix.csv` | Approved, read-only source of all 50 predetermined answers. |
+| `datasets/legacy_pilot_v1/authoring/call_configs/` | Five approved configs with matrix-derived answers and authored scenario facts/intents; read-only in this stage. |
+| `datasets/legacy_pilot_v1/authoring/check_plans/` | Five approved predetermined gold checks (CALL_001-CALL_005), created before dialogue; read-only in this stage. |
+| `datasets/legacy_pilot_v1/authoring/dialogues/` | Five spoken dialogues without turn IDs. |
 | `configs/normalization.json` | Reusable exact-comparison rules, a compliance rule reference and extraction field-to-rule references. No question-ID mappings or scoring implementation. |
 | `configs/render.json` | Unset Polly rendering template, containing no credentials. |
 | `src/fyp_evaluation/validation/` | Schema/integrity and cross-file checks, shared evidence matching, pilot spoken-value verification, independent annotation coverage, CLI and pure LangGraph checklist projection. |
@@ -32,17 +35,21 @@ predetermined and must not be reinterpreted from later dialogue.
 | `src/fyp_evaluation/scoring/` | Reserved for comparing pipeline predictions against gold. |
 | `scripts/` | Command-line workflow wrappers, including Polly rendering and SSML export. |
 | `tests/` | Artificial contract fixtures and regression tests, plus checks of the actual pilot checklist and five-call matrix. No generated calls or dialogue. |
-| `evaluation_dataset/checklist.json` | The authoritative internal checklist: `id`, `type`, `text`, plus `requirement_type` for compliance or `field` for extraction. |
-| `evaluation_dataset/calls/` | Five canonical calls and separate render outputs. Each call has ground truth, turn timing JSON, and per-turn SSML. Generated MP3 files stay local. |
+| `datasets/legacy_pilot_v1/` | Frozen five-call pilot release. Its manifest identifies the dataset/checklist and enumerates calls; its checklist, authoring inputs, canonical calls and renders move together. |
+| `datasets/advisory_execution_pilot_v1/` | New advisory/execution release. Its five G0 (Stage 0) contracts and the G1 planning outputs (`authoring/call_manifest.csv`, `coverage_matrix.csv`, `edge_case_assignments.csv`, `planning_record.json`) are present; calls are empty until later stages. |
+| `schemas/stage0/` | Schemas for the release-level Stage 0 contracts (check semantics, release normalization, edge-case catalog, generation plan). Kept out of the top-level `schemas/*.json` set used by the legacy exporter. |
 | `evaluation_runs/` | Future predictions and evaluation results, kept separate from gold. |
 
 All five calls have the following layout. The MP3 files are generated locally
 and ignored by Git; timing JSON, SSML, and manifests are versioned:
 
 ```text
-evaluation_dataset/
-├── checklist.json
-└── calls/
+datasets/
+├── legacy_pilot_v1/
+│   ├── dataset_manifest.json
+│   ├── checklist.json
+│   ├── authoring/
+│   └── calls/
     ├── CALL_001/
     │   ├── ground_truth.json
     │   └── renders/
@@ -57,11 +64,327 @@ evaluation_dataset/
     ├── CALL_002/
     ├── CALL_003/
     ├── CALL_004/
-    └── CALL_005/
+│       └── CALL_005/
+└── advisory_execution_pilot_v1/
+    ├── dataset_manifest.json
+    ├── checklist.json
+    ├── authoring/
+    └── calls/
 ```
 
 The schema does not hard-code five calls, ten questions, or a maximum recording
 duration. Additional calls and renders use the same contracts.
+
+## advisory_execution_pilot_v1: G0 Stage 0 contracts
+
+| File | Owns |
+| --- | --- |
+| `checklist.json` | The 20 questions (C01-C12, K01-K02, T01-T06), validated by `schemas/checklist.schema.json`. |
+| `check_semantics.json` | PASS/FAIL conditions (C05 FAIL is the exact complement of PASS), a `presence_pattern` per compliance check (EMPLOYEE_ONLY, EXCHANGE or ANY_SPEAKER), two relative `ordering_rules` (C03 after the C02 disclosure; C08 after the final transaction state), extraction final-state resolution, and the single hard dependency C03 PASS => C02 PASS. Each extraction question names a `normalization_profile`. |
+| `normalization.json` | Release-local canonical forms, aliases, spoken/reference-text forms and comparison steps. Declarative only (`DECLARATIVE_ONLY`); nothing implements these steps yet. Edge-case-only spoken forms are required on the targeted value when their edge case is assigned (`applies_to`: every zero for "oh", every run of the assigned length for double/triple, the whole value for shorthand) and forbidden otherwise; the letter O is excluded from K01 because it is ambiguous with a spoken zero. The legacy `configs/normalization.json` is not used by this release. |
+| `edge_case_catalog.json` | Edge-case targets, required parameters, verdict requirements, gold prerequisites, antecedent speakers and the readback mutual exclusion. |
+| `authoring/generation_plan.json` | Exact-count G1 distribution: 50 calls (45 SHORT at 180-300 s, 5 LONG at 1801-3600 s), the 5/5/5/35 composition grid, exact per-call counts of compliance FAILs (0/1/2/3/4 FAILs in 10/10/15/10/5 calls, at least 6 FAILs per check) and of edge cases (0/1/2/3/4 in 10/10/15/10/5 calls, 90 in total), value pools and product currencies. |
+
+All 20 questions apply to every call. Call intents (`["ADVISORY", "EXECUTION"]`)
+are multi-label and descriptive only: `ADVISORY|EXECUTION` in CSV, a JSON array
+in JSON. There is no applicability routing, N/A or NOT_APPLICABLE.
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path src).Path
+python -c "from fyp_evaluation.validation.stage0 import validate_stage0_release as v; print(v('datasets/advisory_execution_pilot_v1') or 'valid')"
+python -m pytest -q tests/test_stage0_contracts.py
+```
+
+Pipeline names for this release: G0 contracts, G1 deterministic planning, G2A
+call_spec (immutable call specifications), G2B check_plan_skeleton (deterministic check-plan
+skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
+verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
+G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
+(`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only),
+G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated) and G6
+(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only), and a PROVISIONAL G8
+(`fyp_evaluation.ground_truths`, deterministic canonical ground-truth compilation). G7 (dialogue verification) and G9 (SSML, Polly
+audio, timings) are not yet implemented.
+
+Model decisions per stage: G3, G4 and G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
+level `medium` on the paid Flex tier; (future) G7 will use `gemini-3.8-flash` with thinking level `high` on Flex.
+
+```powershell
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1 --check     # byte-for-byte reproduction
+python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1 --validate  # validate files on disk
+```
+
+G2A (`fyp_evaluation.call_specs`, no LLM) compiles the frozen G1 outputs into one immutable
+`authoring/call_specs/CALL_XXX.json` per call plus `authoring/call_spec_record.json`. It is a pure
+join: nothing is sampled, normalized or invented, and it refuses to run unless G0 and G1 validate
+on disk. Its strongest invariant is that the 50 specs project back to the three G1 CSVs
+byte-for-byte (via G1's own serializer), with hashes matching `planning_record.json`. Schemas live
+in `schemas/stage2/`, outside the legacy top-level schema set.
+
+```powershell
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --overwrite  # replace the full set; refuses without the flag
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk against G1
+python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
+```
+
+G2B (`fyp_evaluation.check_plan_skeletons`, no LLM) turns each immutable call spec plus the frozen
+G0 semantics, edge-case catalog and normalization profiles into
+`authoring/check_plan_skeletons/CALL_XXX.json` and `authoring/check_plan_skeleton_record.json`. A
+skeleton is a purely structural evidence blueprint with three parts: `planned_events` (symbolic
+records with closed kinds and statuses, `allowed_speakers`, relative references and provider-independent
+spoken-form requirements), `checks` (all 20 questions: evidence mode, condition references, FINAL events,
+gold-restatement policy) and `constraints` (only ORDER, SAME_TURN, NOT_SAME_TURN and
+MIN_INTERVENING_TURNS, each with provenance). It contains no wording, turn numbers or SSML. G2B reads
+business truth only from the call specs and G0, and refuses to run unless G0, G1 and G2A validate on disk.
+Each planned event is realised later as one contiguous span within a single turn. Every catalog edge case
+has exactly one compiler in `edge_cases.py`; a contradictory combination (for example a long-distance gap
+between questions that share one FINAL event) fails loudly instead of being silently relaxed.
+
+G2B conventions the code fixes (structural, not business truth; nothing here changes gold):
+
+- Speakers: extraction evidence (VALUE_STATEMENT, VALUE_CORRECTION, ORDER_STATEMENT, REFERENCE_SELECTION) is CLIENT;
+  READBACK is EMPLOYEE; ORDER_INVALIDATION, GUARANTEE_REQUEST and WEAK_ACKNOWLEDGEMENT are CLIENT; GUARANTEE_REFUSAL is
+  EMPLOYEE. Compliance patterns: EMPLOYEE_ONLY events are EMPLOYEE; EXCHANGE is an EMPLOYEE ACT then a CLIENT RESPONSE
+  ordered ACT before RESPONSE; ANY_SPEAKER allows `[CLIENT, EMPLOYEE]`. Speakers are sorted arrays.
+- Granularity: each planned event is one contiguous span in one turn; a plain extraction field is one FINAL
+  VALUE_STATEMENT with no ordering against other fields. Distractors carry no ordering relation to FINAL events.
+- Failures by omission (for example C03 or C08 FAIL) create no compliance events; ABSENCE checks carry no evidence events.
+- Ordering rules: the C03 rule orders the C03 ACT after C02 events; the C08 rule orders the C08 request ACT after
+  the distinct FINAL transaction events.
+- Constraints: exact duplicates (same type, endpoints, parameters and provenance) are merged; event pairs are stored
+  sorted by event ID; the same endpoints with different provenance stay separate.
+- Spoken-form IDs come from `normalization.json`; readbacks use `min_field_count` 1 (error) or the catalog value (one-field).
+
+```powershell
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --overwrite  # replace the full set; refuses without the flag
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk (independent re-derivation + canonical bytes)
+python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
+```
+
+G3 (`fyp_evaluation.call_configs`, model-assisted: OpenAI `gpt-6.1-sol` through the Responses API with strict
+Structured Outputs, sync or Batch) writes the creative scenario for each call into
+`authoring/call_configs/CALL_XXX.json`. Python owns every immutable fact: it refuses to run unless G0-G2B validate,
+derives product references (`P1`, `P2`, ... in first-seen order, roles unioned), the required slots (fee disclosure,
+limit prices, holding context, red flags, edge-case motivations) and the whole request; the model returns only
+scenario content (`schemas/stage3/call_config_response.schema.json`), which Python validates against the call's
+gold-conditioned rules before it is accepted. The artifact contains no gold and no edge parameters (G4 onward load the
+call spec); it records the call spec and skeleton hashes. The skeleton body is validated but never sent to the model.
+Convention (G3/G4, not G0): the final T01 product is the recommended product; for a SELL the recommendation may be to
+sell, reduce or exit that holding; C05 stays a general capital-loss disclosure; non-final products are only frozen
+candidates, comparisons or superseded orders.
+
+```powershell
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_001] [--print-request]  # offline: gate, 50-call feasibility, request preview; writes nothing
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --sync --call-id CALL_001       # ONE paid live request
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]         # paid Batch of all eligible calls (or a subset)
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --collect                        # poll + ingest; safe to repeat
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check   # offline
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --attach-batch SUB_0001 batch_...   # recover a SUBMISSION_UNKNOWN submission
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --mark-not-submitted SUB_0001 --acknowledge-duplicate-risk
+```
+
+Modifiers: `--retry-rejected` (new attempts after a REJECTED one, 3 per call), `--reopen --call-id X --reason "..."`
+(deliberately supersede an accepted config; the previous accepted version stays in the provenance history), `--audit-dir`.
+There is no `--overwrite`: accepted calls are never selected unless reopened. Credentials: copy `.env.example` to `.env`
+in this directory (git-ignored) and set `OPENAI_API_KEY`, or set it in the operating-system environment (which wins);
+offline commands and the whole test suite need no key. Install the SDK with `pip install -e ".[llm]"`.
+Operational state (live attempts, canonical requests, raw provider envelopes, batch submissions, the run lock) lives in
+the git-ignored `.llm_audit/`; the committed trail is `authoring/call_config_provenance/CALL_XXX.json` (attempt summaries,
+accepted parsed response, accepted history) plus `authoring/call_config_record.json`. `--check` rebuilds every accepted
+artifact from the stored parsed response and the frozen inputs, never from a provider envelope.
+Each Batch submission keeps, under `.llm_audit/<dataset_id>/G3/submissions/`, its record (`SUB_NNNN.json`, with the
+terminal batch snapshot), the exact uploaded `SUB_NNNN.input.jsonl` and the exact downloaded `SUB_NNNN.output.jsonl` /
+`SUB_NNNN.error.jsonl`. A call that provenance records as accepted but whose artifact is missing is reported as
+`INCONSISTENT` and blocked from paid attempts until investigated. A sync pilot that must not count towards production is
+run against an isolated copy of the release with its own `--dataset-root` and `--audit-dir`.
+A Batch creation whose outcome is unknown is recorded as `SUBMISSION_UNKNOWN`: it is never resubmitted automatically
+(its calls are blocked) and is resolved only by `--attach-batch` or `--mark-not-submitted --acknowledge-duplicate-risk`.
+
+G4 (`fyp_evaluation.check_plans`, model-assisted, same `gpt-6.1-sol` and shared `StageRunner` lifecycle as G3) writes
+`authoring/check_plans/CALL_XXX.json`: the frozen G2B skeleton copied verbatim by Python plus, per planned event, an
+`authoring` block (resolved speaker, the model's text template, the Python-rendered `planned_text` and exact
+`value_mentions` with character offsets) and `derived_constraints`. The model only returns, per skeleton event, a text
+template with `[[PLACEHOLDER]]` slots, a speaker choice where more than one is allowed, spoken-form choices where the
+skeleton allows a choice, and (for read-backs) the extra fields it reads back; it never writes a value, event ID or any
+frozen field. Python renders every value (NRIC/FIN, date of birth, amounts, quantities, currencies, direction, order type,
+product, fee, limit price) and enforces the contract: exact event coverage, placeholder rules, forbidden digits/magnitude
+words/percentages/currency names/product names in the template wording, required spoken forms, read-back rules with derived
+ORDER constraints and cycle rejection, and the invariant that removing the G4 additions reproduces the canonical skeleton
+bytes (`serialize_json(project_check_plan_to_skeleton(plan)) == skeleton bytes`). G4 acceptance is STRUCTURAL: whether the
+wording really establishes a compliance behaviour is G5's semantic verification, not G4's. G4 refuses to run unless G0-G2B
+validate and G3 is complete and valid; the plan records the G3 config hash, so a reopened G3 config makes it stale.
+
+```powershell
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_010] [--print-request]
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --sync --call-id CALL_010   # ONE paid live request
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]       # paid Batch
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --collect | --status | --validate [--require-complete] | --check
+```
+
+The CLI, modifiers, retry budgets, `SUBMISSION_UNKNOWN` recovery and audit layout are identical to G3 (audit under
+`.llm_audit/<dataset_id>/G4/`; provenance and record under `authoring/check_plan_provenance/` and
+`authoring/check_plan_record.json`).
+
+### Upstream versions, stale responses and dependency status (G3/G4)
+
+Accepted G3 and G4 outputs are versioned through the provenance `accepted_history` (a `--reopen --reason` keeps the
+superseded version). Because a G4 plan depends on a G3 config, three rules keep the pair consistent without ever
+regenerating accepted data:
+
+- **Historical reproduction.** `--validate`/`--check` rebuild every G4 version (current or historical) against the G3
+  version it was built from: the G3 config hash is read from that version's committed attempt summary
+  (`upstream_sha256.call_config`) and the matching G3 version is reconstructed from G3's own accepted history and verified
+  against its recorded `artifact_sha256`. If any link is missing or corrupted the command fails explicitly; it never falls
+  back to the current inputs. Nothing under `.llm_audit/` is needed.
+- **Acceptance safety.** Before a paid response is accepted, the upstream files are re-hashed from disk under a short shared
+  write lock (`<dataset root>/.stage_write.lock`, keyed by the resolved dataset root, independent of `--audit-dir`, taken after
+  the stage's own audit lock and never held across a provider call). A response whose recorded upstream hashes differ from the
+  files now closes as `STALE_UPSTREAM`: terminal, kept for audit, budget-neutral, never resubmitted automatically (use
+  `--submit`/`--sync`, or `--reopen --reason` if an older version is accepted). If the lock stays busy the response stays
+  `RESPONDED` (`DEFERRED_WRITE_LOCK`) and the next `--collect` finishes it; if the upstream cannot be read or fails validation
+  it stays `RESPONDED` as `BLOCKED_UPSTREAM_INVALID` with the exact error, and acceptance resumes once the upstream is repaired.
+  A leftover lock file after a crash is never removed silently: confirm that no G3/G4/G5 process is active, then delete it.
+- **Dependency status.** `dependency_status()` (shown by `--status` as `dependency=` and the labels `ACCEPTED_STALE` /
+  `ACCEPTED_UPSTREAM_INVALID`) compares each accepted artifact's recorded upstream hashes with hashes re-read from disk, for G3
+  and G4 alike. After a G3 change the old G4 plan stays historically valid but is `stale`: a later stage must not use it until
+  it is regenerated with `--reopen`. `--check` then also reports the G4 record as changed until that happens, by design.
+
+The same three rules apply to G5, whose upstream is the call spec, skeleton, G3 config, G4 plan and the five G0 files.
+
+### G5: plan verification (gold-aware semantic verification)
+
+G5 (`fyp_evaluation.plan_verifications`, `scripts/verify_authoring_plans.py`) checks, per call, whether the accepted G3
+scenario and G4 evidence plan **together** faithfully implement the frozen G0-G2B gold. It never derives, revises or
+predicts gold and it does not look at dialogue (that is G7). The verifier is `gemini-3.8-flash` (thinking `medium`, paid
+**Flex** tier, `store=false`, no tools, strict JSON output, one stateless Interactions request per call); there is never a
+fallback to the Standard tier or another model.
+
+- **Brief (Python-built, deterministic).** The stable system instruction (`prompts/stage5/plan_verification.v1.md` plus the
+  frozen checklist and `check_semantics.json`) and a per-call brief: the expected outcome/value and resolved pass/fail
+  condition of all 20 questions, the G3 `products`/`scenario`, the assigned edge cases with their catalog entries, EVERY
+  planned G4 event (speaker, planned text, values, relations) and every frozen or derived constraint. The gold is the target
+  being checked, never evidence: a G3 fact is not a performed act, and array order is not dialogue order (chronology comes
+  only from constraints, explicit relations and statuses). UNCLEAR is reserved for a named unresolved dependency.
+- **Report and adjudication.** Gemini returns, per question, evidence (G4 `event_id` or a G3 JSON Pointer, with a verbatim
+  quote or null), a rationale and MATCH/MISMATCH/UNCLEAR, plus issues (code, affected questions/assignments, evidence,
+  advisory `repair_scope` G4_ONLY/G3_PLUS_G4/REVIEW). Python rejects any report that breaks a rule (20 questions in
+  checklist order, two-way issue linkage, severity consistency, resolvable references, quotes grounded after a narrow
+  normalisation of curly quotes, ellipses, dashes and whitespace - the exact source substring is stored, and an ambiguous
+  match is rejected - and a quoted own evidence event for every PRESENCE MATCH). Python then derives the verdict: any
+  MISMATCH -> `INVALID`, otherwise any UNCLEAR -> `UNCLEAR`, otherwise `VALID`, and the recommended repair.
+- **Provider schema limits (found with the real API).** Gemini rejects the response schema with an uninformative HTTP 400 when
+  `minItems`/`maxItems` are also set on arrays nested inside the bounded `checks` array. The provider-facing schema therefore
+  bounds only `checks` (exactly 20); the evidence (at most 6) and issue (at most 20) limits are enforced by Python.
+- **Completed versus VALID.** A structurally valid report is ACCEPTED whatever its verdict: INVALID and UNCLEAR are completed
+  verifications, stored like VALID ones and never retried automatically. Only a current (`dependency=current`) VALID report
+  that is also intact makes a call eligible for G6 (`g6_eligibility()`, shown by `--status`). Intact means the same per-call
+  validation `--validate` runs passes: schema-valid accepted provenance that agrees with the artifact, matching artifact and
+  response hashes, a rebuild against the exact G3/G4 versions, and no stale upstream. An orphan or edited report is never
+  eligible (it fails closed and its `verdict` shows as `None`). `--status` also prints observational usage (provider sends,
+  capacity retries, tokens, estimated cost, completed/outstanding calls); it is an estimate, not a provider balance, and
+  never limits a run. Repair scopes are advice for a future controller;
+  G5 never regenerates G3 or G4. Re-verification of an accepted report is explicit (`--reopen --reason`) and keeps history;
+  a historical report is rebuilt against the exact G3/G4 versions it verified.
+- **Retries and recovery.** The application is the only retry owner (the SDK's automatic retries are switched off and a
+  test proves one HTTP request per send). HTTP 429/503 capacity rejections are resent with identical bytes inside the same
+  attempt (up to 4 sends, ~30/90/270 s backoff); persistent capacity stops the run. A timeout, connection loss or other
+  5xx is AMBIGUOUS (possibly billed): the attempt closes as an ambiguous `TRANSPORT_FAILED`, the run stops, and the call is
+  blocked (`AWAITING_ACKNOWLEDGEMENT`) until `--run --call-id X --acknowledge-possible-duplicate`. A provider echo of a tier
+  other than `flex` (or another model) is fatal and stops the run, also when found while recovering a stored response; a
+  missing tier echo is accepted and counted as `tier_not_echoed`. Malformed or truncated reports are REJECTED (3 per call,
+  retried only with `--retry-rejected`). `--run` always recovers first, under the G5 lock and before eligibility: a stored
+  response is adjudicated without resending, and an attempt interrupted mid-request becomes ambiguous.
+
+```powershell
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_021] [--print-request]
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --run --call-id CALL_021   # paid Flex request(s)
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --run [--limit N]          # all eligible calls
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check
+python scripts/build_g5_controls.py --dataset-root datasets/advisory_execution_pilot_v1 --out ../g5_controls             # offline control copies
+```
+
+Credentials: `GEMINI_API_KEY` in the operating-system environment or in `.env` (the OS wins); offline modes and tests need
+none. Outputs: `authoring/plan_verifications/CALL_XXX.json` (the report with Python-derived verdict), the committed
+`authoring/plan_verification_provenance/CALL_XXX.json` (attempt summaries with requested and observed tier, usage and cost,
+accepted response, history) and `authoring/plan_verification_record.json`; operational state under
+`.llm_audit/<dataset_id>/G5/`. G5 never writes G3/G4 files. The control builder writes three isolated copies (unchanged,
+an omission leak, a contradictory final instruction) through G4's own acceptance path for smoke-testing the verifier.
+
+## G6 dialogue generation
+
+G6 turns each call's accepted G3 scenario and G4 evidence plan into one EMPLOYEE/CLIENT dialogue
+(`fyp_evaluation.dialogues`, `scripts/generate_dialogues.py`). It uses `gpt-6.1-sol` (medium reasoning, Responses Structured
+Outputs) and is **Batch-only**: `--sync` is refused (the OpenAI SDK retries sync generation silently). G6 acceptance means the
+dialogue is structurally valid and ready for G7; it is never semantic verification.
+
+- **Evidence is inserted by Python.** The model writes whole-token markers such as `[[EV_013]]`; Python substitutes each event's
+  exact G4 `planned_text`, assigns zero-based contiguous `turn_id` values and derives every span (`text[start:end]` of the turn
+  equals the planned text). The model outputs only `turns[{speaker, text}]`. Nothing is copied or paraphrased by the model, so
+  false-start dashes, ellipses and spelled identifiers are preserved by construction.
+- **Structural rules** (REJECTED on failure): schema; every event exactly once, in a turn by its G4 speaker; strict EMPLOYEE/CLIENT
+  alternation; every frozen and derived ORDER, SAME_TURN, NOT_SAME_TURN and MIN_INTERVENING_TURNS constraint; no planned text repeated
+  outside its marker (a text contained in another event, as in CALL_017, is allowed); no unplanned K01/K02 value; length inside the band.
+  Other value surfaces outside events are recorded as `review_notes` for G7, not rejected.
+- **Brief.** Only harmless background (names, setting, holding context, final product name and category, discussion topics), the
+  events, the placement constraints and the absence conditions. Speakable compliance content from G3 (risks, fees, recommendation
+  basis, red flags, objectives, loss attitude) is never shown. That restriction is a G6 authoring policy, not a frozen G0 rule.
+- **Length policy `g6-length-v1`.** Estimated from words at 160 wpm, measured on the repository's own Polly renders (150-169 wpm).
+  SHORT accepts 510-750 words, LONG 5,103-9,000, so each band stays inside the frozen duration profile for any rate from 150 to 170
+  wpm. The policy is recorded in every attempt's `params` and rebuilt from there, so a later recalibration never changes an accepted
+  dialogue. `estimated_seconds` is an estimate, never a guaranteed audio duration.
+- **G5 gate.** A call is eligible only while its G5 report is current, intact and VALID (`g6_eligibility()`), per call. At acceptance,
+  under the dataset write lock: unreadable inputs hold the response (resumable `UPSTREAM_INVALID`); changed fingerprints, a
+  confirmed-deleted G5 report included, close it as terminal `STALE_UPSTREAM` (raw response kept, never resent); changed G6
+  settings do the same; a failing G5 approval with unchanged fingerprints is a resumable hold. Historical dialogues are rebuilt
+  against the exact G3/G4 versions and the verified G5 approval they recorded. Freeze G3-G5 authoring while G6 runs.
+- **Outputs.** `authoring/dialogues/CALL_XXX.json` (turns, `event_alignment`, length metrics), committed
+  `authoring/dialogue_provenance/CALL_XXX.json` and `authoring/dialogue_record.json`; operational state under
+  `.llm_audit/<dataset_id>/G6/`. Spoken-turn consumers read only `turns[].turn_id/speaker/text`. The legacy ground-truth compiler
+  does not accept this artifact; the G8 compiler (below) translates it.
+
+```powershell
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_027] [--print-request]
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]    # paid Batch
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --collect
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check
+```
+
+Credentials: `OPENAI_API_KEY` in the operating-system environment or `.env`; offline modes and tests need none.
+
+## G8: canonical ground truth (provisional until G7 and audio timings)
+
+G8 (`fyp_evaluation.ground_truths`, `scripts/compile_ground_truth.py`) is deterministic: no LLM, no network. It combines the frozen gold
+(G2A call spec), the accepted G4 check plan and the accepted G6 dialogue into the three files each call needs, written to
+`datasets/<release>/calls/CALL_XXX/`:
+
+- `ground_truth.json`: the 20 expected answers (copied from the frozen gold, never derived from the dialogue) plus ACTUAL evidence
+  from the dialogue: `gold_evidence_turns`, exact spans (`gold_evidence`: event, turn, speaker, character offsets, text) and
+  `gold_evidence_text`; `final_turn_id` and a `value_history` (every turn that states a value, with its status such as
+  SUPERSEDED / FINAL, readback errors included) for extraction questions; `challenge_tags` from the assigned edge cases; the full
+  dialogue turns; source hashes; and a `status` block. Absence questions have empty evidence by design. The check plan holds
+  PLANNED evidence; this file holds what is actually in the accepted dialogue, and the compiler refuses unless each span equals the
+  planned text and is spoken by the planned speaker.
+- `transcript.json` and `speaker_roles.json`: the AWS-Transcribe-shaped pair (EMPLOYEE = spk_0 = RM, CLIENT = spk_1 = Customer),
+  from the same converter as the legacy pilot, with every segment time still the placeholder `"0.0"`.
+
+`authoring/ground_truth_record.json` hashes every compiled file and `dataset_manifest.json` lists the call IDs. `--write` refuses unless
+G6 is complete, valid and current, and refuses to replace differing files without `--overwrite`; `--check` rebuilds in memory and
+compares byte for byte. Outputs are therefore always regenerable and never hand-edited.
+
+**Status: PROVISIONAL.** `status.g7_dialogue_verification` is `PENDING` and `status.timings` is `PLACEHOLDER_ZERO`. The remaining order of work is:
+
+1. **G7** dialogue verification (gold-aware, report-only). Anything it flags is fixed by regenerating the affected G6 dialogue (or
+   upstream authoring), never by editing gold or the compiled files.
+2. **SSML, Polly audio and `timings.json`** (render per turn; stitch; derive per-turn start/end times).
+3. **Recompile G8** with the verified dialogues and the real timings (`--write --overwrite`), so `status` becomes `VERIFIED` /
+   `AUDIO_DERIVED` and `transcript.json` carries real start and end times in the AWS Transcribe shape. The converter already has the
+   `timings` parameter reserved for this; accepting real timings (and the exporter accepting non-placeholder times with explicit
+   timing provenance) is not implemented yet.
+4. Re-export to fyp-ai as a new version of the same snapshot folder.
+
+The exporter (`scripts/export_dataset.py`, see EXPORTING.md) understands G8 releases (it uses the release's own `normalization.json`,
+re-compiles G8 in memory and refuses any call file that differs) and records `dataset_status` in the snapshot manifest.
 
 ## Required generation order
 
@@ -74,6 +397,10 @@ duration. Additional calls and renders use the same contracts.
    answers must equal the matrix and configuration answers.
 5. Generate employee/client dialogue around the plan, using ChatGPT Work
    separately during the pilot. Include planned presence phrases verbatim.
+   Speakers must strictly alternate: a turn is one uninterrupted stretch of
+   speech, so an employee who continues (acknowledgement, recommendation, risk
+   warning, ...) speaks in one turn, never two consecutive `EMPLOYEE` turns.
+   `dialogue-plan` and the compiler reject consecutive same-speaker turns.
 6. Independently verify the dialogue against every predetermined check,
    including speaker, absence and content constraints. Revise nonconforming
    dialogue; never derive or adjust gold from the completed dialogue.
@@ -107,8 +434,8 @@ Each intended answer now requires `question_id`, `expected` and a nonblank
 and both evidence branches add required `forbidden_patterns`; ground truth
 inherits the evidence change by reference. No top-level ordering field is added
 to ground truth. The earlier shared-version convention ends at this revision.
-Normalization remains `0.3.0`. The package version is `0.5.0`. The checklist schema shape remains
-revision `0.2.0`; dialogue and timing envelopes remain `0.1.0`. Call IDs match
+Normalization remains `0.3.0`. The package version is `0.5.0`. The checklist schema shape is now
+revision `0.3.0` (its `question` property replaces the earlier `text`); dialogue and timing envelopes remain `0.1.0`. Call IDs match
 `CALL_` followed by at least three digits. Question/evidence/fact/rule/render
 identifiers start with a letter and contain letters, digits, `_` or `-`.
 The internal checklist remains an array without an envelope. It is projected
@@ -116,33 +443,36 @@ to the legacy LangGraph request shape; it must not be passed there directly.
 
 | Schema | Shape and key rules |
 | --- | --- |
-| `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `text`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `text`. |
+| `checklist` | Nonempty array with unique IDs. COMPLIANCE entries contain exactly `id`, `type`, `requirement_type` and `question`. CLIENT_KYC/TRANSACTION entries contain exactly `id`, `type`, `field` and `question`. |
 | `call_config` | Version, call ID, `metadata` (`language`, `scenario`), positive ordered target duration bounds in seconds, named `scenario_facts`, and nonempty `intended_answers`. Each answer requires `question_id`, typed `expected` and nonblank `scenario_intent`. |
 | `check_plan` | Version, call ID, nonempty `checks`, and required `ordering_constraints` (possibly empty). Each check has `question_id`, typed `expected`, and `evidence_plan`. No resolved turn IDs, critical tokens or render settings. |
-| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT`. |
+| `dialogue` | Version, call ID and nonempty `turns`. Each contains `speaker`, reference-transcript `text`, and `critical_tokens` (possibly empty). No turn IDs. Speakers are `EMPLOYEE` or `CLIENT` and must strictly alternate (no two consecutive turns by the same speaker; merge them). |
 | `ground_truth` | Version, call ID, metadata, checks preserving their expected answers and evidence plans, and `dialogue` with Python-assigned `turn_id`. Each check adds `gold_evidence_turns` and `gold_evidence_text`. |
 | `timings` | Version, call ID, `render_id`, `audio_file: "audio.mp3"`, total `duration_seconds`, and a `turns` array. Each has integer `turn_id`, start/end seconds and optional `words` array. Word entries contain text and start/end seconds. All times are offsets from the start of stitched audio. |
 | `normalization` | Version, named `rules`, `compliance_rule` and `field_rules`. Each rule declares its scalar `value_type` and `operation: "exact"`. Rules describe value representation, not question classification. |
 
 COMPLIANCE requires `requirement_type: "OBLIGATION"` or `"PROHIBITION"` and
 forbids `field`. CLIENT_KYC and TRANSACTION require `field` and forbid
-`requirement_type`. Checklist text must be nonblank. Fields follow the same
-identifier syntax as IDs. Gold answers, evidence, source passages, turn IDs,
-call-specific fields, `answer_type` and `depends_on` are forbidden.
+`requirement_type`. Checklist `question` text must be nonblank. Fields follow
+the same identifier syntax as IDs. Gold answers, evidence, source passages,
+turn IDs, call-specific fields, the retired `text` name, `answer_type` and
+`depends_on` are forbidden.
 
-The only LangGraph adapter is a deterministic, in-memory projection:
+The only LangGraph adapter is a deterministic, in-memory selection (revision
+0.3.0 stores `question` at the source, so this is no longer a rename):
 
 ```python
 langgraph_checklist = [
-    {"id": item["id"], "question": item["text"]}
+    {"id": item["id"], "question": item["question"]}
     for item in checklist
 ]
 ```
 
 `to_langgraph_checklist(checklist, schema_dir)` validates the internal shape
-before applying this projection. It preserves IDs, order and exact text,
-does not mutate its input, and never writes another checklist file or calls
-LangGraph. No production workflow changes are required.
+before applying this selection. It preserves IDs, order and exact question
+text, drops `type`/`requirement_type`/`field`, does not mutate its input, and
+never writes another checklist file or calls LangGraph. No production
+workflow changes are required.
 
 Expected answers use a tagged union:
 
@@ -426,8 +756,8 @@ JSON are not ignored. There are no fake output artifacts.
 To convert text into SSML locally, run these commands from `evaluation-dataset`:
 
 ```powershell
-python scripts/convert_ssml.py --all
-python scripts/convert_ssml.py --call CALL_001
+python scripts/convert_ssml.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/convert_ssml.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001
 python scripts/convert_ssml.py --input example.txt
 python scripts/convert_ssml.py --text "Hello and welcome." --output example.ssml
 ```
@@ -445,7 +775,7 @@ use call conversion for a dialogue with separate employee/client turns.
 each call. It assigns the employee and client separate voices, synthesizes each
 turn, inserts 400 ms of silence between turns, and writes a stitched `audio.mp3`,
 per-turn MP3 segments and turn-level `timings.json` under
-`evaluation_dataset/calls/CALL_XXX/renders/clean_voice_A/`. It does not change
+`datasets/legacy_pilot_v1/calls/CALL_XXX/renders/clean_voice_A/`. It does not change
 canonical ground truth or the prepared transcripts. Word timings are not
 generated; listen to each render and check the spoken identifiers, amounts and
 dates before using the audio for ASR evaluation.
@@ -456,7 +786,8 @@ for evaluation. A new Polly synthesis can have different durations and must use
 its own timing file and render ID.
 
 To save the exact SSML sent for each turn without making another Polly request,
-run `python scripts/export_ssml.py --all`. Each render then has
+run `python scripts/export_ssml.py --dataset-root datasets/legacy_pilot_v1 --all`.
+Each render then has
 `segments/<turn_id>.ssml` plus `ssml_manifest.json`, which maps turn IDs to
 EMPLOYEE or CLIENT. The SSML wraps XML-escaped canonical text in `<speak>`;
 the voice is selected by the Polly API request, not embedded in the SSML.
@@ -467,8 +798,8 @@ belong in this repository. Then run from this directory:
 
 ```powershell
 python -m pip install -e ".[render]"
-python scripts/render_polly.py --all
-python scripts/render_polly.py --all --render-id clean_voice_B --execute
+python scripts/render_polly.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/render_polly.py --dataset-root datasets/legacy_pilot_v1 --all --render-id clean_voice_B --execute
 ```
 
 The command previews by default; `--execute` makes billable AWS calls. Defaults
@@ -490,7 +821,7 @@ NLP evaluation framework in `fyp-ai` consumes, without an LLM, Polly, AWS
 Transcribe, Bedrock or any other network call:
 
 ```text
-evaluation_dataset/calls/CALL_XXX/
+datasets/legacy_pilot_v1/calls/CALL_XXX/
 ├── ground_truth.json      (unchanged)
 ├── transcript.json        (generated)
 └── speaker_roles.json     (generated)
@@ -501,7 +832,7 @@ evaluation_dataset/calls/CALL_XXX/
 per canonical dialogue turn (`id`, `transcript`, `start_time`, `end_time`,
 `speaker_label`), in original turn order. It has no outer `results`
 wrapper and no `speaker_roles` key. `speaker_roles.json` separately holds
-`{"speaker_roles": {"spk_0": "RM", "spk_1": "Customer"}}` — this key
+`{"spk_0": "RM", "spk_1": "Customer"}` — this key
 ordering/mapping is fixed (EMPLOYEE is always `spk_0`/RM, CLIENT is always
 `spk_1`/Customer) and independent of which speaker's turn comes first.
 Only labels actually present in the dialogue are emitted. `fyp-ai`'s
@@ -535,10 +866,10 @@ checked by `fyp_evaluation.validation.transcript.validate_transcript_pair`
 `fyp_evaluation.transcripts`).
 
 ```powershell
-python scripts/build_transcripts.py --call CALL_001
-python scripts/build_transcripts.py --all
-python scripts/build_transcripts.py --all --check       # read-only; writes nothing
-python scripts/build_transcripts.py --call CALL_001 --overwrite
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --all
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --all --check
+python scripts/build_transcripts.py --dataset-root datasets/legacy_pilot_v1 --call CALL_001 --overwrite
 ```
 
 Every selected call is built and cross-validated before anything is
@@ -564,9 +895,9 @@ Once authoring documents exist, validate JSON files, checklist/rule links and
 downstream expected-answer compatibility with:
 
 ```powershell
-fyp-validate json check_plan authoring/check_plans/CALL_001.json
-fyp-validate checklist evaluation_dataset/checklist.json configs/normalization.json
-fyp-validate answers check_plan authoring/check_plans/CALL_001.json evaluation_dataset/checklist.json configs/normalization.json
+fyp-validate json check_plan datasets/legacy_pilot_v1/authoring/check_plans/CALL_001.json
+fyp-validate checklist datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+fyp-validate answers check_plan datasets/legacy_pilot_v1/authoring/check_plans/CALL_001.json datasets/legacy_pilot_v1/checklist.json configs/normalization.json
 ```
 
 The checklist command validates the updated pilot checklist and its
@@ -781,7 +1112,7 @@ Reusable APIs:
 
 * `authoring.coverage.load_matrix(path, *, checklist=None, call_ids=PILOT_CALL_IDS)`
   returns `{call_id: {question_id: raw_string_cell}}`. By default it reads the
-  authoritative checklist at `path.parent.parent/evaluation_dataset/checklist.json`
+  checklist adjacent to that dataset's `authoring/` directory
   and requires CALL_001-CALL_005 in order. Pass the approved checklist and an
   explicit ordered call-ID list for other layouts or larger datasets. Rejects
   duplicate/unknown/missing IDs, duplicate/wrong/missing call headers, ragged rows,
@@ -818,10 +1149,10 @@ All five fresh scaffolds pass scaffold mode and fail complete mode with exactly
 From this project directory, after installation (or setting `PYTHONPATH=src`):
 
 ```powershell
-python -m fyp_evaluation.validation matrix authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation scaffold-call-configs authoring/coverage_matrix.csv authoring/call_configs evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json
-python -m fyp_evaluation.validation call-config authoring/call_configs/CALL_001.json authoring/coverage_matrix.csv evaluation_dataset/checklist.json configs/normalization.json --complete
+python -m fyp_evaluation.validation matrix datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation scaffold-call-configs datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/authoring/call_configs datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config datasets/legacy_pilot_v1/authoring/call_configs/CALL_001.json datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json
+python -m fyp_evaluation.validation call-config datasets/legacy_pilot_v1/authoring/call_configs/CALL_001.json datasets/legacy_pilot_v1/authoring/coverage_matrix.csv datasets/legacy_pilot_v1/checklist.json configs/normalization.json --complete
 ```
 
 The generation command now refuses because the five files already exist; this
@@ -848,6 +1179,38 @@ New projection tests ensure LangGraph still receives only `id` and `question`.
 Legacy internal `{id, question}` entries and old normalization configs now fail
 validation explicitly; no silent migration or dual checklist maintenance exists.
 
+### Checklist field rename at revision 0.3.0 (`question` replaces `text`)
+
+The richer `{id, type, text, requirement_type|field}` shape from the previous
+paragraph kept its free-text property named `text`, distinct from the
+LangGraph-only `question` name produced by `to_langgraph_checklist`. Manual
+testing against the actual LangGraph deployment (Studio) surfaced this as a
+real source of confusion: pasting the raw checklist directly into a Studio
+input field produced `KeyError('question')`, because Studio does not run any
+adapter for you. Rather than only document that workflow step, the checklist
+source itself was changed so it already matches the graph's field name.
+
+`datasets/legacy_pilot_v1/checklist.json`, `schemas/checklist.schema.json` and
+`to_langgraph_checklist` were updated together: every checklist item's prompt
+is now stored under `question` instead of `text`; `type`, `requirement_type`
+and `field` are unchanged. `to_langgraph_checklist` no longer renames a field,
+it only selects `id`/`question` and drops the classification fields. `text`
+is now itself an out-of-scope, `additionalProperties: false`-rejected legacy
+name — the inverse of the previous paragraph's migration, which rejected the
+old bare `{id, question}` shape for missing classification. Both remain true
+simultaneously: a bare `{id, question}` item is still rejected today, but now
+because `type`/`requirement_type`/`field` are missing, not because of the
+field's name.
+
+`fyp-ai/evaluation/fyp_evaluation_loader/dataset.py`'s independent
+`_project_checklist` (which deliberately reimplements this same selection
+without importing this package) and `fyp-ai/evaluation/README.md` were
+updated in lockstep so a published snapshot's `checklist.json` and its loader
+agree. `fyp-ai/evaluation/tests/test_dataset.py` exercises this against the
+committed `datasets/pilot/` snapshot; regenerating that snapshot (via
+`EXPORTING.md`) after this rename is future publication work, not part of
+this change.
+
 At revision `0.2.0`, `call_config`, `check_plan` and `ground_truth` already shared
 a compliance/extraction union, so their shapes needed no changes. Revision
 `0.3.0` changes the DOB branch of that shared union and versions its consumers.
@@ -860,7 +1223,8 @@ implements canonical compilation. Comparing pipeline predictions remains future 
 
 ## Pilot checklist interpretation and source review
 
-The sole authoritative question text is in `evaluation_dataset/checklist.json`.
+The legacy pilot's authoritative question text is in
+`datasets/legacy_pilot_v1/checklist.json`.
 Its ordered IDs are C01-C06, K01-K02 and T01-T02: four compliance obligations,
 two compliance prohibitions, two KYC extractions and two transaction extractions.
 This section records proposed interpretation and sources, not per-call gold
@@ -985,7 +1349,7 @@ the integer/number/boolean rules remain available but unused by this checklist.
 
 ## Five-call coverage matrix review
 
-`authoring/coverage_matrix.csv` now contains the predetermined answers for
+`datasets/legacy_pilot_v1/authoring/coverage_matrix.csv` contains the predetermined answers for
 C01-C06, K01-K02 and T01-T02 across CALL_001 through CALL_005. There are 50 gold
 answer cells, including one explicit K01 `NOT_STATED` cell, with no blank cells
 or N/A/UNCLEAR labels. The CSV contains

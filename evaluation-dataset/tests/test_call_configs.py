@@ -94,7 +94,7 @@ def test_loader_rejects_reordered_approved_call_headers(tmp_path, artificial):
 ])
 def test_compilation_preserves_scalar_value_and_type(artificial, value_type, cell, value):
     _, normalization, _ = artificial
-    item = {"id": "FIX_VALUE", "type": "TRANSACTION", "field": "fixture", "text": "Artificial?"}
+    item = {"id": "FIX_VALUE", "type": "TRANSACTION", "field": "fixture", "question": "Artificial?"}
     normalization["field_rules"]["fixture"] = "rule"
     normalization["rules"]["rule"] = {"operation": "exact", "value_type": value_type}
     expected = compile_expected(item, normalization, cell)
@@ -127,7 +127,7 @@ def test_compliance_cells_are_exact_verdicts(artificial, cell):
 
 
 def test_k01_decodes_only_its_approved_missing_value():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
     item = next(item for item in checklist if item["id"] == "K01")
     expected = compile_expected(item, normalization, "NOT_STATED")
@@ -257,9 +257,9 @@ def test_invalid_later_call_does_not_write_earlier_calls(tmp_path, artificial):
 
 
 def test_five_pilot_scaffolds_and_all_fifty_answers_in_memory():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
-    matrix = load_matrix(ROOT / "authoring/coverage_matrix.csv")
+    matrix = load_matrix(ROOT / "datasets/legacy_pilot_v1/authoring/coverage_matrix.csv")
     assert len(matrix) == 5 and len(checklist) == 10
     for call_id, cells in matrix.items():
         data = build_call_config(call_id, checklist, normalization, matrix)
@@ -286,9 +286,9 @@ def test_five_pilot_scaffolds_and_all_fifty_answers_in_memory():
     ("CALL_005", "K02", None), ("CALL_005", "T01", None), ("CALL_005", "T02", None),
 ])
 def test_pilot_absence_is_locked_to_matrix_cell(call_id, question_id, value):
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
-    matrix = load_matrix(ROOT / "authoring/coverage_matrix.csv")
+    matrix = load_matrix(ROOT / "datasets/legacy_pilot_v1/authoring/coverage_matrix.csv")
     data = build_call_config(call_id, checklist, normalization, matrix)
     next(answer for answer in data["intended_answers"] if answer["question_id"] == question_id)["expected"]["expected_value"] = value
     assert validate_call_config(data, checklist, normalization, matrix, SCHEMAS)

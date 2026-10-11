@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_041",
+  "call_spec_sha256": "c1080b5fc0f4164ec1a254fa2742bec5894e32b6a3e9f2132e4d98d1b69be6e8",
+  "check_plan_skeleton_sha256": "3d2aa90aed1975d2396acc9115d3551df48b76edaf269506c4c368bd6f10a048",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "d38bbb4e4608a37e653ae21333b1699710229849fc9f994a084a75b987b5282e"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Meridian Asia Equity Fund",
+      "category": "EQUITY_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    },
+    {
+      "product_ref": "P2",
+      "name": "Summit Global Equity ETF",
+      "category": "ETF",
+      "roles": [
+        "SUPERSEDED"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Clara Tan",
+      "background": "Clara Tan is a private-banking client who runs a family trading business and reviews her investment holdings alongside business cash-flow needs. She sometimes mixes up product names when working from her portfolio notes.",
+      "investment_objective": "Reduce exposure to Asian equity markets and make the portfolio less volatile while increasing available liquidity.",
+      "loss_attitude": "She accepts that selling an investment can crystallise a loss and is willing to accept that outcome to reduce her ongoing market exposure."
+    },
+    "employee": {
+      "name": "Daniel Lim"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a sale from her existing portfolio as part of reducing market exposure, with execution subject to her chosen minimum price.",
+      "conversation_style": "A concise, cordial private-banking call in natural Singapore English, with a brief correction of the product selection and a practical focus on the final sale instruction."
+    },
+    "final_product": {
+      "description": "Meridian Asia Equity Fund is an equity fund providing exposure to companies across Asian markets, with a valuation driven by its underlying shareholdings.",
+      "concrete_risks": [
+        "Exposure to Asian equity markets makes the fund sensitive to regional economic slowdowns and changes in investor sentiment.",
+        "Political developments and regulatory changes affecting the fund's underlying markets can cause sharp movements in its valuation.",
+        "Currency movements affecting underlying holdings can influence the fund's value independently of share-price performance."
+      ],
+      "recommendation_basis": "Selling the holding reduces the client's Asian equity exposure and the associated sensitivity to regional market swings, supporting her preference for lower portfolio volatility and greater liquidity."
+    },
+    "other_products": [
+      {
+        "product_ref": "P2",
+        "description": "Summit Global Equity ETF is an exchange-traded fund providing exposure to global equity markets. It is the client's superseded initial selection, not the final recommendation."
+      }
+    ],
+    "holding_context": "The client holds Meridian Asia Equity Fund in her portfolio and wishes to sell from that existing holding. Her portfolio notes also include Summit Global Equity ETF, which explains the mistaken initial selection.",
+    "fee_disclosure": null,
+    "limit_prices": {
+      "final": 20.0,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": "The client says the holding was funded with cash collected from unrelated parties through her business and deliberately recorded as ordinary sales to conceal the true source.",
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_078",
+        "motivation": "The client initially reads the wrong product name from her portfolio notes, then checks the relevant holding and explicitly corrects her selection before execution. The earlier selection is withdrawn rather than retained as a separate instruction."
+      },
+      {
+        "assignment_id": "EA_079",
+        "motivation": "The client considers the proceeds in terms of her usual household budgeting currency for comparison, while keeping the transaction denomination unchanged."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone appointments",
+      "The client's recent gardening activities"
+    ]
+  }
+}

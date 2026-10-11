@@ -65,7 +65,7 @@ def test_k01_value_or_absence_survives_all_json_contracts(name, cell):
     data, check = identification_fixture(name, value)
     before = deepcopy(data)
     checklist = [{"id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number",
-                  "text": "ARTIFICIAL identification fixture?"}]
+                  "question": "ARTIFICIAL identification fixture?"}]
     normalization = load_json(ROOT / "configs/normalization.json")
     assert validate_answers(data, name, checklist, normalization, SCHEMAS) == []
     assert json.loads(json.dumps(check))["expected"]["expected_value"] == value
@@ -115,7 +115,7 @@ def test_null_ground_truth_requires_empty_evidence(field, value):
 @pytest.mark.parametrize("case", ["wrong_field", "wrong_category", "wrong_rule"])
 def test_k01_exception_requires_identification_metadata(case):
     checklist = [{"id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number",
-                  "text": "ARTIFICIAL fixture?"}]
+                  "question": "ARTIFICIAL fixture?"}]
     normalization = load_json(ROOT / "configs/normalization.json")
     if case == "wrong_field":
         checklist[0]["field"] = "transaction_instrument"
@@ -134,8 +134,8 @@ def test_pre_nullable_contract_versions_need_explicit_migration(name):
 
 
 def test_pilot_k01_question_wording():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     assert next(item for item in checklist if item["id"] == "K01") == {
         "id": "K01", "type": "CLIENT_KYC", "field": "client_identification_number",
-        "text": "What is the client's NRIC or FIN number?",
+        "question": "What is the client's NRIC or FIN number?",
     }

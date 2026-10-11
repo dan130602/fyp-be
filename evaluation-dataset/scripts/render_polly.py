@@ -17,7 +17,7 @@ from xml.sax.saxutils import escape
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CALLS = ROOT / "evaluation_dataset" / "calls"
+DEFAULT_DATASET_ROOT = ROOT / "datasets" / "legacy_pilot_v1"
 SAMPLE_RATE = 16000  # Polly PCM is signed, little-endian, 16-bit mono.
 BYTES_PER_SECOND = SAMPLE_RATE * 2
 
@@ -27,8 +27,8 @@ def make_ssml(text: str) -> str:
     return f"<speak>{escape(text)}</speak>"
 
 
-def load_turns(call_id: str) -> list[dict]:
-    path = CALLS / call_id / "ground_truth.json"
+def load_turns(call_id: str, calls_dir: Path) -> list[dict]:
+    path = calls_dir / call_id / "ground_truth.json"
     if not path.is_file():
         raise ValueError(f"Canonical ground truth is missing: {path}")
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -54,8 +54,8 @@ def encode_mp3(ffmpeg: str, pcm: bytes, destination: Path) -> None:
 
 
 def render_call(call_id: str, turns: list[dict], args: argparse.Namespace,
-                polly: object, ffmpeg: str) -> Path:
-    output_dir = CALLS / call_id / "renders" / args.render_id
+                polly: object, ffmpeg: str, calls_dir: Path) -> Path:
+    output_dir = calls_dir / call_id / "renders" / args.render_id
     audio_path = output_dir / "audio.mp3"
     timings_path = output_dir / "timings.json"
     if not args.overwrite and (audio_path.exists() or timings_path.exists()):
@@ -113,6 +113,7 @@ def render_call(call_id: str, turns: list[dict], args: argparse.Namespace,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     choice = parser.add_mutually_exclusive_group(required=True)
     choice.add_argument("--all", action="store_true", help="Render all canonical calls")
     choice.add_argument("--call", help="Render one call, for example CALL_001")
@@ -135,20 +136,21 @@ def main() -> int:
         parser.error("--silence-ms must be between 0 and 5000")
     if args.overwrite and args.skip_existing:
         parser.error("--overwrite and --skip-existing cannot be used together")
-    call_ids = [p.name for p in sorted(CALLS.glob("CALL_*")) if p.is_dir()] if args.all else [args.call]
+    calls_dir = args.dataset_root.resolve() / "calls"
+    call_ids = [p.name for p in sorted(calls_dir.glob("CALL_*")) if p.is_dir()] if args.all else [args.call]
     try:
-        calls = [(call_id, load_turns(call_id)) for call_id in call_ids]
+        calls = [(call_id, load_turns(call_id, calls_dir)) for call_id in call_ids]
         if args.skip_existing:
             pending = []
             for call_id, turns in calls:
-                output = CALLS / call_id / "renders" / args.render_id
+                output = calls_dir / call_id / "renders" / args.render_id
                 if (output / "audio.mp3").exists() and (output / "timings.json").exists():
                     print(f"{call_id}: skipping existing render")
                 else:
                     pending.append((call_id, turns))
             calls = pending
         for call_id, turns in calls:
-            print(f"{call_id}: {len(turns)} turns -> {CALLS / call_id / 'renders' / args.render_id / 'audio.mp3'}")
+            print(f"{call_id}: {len(turns)} turns -> {calls_dir / call_id / 'renders' / args.render_id / 'audio.mp3'}")
         if not calls:
             print("No calls need rendering.")
             return 0
@@ -157,7 +159,7 @@ def main() -> int:
             return 0
         if not args.overwrite:
             for call_id, _ in calls:
-                output = CALLS / call_id / "renders" / args.render_id
+                output = calls_dir / call_id / "renders" / args.render_id
                 if (output / "audio.mp3").exists() or (output / "timings.json").exists():
                     raise FileExistsError(f"Render already exists: {output}; pass --overwrite to replace it")
         try:
@@ -177,7 +179,7 @@ def main() -> int:
                     raise ValueError(f"Voice {voice!r} is unavailable for {args.engine} in {args.region}")
             for call_id, turns in calls:
                 print(f"Rendering {call_id}...", flush=True)
-                print(f"Saved {render_call(call_id, turns, args, polly, ffmpeg)}", flush=True)
+                print(f"Saved {render_call(call_id, turns, args, polly, ffmpeg, calls_dir)}", flush=True)
         except (BotoCoreError, ClientError) as error:
             raise RuntimeError(f"AWS Polly request failed: {error}") from error
         return 0

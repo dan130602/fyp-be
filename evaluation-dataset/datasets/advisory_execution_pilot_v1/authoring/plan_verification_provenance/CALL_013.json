@@ -1,0 +1,316 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_013",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_013-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "529652123c84ef9460034ebf84c6b9150939b605d075b757dde3e83380cdafb1",
+      "upstream_sha256": {
+        "call_spec": "e21235548ce9853e3c5f86d8fec325c010fe00f4c06a1a9fc08fffd8d3dafed5",
+        "check_plan_skeleton": "ab2a7a7131806ebd5f8a25b651dd6d2d69995dfb9de65d2ecc43c623931c47e0",
+        "call_config": "457143a506730bc891ddb31ffc9dd03c47a185f76fa94d332e3e13858a016b95",
+        "check_plan": "bd8b69a3264e5c55e2359494a781d2c9d6ed74aa1a3c20d78a1aeeb9ca490de7",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 10522,
+        "cached_tokens": 0,
+        "output_tokens": 2294,
+        "thought_tokens": 1415,
+        "total_tokens": 14231
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.0109,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:20:02Z",
+      "finished_at": "2026-10-11T08:20:21Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your objective is income and broader exposure through emerging-market debt, and you're prepared to hold through market fluctuations. That's the objective we're working towards."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "No concrete product-specific risk of the recommended bond fund is explained anywhere in the planned dialogue, faithfully implementing the expected FAIL target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "There is no disclosure of key risks nor any employee check of the client's understanding of product risks, faithfully implementing the expected FAIL target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "The transaction fee is 0.5% of the amount invested."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee as a concrete percentage rate.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "You could lose some or all of the capital you invest."
+            }
+          ],
+          "rationale": "The employee explicitly warns the client that they may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Are you willing to accept investment losses in pursuing your income objective?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Yes, I'm willing to bear investment losses in pursuit of income."
+            }
+          ],
+          "rationale": "The employee checks and confirms the client's willingness to accept investment losses, and the client gives an unambiguous confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "I recommend Crest Emerging Markets Bond Fund because its emerging-market debt holdings support your income objective and spread your exposure across issuers and markets."
+            }
+          ],
+          "rationale": "The employee explains a concrete recommendation basis linking the fund's features to the client's income objective and diversification preferences.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Your final instruction is to buy 1,000 units of Crest Emerging Markets Bond Fund, for an amount of 250,000 euros, using a limit order with a limit price of 250 euros per unit. Please confirm that this is the instruction you want us to execute."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I confirm that final transaction instruction. Please proceed as you've just stated."
+            }
+          ],
+          "rationale": "The employee reads back all final transaction parameters and receives the client's explicit, unambiguous confirmation after all order details are stated.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Part of the subscription money is cash I collected for a business associate I'd rather not name. He asked me to route it through my personal account and keep the underlying source off the paperwork."
+            }
+          ],
+          "rationale": "The client reveals cash from an unnamed third party routed through a personal account to evade documentation, establishing a money-laundering red flag as required for FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The plan contains no indication of material non-public or inside information, satisfying the PASS target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not pressure, coach, or encourage the client to overstate risk tolerance, satisfying the PASS target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns, satisfying the PASS target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "My NRIC is S one one six three nine nine four E."
+            }
+          ],
+          "rationale": "The client explicitly states their NRIC as S1163994E.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My date of birth is 10 April 1967."
+            }
+          ],
+          "rationale": "The client explicitly provides their date of birth as 10 April 1967.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "The fund I want to transact in is Crest Emerging Markets Bond Fund."
+            }
+          ],
+          "rationale": "The client explicitly instructs transacting in Crest Emerging Markets Bond Fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Use euros as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client explicitly specifies EUR (euros) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The amount I'm committing to this transaction is 250,000."
+            }
+          ],
+          "rationale": "The client explicitly specifies a transaction amount of 250,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Set the quantity at 1,000 units."
+            }
+          ],
+          "rationale": "The client explicitly specifies the transaction quantity as 1,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "I want to buy, not dispose of my holding."
+            }
+          ],
+          "rationale": "The client explicitly instructs the transaction direction as BUY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Place it as a limit order, with a limit price of 250 euros per unit."
+            }
+          ],
+          "rationale": "The client explicitly specifies the order type as a limit order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "7f39db2807dbcdd2480850c64cc4513177055ab14b8f25cabfc1ee00bbbf3ffd",
+    "artifact_sha256": "7b21f8c799f44074f5e45299fe815dacce21bf87823079d7ea0b6ec96c6eafbc"
+  },
+  "accepted_history": []
+}

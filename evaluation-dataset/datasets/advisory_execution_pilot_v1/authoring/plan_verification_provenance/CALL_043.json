@@ -1,0 +1,352 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_043",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_043-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "7e41cb05c6a3d6f8cee1a1d5edc2b2f7139d9802f7a79df61242297622e5c40b",
+      "upstream_sha256": {
+        "call_spec": "511c0728dee229e325f603104a4c72bf4ec61175cc23ef9b538d34eab08438c3",
+        "check_plan_skeleton": "0383da4b876fdc40c4c4e143b579c3224711cfb872bdf25c5f2c428e7b419abf",
+        "call_config": "a3fe5266a76aaf79e60d196ec48255f27cc2bb2c84e25bc5be9e5c815bfb7798",
+        "check_plan": "fa6084e8524633007e9e1b0565bd30f46dc2d7e4a8ca0a812c5f341daf0a7192",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 12399,
+        "cached_tokens": 0,
+        "output_tokens": 1912,
+        "thought_tokens": 1512,
+        "total_tokens": 15823
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.01107,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:37:02Z",
+      "finished_at": "2026-10-11T08:37:19Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your investment objective is to build a diversified portfolio focused on income and steadier performance, rather than aggressive growth. I'll use that as the basis for our discussion."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call, meeting the C01 PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Harbor SGD Bond Fund, rising market interest rates can push down the value of the bonds it holds, which can lower the fund's value."
+            }
+          ],
+          "rationale": "The employee explains a concrete product-specific risk (interest rate risk lowering bond values and net asset value), fulfilling C02.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how rising interest rates could lower the value of this fund?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. If interest rates rise, the bonds held by the fund can fall in value, and my fund investment can fall too."
+            }
+          ],
+          "rationale": "The employee checks the client's understanding of the disclosed risk, and the client provides an unambiguous demonstration of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction charge is 0.5% of the investment amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction charge as a rate (0.5%), satisfying C04.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose some or even all of the capital you invest in this fund."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose some or all of the invested capital, meeting C05.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Having heard those risks, are you willing to accept investment losses on this investment?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I am willing to accept investment losses and fluctuations in the fund's value. I understand the risks you've explained."
+            }
+          ],
+          "rationale": "The employee asks for and obtains explicit confirmation of the client's willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend Harbor SGD Bond Fund because its pooled fixed-income holdings support your income objective and spread exposure across issuers, rather than concentrating it with an individual issuer."
+            }
+          ],
+          "rationale": "The employee provides a concrete recommendation rationale connecting fund features to the client's income objective and diversification need.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "With the direction corrected, your final instruction is to buy 1,500 units of Harbor SGD Bond Fund, with an investment amount of 500,000 in Singapore dollars, using a market order. Do you explicitly confirm that final instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that final transaction instruction as you've just stated it. Please proceed."
+            }
+          ],
+          "rationale": "The employee seeks explicit confirmation of the final transaction instruction after all parameters and corrections, and the client confirms explicitly.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the scenario or event texts.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no transaction instruction based on material non-public or inside information in the scenario or event texts.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate their willingness to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not state or imply that future investment returns are guaranteed.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is F zero zero seven zero five eight five Q."
+            }
+          ],
+          "rationale": "The client explicitly states their FIN as F0070585Q, which matches the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is 16 April 1978."
+            }
+          ],
+          "rationale": "The client explicitly states their date of birth as 16 April 1978, matching the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The fund I want to invest in is Harbor SGD Bond Fund."
+            }
+          ],
+          "rationale": "The client explicitly specifies Harbor SGD Bond Fund as the transaction instrument, matching the target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "For this transaction, please use Singapore dollars."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "My existing holding is denominated in Chinese yuan, but that's separate from this new investment."
+            }
+          ],
+          "rationale": "The client instructs Singapore dollars (SGD) for the transaction. Chinese yuan is clearly designated as an existing holding distractor currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The amount I'm committing to this investment is 500,000."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "An allocation of 25,000 in Singapore dollars would just be an illustration for our sizing discussion, not your actual transaction amount."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "My overall account value is 1,200,000 in Singapore dollars. That's portfolio context, not the amount I'm investing today."
+            }
+          ],
+          "rationale": "The committed transaction amount is 500,000. Distractor amounts 25,000 and 1,200,000 are explicitly differentiated by semantic role.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "The quantity I want for this transaction is 1,500 units."
+            }
+          ],
+          "rationale": "The client explicitly specifies a quantity of 1,500 units, matching the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "I want to buy the fund units to add to my portfolio."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_022",
+              "quote": "Let me read back the direction: you want to sell the fund units."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_023",
+              "quote": "No, I said buy. I'm adding to my investment, not disposing of it."
+            }
+          ],
+          "rationale": "The client initially states BUY, corrects the employee's erroneous readback of SELL, and establishes BUY as the final transaction direction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_024",
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client explicitly instructs a market order, matching the gold value MARKET.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "5cdd7c0160791e5db742d1d299fc3b3464642bd590fde126c3e90551a386ad97",
+    "artifact_sha256": "de13fe8863539854f1b53efaeb3b8f942b0a52f54f65aeb34f0ad983e980ff4d"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,344 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_023",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_023-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "4c382f2b33b1c3488a04f096f031d7906fe99cc77ff6b6e64b769b8f5af66045",
+      "upstream_sha256": {
+        "call_spec": "decfcfd20eacc3aff6b37e436b909746c8f64413888e7c0dab2b95a1a755cf3c",
+        "check_plan_skeleton": "5006cee309f1fc05a39c5d076041b86f5874b1e179bf7ec11ea82be078c73ca7",
+        "call_config": "bdb96e663931a9f9f23b0f92955a629eab291c7f3d91a0438de2e1195e3cc2d2",
+        "check_plan": "c25c69f9dfd1b8797b5a45d95feaeb340378316ca875dab5bec70787ea3acaf3",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11363,
+        "cached_tokens": 0,
+        "output_tokens": 2651,
+        "thought_tokens": 1201,
+        "total_tokens": 15215
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.011484,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:24:49Z",
+      "finished_at": "2026-10-11T08:25:12Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your objective is to reduce your technology-sector concentration and make your portfolio less sensitive to sharp equity-market movements."
+            }
+          ],
+          "rationale": "The employee explicitly establishes the client's investment objective during the call, satisfying the C01 PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "Nova Technology Equity Fund is concentrated in technology businesses, so worsening sentiment towards that sector can amplify its declines. Market movements can also change the redemption value before your sale is priced."
+            }
+          ],
+          "rationale": "The employee explains concrete risks specifically associated with the recommended product (sector concentration amplifying declines and price changes prior to execution).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand that technology-sector concentration can amplify declines, and that the redemption value can still change before your sale is priced?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand those risks. The technology exposure can make declines sharper, and the value I receive can still change before pricing."
+            }
+          ],
+          "rationale": "Following risk disclosure, the employee checks the client's understanding and the client provides an unambiguous confirmation demonstrating understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction charge for this sale is 0.25% of the sale value."
+            }
+          ],
+          "rationale": "The employee states the transaction charge as an explicit rate (0.25%), satisfying C04.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose part or even all of the capital you invested in this fund. Selling can crystallise a loss if the redemption value is below what you invested."
+            }
+          ],
+          "rationale": "The employee explicitly explains that the client could lose part or even all of the capital invested, fulfilling C05.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to accept investment losses, including a loss that may be crystallised by this sale?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I am willing to accept investment losses, including crystallising a loss on this sale, although the uncertainty makes me uneasy."
+            }
+          ],
+          "rationale": "The employee asks and the client gives an unambiguous confirmation of willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend reducing your holding in Nova Technology Equity Fund because that would lower your concentrated exposure to technology-sector volatility and support your aim of a less market-sensitive portfolio."
+            }
+          ],
+          "rationale": "The employee provides a concrete recommendation rationale directly linking the reduction of the holding to the client's objective.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Please confirm your final instruction: sell 1,500 units of Nova Technology Equity Fund using a market order, with transaction currency Japanese yen and transaction amount 50,000,000. Shall I proceed on that basis?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that final transaction instruction exactly as you stated it. Please proceed."
+            }
+          ],
+          "rationale": "The employee obtains the client's explicit confirmation of the final transaction instruction after all parameters are stated.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds across the plan, satisfying the absence check for C09 PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "A senior employee at a business held by the fund privately told me its unreleased earnings announcement will reveal a material deterioration in trading. That confidential information is why I am instructing you to sell before it becomes public."
+            }
+          ],
+          "rationale": "The client explicitly bases the sell instruction on material non-public inside information, establishing the fail condition for C10.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate loss tolerance, maintaining C11 PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Can you guarantee that following your recommendation will give me a favourable investment return?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "No, I cannot guarantee future returns or promise a favourable investment outcome."
+            }
+          ],
+          "rationale": "Under edge case EA_040, the client asks for a guarantee and the employee explicitly refuses. No guarantee of future returns is made, establishing C12 PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "My FIN is F zero four four five four five zero N."
+            }
+          ],
+          "rationale": "The client states their FIN as F0445450N, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "My date of birth is 18 July 1971."
+            }
+          ],
+          "rationale": "The client states their date of birth as 18 July 1971, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The holding I want to transact in is Nova Technology Equity Fund."
+            }
+          ],
+          "rationale": "The client instructs the transaction in Nova Technology Equity Fund, matching the target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "Use Japanese yen as the transaction currency."
+            }
+          ],
+          "rationale": "The client instructs Japanese yen (JPY) as the transaction currency, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "The transaction amount I am instructing is 50,000,000."
+            }
+          ],
+          "rationale": "The client specifies the transaction amount as 50,000,000, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "The quantity I want to transact is 1,500 units."
+            }
+          ],
+          "rationale": "The client specifies the transaction quantity as 1,500 units, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "I want to sell that holding."
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as SELL, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_022",
+              "quote": "Please place it as a market order."
+            }
+          ],
+          "rationale": "The client specifies the order type as MARKET, matching the gold extraction target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "57786cbbc5946501c71b86aac5b96b66b798805913105d99b4f1e9dcf3e3fdbd",
+    "artifact_sha256": "96cd006a19437ecab400a94a5598fa05c7e494227fff03842d8c7e20e40cd6a7"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,342 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_038",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_038-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "cdb603cdaa4a8ad3f977516d6bd934e9ffd455c7dfbea61615d8dfb7fad6a4cc",
+      "upstream_sha256": {
+        "call_spec": "7dd4e480d800001798093964fe9c23b46bc3f1281b5d812e33826cc792d5df2f",
+        "check_plan_skeleton": "8394cca18540a7e18a06bc7c76c066e17ae32b73eb7e7abd9f9c533e6d25cac2",
+        "call_config": "e7de43b744cf17fc84bccf21fa51b20ce1965dbccaca3b8e5798e8f468a95dd3",
+        "check_plan": "e6e8196dd6ca8c74a0cde7efddd1a292c3713a2066e3fda39a9637562db4f6fd",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11753,
+        "cached_tokens": 0,
+        "output_tokens": 2669,
+        "thought_tokens": 2533,
+        "total_tokens": 16955
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.014161,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:34:41Z",
+      "finished_at": "2026-10-11T08:35:44Z",
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-11T08:34:47Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your objective remains long-term growth through Asian equities, with no immediate need to draw on these funds."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective in EV_001, satisfying the PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "Meridian Asia Equity Fund is concentrated in Asian equity markets, so regional economic weakness or regulatory changes can push down the underlying share prices and the fund's valuation."
+            }
+          ],
+          "rationale": "The employee explicitly details concrete product-specific risks (regional concentration, economic weakness, and regulatory changes affecting valuations) in EV_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how that regional concentration exposes the fund to economic and regulatory changes?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. Weakness in the region or changes in regulations can bring down the underlying shares and the fund's valuation."
+            }
+          ],
+          "rationale": "In EV_003 and EV_004, following the risk disclosure, the employee checks understanding and the client provides an unambiguous demonstration and confirmation of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "No transaction fee or charge is stated anywhere in the planned events, correctly fulfilling the FAIL condition.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "There is no explicit explanation that the client may lose some or all invested capital; loss tolerance questioning does not satisfy the requirement, correctly resulting in FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Are you willing to accept investment losses and equity-market fluctuations in pursuing your long-term growth objective?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Yes, I'm willing to accept investment losses and those market fluctuations for long-term growth."
+            }
+          ],
+          "rationale": "The exchange across EV_005 and EV_006 explicitly checks and unambiguously confirms the client's willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "I recommend Meridian Asia Equity Fund because its pooled Asian equity exposure supports your long-term growth objective without you having to select and monitor individual companies."
+            }
+          ],
+          "rationale": "The employee explicitly connects the product's pooled structure to the client's long-term growth objective in EV_007, meeting the PASS standard.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "To recap, you want to buy 1,000 units of Meridian Asia Equity Fund, committing 250,000 in US dollars, using a market order. Can you explicitly confirm this final instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Mm, okay... sorry, a work notification just came in."
+            }
+          ],
+          "rationale": "Following the employee's recap in EV_008, the client provides only a weak acknowledgement in EV_009 ('Mm, okay...') under edge case EA_072, correctly establishing FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The plan contains no indications of money laundering or suspicious source of funds, correctly fulfilling PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The plan contains no transaction instruction based on material non-public or inside information, correctly fulfilling PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach or encourage the client to overstate loss tolerance, correctly fulfilling PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Despite those market fluctuations, I guarantee that this investment will deliver positive future returns."
+            }
+          ],
+          "rationale": "The employee explicitly guarantees future investment returns in EV_010, correctly establishing the prohibited act and resulting in FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My identity number is T nine one five eight seven four six J."
+            }
+          ],
+          "rationale": "The client states her NRIC as T9158746J in EV_011, matching the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My date of birth is 27 October 1997."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Sorry, I meant 27 October 1996 for my date of birth."
+            }
+          ],
+          "rationale": "Under EA_070, the client corrects the date of birth in the same turn from 27 October 1997 to 27 October 1996, which is marked FINAL in EV_013.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The fund I want for this transaction is Meridian Asia Equity Fund."
+            }
+          ],
+          "rationale": "The client explicitly selects Meridian Asia Equity Fund as the final instrument in EV_014.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Use US dollars as the transaction currency."
+            }
+          ],
+          "rationale": "The client instructs USD ('US dollars') as the transaction currency in EV_015.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The actual amount I'm committing to this transaction is 250,000."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The allocation of 1,000,000 in US dollars was just a hypothetical illustration, not my transaction amount."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "My overall personal investment account is valued at 1,200,000 in US dollars; that's the account valuation, not the amount for this order."
+            }
+          ],
+          "rationale": "Under EA_071, distractor monetary amounts (1,000,000 and 1,200,000) are distinguished by role, and the committed transaction amount is unambiguously stated as 250,000 in EV_016.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "The quantity I want to transact is 1,000 units."
+            }
+          ],
+          "rationale": "The client explicitly commits to transacting 1,000 units in EV_019.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "I want to buy those units."
+            }
+          ],
+          "rationale": "The client explicitly instructs a BUY direction in EV_020.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "Please place it as a market order."
+            }
+          ],
+          "rationale": "The client explicitly specifies a MARKET order in EV_021.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "719d37d8289b8534b4094b85f48432cd5c298771b7d614b85fde002ab3aab225",
+    "artifact_sha256": "bd1421419b034535d2de022571fd80a59c5553be1866fdb6a93bc70e06bb27d3"
+  },
+  "accepted_history": []
+}

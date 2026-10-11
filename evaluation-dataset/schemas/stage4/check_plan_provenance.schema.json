@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage4/check_plan_provenance.schema.json",
+  "title": "G4 check_plan provenance",
+  "description": "Committed audit trail for one call (G4): compact attempt summaries, the accepted parsed response and the history of superseded accepted versions. Raw provider envelopes live in the gitignored audit directory, never here. No credentials are ever stored.",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "stage": {"const": "G4"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "call_id": {"type": "string", "pattern": "^CALL_[0-9]{3,}$"},
+    "attempts": {"type": "array", "items": {"$ref": "#/$defs/attempt"}},
+    "accepted": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/accepted"}]},
+    "accepted_history": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/accepted"},
+          {
+            "type": "object",
+            "properties": {"superseded_at": {"type": "string"}, "reason": {"type": "string", "minLength": 1}},
+            "required": ["superseded_at", "reason"]
+          }
+        ]
+      }
+    }
+  },
+  "required": ["schema_version", "stage", "dataset_id", "call_id", "attempts", "accepted", "accepted_history"],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "accepted": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+        "model": {"type": "string", "minLength": 1},
+        "prompt_template_sha256": {"$ref": "#/$defs/sha256"},
+        "response_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "parsed_response": {"type": "object"},
+        "parsed_response_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["attempt_id", "model", "prompt_template_sha256", "response_schema_sha256", "parsed_response", "parsed_response_sha256", "artifact_sha256"],
+      "additionalProperties": true
+    },
+    "attempt": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+        "state": {"enum": ["ACCEPTED", "REJECTED", "TRANSPORT_FAILED", "SUPERSEDED", "STALE_UPSTREAM"]},
+        "transport": {"enum": ["sync", "batch"]},
+        "submission_id": {"type": ["string", "null"]},
+        "batch_id": {"type": ["string", "null"]},
+        "custom_id": {"type": "string"},
+        "provider_response_id": {"type": ["string", "null"]},
+        "model": {"type": "string"},
+        "params": {"type": "object"},
+        "prompt_template_sha256": {"$ref": "#/$defs/sha256"},
+        "response_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "request_sha256": {"$ref": "#/$defs/sha256"},
+        "upstream_sha256": {"type": "object"},
+        "api_status": {"type": ["string", "null"]},
+        "rejection_reason": {"type": ["string", "null"]},
+        "validation_errors": {"type": "array", "items": {"type": "string"}},
+        "fatal": {"type": "boolean"},
+        "possibly_billed": {"type": "boolean"},
+        "usage": {"type": ["object", "null"]},
+        "service_tier": {"type": ["string", "null"]},
+        "estimated_cost_usd": {"type": ["number", "null"]},
+        "price_table_version": {"type": "string"},
+        "reopen_reason": {"type": ["string", "null"]},
+        "created_at": {"type": "string"},
+        "finished_at": {"type": "string"}
+      },
+      "required": ["attempt_id", "state", "transport", "custom_id", "model", "request_sha256", "validation_errors", "fatal", "created_at", "finished_at"],
+      "additionalProperties": true
+    }
+  }
+}

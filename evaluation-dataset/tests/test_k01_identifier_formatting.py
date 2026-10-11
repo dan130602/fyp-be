@@ -22,7 +22,7 @@ from fyp_evaluation.validation.transcript import validate_transcript_pair
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
-CALLS_DIR = ROOT / "evaluation_dataset/calls"
+CALLS_DIR = ROOT / "datasets/legacy_pilot_v1/calls"
 
 COMMA_SPELLED_IDENTIFIER = re.compile(r"[A-Z], [0-9],(?: [0-9],)* [0-9], [A-Z]")
 

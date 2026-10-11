@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_026",
+  "call_spec_sha256": "1471d074b3a477c582dce72184046c967494364fe1685c73229a2292c41685d2",
+  "check_plan_skeleton_sha256": "a34368fb698cf64f1f50249e2882f896d5d288a2401abc028a8c86db1b5bc76e",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "fd0c062c954a239e6277045459da7747fc0ad595a01779780b03935ac8561820"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Meridian Asia Equity Fund",
+      "category": "EQUITY_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Adrian Tan",
+      "background": "Adrian Tan is a business owner with an established investment portfolio. He keeps consolidated portfolio statements alongside older investment records and sometimes reads from the wrong section when discussing an instruction.",
+      "investment_objective": "Reduce exposure to Asian equities and make part of his existing portfolio more readily available for personal needs.",
+      "loss_attitude": "He is hesitant about investment losses and uncomfortable crystallising a decline in value. He can accept losses associated with a measured reduction of his holding but is sensitive to suggestions that he should sound more comfortable with losses than he feels."
+    },
+    "employee": {
+      "name": "Rachel Lim"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a partial sale of his existing holding after reviewing his portfolio and deciding to reduce regional equity exposure.",
+      "conversation_style": "A brief, practical private-banking telephone conversation in natural Singapore English. The client is organised but occasionally consults the wrong statement entry, and becomes more cautious when discussing losses."
+    },
+    "final_product": {
+      "description": "Meridian Asia Equity Fund is an equity fund providing exposure to listed businesses across Asian markets, with a value that fluctuates with its underlying shareholdings.",
+      "concrete_risks": [
+        "Asian equity markets can fall sharply when regional economic conditions or investor sentiment deteriorate.",
+        "Concentration in a regional equity market can cause the fund's holdings to decline together rather than offset one another.",
+        "The market value of the fund can move before the sale is executed, so proceeds may differ from the client's expectation."
+      ],
+      "recommendation_basis": "Reducing the existing holding lowers the client's exposure to regional equity volatility and concentration while supporting his preference to release part of the portfolio for personal needs."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Meridian Asia Equity Fund as a substantial position in his portfolio. He intends to sell only part of that position and retain the remainder.",
+    "fee_disclosure": {
+      "basis": "AMOUNT",
+      "value": 35,
+      "currency": "SGD"
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_044",
+        "motivation": "The client initially reads the total holding from his statement rather than the portion he intends to sell. After checking his handwritten instruction, he explicitly replaces the earlier quantity with the intended partial-sale quantity."
+      },
+      {
+        "assignment_id": "EA_045",
+        "motivation": "The transaction charge is denominated separately from the sale instruction, prompting a brief distinction between the fee currency and the transaction currency."
+      },
+      {
+        "assignment_id": "EA_046",
+        "motivation": "The client has his consolidated portfolio balance and an older investment entry in front of him. These provide background to his decision but are separate from the amount committed to the current sale."
+      }
+    ],
+    "additional_discussion_topics": [
+      "Preference for telephone contact rather than arranging a branch visit",
+      "Balancing business commitments with personal administration"
+    ]
+  }
+}

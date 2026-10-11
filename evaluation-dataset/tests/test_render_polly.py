@@ -27,7 +27,6 @@ class FakePolly:
 
 
 def test_render_stitches_turns_and_preserves_canonical_data(tmp_path, monkeypatch):
-    monkeypatch.setattr(render_polly, "CALLS", tmp_path)
     call_dir = tmp_path / "CALL_999"
     call_dir.mkdir()
     canonical = {"call_id": "CALL_999", "dialogue": [
@@ -42,8 +41,14 @@ def test_render_stitches_turns_and_preserves_canonical_data(tmp_path, monkeypatc
                               employee_voice="Jasmine", client_voice="Matthew", engine="neural")
     polly = FakePolly()
 
-    result = render_polly.render_call("CALL_999", render_polly.load_turns("CALL_999"),
-                                     args, polly, "unused")
+    result = render_polly.render_call(
+        "CALL_999",
+        render_polly.load_turns("CALL_999", tmp_path),
+        args,
+        polly,
+        "unused",
+        tmp_path,
+    )
 
     assert result.is_file()
     timings = json.loads(result.with_name("timings.json").read_text(encoding="utf-8"))

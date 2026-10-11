@@ -1,0 +1,840 @@
+{
+  "schema_version": "1.0",
+  "stage": "G8",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_017",
+  "status": {
+    "g7_dialogue_verification": "PENDING",
+    "timings": "PLACEHOLDER_ZERO"
+  },
+  "source": {
+    "call_spec_sha256": "49718e5ecc9c1185bb33a9bbca91ef0ee402e2becf17fd83ecaf47a434a88442",
+    "check_plan_skeleton_sha256": "969c0a37708d7953036050ca60ca24670e6fa9892131db641e00cde9093db0f2",
+    "call_config_sha256": "d2554f19873b6b87282f22077eab7f68385c34b91e7e4f20e83f111576235550",
+    "check_plan_sha256": "d3109574fac0fdc2d5f13a940ea4f4f4753c278114386361e6fe4a992d580bb8",
+    "plan_verification_sha256": "6aef33690367abd0e6b9e78bca1de632145e3d4bec3bec43f87b28685c3d3493",
+    "dialogue_sha256": "b7396e15a3761b9fbb2aaacf0705346159c05d64a29ca15439d82d5878a5c4b5",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language": "en-SG",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 133,
+          "text": "For Harbor SGD Bond Fund, rising market interest rates can push down the value of the bonds it holds and lower the fund's unit value."
+        }
+      ],
+      "gold_evidence_text": "For Harbor SGD Bond Fund, rising market interest rates can push down the value of the bonds it holds and lower the fund's unit value.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12,
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 134,
+          "end": 225,
+          "text": "Do you understand how rising interest rates can affect the fund's bonds and its unit value?"
+        },
+        {
+          "event_id": "EV_003",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 125,
+          "text": "Yes, I understand. If market interest rates rise, the bonds held by the fund can fall in value, bringing down its unit value."
+        }
+      ],
+      "gold_evidence_text": "Do you understand how rising interest rates can affect the fund's bonds and its unit value?\nYes, I understand. If market interest rates rise, the bonds held by the fund can fall in value, bringing down its unit value.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        14
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_004",
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 29,
+          "text": "The transaction fee is 0.25%."
+        }
+      ],
+      "gold_evidence_text": "The transaction fee is 0.25%.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        14,
+        15
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "start": 30,
+          "end": 93,
+          "text": "Are you willing to accept investment losses on this investment?"
+        },
+        {
+          "event_id": "EV_006",
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 120,
+          "text": "Yes, I'm willing to accept investment losses and fluctuations in value, now that I understand the risk you've explained."
+        }
+      ],
+      "gold_evidence_text": "Are you willing to accept investment losses on this investment?\nYes, I'm willing to accept investment losses and fluctuations in value, now that I understand the risk you've explained.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 217,
+          "text": "I recommend Harbor SGD Bond Fund because its pooled structure and professional management mean you don't have to manage individual bond holdings yourself. That suits your preference for less day-to-day administration."
+        }
+      ],
+      "gold_evidence_text": "I recommend Harbor SGD Bond Fund because its pooled structure and professional management mean you don't have to manage individual bond holdings yourself. That suits your preference for less day-to-day administration.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        20,
+        21
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_008",
+          "turn_id": 20,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 177,
+          "text": "Please confirm your final instruction: buy 500 units of Harbor SGD Bond Fund, for an amount of 100,000 in Singapore dollars, using a market order. Shall I proceed on that basis?"
+        },
+        {
+          "event_id": "EV_009",
+          "turn_id": 21,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 94,
+          "text": "Yes, I confirm that final transaction instruction exactly as you've stated it. Please proceed."
+        }
+      ],
+      "gold_evidence_text": "Please confirm your final instruction: buy 500 units of Harbor SGD Bond Fund, for an amount of 100,000 in Singapore dollars, using a market order. Shall I proceed on that basis?\nYes, I confirm that final transaction instruction exactly as you've stated it. Please proceed.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_010",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 355,
+          "end": 600,
+          "text": "Please place this order because my contact on the fund's management team told me confidentially that its holdings are due for a material upward revaluation. That information hasn't been made public yet, and it's why I'm making this purchase now."
+        }
+      ],
+      "gold_evidence_text": "Please place this order because my contact on the fund's management team told me confidentially that its holdings are due for a material upward revaluation. That information hasn't been made public yet, and it's why I'm making this purchase now.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "S0748765R"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3,
+        4,
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_011",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 52,
+          "text": "My NRIC is S zero seven four eight seven six five R."
+        },
+        {
+          "event_id": "EV_012",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 84,
+          "text": "Let me read back your NRIC: S zero seven four eight one six five R. Is that correct?"
+        },
+        {
+          "event_id": "EV_013",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 76,
+          "text": "No, you've misheard it. My NRIC is S zero seven four eight seven six five R."
+        }
+      ],
+      "gold_evidence_text": "My NRIC is S zero seven four eight seven six five R.\nLet me read back your NRIC: S zero seven four eight one six five R. Is that correct?\nNo, you've misheard it. My NRIC is S zero seven four eight seven six five R.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_011",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "STATED",
+          "value": "S0748765R"
+        },
+        {
+          "turn_id": 4,
+          "event_id": "EV_012",
+          "speaker": "EMPLOYEE",
+          "kind": "READBACK",
+          "status": "REJECTED",
+          "value": "S0748165R"
+        },
+        {
+          "turn_id": 5,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_CORRECTION",
+          "status": "FINAL",
+          "value": "S0748765R"
+        }
+      ],
+      "challenge_tags": [
+        "employee_readback_error"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "08 February 1973"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 77,
+          "end": 113,
+          "text": "My date of birth is 8 February 1973."
+        }
+      ],
+      "gold_evidence_text": "My date of birth is 8 February 1973.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "08 February 1973"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Harbor SGD Bond Fund"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_015",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 61,
+          "text": "The fund I want for this transaction is Harbor SGD Bond Fund."
+        }
+      ],
+      "gold_evidence_text": "The fund I want for this transaction is Harbor SGD Bond Fund.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Harbor SGD Bond Fund"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SGD"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 87,
+          "end": 144,
+          "text": "Please use Singapore dollars as the transaction currency."
+        }
+      ],
+      "gold_evidence_text": "Please use Singapore dollars as the transaction currency.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "SGD"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_017",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 145,
+          "end": 202,
+          "text": "The amount I'm committing to this transaction is 100,000."
+        },
+        {
+          "event_id": "EV_018",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 130,
+          "text": "My overall portfolio balance is 1,000,000 Singapore dollars. That's just the portfolio total, not the amount for this transaction."
+        },
+        {
+          "event_id": "EV_019",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 131,
+          "end": 281,
+          "text": "The account I'm using to fund this transaction has a balance of 150,000 Singapore dollars. I'm not committing that whole account balance to the order."
+        }
+      ],
+      "gold_evidence_text": "The amount I'm committing to this transaction is 100,000.\nMy overall portfolio balance is 1,000,000 Singapore dollars. That's just the portfolio total, not the amount for this transaction.\nThe account I'm using to fund this transaction has a balance of 150,000 Singapore dollars. I'm not committing that whole account balance to the order.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_017",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 100000
+        },
+        {
+          "turn_id": 9,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 1000000
+        },
+        {
+          "turn_id": 9,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 150000
+        }
+      ],
+      "challenge_tags": [
+        "multiple_monetary_values"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 500
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_020",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 282,
+          "end": 319,
+          "text": "Please set the quantity at 500 units."
+        }
+      ],
+      "gold_evidence_text": "Please set the quantity at 500 units.",
+      "final_turn_id": 9,
+      "value_history": [
+        {
+          "turn_id": 9,
+          "event_id": "EV_020",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 500
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_021",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 62,
+          "end": 86,
+          "text": "I want to buy the units."
+        }
+      ],
+      "gold_evidence_text": "I want to buy the units.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_021",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "BUY"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_022",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 320,
+          "end": 354,
+          "text": "Please place it as a market order."
+        }
+      ],
+      "gold_evidence_text": "Please place it as a market order.",
+      "final_turn_id": 9,
+      "value_history": [
+        {
+          "turn_id": 9,
+          "event_id": "EV_022",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "Good morning, Elaine. Marcus Lim speaking. Thanks for calling. Are you somewhere you can speak privately? We can keep this quite concise."
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "Morning, Marcus. Yes, I'm in my office with the door closed. Telephone appointments are much easier for me than coming down to the branch."
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "That's fine. I'll start with the identity checks, then we can work through the rest of the call."
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "My NRIC is S zero seven four eight seven six five R."
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "Let me read back your NRIC: S zero seven four eight one six five R. Is that correct?"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "No, you've misheard it. My NRIC is S zero seven four eight seven six five R. My date of birth is 8 February 1973."
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "Sorry about that, Elaine. Thank you for correcting me. I've updated the entry. You have my attention."
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "The fund I want for this transaction is Harbor SGD Bond Fund. I want to buy the units. Please use Singapore dollars as the transaction currency. The amount I'm committing to this transaction is 100,000."
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "I'll let you finish speaking before I go through my part."
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "My overall portfolio balance is 1,000,000 Singapore dollars. That's just the portfolio total, not the amount for this transaction. The account I'm using to fund this transaction has a balance of 150,000 Singapore dollars. I'm not committing that whole account balance to the order. Please set the quantity at 500 units. Please place it as a market order. Please place this order because my contact on the fund's management team told me confidentially that its holdings are due for a material upward revaluation. That information hasn't been made public yet, and it's why I'm making this purchase now."
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "I recommend Harbor SGD Bond Fund because its pooled structure and professional management mean you don't have to manage individual bond holdings yourself. That suits your preference for less day-to-day administration."
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "All right, Marcus. I'm listening. I have a little time before my next appointment, so please go through the points you need to cover."
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "For Harbor SGD Bond Fund, rising market interest rates can push down the value of the bonds it holds and lower the fund's unit value. Do you understand how rising interest rates can affect the fund's bonds and its unit value?"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "Yes, I understand. If market interest rates rise, the bonds held by the fund can fall in value, bringing down its unit value."
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "The transaction fee is 0.25%. Are you willing to accept investment losses on this investment?"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "Yes, I'm willing to accept investment losses and fluctuations in value, now that I understand the risk you've explained."
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "Before the final readback, is there anything about correspondence or telephone appointments that you'd like me to note?"
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "Please keep correspondence organised, with clear subject lines. I file bank messages separately from business emails, and vague headings make things harder to find later."
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "I'll note that preference. For future telephone appointments, we can arrange a time beforehand rather than catch you between meetings."
+    },
+    {
+      "turn_id": 19,
+      "speaker": "CLIENT",
+      "text": "Yes, that would help. A scheduled call means I can have my records ready and won't be interrupted by staff coming into the office."
+    },
+    {
+      "turn_id": 20,
+      "speaker": "EMPLOYEE",
+      "text": "Please confirm your final instruction: buy 500 units of Harbor SGD Bond Fund, for an amount of 100,000 in Singapore dollars, using a market order. Shall I proceed on that basis?"
+    },
+    {
+      "turn_id": 21,
+      "speaker": "CLIENT",
+      "text": "Yes, I confirm that final transaction instruction exactly as you've stated it. Please proceed."
+    },
+    {
+      "turn_id": 22,
+      "speaker": "EMPLOYEE",
+      "text": "Thank you, Elaine. I've also noted your correspondence and appointment preferences. That covers the points for our call today."
+    },
+    {
+      "turn_id": 23,
+      "speaker": "CLIENT",
+      "text": "Thanks, Marcus. I'll keep the paperwork together when it comes through. Have a good day."
+    }
+  ]
+}

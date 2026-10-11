@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage2/call_spec_record.schema.json",
+  "title": "G2A Call Spec Record",
+  "description": "Provenance for one deterministic G2A run: the frozen G1 input hashes and a hash for every call spec. Contains no timestamps or environment values.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "generator",
+    "hashing",
+    "g1_inputs",
+    "call_specs",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "stage": {
+      "const": "G2A"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "generator": {
+      "type": "object",
+      "required": [
+        "package",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "package": {
+          "const": "fyp_evaluation.call_specs"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
+    },
+    "hashing": {
+      "const": "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
+    },
+    "g1_inputs": {
+      "type": "object",
+      "required": [
+        "planning_record_sha256",
+        "call_manifest_sha256",
+        "coverage_matrix_sha256",
+        "edge_case_assignments_sha256",
+        "checklist_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "planning_record_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "call_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "coverage_matrix_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_assignments_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "call_specs": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^CALL_[0-9]{3,}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "call_specs",
+        "gold_entries_per_call",
+        "edge_case_assignments",
+        "calls_with_edge_cases",
+        "calls_with_compliance_fails"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "call_specs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "gold_entries_per_call": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "edge_case_assignments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "calls_with_edge_cases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "calls_with_compliance_fails": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

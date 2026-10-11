@@ -13,16 +13,17 @@ from fyp_evaluation.validation.dates import is_canonical_dob
 from fyp_evaluation.authoring.coverage import parse_k01_cell
 
 ROOT = Path(__file__).resolve().parents[1]
+DATASET_ROOT = ROOT / "datasets/legacy_pilot_v1"
 
 
 def matrix_rows():
-    with (ROOT / "authoring/coverage_matrix.csv").open(encoding="utf-8", newline="") as file:
+    with (DATASET_ROOT / "authoring/coverage_matrix.csv").open(encoding="utf-8", newline="") as file:
         return list(csv.reader(file, strict=True))
 
 
 def test_pilot_csv_structure_and_complete_checklist_coverage():
     rows = matrix_rows()
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(DATASET_ROOT / "checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
     assert validate_checklist(checklist, normalization, ROOT / "schemas") == []
     assert rows[0] == ["question_id", "CALL_001", "CALL_002", "CALL_003", "CALL_004", "CALL_005"]

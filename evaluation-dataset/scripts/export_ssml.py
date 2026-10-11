@@ -7,12 +7,12 @@ import json
 import re
 from pathlib import Path
 
-from render_polly import CALLS, load_turns, make_ssml
+from render_polly import DEFAULT_DATASET_ROOT, load_turns, make_ssml
 
 
-def export_call(call_id: str, render_id: str, *, overwrite: bool = False) -> int:
-    turns = load_turns(call_id)
-    output_dir = CALLS / call_id / "renders" / render_id
+def export_call(call_id: str, render_id: str, calls_dir: Path, *, overwrite: bool = False) -> int:
+    turns = load_turns(call_id, calls_dir)
+    output_dir = calls_dir / call_id / "renders" / render_id
     segment_dir = output_dir / "segments"
     manifest_path = output_dir / "ssml_manifest.json"
     files = [(segment_dir / f"{turn['turn_id']}.ssml", make_ssml(turn["text"]))
@@ -40,6 +40,7 @@ def export_call(call_id: str, render_id: str, *, overwrite: bool = False) -> int
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     choice = parser.add_mutually_exclusive_group(required=True)
     choice.add_argument("--all", action="store_true")
     choice.add_argument("--call")
@@ -50,10 +51,11 @@ def main() -> int:
         parser.error("--call must be a canonical ID such as CALL_001")
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", args.render_id):
         parser.error("Invalid --render-id")
-    call_ids = [p.name for p in sorted(CALLS.glob("CALL_*")) if p.is_dir()] if args.all else [args.call]
+    calls_dir = args.dataset_root.resolve() / "calls"
+    call_ids = [p.name for p in sorted(calls_dir.glob("CALL_*")) if p.is_dir()] if args.all else [args.call]
     try:
         for call_id in call_ids:
-            count = export_call(call_id, args.render_id, overwrite=args.overwrite)
+            count = export_call(call_id, args.render_id, calls_dir, overwrite=args.overwrite)
             print(f"{call_id}: saved {count} SSML files and ssml_manifest.json")
     except (OSError, ValueError) as error:
         parser.exit(1, f"SSML export failed: {error}\n")

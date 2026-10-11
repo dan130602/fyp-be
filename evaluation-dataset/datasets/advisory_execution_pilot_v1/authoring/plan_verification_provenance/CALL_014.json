@@ -1,0 +1,347 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_014",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_014-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "d66280a8c5898f2b2af2afd97a4fbfc9301f66491ac55ed0f7e88511482b3423",
+      "upstream_sha256": {
+        "call_spec": "daaf8fbf50dc9fa01459b96d884dd0af439e5fe7d4c4e5157b629d33b6a07c0e",
+        "check_plan_skeleton": "37a6243a9f266f4f085ac013bfc1a052dc080757bad1e5b9586cbc787102afee",
+        "call_config": "f119ba303cf14ca770fe52c961e208e209f1b964a74c1dccb543c6b47708c7e3",
+        "check_plan": "fedaed071e2d2cc21f9a0505b5e06ed141f5ae076eb1c67b20c8da4667eb9b8e",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11009,
+        "cached_tokens": 0,
+        "output_tokens": 2834,
+        "thought_tokens": 1529,
+        "total_tokens": 15372
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.012309,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:20:21Z",
+      "finished_at": "2026-10-11T08:21:19Z",
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-11T08:20:29Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your aim is to reduce your technology-sector concentration and make your portfolio less sensitive to swings in that sector."
+            }
+          ],
+          "rationale": "The employee explicitly establishes the client's investment objective of reducing technology-sector concentration and portfolio sensitivity.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "No concrete product-specific risk is explained anywhere in the dialogue plan, correctly satisfying the expected FAIL requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "No risk understanding check or confirmation is conducted, consistent with C02 failing and the target expected FAIL outcome.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "The transaction charge is 0.3%."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction charge as a rate of 0.3%, satisfying C04 PASS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "You may lose part or even all of the capital you invested, and disposing of the holding can crystallise a loss."
+            }
+          ],
+          "rationale": "The employee explicitly explains that the client may lose part or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Are you willing to accept an investment loss when reducing this holding?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Yes, I am willing to accept that loss rather than keep the technology exposure I no longer want."
+            }
+          ],
+          "rationale": "The employee explicitly inquires about the client's willingness to accept an investment loss and receives an unambiguous affirmative confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "I recommend reducing your holding in Nova Technology Equity Fund because it focuses on technology companies, so reducing it directly addresses your aim of lowering technology-sector exposure."
+            }
+          ],
+          "rationale": "The employee provides a concrete recommendation rationale directly connecting the fund's nature to the client's objective of lowering technology exposure.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "With the earlier instruction withdrawn, can you explicitly confirm that you want us to carry out your replacement order as instructed?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Mm, okay… someone is waiting for me here."
+            }
+          ],
+          "rationale": "Under EA_024, the client provides only a weak acknowledgement ('Mm, okay...') rather than an unambiguous confirmation of the final transaction instruction, properly establishing C08 FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the plan, matching the PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no transaction instructions based on material non-public or inside information, matching the PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate loss tolerance, matching the PASS requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I can assure you that future investment returns are guaranteed."
+            }
+          ],
+          "rationale": "The employee explicitly guarantees future investment returns, establishing the compliance violation required for C12 FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My identification number is T three eight six oh one three seven D."
+            }
+          ],
+          "rationale": "The client states their NRIC/FIN using 'oh' for the digit zero under EA_022, which normalises to the canonical value 'T3860137D'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "My date of birth is the eleventh of July nineteen ninety-two."
+            }
+          ],
+          "rationale": "The client explicitly provides their date of birth, matching '11 July 1992'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Please sell 1,500 units of Pioneer Balanced Opportunities Fund using a market order, for a transaction amount of 1,000,000 in Chinese yuan."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Sorry, I opened the wrong holding summary. Please cancel that entire instruction and do not execute it; I will give you the replacement."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "The client replaces the initial product instruction via EA_021, leaving 'Nova Technology Equity Fund' as the final instructed product.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Please sell 1,500 units of Pioneer Balanced Opportunities Fund using a market order, for a transaction amount of 1,000,000 in Chinese yuan."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Sorry, I opened the wrong holding summary. Please cancel that entire instruction and do not execute it; I will give you the replacement."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "The initial currency CNY in EV_010 is cancelled and replaced by 'Japanese yen' (JPY) in the final instruction EV_012.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "The final order instruction in EV_012 specifies a transaction amount of 1,000,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "The quantity of units I want to dispose of is—"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "Following an abandoned false start (EV_015, EA_023), the client explicitly commits to 1,500 units in EV_012.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "The client explicitly specifies the direction 'sell' in the final instruction EV_012.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Let me restart with the intended holding: please sell 1,500 units of Nova Technology Equity Fund using a market order, for a transaction amount of 1,000,000 in Japanese yen."
+            }
+          ],
+          "rationale": "The client explicitly instructs 'a market order' in the final instruction EV_012.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "334591fe7f632d8d411f6bed4362faa1c897dacf238a676292cdc0a9899382fc",
+    "artifact_sha256": "702b0c588b5939feffefc03f74eaf17cc7a2df891fef714f7129f4c64c3cb45b"
+  },
+  "accepted_history": []
+}

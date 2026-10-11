@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage5/plan_verification.schema.json",
+  "title": "G5 plan_verification",
+  "description": "A completed semantic verification of one call's authoring plan (G3 call config + G4 check plan) against the frozen gold. The verdict and recommended repair are derived by Python from the validated per-check assessments and issues; every evidence quote is the exact source substring. A completed report may be VALID, INVALID or UNCLEAR; only a current VALID report makes a call eligible for G6.",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "stage": {"const": "G5"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "call_id": {"type": "string", "pattern": "^CALL_[0-9]{3,}$"},
+    "call_spec_sha256": {"$ref": "#/$defs/sha256"},
+    "check_plan_skeleton_sha256": {"$ref": "#/$defs/sha256"},
+    "call_config_sha256": {"$ref": "#/$defs/sha256"},
+    "check_plan_sha256": {"$ref": "#/$defs/sha256"},
+    "source": {
+      "type": "object",
+      "properties": {
+        "checklist_sha256": {"$ref": "#/$defs/sha256"},
+        "check_semantics_sha256": {"$ref": "#/$defs/sha256"},
+        "edge_case_catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "normalization_sha256": {"$ref": "#/$defs/sha256"},
+        "generation_plan_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["checklist_sha256", "check_semantics_sha256", "edge_case_catalog_sha256", "normalization_sha256", "generation_plan_sha256"],
+      "additionalProperties": false
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+        "model": {"type": "string", "minLength": 1},
+        "params": {
+          "type": "object",
+          "properties": {
+            "thinking_level": {"type": "string"},
+            "service_tier": {"type": "string"},
+            "max_output_tokens": {"type": "integer", "minimum": 1}
+          },
+          "required": ["thinking_level", "service_tier", "max_output_tokens"],
+          "additionalProperties": false
+        },
+        "prompt_template_sha256": {"$ref": "#/$defs/sha256"},
+        "response_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "accepted_response_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["attempt_id", "model", "params", "prompt_template_sha256", "response_schema_sha256", "accepted_response_sha256"],
+      "additionalProperties": false
+    },
+    "verdict": {"enum": ["VALID", "INVALID", "UNCLEAR"]},
+    "recommended_repair": {"enum": [null, "G4_ONLY", "G3_PLUS_G4", "REVIEW"]},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "match": {"type": "integer", "minimum": 0},
+        "mismatch": {"type": "integer", "minimum": 0},
+        "unclear": {"type": "integer", "minimum": 0},
+        "issues_by_code": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}}
+      },
+      "required": ["match", "mismatch", "unclear", "issues_by_code"],
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {"type": "string"},
+          "kind": {"enum": ["COMPLIANCE", "EXTRACTION"]},
+          "expected": {"type": "object"},
+          "assessment": {"enum": ["MATCH", "MISMATCH", "UNCLEAR"]},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+          "issue_ids": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["question_id", "kind", "expected", "assessment", "rationale", "evidence", "issue_ids"],
+        "additionalProperties": false
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue_id": {"type": "string", "pattern": "^I[1-9][0-9]*$"},
+          "assessment": {"enum": ["MISMATCH", "UNCLEAR"]},
+          "code": {"enum": ["SCENARIO_CONTRADICTION", "COMPLIANCE_MEANING", "OMISSION_LEAKAGE", "EXTRACTION_STATE", "EDGE_CASE", "PLAN_COHERENCE"]},
+          "question_ids": {"type": "array", "items": {"type": "string"}},
+          "assignment_ids": {"type": "array", "items": {"type": "string"}},
+          "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+          "explanation": {"type": "string", "minLength": 1},
+          "repair_scope": {"enum": ["G4_ONLY", "G3_PLUS_G4", "REVIEW"]}
+        },
+        "required": ["issue_id", "assessment", "code", "question_ids", "assignment_ids", "evidence", "explanation", "repair_scope"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schema_version", "stage", "dataset_id", "call_id", "call_spec_sha256", "check_plan_skeleton_sha256", "call_config_sha256", "check_plan_sha256", "source", "generation", "verdict", "recommended_repair", "summary", "checks", "issues"],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "source": {"enum": ["G3", "G4"]},
+        "event_id": {"type": ["string", "null"]},
+        "pointer": {"type": "string", "description": "JSON Pointer into the source artifact (call_config.json or check_plan.json) of the cited value."},
+        "quote": {"type": ["string", "null"], "description": "The exact source substring the model's quote grounds to, or null."}
+      },
+      "required": ["source", "event_id", "pointer", "quote"],
+      "additionalProperties": false
+    }
+  }
+}

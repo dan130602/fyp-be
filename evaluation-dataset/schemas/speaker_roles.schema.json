@@ -3,23 +3,14 @@
   "$id": "https://fyp-evaluation.invalid/schemas/speaker_roles.schema.json",
   "title": "Speaker Roles",
   "type": "object",
-  "properties": {
-    "speaker_roles": {
-      "type": "object",
-      "patternProperties": {
-        "^spk_[0-9]+$": {
-          "enum": [
-            "RM",
-            "Customer"
-          ]
-        }
-      },
-      "additionalProperties": false,
-      "minProperties": 1
+  "patternProperties": {
+    "^spk_[0-9]+$": {
+      "enum": [
+        "RM",
+        "Customer"
+      ]
     }
   },
-  "required": [
-    "speaker_roles"
-  ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "minProperties": 1
 }

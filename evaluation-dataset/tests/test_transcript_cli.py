@@ -64,7 +64,7 @@ def test_written_transcript_has_no_results_wrapper_or_speaker_roles(calls_dir, m
     transcript = json.loads((call_dir / "transcript.json").read_text(encoding="utf-8"))
     assert set(transcript) == {"transcripts", "audio_segments"}
     speaker_roles = json.loads((call_dir / "speaker_roles.json").read_text(encoding="utf-8"))
-    assert speaker_roles == {"speaker_roles": {"spk_0": "RM", "spk_1": "Customer"}}
+    assert speaker_roles == {"spk_0": "RM", "spk_1": "Customer"}
 
 
 # --- Overwrite protection --------------------------------------------------
@@ -156,7 +156,7 @@ def test_check_fails_when_generated_pair_was_hand_tampered(calls_dir, monkeypatc
     call_dir = _write_call(calls_dir, "CALL_001", [("EMPLOYEE", "Hi."), ("CLIENT", "Hello.")])
     assert run(monkeypatch, calls_dir, "--call", "CALL_001") == 0
     speaker_roles = json.loads((call_dir / "speaker_roles.json").read_text(encoding="utf-8"))
-    speaker_roles["speaker_roles"]["spk_0"] = "Customer"
+    speaker_roles["spk_0"] = "Customer"
     (call_dir / "speaker_roles.json").write_text(json.dumps(speaker_roles), encoding="utf-8")
     assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--check") == 1
     assert "does not match expected" in capsys.readouterr().err

@@ -1,0 +1,40 @@
+{
+  "title": "G4 check_plan authoring response",
+  "description": "Wording only. Sent to the model as a strict Structured Output. One entry per frozen skeleton event: an event_id echo, the speaker (null unless the skeleton allows more than one), a text template using [[PLACEHOLDER]] slots, spoken-form choices where the skeleton allows a choice, and the read-back field selection for READBACK events. Python owns every value, surface, offset, frozen field and hash.",
+  "type": "object",
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event_id": {"type": "string"},
+          "speaker": {"type": ["string", "null"]},
+          "text": {"type": "string"},
+          "value_forms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "placeholder": {"type": "string"},
+                "form": {"type": "string"}
+              },
+              "required": ["placeholder", "form"],
+              "additionalProperties": false
+            }
+          },
+          "readback_question_ids": {
+            "anyOf": [
+              {"type": "null"},
+              {"type": "array", "items": {"type": "string"}}
+            ]
+          }
+        },
+        "required": ["event_id", "speaker", "text", "value_forms", "readback_question_ids"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["events"],
+  "additionalProperties": false
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage6/dialogue_response.schema.json",
+  "title": "G6 dialogue response",
+  "description": "Model output for one call: ordered turns. Planned events appear only as whole-token [[EV_nnn]] markers; Python inserts their exact text, assigns turn IDs and computes every span.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "turns"
+  ],
+  "properties": {
+    "turns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "speaker",
+          "text"
+        ],
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "enum": [
+              "EMPLOYEE",
+              "CLIENT"
+            ]
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

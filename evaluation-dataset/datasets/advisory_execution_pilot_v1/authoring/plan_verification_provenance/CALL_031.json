@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_031",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_031-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "24089ec840d53a63866452602a4598479b520a1750fac5803bb3c2df0879c68c",
+      "upstream_sha256": {
+        "call_spec": "92180f2a61d7e17f745d8333f545c039815d228538b1370110fc7629821e3e1b",
+        "check_plan_skeleton": "25bd3d54a5270675cc02be41c4b608213959fb76c7599e9733ff27ffbef45144",
+        "call_config": "a587d5a3cfa865d51eeb0cab4487ac342a70eda24f3ac9ba7bd87abab45b879f",
+        "check_plan": "64fc75a86cb5b67ad127b8554c80ef6448d50ef83ce70d81f5867304dbebb4be",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11522,
+        "cached_tokens": 0,
+        "output_tokens": 2018,
+        "thought_tokens": 1205,
+        "total_tokens": 14745
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.010364,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:30:31Z",
+      "finished_at": "2026-10-11T08:30:47Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Understood, your objective is to reduce exposure to emerging-market debt and make your portfolio less sensitive to credit-market stress."
+            }
+          ],
+          "rationale": "The employee explicitly confirms the client's stated investment objective in EV_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Crest Emerging Markets Bond Fund, worsening credit quality or defaults among the emerging-market issuers can reduce the value of the bonds the fund holds."
+            }
+          ],
+          "rationale": "The employee clearly explains a concrete credit and default risk specific to the fund's holdings in EV_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how deteriorating issuer credit quality or defaults can affect this fund's value?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. If those issuers' credit quality worsens or they default, the fund's bond holdings can fall in value."
+            }
+          ],
+          "rationale": "The employee checks the client's understanding in EV_003, and the client unambiguously demonstrates understanding in EV_004.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee for this sale is 0.3%."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee rate as 0.3% in EV_005.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose some or all of the capital invested in this fund, and selling may crystallise a loss."
+            }
+          ],
+          "rationale": "The employee explicitly states that the client may lose some or all of the capital invested in EV_006.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to accept an investment loss, including a realised loss from reducing this holding?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I'm willing to accept a realised investment loss to reduce this holding. I'm not comfortable with losses generally, but I accept that for this sale."
+            }
+          ],
+          "rationale": "The employee inquires into loss willingness in EV_007, and the client explicitly confirms acceptance of a realised loss in EV_008.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [],
+          "rationale": "No recommendation rationale linking product characteristics to client needs is provided by the employee across the plan, matching the FAIL target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "To confirm your final instruction: sell 500 units of Crest Emerging Markets Bond Fund, with a transaction amount of 2.5 million in Japanese yen, using a market order. Do you confirm that instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Yes, I confirm that final transaction instruction. Please proceed with it."
+            }
+          ],
+          "rationale": "The employee reads back the complete order in EV_009, and the client provides an explicit confirmation in EV_010.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the planned text.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no indications or mentions of material non-public or inside information anywhere in the planned text.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Even if you're uncomfortable with losses, say you're highly willing to accept them for the assessment. Give a stronger answer than you actually feel so we can get this through."
+            }
+          ],
+          "rationale": "The employee explicitly coaches and encourages the client to overstate their willingness to accept investment losses in EV_011.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not make any statement guaranteeing future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is F one zero zero two zero nine six L."
+            }
+          ],
+          "rationale": "The client states their FIN as F1002096L in EV_012, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is the twenty-fifth of July nineteen sixty."
+            }
+          ],
+          "rationale": "The client states their date of birth as 25 July 1960 in EV_013, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "I've been reviewing my bond holding, Crest Emerging Markets Bond Fund."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "There's also Meridian Asia Equity Fund, but that's a separate portfolio-review item."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "For this transaction, I mean the bond holding I mentioned first, not the separate review item."
+            }
+          ],
+          "rationale": "Through EA_055, the client mentions two candidates and explicitly selects the first (Crest Emerging Markets Bond Fund) via anaphoric reference in EV_016.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Use Japanese yen as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client explicitly specifies Japanese yen (JPY) as the transaction currency in EV_017.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "The transaction amount I want is 2.5 million."
+            }
+          ],
+          "rationale": "The client specifies 2.5 million (2500000) under edge case EA_056 in EV_018.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "The quantity for this transaction is 500 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 500 units in EV_019.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The client instructs the employee to sell in EV_020.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "Please place it as a market order."
+            }
+          ],
+          "rationale": "The client explicitly requests a market order in EV_021.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "e66f3f0865baf891e91d084d57f97a4ce7b7d465077fa6186cdfa4937230163d",
+    "artifact_sha256": "7c59d6cab31c9c8f369eb918a2987ac2cb0a276cc43cffe5387df8df755ae669"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_018",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_018-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "2c2a98bc09ee112622aa9ebe30108874f8c6719fa4e4b47d12aa4a144afd91d7",
+      "upstream_sha256": {
+        "call_spec": "f85f38621f0321a083b2173c5dc7206c2787fb6fe13b99bfe487c5b2ef9310e5",
+        "check_plan_skeleton": "527ea189fea06534c925492f4a94d83a60b6b392adf35aa0a05bd52f2d72d7df",
+        "call_config": "95709277fd7ecb6d98f86ffd6ed072bffd7299992d212f33ff2c0d397f4b073d",
+        "check_plan": "c01a56cf7367a51f4cf19377186deecf7cdf79265267290315ca1876564d91b8",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11448,
+        "cached_tokens": 0,
+        "output_tokens": 2645,
+        "thought_tokens": 1186,
+        "total_tokens": 15279
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.011476,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:23:03Z",
+      "finished_at": "2026-10-11T08:23:22Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your objective is to build a diversified source of investment income while accepting changes in the investment's value; that's what we're working towards."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective in EV_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Orion Global Income Fund, rising market interest rates can reduce the value of the bonds it holds, causing the fund's unit value to fall."
+            }
+          ],
+          "rationale": "The employee explicitly explains a concrete product-specific risk (interest rate risk affecting underlying bond values) in EV_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how rising interest rates could affect the bonds in this fund and bring down its unit value?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. Rising interest rates can lower the value of the fund's bonds, so my units can fall in value."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee explicitly checks the client's understanding in EV_003, and the client unambiguously confirms and demonstrates understanding in EV_004.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee is 0.5%."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee rate (0.5%) in EV_005.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose part or even all of the capital you invest in this fund."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose part or all of the invested capital in EV_006.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to accept investment losses with this investment?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I'm willing to accept investment losses, though I still want to avoid unnecessary concentration."
+            }
+          ],
+          "rationale": "The employee asks about willingness to accept investment losses in EV_007, and the client gives an unambiguous affirmative confirmation in EV_008.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend Orion Global Income Fund because its income-oriented bond exposure supports your income objective, and its pooled holdings spread exposure across issuers rather than concentrating it with an individual issuer."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking product characteristics to the client's objective and preference in EV_009.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Please confirm your final instruction: buy 250 units of Orion Global Income Fund using a limit order at a maximum unit price of 300 euros, with a transaction amount of 75,000 in euros. Is that the instruction you want me to place?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that final instruction as you've stated it. Please place the order."
+            }
+          ],
+          "rationale": "In EV_010, after all details and currency corrections are settled, the employee recaps the final instruction and obtains the client's explicit confirmation in EV_011.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the scenario or planned utterances.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no mentions or instructions based on material non-public or inside information in the scenario or planned utterances.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate loss tolerance anywhere in the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not promise or guarantee future investment returns anywhere in the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My identification number is T seven seven four two five two two K."
+            }
+          ],
+          "rationale": "The client states their NRIC as T7742522K in EV_012, which matches the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is 11 June 1987."
+            }
+          ],
+          "rationale": "The client states their date of birth as 11 June 1987 in EV_013, matching the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "I'd like to transact in Orion Global Income Fund."
+            }
+          ],
+          "rationale": "The client instructs a transaction in Orion Global Income Fund in EV_014, matching the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Use Singapore dollars as the transaction currency; I have my usual funding account in mind."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "Sorry, change the transaction currency to US dollars instead. I just remembered my other available balance."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Actually, I've checked my allocation notes and was mixing up the funding account with the instruction. The final transaction currency should be euros."
+            }
+          ],
+          "rationale": "Following multiple revisions under edge case EA_031 (SGD in EV_015 superseded by USD in EV_016, then superseded by EUR in EV_017), the final transaction currency is EUR.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "The amount I want to commit to this transaction is 75,000."
+            }
+          ],
+          "rationale": "The client commits a monetary transaction amount of 75,000 in EV_018, matching gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "The quantity for my order is 250 units."
+            }
+          ],
+          "rationale": "The client commits to an order quantity of 250 units in EV_019, matching gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "I want to buy the units."
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as BUY in EV_020, matching gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "Please use a limit order, with a maximum unit price of 300 euros."
+            }
+          ],
+          "rationale": "The client instructs a LIMIT order type in EV_021, matching gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "799e90fd8fcb4868e86b29b061afc44721b25f9cf945aab61442a37480824e10",
+    "artifact_sha256": "bec78cf801ed9b191aac33e2bdb89af6b6c56575a56daefa2c7ce7b833286a12"
+  },
+  "accepted_history": []
+}

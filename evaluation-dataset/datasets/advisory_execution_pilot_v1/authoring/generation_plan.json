@@ -1,0 +1,311 @@
+{
+  "schema_version": "1.0",
+  "description": "G1 planning distribution for advisory_execution_pilot_v1. Every allocation is an exact count over num_calls; there are no floating-point fractions. Canonical forms, aliases and spoken forms are owned by ../normalization.json; this file only selects values.",
+  "num_calls": 50,
+  "random_seed": 42,
+  "language_counts": {
+    "en-SG": 50
+  },
+  "duration_profiles": [
+    {
+      "profile": "SHORT",
+      "count": 45,
+      "min_seconds": 180,
+      "max_seconds": 300
+    },
+    {
+      "profile": "LONG",
+      "count": 5,
+      "min_seconds": 1801,
+      "max_seconds": 3600
+    }
+  ],
+  "call_intent_vocabulary": [
+    "ENQUIRY",
+    "ADVISORY",
+    "EXECUTION"
+  ],
+  "call_intent_set_counts": [
+    {
+      "call_intents": [
+        "ADVISORY",
+        "EXECUTION"
+      ],
+      "count": 50
+    }
+  ],
+  "question_scope": {
+    "strategy": "ALL_CHECKLIST_QUESTIONS"
+  },
+  "call_composition_counts": {
+    "all_pass_without_edge_cases": 5,
+    "all_pass_with_edge_cases": 5,
+    "some_fail_without_edge_cases": 5,
+    "some_fail_with_edge_cases": 35
+  },
+  "compliance_distribution": {
+    "fail_count_per_call_counts": {
+      "0": 10,
+      "1": 10,
+      "2": 15,
+      "3": 10,
+      "4": 5
+    },
+    "min_fail_cases_per_check": 6
+  },
+  "edge_case_distribution": {
+    "edge_cases_per_call_counts": {
+      "0": 10,
+      "1": 10,
+      "2": 15,
+      "3": 10,
+      "4": 5
+    },
+    "selection_strategy_within_family": "BALANCED",
+    "family_quotas": {
+      "CORRECTION_SUPERSESSION": 18,
+      "DISTRACTOR_COMPETING_VALUES": 16,
+      "REFERENCE_RESOLUTION": 10,
+      "SPOKEN_NUMERIC_NORMALISATION": 16,
+      "DIALOGUE_STRUCTURE": 14,
+      "COMPLIANCE_SEMANTICS": 16
+    }
+  },
+  "extraction_distribution": {
+    "transaction_direction_counts": {
+      "BUY": 25,
+      "SELL": 25
+    },
+    "order_type_counts": {
+      "MARKET": 25,
+      "LIMIT": 25
+    },
+    "transaction_currency_counts": {
+      "SGD": 10,
+      "USD": 10,
+      "EUR": 10,
+      "CNY": 10,
+      "JPY": 10
+    },
+    "product_pool": [
+      {
+        "name": "Orion Global Income Fund",
+        "category": "BOND_FUND",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      {
+        "name": "Meridian Asia Equity Fund",
+        "category": "EQUITY_FUND",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      {
+        "name": "Atlas USD Corporate Bond 2031",
+        "category": "CORPORATE_BOND",
+        "allowed_currencies": [
+          "USD"
+        ]
+      },
+      {
+        "name": "Harbor SGD Bond Fund",
+        "category": "BOND_FUND",
+        "allowed_currencies": [
+          "SGD"
+        ]
+      },
+      {
+        "name": "Summit Global Equity ETF",
+        "category": "ETF",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      {
+        "name": "Nova Technology Equity Fund",
+        "category": "EQUITY_FUND",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      {
+        "name": "Pioneer Balanced Opportunities Fund",
+        "category": "MULTI_ASSET_FUND",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      {
+        "name": "Crest Emerging Markets Bond Fund",
+        "category": "BOND_FUND",
+        "allowed_currencies": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      }
+    ],
+    "transaction_amount_values_by_currency": {
+      "SGD": [
+        10000,
+        25000,
+        50000,
+        75000,
+        100000,
+        150000,
+        250000,
+        500000,
+        1000000,
+        1200000
+      ],
+      "USD": [
+        10000,
+        25000,
+        50000,
+        75000,
+        100000,
+        150000,
+        250000,
+        500000,
+        1000000,
+        1200000
+      ],
+      "EUR": [
+        10000,
+        25000,
+        50000,
+        75000,
+        100000,
+        150000,
+        250000,
+        500000,
+        1000000
+      ],
+      "CNY": [
+        50000,
+        100000,
+        250000,
+        500000,
+        750000,
+        1000000,
+        2000000,
+        5000000
+      ],
+      "JPY": [
+        1000000,
+        2500000,
+        5000000,
+        7500000,
+        10000000,
+        25000000,
+        50000000,
+        100000000
+      ]
+    },
+    "transaction_quantity_values": [
+      100,
+      250,
+      500,
+      700,
+      1000,
+      1500,
+      2000,
+      5000,
+      10000
+    ],
+    "amount_quantity_coherence": {
+      "strategy": "IMPLIED_UNIT_PRICE_RANGE_BY_CURRENCY",
+      "ranges": {
+        "SGD": {
+          "min": 5,
+          "max": 500
+        },
+        "USD": {
+          "min": 5,
+          "max": 500
+        },
+        "EUR": {
+          "min": 5,
+          "max": 500
+        },
+        "CNY": {
+          "min": 10,
+          "max": 1000
+        },
+        "JPY": {
+          "min": 500,
+          "max": 50000
+        }
+      },
+      "note": "G1 selects T03 and T04 jointly so that amount / quantity falls inside the transaction currency's range. G1 plans no limit price, gold or auxiliary; a later call_config may introduce a plausible limit price for a LIMIT-order scenario."
+    },
+    "synthetic_kyc": {
+      "nric_fin": {
+        "synthetic_only": true,
+        "prefixes": [
+          "S",
+          "T",
+          "F",
+          "G"
+        ],
+        "digit_count": 7,
+        "suffix_letters": "ABCDEFGHIJKLMNPQRSTUVWXYZ",
+        "require_checksum_invalid": true,
+        "unique_within_dataset": true
+      },
+      "dob": {
+        "min_date": "1950-01-01",
+        "max_date": "2000-12-31",
+        "unique_within_dataset": true
+      }
+    }
+  },
+  "planning_rules": {
+    "g1_must_be_deterministic": true,
+    "g1_must_not_use_llm": true,
+    "coverage_matrix_is_source_of_truth_for_check_answers": true,
+    "call_manifest_is_source_of_truth_for_call_level_attributes": true,
+    "edge_case_assignments_are_source_of_truth_for_challenge_placement": true,
+    "allocate_edge_cases_and_compliance_verdicts_jointly": true,
+    "edge_case_forced_verdicts_count_toward_failure_budget": true,
+    "gold_values_must_satisfy_edge_case_prerequisites_when_assigned": true,
+    "complete_order_replacement_excludes_other_transaction_correction_edge_cases_in_same_call": true,
+    "max_edge_cases_per_target_question_per_call": 1,
+    "per_question_limit_exempt_edge_cases": [
+      "EC_LONG_DISTANCE_DEPENDENCY"
+    ],
+    "superseded_and_distractor_values_must_satisfy_domain_and_realism_constraints": true,
+    "complete_order_replacement_initial_order_must_be_plausible": true,
+    "no_fee_distractor_when_c04_fail": true,
+    "unspecified_choices_strategy": "SEEDED_BALANCED_STABLE_TIE_BREAK",
+    "call_intents_are_multilabel": true,
+    "call_intents_are_descriptive_only": true,
+    "call_intent_vocabulary_order_is_canonical": true,
+    "call_intents_csv_encoding": "PIPE_DELIMITED",
+    "call_intents_json_encoding": "ARRAY"
+  }
+}

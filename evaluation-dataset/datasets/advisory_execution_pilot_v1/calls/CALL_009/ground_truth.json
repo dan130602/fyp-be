@@ -1,0 +1,750 @@
+{
+  "schema_version": "1.0",
+  "stage": "G8",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_009",
+  "status": {
+    "g7_dialogue_verification": "PENDING",
+    "timings": "PLACEHOLDER_ZERO"
+  },
+  "source": {
+    "call_spec_sha256": "840ab6d21076d3674de00a3f19b29a551e3ac498544c92194fc01454d2fdeacd",
+    "check_plan_skeleton_sha256": "7d80186bfc19215d35e8a24942d9c1fea91064b7d51283dae0d7443ed9bf8b3a",
+    "call_config_sha256": "e100d21c3fd888e6b8caa5c64ec9047e0eec279751b65560d6f26224c2ef8f2e",
+    "check_plan_sha256": "63649294c91bc681cb080630349632f8dfa9c048823fb20059fc6bb895d55077",
+    "plan_verification_sha256": "cc502633ab9e7c657e88dcf30b828a3432f01c833d6f379d4fe6ca4e76995b0b",
+    "dialogue_sha256": "6a23d82b5d2a14039ab4c3740ed5b81700d729e6f745880b056f7b77ae99f95a",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language": "en-SG",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 125,
+          "text": "So your investment objective is to reduce your global equity exposure and free up cash for your planned personal commitments."
+        }
+      ],
+      "gold_evidence_text": "So your investment objective is to reduce your global equity exposure and free up cash for your planned personal commitments.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 126,
+          "end": 366,
+          "text": "For Summit Global Equity ETF, falling global equity markets can reduce the value of its underlying holdings. When you sell, price movements or weaker trading liquidity can also mean you receive a less favourable price than the latest quote."
+        }
+      ],
+      "gold_evidence_text": "For Summit Global Equity ETF, falling global equity markets can reduce the value of its underlying holdings. When you sell, price movements or weaker trading liquidity can also mean you receive a less favourable price than the latest quote.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4,
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 367,
+          "end": 520,
+          "text": "Do you understand that falling equity markets can lower the holding's value, and that the actual sale price may be less favourable than the latest quote?"
+        },
+        {
+          "event_id": "EV_004",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 135,
+          "text": "Yes, I understand both risks: the holding can fall with equity markets, and the price I actually receive may be below the latest quote."
+        }
+      ],
+      "gold_evidence_text": "Do you understand that falling equity markets can lower the holding's value, and that the actual sale price may be less favourable than the latest quote?\nYes, I understand both risks: the holding can fall with equity markets, and the price I actually receive may be below the latest quote.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 60,
+          "text": "The transaction fee for this sale is 0.2% of the sale value."
+        }
+      ],
+      "gold_evidence_text": "The transaction fee for this sale is 0.2% of the sale value.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_006",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 61,
+          "end": 195,
+          "text": "You could lose some or all of the capital you invested in this holding. Selling below your purchase price would crystallise that loss."
+        }
+      ],
+      "gold_evidence_text": "You could lose some or all of the capital you invested in this holding. Selling below your purchase price would crystallise that loss.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6,
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 196,
+          "end": 290,
+          "text": "Are you willing to accept an investment loss if this sale crystallises a loss on your holding?"
+        },
+        {
+          "event_id": "EV_008",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 112,
+          "text": "Yes, I'm willing to accept that investment loss. I'd rather reduce my exposure than keep waiting for a recovery."
+        }
+      ],
+      "gold_evidence_text": "Are you willing to accept an investment loss if this sale crystallises a loss on your holding?\nYes, I'm willing to accept that investment loss. I'd rather reduce my exposure than keep waiting for a recovery.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_009",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 171,
+          "text": "I recommend reducing your holding in Summit Global Equity ETF because that lowers your exposure to global equity volatility and frees up cash for your planned commitments."
+        }
+      ],
+      "gold_evidence_text": "I recommend reducing your holding in Summit Global Equity ETF because that lowers your exposure to global equity volatility and frees up cash for your planned commitments.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_010",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 172,
+          "end": 390,
+          "text": "Please confirm your final instruction: sell 250 units of Summit Global Equity ETF using a market order, with the transaction currency as US dollars and the stated transaction amount as 50,000. Is that your instruction?"
+        },
+        {
+          "event_id": "EV_011",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 96,
+          "text": "Yes, I confirm that is my final transaction instruction. Please proceed as you have just stated."
+        }
+      ],
+      "gold_evidence_text": "Please confirm your final instruction: sell 250 units of Summit Global Equity ETF using a market order, with the transaction currency as US dollars and the stated transaction amount as 50,000. Is that your instruction?\nYes, I confirm that is my final transaction instruction. Please proceed as you have just stated.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "S5770588G"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        1
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "start": 77,
+          "end": 131,
+          "text": "My NRIC is S five seven seven zero five eight eight G."
+        }
+      ],
+      "gold_evidence_text": "My NRIC is S five seven seven zero five eight eight G.",
+      "final_turn_id": 1,
+      "value_history": [
+        {
+          "turn_id": 1,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "S5770588G"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "15 November 1994"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        1
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_013",
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "start": 132,
+          "end": 199,
+          "text": "My date of birth is the fifteenth of November nineteen ninety-four."
+        }
+      ],
+      "gold_evidence_text": "My date of birth is the fifteenth of November nineteen ninety-four.",
+      "final_turn_id": 1,
+      "value_history": [
+        {
+          "turn_id": 1,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "15 November 1994"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Summit Global Equity ETF"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 64,
+          "end": 130,
+          "text": "The holding I want you to transact in is Summit Global Equity ETF."
+        }
+      ],
+      "gold_evidence_text": "The holding I want you to transact in is Summit Global Equity ETF.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Summit Global Equity ETF"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_015",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 206,
+          "end": 265,
+          "text": "Please use US dollars as the currency for this transaction."
+        }
+      ],
+      "gold_evidence_text": "Please use US dollars as the currency for this transaction.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "USD"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 50000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 266,
+          "end": 323,
+          "text": "The amount I'm specifying for this transaction is 50,000."
+        }
+      ],
+      "gold_evidence_text": "The amount I'm specifying for this transaction is 50,000.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 50000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 250
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_017",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 160,
+          "end": 205,
+          "text": "The quantity I want to transact is 250 units."
+        }
+      ],
+      "gold_evidence_text": "The quantity I want to transact is 250 units.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_017",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 250
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_018",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 131,
+          "end": 159,
+          "text": "I want to sell that holding."
+        }
+      ],
+      "gold_evidence_text": "I want to sell that holding.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "SELL"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_019",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 324,
+          "end": 358,
+          "text": "Please place it as a market order."
+        }
+      ],
+      "gold_evidence_text": "Please place it as a market order.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "Good morning, Elaine. Marcus Lim here, calling for our arranged appointment. Are you somewhere comfortable to speak? Before we get into the review, I'll do the routine identity check."
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "Morning, Marcus. Yes, I'm in my office with the door closed, so now is fine. My NRIC is S five seven seven zero five eight eight G. My date of birth is the fifteenth of November nineteen ninety-four."
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "Thank you, Elaine. I'll keep the conversation straightforward. I've got your appointment notes in front of me, and we can cover the review first, then sort out future telephone arrangements."
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "That suits me. I've put aside some time before my next meeting. The holding I want you to transact in is Summit Global Equity ETF. I want to sell that holding. The quantity I want to transact is 250 units. Please use US dollars as the currency for this transaction. The amount I'm specifying for this transaction is 50,000. Please place it as a market order."
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "So your investment objective is to reduce your global equity exposure and free up cash for your planned personal commitments. For Summit Global Equity ETF, falling global equity markets can reduce the value of its underlying holdings. When you sell, price movements or weaker trading liquidity can also mean you receive a less favourable price than the latest quote. Do you understand that falling equity markets can lower the holding's value, and that the actual sale price may be less favourable than the latest quote?"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "Yes, I understand both risks: the holding can fall with equity markets, and the price I actually receive may be below the latest quote."
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "The transaction fee for this sale is 0.2% of the sale value. You could lose some or all of the capital you invested in this holding. Selling below your purchase price would crystallise that loss. Are you willing to accept an investment loss if this sale crystallises a loss on your holding?"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "Yes, I'm willing to accept that investment loss. I'd rather reduce my exposure than keep waiting for a recovery."
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "I recommend reducing your holding in Summit Global Equity ETF because that lowers your exposure to global equity volatility and frees up cash for your planned commitments. Please confirm your final instruction: sell 250 units of Summit Global Equity ETF using a market order, with the transaction currency as US dollars and the stated transaction amount as 50,000. Is that your instruction?"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "Yes, I confirm that is my final transaction instruction. Please proceed as you have just stated."
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "Thank you, Elaine. Before we finish, you mentioned you'd be travelling soon. How would you prefer us to arrange future calls while you're away?"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "I'm going to Japan with my family next month. We'll be moving between a few places, so please send me an appointment message first rather than calling unexpectedly."
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "Certainly. We can use the usual appointment channel. Would you prefer to leave the next appointment until you're back, rather than fitting a call around the trip?"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "Yes, after I'm back is better. I don't want to be taking calls while we're on a train or trying to find the hotel. I'll message when I'm settled."
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "That's fine. For appointments back in Singapore, is the morning generally easier, or would an afternoon slot work better with your office schedule?"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "Late morning usually works best. My staff handle the opening routine, and afternoons tend to fill up with supplier meetings. Just give me a bit of notice."
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "I'll note that preference for scheduling. Enjoy the family trip, Elaine, and thank you for making time today."
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "Thanks, Marcus. Good to get the appointment done before the office gets busy. Have a good day. Bye."
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_034",
+  "call_spec_sha256": "8eb0825c22009da987b3a22793b0b3f28f8fd0ee0b5d077bb132dfc59acb550b",
+  "check_plan_skeleton_sha256": "68450fbb972e46fdcd0383a04e96acbc43cf345d14726312d26d6496f98f2f83",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "84e8f8208b8f6fed5ef65401f1e0f2dcee63a802da7fa369030b07d037acedf7"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Atlas USD Corporate Bond 2031",
+      "category": "CORPORATE_BOND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Elaine Tan",
+      "background": "Elaine Tan runs a family-owned logistics business and keeps a separate account for personal investments. She has an existing EUR account but is considering this purchase separately from that account.",
+      "investment_objective": "Build a source of investment income while holding investments through ordinary market fluctuations.",
+      "loss_attitude": "She is hesitant about losses and finds sharp declines unsettling. She can accept some investment loss, but her willingness is cautious rather than open-ended, and she is sensitive to suggestions that her caution could prevent the purchase."
+    },
+    "employee": {
+      "name": "Adrian Lim"
+    },
+    "setting": {
+      "call_reason": "The client has arranged a brief call to discuss the bond's fit with her income needs and place a purchase instruction with price control.",
+      "conversation_style": "Concise, courteous Singapore English. The client is practical and alert to execution details, with a more hesitant tone when discussing potential losses."
+    },
+    "final_product": {
+      "description": "Atlas USD Corporate Bond 2031 is a corporate debt investment denominated in USD, with interest and principal payments dependent on the issuer meeting its obligations.",
+      "concrete_risks": [
+        "The corporate issuer could encounter financial difficulty and fail to make interest payments or repay principal.",
+        "A rise in market interest rates can reduce the bond's resale value before maturity.",
+        "Limited secondary-market liquidity can make an early sale difficult or require accepting a less favourable price."
+      ],
+      "recommendation_basis": "The bond's contractual interest payments support the client's preference for investment income, while her intended holding approach reduces her reliance on selling into short-term market fluctuations. The purchase remains subject to issuer credit risk."
+    },
+    "other_products": [],
+    "holding_context": null,
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.3,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": 50,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_060",
+        "motivation": "The employee is using a familiar order-entry workflow and momentarily falls back on its default execution setting during the readback. The client has deliberately chosen price control and is attentive to that part of the instruction."
+      },
+      {
+        "assignment_id": "EA_061",
+        "motivation": "The client asks whether her existing account is relevant to settlement arrangements, bringing its denomination into the conversation even though it does not determine the purchase instruction."
+      },
+      {
+        "assignment_id": "EA_063",
+        "motivation": "The client is pressed for time and tends to move quickly from product mechanics to execution details. Her practical questions concern price control rather than demonstrating her grasp of the bond's risks."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone appointments",
+      "Accessing account documents through the banking app"
+    ]
+  }
+}

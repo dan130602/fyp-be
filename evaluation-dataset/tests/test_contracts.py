@@ -99,7 +99,7 @@ def test_pipeline_boundary_and_unresolved_authoring():
 
 def test_duplicate_question_ids():
     data = documents()["checklist"]
-    data.append({**data[0], "text": "Another artificial question"})
+    data.append({**data[0], "question": "Another artificial question"})
     assert any("Duplicate id" in e for e in validate(data, "checklist", SCHEMAS))
 
 
@@ -209,7 +209,7 @@ def test_cli_rejects_incomplete_dataset(monkeypatch, tmp_path):
 
 
 def test_pilot_checklist_ids_categories_and_schema():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     assert [item["id"] for item in checklist] == [
         "C01", "C02", "C03", "C04", "C05", "C06", "K01", "K02", "T01", "T02",
     ]
@@ -219,7 +219,7 @@ def test_pilot_checklist_ids_categories_and_schema():
 
 
 def test_pilot_extraction_fields_use_existing_exact_rules():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     normalization = load_json(ROOT / "configs/normalization.json")
     assert {item["id"]: item["field"] for item in checklist[6:]} == {
         "K01": "client_identification_number", "K02": "dob",
@@ -280,10 +280,10 @@ def test_old_contract_versions_require_explicit_migration(name):
 
 
 def test_pilot_langgraph_projection_is_lossless_and_read_only():
-    checklist = load_json(ROOT / "evaluation_dataset/checklist.json")
+    checklist = load_json(ROOT / "datasets/legacy_pilot_v1/checklist.json")
     before = deepcopy(checklist)
     projected = to_langgraph_checklist(checklist, SCHEMAS)
-    assert projected == [{"id": item["id"], "question": item["text"]} for item in checklist]
+    assert projected == [{"id": item["id"], "question": item["question"]} for item in checklist]
     assert checklist == before
 
 
@@ -296,13 +296,13 @@ def test_compliance_requirement_types(requirement_type):
 
 @pytest.mark.parametrize("item", [
     {"id": "FIX_OLD", "question": "Artificial legacy question?"},
-    {"id": "FIX_BAD", "type": "COMPLIANCE", "text": "Artificial missing requirement type?"},
-    {"id": "FIX_BAD", "type": "CLIENT_KYC", "text": "Artificial missing field?"},
-    {"id": "FIX_BAD", "type": "TRANSACTION", "text": "Artificial missing field?"},
-    {"id": "FIX_BAD", "type": "COMPLIANCE", "requirement_type": "OPTIONAL", "text": "Artificial?"},
-    {"id": "FIX_BAD", "type": "OTHER", "field": "fixture", "text": "Artificial?"},
-    {"id": "FIX_BAD", "type": "TRANSACTION", "field": " ", "text": "Artificial?"},
-    {"id": "FIX_BAD", "type": "CLIENT_KYC", "field": "dob", "text": " "},
+    {"id": "FIX_BAD", "type": "COMPLIANCE", "question": "Artificial missing requirement type?"},
+    {"id": "FIX_BAD", "type": "CLIENT_KYC", "question": "Artificial missing field?"},
+    {"id": "FIX_BAD", "type": "TRANSACTION", "question": "Artificial missing field?"},
+    {"id": "FIX_BAD", "type": "COMPLIANCE", "requirement_type": "OPTIONAL", "question": "Artificial?"},
+    {"id": "FIX_BAD", "type": "OTHER", "field": "fixture", "question": "Artificial?"},
+    {"id": "FIX_BAD", "type": "TRANSACTION", "field": " ", "question": "Artificial?"},
+    {"id": "FIX_BAD", "type": "CLIENT_KYC", "field": "dob", "question": " "},
 ])
 def test_invalid_checklist_shapes(item):
     assert validate([item], "checklist", SCHEMAS)
@@ -310,12 +310,14 @@ def test_invalid_checklist_shapes(item):
 
 @pytest.mark.parametrize("category", ["COMPLIANCE", "CLIENT_KYC", "TRANSACTION"])
 @pytest.mark.parametrize("extra", [
-    {"answer_type": "text"}, {"question": "Old format"}, {"expected_value": "fixture"},
+    # "text" is the retired pre-rename field name: still out of scope now
+    # that "question" is the real property, guarding against it reappearing.
+    {"answer_type": "text"}, {"text": "Old field name"}, {"expected_value": "fixture"},
     {"gold_evidence_turns": [0]}, {"source_passage": "fixture"}, {"call_id": "CALL_999"},
     {"depends_on": []}, {"turn_id": 0},
 ])
 def test_checklist_rejects_out_of_scope_fields(category, extra):
-    item = {"id": "FIX_BAD", "type": category, "text": "Artificial fixture?"}
+    item = {"id": "FIX_BAD", "type": category, "question": "Artificial fixture?"}
     item.update({"requirement_type": "OBLIGATION"} if category == "COMPLIANCE" else {"field": "fixture"})
     item.update(extra)
     assert validate([item], "checklist", SCHEMAS)
@@ -323,7 +325,7 @@ def test_checklist_rejects_out_of_scope_fields(category, extra):
 
 @pytest.mark.parametrize("category", ["COMPLIANCE", "CLIENT_KYC", "TRANSACTION"])
 def test_reject_incompatible_field_combinations(category):
-    item = {"id": "FIX_BAD", "type": category, "text": "Artificial fixture?",
+    item = {"id": "FIX_BAD", "type": category, "question": "Artificial fixture?",
             "field": "fixture", "requirement_type": "OBLIGATION"}
     assert validate([item], "checklist", SCHEMAS)
 
@@ -332,7 +334,7 @@ def test_langgraph_projection_preserves_ids_order_and_text():
     checklist = mixed_documents()["checklist"]
     before = deepcopy(checklist)
     projected = to_langgraph_checklist(checklist, SCHEMAS)
-    assert projected == [{"id": item["id"], "question": item["text"]} for item in checklist]
+    assert projected == [{"id": item["id"], "question": item["question"]} for item in checklist]
     assert all(set(item) == {"id", "question"} for item in projected)
     assert checklist == before
     projected[0]["question"] = "changed projection"
