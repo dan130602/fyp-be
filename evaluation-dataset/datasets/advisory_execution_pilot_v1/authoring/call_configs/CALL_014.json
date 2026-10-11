@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_014",
+  "call_spec_sha256": "daaf8fbf50dc9fa01459b96d884dd0af439e5fe7d4c4e5157b629d33b6a07c0e",
+  "check_plan_skeleton_sha256": "37a6243a9f266f4f085ac013bfc1a052dc080757bad1e5b9586cbc787102afee",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "626ad3bbd73abb13171c18df210328632223daef38e74843364c870b4769c832"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Nova Technology Equity Fund",
+      "category": "EQUITY_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    },
+    {
+      "product_ref": "P2",
+      "name": "Pioneer Balanced Opportunities Fund",
+      "category": "MULTI_ASSET_FUND",
+      "roles": [
+        "INITIAL_ORDER"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Elaine Tan",
+      "background": "Elaine Tan is a private-banking client who manages her investments alongside a demanding business schedule. She keeps separate holding summaries and sometimes opens the wrong summary when preparing a telephone instruction.",
+      "investment_objective": "She wants to reduce concentrated technology exposure and make her portfolio less sensitive to swings in that sector.",
+      "loss_attitude": "She accepts that reducing an existing holding can crystallise an investment loss and is willing to bear that outcome rather than retain unwanted sector exposure."
+    },
+    "employee": {
+      "name": "Adrian Lim"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a disposal from an existing holding as part of reducing technology concentration, with a holding-summary mix-up requiring replacement of her initial instruction.",
+      "conversation_style": "A brief, courteous Singapore private-banking telephone conversation, practical and businesslike, with a self-correction during the order details and a distracted closing."
+    },
+    "final_product": {
+      "description": "Nova Technology Equity Fund is an equity fund focused on technology companies, with performance driven by their share prices and the broader outlook for the sector.",
+      "concrete_risks": [
+        "Concentration in technology companies makes the fund sensitive to sector-wide valuation declines and changes in growth expectations.",
+        "The fund's holdings can be affected by rapid technological obsolescence and competitive disruption.",
+        "Market movements while a disposal is being processed can affect the realised proceeds."
+      ],
+      "recommendation_basis": "Reducing the Nova Technology Equity Fund holding directly lowers the client's technology-sector concentration and responds to her preference for less exposure to sector-specific swings."
+    },
+    "other_products": [
+      {
+        "product_ref": "P2",
+        "description": "Pioneer Balanced Opportunities Fund is a multi-asset fund combining equity and fixed-income exposure. It is an existing holding associated with the superseded initial disposal instruction."
+      }
+    ],
+    "holding_context": "The client holds both Nova Technology Equity Fund and Pioneer Balanced Opportunities Fund. Her intended disposal concerns the technology holding; the balanced holding appears in an earlier instruction that is withdrawn before execution.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.3,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_021",
+        "motivation": "The client initially works from the wrong holding summary and gives an otherwise plausible disposal instruction. After locating the intended summary, she withdraws the earlier order before execution and replaces it with the disposal relevant to her technology exposure."
+      },
+      {
+        "assignment_id": "EA_023",
+        "motivation": "While locating the units field on the intended holding summary, the client starts to state the quantity prematurely, stops herself, and restarts once she has read the correct field."
+      },
+      {
+        "assignment_id": "EA_024",
+        "motivation": "By the closing recap, the client is distracted by someone waiting for her attention and treats the recap as routine administration, leaving her response perfunctory rather than clearly authorising the final instruction."
+      }
+    ],
+    "additional_discussion_topics": [
+      "Preferred arrangements for future telephone appointments",
+      "The client's recent gardening activities"
+    ]
+  }
+}

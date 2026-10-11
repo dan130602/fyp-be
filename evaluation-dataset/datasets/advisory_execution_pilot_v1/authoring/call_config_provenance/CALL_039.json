@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_039",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_039-G3-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac8c73794bc819085191cc2bbe3434e",
+      "provider_response_id": "resp_0daaafa25acb5e42016ac8c799ba5887d1a989be19a3b95795",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+      "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+      "request_sha256": "7aab73942d1dec478e6d4b4618caf3a4f8453db22917ffc48086a2722db0aae0",
+      "upstream_sha256": {
+        "call_spec": "698dc3f76a218de9c23abb8dbdf765a75fb8d15b2f4d208d1850a8d428955063",
+        "check_plan_skeleton": "edff590957a308df1516ae2800673687ab0a57b131208cdb0636aa1a41cb957d",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 3754,
+        "cached_tokens": 2868,
+        "cache_write_tokens": 883,
+        "output_tokens": 767,
+        "reasoning_tokens": 83
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.005085,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T10:51:32Z",
+      "finished_at": "2026-10-09T10:55:57Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "parsed_response": {
+      "client": {
+        "name": "Adrian Lim",
+        "background": "Adrian Lim is a private-banking client who has accumulated a technology-focused holding and is reviewing concentration in his investment portfolio. Past withdrawals mean his earlier investment commitment differs substantially from his current portfolio balance.",
+        "investment_objective": "Reduce technology-sector concentration and make part of the portfolio available for personal spending needs.",
+        "loss_attitude": "Accepts that market investments can incur losses and is comfortable realising a loss when reducing concentration, while preferring to avoid an execution price below his chosen threshold."
+      },
+      "employee": {
+        "name": "Rachel Tan"
+      },
+      "setting": {
+        "call_reason": "The client calls his relationship manager to arrange a partial sale of his existing technology-fund holding following a portfolio review.",
+        "conversation_style": "A concise, professional Singapore private-banking conversation with a familiar rapport. The client is prepared but briefly checks his records during the identity discussion and distinguishes historical account context from the current instruction."
+      },
+      "final_product": {
+        "description": "Nova Technology Equity Fund is an equity fund focused on technology companies, with performance driven by the market value and business prospects of its underlying holdings.",
+        "concrete_risks": [
+          "Concentration in technology companies makes the fund sensitive to sector-wide valuation declines and changes in growth expectations.",
+          "Changes in regulation, competitive conditions or the commercial success of new technologies can adversely affect the fund's underlying companies.",
+          "Sharp movements in underlying equity prices can cause the fund's value to fluctuate significantly."
+        ],
+        "recommendation_basis": "Reducing the existing holding lowers technology-sector concentration and supports the client's need for accessible funds. A limit sale also reflects his preference to set a minimum acceptable execution price, although execution is not assured."
+      },
+      "other_products": [],
+      "holding_context": "The client already holds Nova Technology Equity Fund and intends to sell part of that holding as part of a portfolio reduction.",
+      "fee_disclosure": {
+        "basis": "AMOUNT",
+        "value": 40,
+        "currency": "USD"
+      },
+      "limit_prices": {
+        "final": 50000,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_073",
+          "motivation": "The client initially recalls his identity details incorrectly, then checks his identity document and corrects the earlier statement later in the conversation."
+        },
+        {
+          "assignment_id": "EA_074",
+          "motivation": "The transaction charge is billed separately in a different currency from the investment instruction, prompting a brief discussion of fee settlement."
+        },
+        {
+          "assignment_id": "EA_075",
+          "motivation": "The client refers to his current portfolio balance and his earlier investment commitment to explain how his exposure has changed. These background figures are separate from the amount committed to the present sale."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's upcoming travel plans",
+        "Preferred arrangements for routine account updates"
+      ]
+    },
+    "parsed_response_sha256": "9e9554b3d5766826a9f9ebe45934e12aaca563a1b070b771e3e1f5db7b37d24d",
+    "artifact_sha256": "d855973ed501d14e3c4fc799563dd660508ab0f60cd66ff8b3a86d293c67770b"
+  },
+  "accepted_history": []
+}

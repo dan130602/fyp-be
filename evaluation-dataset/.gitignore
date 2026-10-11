@@ -13,3 +13,8 @@ evaluation_runs/*
 datasets/*/calls/*/renders/*/audio.mp3
 datasets/*/calls/*/renders/*/segments/*.mp3
 .pytest-tmp/
+# G3 operational audit store (raw provider envelopes, live attempt state); never committed
+.llm_audit/
+
+# short cross-stage write lock (crash leftovers must be deleted by hand after confirming no run is active)
+datasets/*/.stage_write.lock

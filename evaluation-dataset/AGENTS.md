@@ -36,8 +36,13 @@ them, regenerate instead. G2A (`fyp_evaluation.call_specs`, `scripts/compile_cal
 immutable `authoring/call_specs/CALL_XXX.json` by pure join of the G1 files; never hand-edit them and
 never let a later stage change a call spec. G2B (`fyp_evaluation.check_plan_skeletons`,
 `scripts/build_check_plan_skeletons.py`) builds `authoring/check_plan_skeletons/CALL_XXX.json` from the call specs and
-G0 only: structural events, checks and relative constraints, never wording, turn numbers or SSML. Implemented: G0, G1, G2A, G2B. Not yet implemented: G3 onwards
-(do not implement G3 or any LLM stage until approved). G2B conventions (speakers, run structure) are in the README.
+G0 only: structural events, checks and relative constraints, never wording, turn numbers or SSML. Implemented: G0, G1, G2A, G2B, G3, G4. Not yet implemented: G5 onwards
+(do not implement G5 or any later stage until approved). G2B conventions (speakers, run structure) are in the README.
+G3 (`fyp_evaluation.call_configs`, `scripts/generate_call_configs.py`) is the first model-assisted stage: Python owns
+every immutable fact, hash, product reference, required slot and validation; the model returns scenario content only.
+Never run `--sync`, `--submit` or `--collect` against the real OpenAI API without explicit approval (they spend money);
+tests use `fyp_evaluation.llm.fake_transport` and never need `OPENAI_API_KEY`. Never print, log or persist the key, never
+commit `.env` or `.llm_audit/`, and never hand-edit generated call configs, provenance or the record.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
 IDs and order. Do not duplicate a checklist within a release or change production LangGraph.
@@ -131,3 +136,7 @@ this initial scaffold task.
 Keep schema changes versioned and synchronized with validation, tests and docs.
 Run `python -m pytest -q` and the schema-definition validator after changing
 contracts. Report unresolved contract decisions instead of silently guessing.
+
+G4 (`fyp_evaluation.check_plans`, `scripts/generate_check_plans.py`) shares the `StageRunner` lifecycle in `fyp_evaluation.llm.stage_runner` with G3. G4 acceptance is structural only (schemas, placeholders, rendering, spans, skeleton projection); semantic adequacy of wording is G5's job, so never add a subjective semantic gate to G4. The frozen skeleton is copied by Python and must project back byte-for-byte.
+
+G3/G4 lifecycle: acceptance re-verifies upstream hashes from disk under `.stage_write.lock` (see README); `STALE_UPSTREAM`, `DEFERRED_WRITE_LOCK` and `BLOCKED_UPSTREAM_INVALID` are deliberate states, never overridden by deleting files or locks without confirming no run is active. Historical G4 reconstruction resolves the matching G3 version from G3 accepted history and must fail explicitly rather than use current inputs.

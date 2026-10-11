@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_031",
+  "call_spec_sha256": "92180f2a61d7e17f745d8333f545c039815d228538b1370110fc7629821e3e1b",
+  "check_plan_skeleton_sha256": "25bd3d54a5270675cc02be41c4b608213959fb76c7599e9733ff27ffbef45144",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "a9801e4718d53cc527459aebbcf85e7219fd8c9d0dd3c52c9b99b56715fe1a35"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Crest Emerging Markets Bond Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL",
+        "CANDIDATE"
+      ]
+    },
+    {
+      "product_ref": "P2",
+      "name": "Meridian Asia Equity Fund",
+      "category": "EQUITY_FUND",
+      "roles": [
+        "CANDIDATE"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Elaine Tan",
+      "background": "Elaine Tan is a private-banking client who reviews her portfolio herself but prefers assistance with transaction administration.",
+      "investment_objective": "Reduce exposure to emerging-market debt and make the portfolio less sensitive to credit-market stress.",
+      "loss_attitude": "Elaine is hesitant about crystallising losses and uncomfortable describing herself as highly loss-tolerant. She is nevertheless willing to accept a realised loss when reducing an exposure she no longer wants."
+    },
+    "employee": {
+      "name": "Adrian Lim"
+    },
+    "setting": {
+      "call_reason": "Elaine calls to arrange a reduction of her existing bond-fund holding after reviewing the exposures in her portfolio.",
+      "conversation_style": "A brief, practical Singapore-English telephone conversation. Elaine uses shorthand references to portfolio items and becomes tentative when discussing losses."
+    },
+    "final_product": {
+      "description": "Crest Emerging Markets Bond Fund invests in emerging-market debt and is the holding selected for the final sale.",
+      "concrete_risks": [
+        "Deterioration in emerging-market issuers' credit quality or a default can reduce the value of the fund's bond holdings.",
+        "Rising interest rates can depress the market value of bonds held by the fund.",
+        "Thin liquidity in emerging-market debt during stressed conditions can make disposal difficult and adversely affect the fund's valuation."
+      ],
+      "recommendation_basis": "Reducing this holding lowers the client's exposure to emerging-market credit deterioration and stressed debt-market liquidity, consistent with her preference for a less credit-sensitive portfolio."
+    },
+    "other_products": [
+      {
+        "product_ref": "P2",
+        "description": "Meridian Asia Equity Fund is an equity fund focused on Asian markets, mentioned only as a separate portfolio-review candidate rather than the selected transaction."
+      }
+    ],
+    "holding_context": "Elaine already holds Crest Emerging Markets Bond Fund in her portfolio and wants to reduce that existing position.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.3,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_055",
+        "motivation": "Elaine reviews the bond fund before mentioning the equity fund as a separate portfolio item. She then refers back to the bond holding by its earlier description because she assumes the distinction is clear, rather than repeating its full name."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone contact",
+      "Keeping portfolio statements organised"
+    ]
+  }
+}

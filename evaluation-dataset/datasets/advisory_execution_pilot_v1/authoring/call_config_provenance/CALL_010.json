@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_010",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_010-G3-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac8c73794bc819085191cc2bbe3434e",
+      "provider_response_id": "resp_04e18f567cde793f016ac8c78f35a887d19b1e816e0e8bbd75",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+      "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+      "request_sha256": "19d890c6b6bd2119f90f977386e89540b058304ba7ce5e1e17aa70b20e71f51e",
+      "upstream_sha256": {
+        "call_spec": "33ba17c45b6104886429879e740d547d65e572f4f0a171078e4cd214a00e44a0",
+        "check_plan_skeleton": "93653359421e6100fd15b392efb58f7de9fafa8bac9e1c59700cdb87dee20638",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 3857,
+        "cached_tokens": 2868,
+        "cache_write_tokens": 986,
+        "output_tokens": 856,
+        "reasoning_tokens": 85
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.005659,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T10:51:32Z",
+      "finished_at": "2026-10-09T10:55:55Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "parsed_response": {
+      "client": {
+        "name": "Adrian Tan",
+        "background": "Adrian Tan is a private-banking client who manages his personal investments alongside a busy working schedule. He has reviewed his holdings before calling but is still deciding which holding to reduce.",
+        "investment_objective": "Release liquidity for upcoming personal expenses while reducing exposure to fluctuations in investment values.",
+        "loss_attitude": "He accepts that investments can incur losses and is willing to realise a loss when reducing a holding serves his liquidity needs."
+      },
+      "employee": {
+        "name": "Rachel Lim"
+      },
+      "setting": {
+        "call_reason": "The client calls to arrange a sale from his existing portfolio to release liquidity, revising his selected holding during the discussion.",
+        "conversation_style": "Brief, practical Singapore English with polite turn-taking. The client refers to portfolio notes, restarts an instruction and stays focused on the transaction mechanics."
+      },
+      "final_product": {
+        "description": "Orion Global Income Fund is a bond fund providing exposure to a global portfolio of income-generating debt securities. Its unit value and distributions depend on the performance of its underlying holdings.",
+        "concrete_risks": [
+          "Rising interest rates can reduce the market value of the bonds held by the fund and lower its unit value.",
+          "Deteriorating issuer credit quality or defaults can reduce the value of the fund's underlying bond holdings.",
+          "Stressed bond-market liquidity can affect the prices available when the fund sells underlying assets.",
+          "A limit sale may remain unexecuted if the available dealing price does not meet the specified limit."
+        ],
+        "recommendation_basis": "Reducing the holding would release liquidity for the client's personal expenses and reduce his remaining exposure to interest-rate and credit fluctuations. A limit instruction reflects his preference to control the minimum acceptable sale price, with execution uncertainty as the trade-off."
+      },
+      "other_products": [
+        {
+          "product_ref": "P2",
+          "description": "Meridian Asia Equity Fund is an equity fund investing in Asian companies and is an existing portfolio holding associated with the withdrawn initial instruction."
+        }
+      ],
+      "holding_context": "The client holds Orion Global Income Fund and Meridian Asia Equity Fund in his existing investment portfolio and is considering which holding to reduce.",
+      "fee_disclosure": {
+        "basis": "RATE",
+        "value": 0.3,
+        "currency": null
+      },
+      "limit_prices": {
+        "final": 250,
+        "initial": 500
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_011",
+          "motivation": "The client initially selects a different holding from his portfolio notes, then changes his mind about which holding should fund his liquidity needs. The earlier instruction is withdrawn before execution and replaced with the chosen holding."
+        },
+        {
+          "assignment_id": "EA_013",
+          "motivation": "The client starts describing the execution method before settling on his preferred wording. His preference is to retain control over the minimum acceptable sale price rather than prioritise immediate execution."
+        },
+        {
+          "assignment_id": "EA_014",
+          "motivation": "The client is focused on resolving the replacement instruction and the sale mechanics. The short, task-oriented call creates a natural transition from product-risk discussion back to execution details."
+        }
+      ],
+      "additional_discussion_topics": [
+        "Preferred callback arrangements",
+        "Plans for a family gathering"
+      ]
+    },
+    "parsed_response_sha256": "f96fd1e4cfd38c82b2d0c71aef3cc28c17dc1987452f1b95210c468d96007c6e",
+    "artifact_sha256": "e0e15dc412d8c8d58f19765d26edbc4d30626a9a574c871229348b68e95aad1c"
+  },
+  "accepted_history": []
+}

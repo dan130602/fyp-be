@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_043",
+  "call_spec_sha256": "511c0728dee229e325f603104a4c72bf4ec61175cc23ef9b538d34eab08438c3",
+  "check_plan_skeleton_sha256": "0383da4b876fdc40c4c4e143b579c3224711cfb872bdf25c5f2c428e7b419abf",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "5750f79e0c5967363a4f641c41bea61249d878cf854656e64532e0d5c689309c"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Harbor SGD Bond Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Adrian Lim",
+      "background": "Adrian Lim is a business owner who prefers straightforward investment explanations and keeps existing holdings separate from new investment decisions.",
+      "investment_objective": "Build a diversified income-oriented portfolio with a focus on steadier performance rather than aggressive growth.",
+      "loss_attitude": "Accepts investment losses and fluctuations in fund value, provided the risks are understandable and consistent with an income-oriented approach."
+    },
+    "employee": {
+      "name": "Rachel Tan"
+    },
+    "setting": {
+      "call_reason": "The client has arranged a brief telephone discussion to review Harbor SGD Bond Fund and proceed with an additional portfolio investment.",
+      "conversation_style": "Concise and professional Singapore English, with plain-language explanations and a client who pays close attention to the transaction readback."
+    },
+    "final_product": {
+      "description": "Harbor SGD Bond Fund is a bond fund offering pooled exposure to fixed-income investments, with fund value and income dependent on its underlying holdings and market conditions.",
+      "concrete_risks": [
+        "Rising market interest rates can reduce the value of bonds held by the fund and lower its net asset value.",
+        "A deterioration in an underlying issuer's credit quality or a default can adversely affect the fund's value and income.",
+        "Limited liquidity in underlying bonds can make them harder to sell during stressed market conditions.",
+        "Income distributions can fluctuate as the fund's holdings and market conditions change."
+      ],
+      "recommendation_basis": "The fund's pooled fixed-income exposure supports the client's income-oriented objective while spreading exposure across underlying holdings rather than relying on an individual issuer."
+    },
+    "other_products": [],
+    "holding_context": null,
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.5,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_081",
+        "motivation": "A momentary verbal slip during the employee's readback reverses the intended direction. The client notices because the purpose of the call is to add an investment, not dispose of one."
+      },
+      {
+        "assignment_id": "EA_082",
+        "motivation": "The client refers to the currency of an existing holding while explaining how the new investment fits into the wider portfolio. That holding is background context rather than part of the transaction."
+      },
+      {
+        "assignment_id": "EA_083",
+        "motivation": "The discussion includes an illustrative allocation and the client's overall account value to distinguish a general sizing example and portfolio context from the actual commitment."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone appointments",
+      "Balancing business commitments with personal administration"
+    ]
+  }
+}

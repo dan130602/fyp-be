@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_025",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_025-G3-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac8c73794bc819085191cc2bbe3434e",
+      "provider_response_id": "resp_089c9141704bf81a016ac8c7bcb01487d1bccf3180e9954648",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+      "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+      "request_sha256": "90a59fa1fbbc48d5393479ec9c54300bf0b632f992ce9912cbd8b6e41b8feb31",
+      "upstream_sha256": {
+        "call_spec": "0b37fdf52e7dc961ad18830ae7dc25aa718a1bd0a86a5db02a09632e591040f9",
+        "check_plan_skeleton": "0944edc88b482b3b9b66f71c92f2f72126124154c6bfe5731fd6682131f28993",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 3558,
+        "cached_tokens": 2868,
+        "cache_write_tokens": 687,
+        "output_tokens": 586,
+        "reasoning_tokens": 0
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.003935,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T10:51:32Z",
+      "finished_at": "2026-10-09T10:55:56Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "parsed_response": {
+      "client": {
+        "name": "Elaine Tan",
+        "background": "Elaine Tan is a private-banking client who manages her household investments and prefers straightforward explanations before making portfolio changes.",
+        "investment_objective": "Preserve financial flexibility while maintaining a sustainable source of investment income.",
+        "loss_attitude": "She is uncomfortable with prolonged declines but recognises that selling an existing investment can crystallise a loss."
+      },
+      "employee": {
+        "name": "Marcus Lim"
+      },
+      "setting": {
+        "call_reason": "The client calls to act on a proposed reduction of her existing Orion Global Income Fund holding and settle the final sale instruction.",
+        "conversation_style": "A concise, cordial private-banking conversation in natural Singapore English, with practical questions and a brief pause while the client checks her portfolio summary."
+      },
+      "final_product": {
+        "description": "Orion Global Income Fund is a bond fund providing exposure to a diversified portfolio of income-producing debt securities. Its valuation and distributions depend on underlying bond-market conditions.",
+        "concrete_risks": [
+          "Rising market interest rates can lower the value of the bonds held by the fund.",
+          "Deteriorating issuer credit quality or defaults can reduce the fund's asset value and income.",
+          "Stressed bond-market liquidity can make underlying holdings harder to sell and adversely affect fund valuation."
+        ],
+        "recommendation_basis": "Reducing this holding lowers the client's exposure to interest-rate and credit-market fluctuations, addressing her preference for a less volatile portfolio. A limit order also reflects her preference for control over the acceptable sale price rather than immediate execution."
+      },
+      "other_products": [],
+      "holding_context": "The client already holds Orion Global Income Fund and is considering reducing, rather than fully exiting, that position.",
+      "fee_disclosure": null,
+      "limit_prices": {
+        "final": 150.0,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_041",
+          "motivation": "The client also maintains an account in another currency and briefly asks about its account display while reviewing her holdings. That account is unrelated to the settlement instruction for this sale."
+        },
+        {
+          "assignment_id": "EA_043",
+          "motivation": "The client begins stating the sale amount while glancing at her portfolio summary, then pauses to locate the intended entry and restarts before committing to an amount."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's preference for telephone contact",
+        "The client's recent gardening activities"
+      ]
+    },
+    "parsed_response_sha256": "be16e9b7bc5a9cac3e7d9a81f1a6725fdd9c948e6e575083dedf9098ea98a0b7",
+    "artifact_sha256": "6dde3e3b214b6ce99b0e59c9dd356832d9af032af4289a1831af7c2a2e317f49"
+  },
+  "accepted_history": []
+}

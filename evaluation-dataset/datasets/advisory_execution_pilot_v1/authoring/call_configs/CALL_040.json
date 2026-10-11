@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_040",
+  "call_spec_sha256": "60fb8c453d7e6a48391a3315101705d334a6a902f697a6d553c87cff1a66fc55",
+  "check_plan_skeleton_sha256": "a9503ffeedfd212aebd4a4aa0500ce5bdc5b2c7d4e886c4e0015b2a18ba5b050",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "681ff27961e555ddc8d8fcb132ae6899fe0dc112af4486191f04a91e757d3b0a"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Orion Global Income Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Adrian Tan",
+      "background": "Adrian Tan is a private-banking client who runs a family-owned trading business and is reviewing existing investments as personal spending needs become more immediate.",
+      "investment_objective": "Release liquidity from the existing portfolio and reduce exposure to fluctuations in bond valuations.",
+      "loss_attitude": "Accepts that selling an investment can crystallise a loss and is willing to accept that possibility in exchange for liquidity and reduced exposure."
+    },
+    "employee": {
+      "name": "Rachel Lim"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a sale from the existing Orion Global Income Fund holding after reviewing upcoming liquidity needs.",
+      "conversation_style": "Brief, practical and polite Singapore English, with a familiar adviser-client tone. The client prefers a concise explanation and pays close attention to the transaction summary."
+    },
+    "final_product": {
+      "description": "Orion Global Income Fund is a bond fund with exposure to global debt markets, seeking income from its underlying bond holdings. Its valuation and income distributions can fluctuate.",
+      "concrete_risks": [
+        "Rising market interest rates can lower the value of the fund's bond holdings.",
+        "Deteriorating issuer creditworthiness or issuer defaults can reduce the value of the fund.",
+        "Reduced liquidity in underlying bond markets can adversely affect fund valuations and the proceeds realised on disposal."
+      ],
+      "recommendation_basis": "Reducing the existing holding releases liquidity for the client's spending needs and reduces ongoing exposure to interest-rate and credit-market fluctuations, rather than retaining the position solely for income."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Orion Global Income Fund in the investment portfolio and wants to reduce that holding to release liquidity.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.25,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_076",
+        "motivation": "The employee makes a transcription slip when summarising the transaction amount. The client is following the summary closely and corrects the amount to match the intended instruction, without changing the rest of the order."
+      },
+      {
+        "assignment_id": "EA_077",
+        "motivation": "The employee establishes the transaction currency while reviewing the holding. The client subsequently refers back to that established currency as a natural shorthand rather than repeating its name."
+      }
+    ],
+    "additional_discussion_topics": [
+      "Preferred callback arrangements",
+      "Plans for a quieter work schedule"
+    ]
+  }
+}

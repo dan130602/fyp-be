@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_022",
+  "call_spec_sha256": "5029d9f1804ba95d91111db894132ca507cc92e69d80cd936c767fb31c99b293",
+  "check_plan_skeleton_sha256": "251df33d949233c5d45bd3bd96f335d89dd1ff8c159c476523dbcd8eb1cd19ff",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "03a6031d8bb9b2378b131ae6f21c778f190b3d7cb9d9ee0c39ecc1bfd7622cad"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Summit Global Equity ETF",
+      "category": "ETF",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Elaine Tan",
+      "background": "Elaine Tan is a business owner with an existing investment portfolio who prefers direct, practical discussions with her private banker.",
+      "investment_objective": "Reduce equity exposure and portfolio volatility while retaining flexibility for future personal needs.",
+      "loss_attitude": "Accepts that equity investments can incur losses and is willing to realise a loss when reducing exposure."
+    },
+    "employee": {
+      "name": "Adrian Lim"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a reduction of her existing ETF holding following a portfolio review, with confidential information also influencing her urgency.",
+      "conversation_style": "Brief, businesslike Singapore English, with practical questions about the sale and a work-related distraction near the close."
+    },
+    "final_product": {
+      "description": "Summit Global Equity ETF provides exchange-traded exposure to a diversified portfolio of global equities, with a market price that fluctuates during trading.",
+      "concrete_risks": [
+        "The ETF's underlying global equities can fall together during a broad market downturn.",
+        "The ETF's traded price can diverge from the value of its underlying holdings, particularly during market stress.",
+        "Limited market liquidity can widen the bid-ask spread; a limit sell order may remain unfilled if buyers do not meet the specified price."
+      ],
+      "recommendation_basis": "Reducing the existing ETF holding would lower the client's exposure to broad equity-market fluctuations, consistent with her objective of reducing portfolio volatility. A limit order provides control over the minimum acceptable execution price, although execution is not assured."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Summit Global Equity ETF in her investment portfolio and wishes to reduce that holding.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.2,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": 500,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": "The client explicitly bases her sale instruction on confidential, unpublished information from a relative working in a major ETF constituent's finance team that the constituent is about to announce unexpectedly severe financial difficulties."
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_037",
+        "motivation": "The employee establishes the holding's dealing currency while reviewing the sale mechanics. The client subsequently refers back to that established currency because she considers it settled and prefers not to repeat details."
+      },
+      {
+        "assignment_id": "EA_039",
+        "motivation": "A work interruption draws the client's attention away near the end of the call, making her response to the final order recap conversational rather than a deliberate approval."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for concise telephone conversations",
+      "The client's busy work schedule"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_024",
+  "call_spec_sha256": "f10561a0417951f2018bb90808154f645a35219c959fe69af36b04bd46011ea3",
+  "check_plan_skeleton_sha256": "b1934148b15aedd6eadd693e6a9514faed247076d8bad5172053f97dbb964d19",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "7df562d0c2911183164934700774f5b687fb7bc6215f369613aa2bcffb4872d1"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Harbor SGD Bond Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Evelyn Tan",
+      "background": "Evelyn Tan helps manage a family-run business and maintains a personal investment portfolio separately from its operating finances. She is familiar with fund holdings but prefers a measured telephone discussion and time to organise her thoughts before committing to an instruction.",
+      "investment_objective": "She wants to reduce her exposure to bond-market fluctuations and make part of her existing investment holdings available for anticipated personal spending.",
+      "loss_attitude": "She accepts that market movements can result in investment losses and is willing to realise a loss when reducing a holding, although she prefers a controlled sale rather than accepting any available execution price."
+    },
+    "employee": {
+      "name": "Marcus Lim"
+    },
+    "setting": {
+      "call_reason": "The client has arranged a portfolio-service call to discuss reducing her existing Harbor SGD Bond Fund holding and to place the resulting sale instruction.",
+      "conversation_style": "A lengthy, courteous Singapore private-banking telephone conversation in English. The client is deliberate and occasionally digresses into everyday matters before returning to the sale. The discussion allows natural pauses, clarification of fund mechanics and administrative questions without introducing alternative investments or replacement orders."
+    },
+    "final_product": {
+      "description": "Harbor SGD Bond Fund is a bond fund whose unit value reflects the market value and credit quality of its underlying fixed-income holdings. The final transaction concerns selling part of the client's existing holding using a limit order.",
+      "concrete_risks": [
+        "Rising market interest rates can reduce the value of the bonds held by the fund and depress its unit price.",
+        "Deterioration in an underlying issuer's creditworthiness, including default, can reduce the value of the fund's holdings.",
+        "Reduced liquidity in the underlying bond market can widen dealing spreads and make valuations less favourable during stressed conditions.",
+        "A sell limit order may remain unexecuted if the available dealing price does not meet the specified limit, leaving the client exposed to subsequent changes in the fund's value."
+      ],
+      "recommendation_basis": "The contextual basis for reducing the holding is the client's preference to release liquidity from an existing investment and reduce ongoing exposure to bond-price fluctuations."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Harbor SGD Bond Fund in her personal investment portfolio and intends to sell part of that holding rather than exit it entirely.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.25,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": 71.43,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": null
+    },
+    "edge_case_context": [],
+    "additional_discussion_topics": [
+      "The client's involvement in a family-run business and plans to delegate routine responsibilities",
+      "Preferences for telephone appointments rather than branch visits",
+      "Recent experiences organising household records",
+      "Travel interests and preferred ways to unwind",
+      "Administrative preferences for receiving account correspondence"
+    ]
+  }
+}

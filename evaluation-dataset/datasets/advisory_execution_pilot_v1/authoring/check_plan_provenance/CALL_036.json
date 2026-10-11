@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "stage": "G4",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_036",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_036-G4-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac95f8eb6b48190af0b243918465769",
+      "provider_response_id": "resp_0035f21e2878219e016ac961bfa9a487d1bb2c0198ad3b5384",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "e1a00514b5a9f6491d96340676a5eddaf65336fb6fc5dc7d6c3915d762ee2fc7",
+      "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+      "request_sha256": "6b58031cd467a887a2fa1e1d071e8c2d326afb2870d84d5db10c06cb82cfaff8",
+      "upstream_sha256": {
+        "call_spec": "4bd6948b5ef690fb84342925296a4a9ef6c2cf6a89ba688addb10d2a4b559014",
+        "check_plan_skeleton": "4e9d2301f610766febda998861e1d47641d8be8b6194e74dfb3a9019cbc427d9",
+        "call_config": "9cb8324c9d6ca635a7344891297ab98e20ddf38541f968cfc93d9ad7c69ba7e3",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 8621,
+        "cached_tokens": 3067,
+        "cache_write_tokens": 5551,
+        "output_tokens": 1218,
+        "reasoning_tokens": 85
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.013185,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T21:41:32Z",
+      "finished_at": "2026-10-09T21:53:22Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "e1a00514b5a9f6491d96340676a5eddaf65336fb6fc5dc7d6c3915d762ee2fc7",
+    "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+    "parsed_response": {
+      "events": [
+        {
+          "event_id": "EV_001",
+          "speaker": null,
+          "text": "For [[T01]], rising market interest rates can push down the value of the bonds it holds, which can also lower its unit value.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_002",
+          "speaker": null,
+          "text": "Do you understand how rising interest rates can lower the fund's unit value?",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_003",
+          "speaker": null,
+          "text": "Yes, I understand. If interest rates rise, the bonds can fall in value and bring the fund's unit value down.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_004",
+          "speaker": null,
+          "text": "The transaction charge is [[FEE]] of the sale proceeds.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_005",
+          "speaker": null,
+          "text": "You could lose some or all of the capital you invested in this fund, and selling may realise a loss.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_006",
+          "speaker": null,
+          "text": "Are you willing to accept investment losses, including a loss realised when reducing this holding?",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_007",
+          "speaker": null,
+          "text": "Yes, I am willing to accept investment losses, including a realised loss on this reduction.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_008",
+          "speaker": null,
+          "text": "Please confirm your final instruction: [[T05]] [[T04]] units of [[T01]], with a transaction amount of [[T03]] in [[T02]], using [[T06]] at a limit price of [[LIMIT_PRICE]]. Is that the instruction you want me to execute?",
+          "value_forms": [
+            {
+              "placeholder": "T02",
+              "form": "NATURAL_NAME"
+            }
+          ],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_009",
+          "speaker": null,
+          "text": "Yes, I confirm that final instruction exactly as you have stated it. Please proceed.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_010",
+          "speaker": null,
+          "text": "My FIN is [[K01]].",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_011",
+          "speaker": null,
+          "text": "My date of birth is [[K02]].",
+          "value_forms": [
+            {
+              "placeholder": "K02",
+              "form": "DAY_MONTH_YEAR"
+            }
+          ],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_012",
+          "speaker": null,
+          "text": "The holding I want to reduce is [[T01]].",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_013",
+          "speaker": null,
+          "text": "Use [[T02]] as the transaction currency.",
+          "value_forms": [
+            {
+              "placeholder": "T02",
+              "form": "NATURAL_NAME"
+            }
+          ],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_014",
+          "speaker": null,
+          "text": "Set the transaction amount at [[T03]].",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_015",
+          "speaker": null,
+          "text": "I was considering a reduction of [[T04]] units.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_016",
+          "speaker": null,
+          "text": "For the order quantity, use the number of units I mentioned earlier.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_017",
+          "speaker": null,
+          "text": "I want to [[T05]], not add to the holding.",
+          "value_forms": [],
+          "readback_question_ids": null
+        },
+        {
+          "event_id": "EV_018",
+          "speaker": null,
+          "text": "Place it as [[T06]], with the limit price at [[LIMIT_PRICE]].",
+          "value_forms": [],
+          "readback_question_ids": null
+        }
+      ]
+    },
+    "parsed_response_sha256": "0bcfd5a3337715fe4f5177590d87fe10add722ee4f58a354db474798f1086f8f",
+    "artifact_sha256": "7b5c02ff6d2c648ff9a9f4835cf5228df6ac702fc15b84978e5b3a94360c9498"
+  },
+  "accepted_history": []
+}

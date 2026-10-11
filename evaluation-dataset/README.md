@@ -99,7 +99,8 @@ Pipeline names for this release: G0 contracts, G1 deterministic planning, G2A
 call_spec (immutable call specifications), G2B check_plan_skeleton (deterministic check-plan
 skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
 verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
-G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`), all without an LLM. G3 onwards is not yet implemented.
+G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
+(`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only). G5 onwards is not yet implemented.
 
 ```powershell
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
@@ -153,6 +154,94 @@ python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_ex
 python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --validate   # validate files on disk (independent re-derivation + canonical bytes)
 python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_pilot_v1 --check      # byte-for-byte reproduction; reports missing/changed/extra
 ```
+
+G3 (`fyp_evaluation.call_configs`, model-assisted: OpenAI `gpt-6.1-sol` through the Responses API with strict
+Structured Outputs, sync or Batch) writes the creative scenario for each call into
+`authoring/call_configs/CALL_XXX.json`. Python owns every immutable fact: it refuses to run unless G0-G2B validate,
+derives product references (`P1`, `P2`, ... in first-seen order, roles unioned), the required slots (fee disclosure,
+limit prices, holding context, red flags, edge-case motivations) and the whole request; the model returns only
+scenario content (`schemas/stage3/call_config_response.schema.json`), which Python validates against the call's
+gold-conditioned rules before it is accepted. The artifact contains no gold and no edge parameters (G4 onward load the
+call spec); it records the call spec and skeleton hashes. The skeleton body is validated but never sent to the model.
+Convention (G3/G4, not G0): the final T01 product is the recommended product; for a SELL the recommendation may be to
+sell, reduce or exit that holding; C05 stays a general capital-loss disclosure; non-final products are only frozen
+candidates, comparisons or superseded orders.
+
+```powershell
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_001] [--print-request]  # offline: gate, 50-call feasibility, request preview; writes nothing
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --sync --call-id CALL_001       # ONE paid live request
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]         # paid Batch of all eligible calls (or a subset)
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --collect                        # poll + ingest; safe to repeat
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check   # offline
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --attach-batch SUB_0001 batch_...   # recover a SUBMISSION_UNKNOWN submission
+python scripts/generate_call_configs.py --dataset-root datasets/advisory_execution_pilot_v1 --mark-not-submitted SUB_0001 --acknowledge-duplicate-risk
+```
+
+Modifiers: `--retry-rejected` (new attempts after a REJECTED one, 3 per call), `--reopen --call-id X --reason "..."`
+(deliberately supersede an accepted config; the previous accepted version stays in the provenance history), `--audit-dir`.
+There is no `--overwrite`: accepted calls are never selected unless reopened. Credentials: copy `.env.example` to `.env`
+in this directory (git-ignored) and set `OPENAI_API_KEY`, or set it in the operating-system environment (which wins);
+offline commands and the whole test suite need no key. Install the SDK with `pip install -e ".[llm]"`.
+Operational state (live attempts, canonical requests, raw provider envelopes, batch submissions, the run lock) lives in
+the git-ignored `.llm_audit/`; the committed trail is `authoring/call_config_provenance/CALL_XXX.json` (attempt summaries,
+accepted parsed response, accepted history) plus `authoring/call_config_record.json`. `--check` rebuilds every accepted
+artifact from the stored parsed response and the frozen inputs, never from a provider envelope.
+Each Batch submission keeps, under `.llm_audit/<dataset_id>/G3/submissions/`, its record (`SUB_NNNN.json`, with the
+terminal batch snapshot), the exact uploaded `SUB_NNNN.input.jsonl` and the exact downloaded `SUB_NNNN.output.jsonl` /
+`SUB_NNNN.error.jsonl`. A call that provenance records as accepted but whose artifact is missing is reported as
+`INCONSISTENT` and blocked from paid attempts until investigated. A sync pilot that must not count towards production is
+run against an isolated copy of the release with its own `--dataset-root` and `--audit-dir`.
+A Batch creation whose outcome is unknown is recorded as `SUBMISSION_UNKNOWN`: it is never resubmitted automatically
+(its calls are blocked) and is resolved only by `--attach-batch` or `--mark-not-submitted --acknowledge-duplicate-risk`.
+
+G4 (`fyp_evaluation.check_plans`, model-assisted, same `gpt-6.1-sol` and shared `StageRunner` lifecycle as G3) writes
+`authoring/check_plans/CALL_XXX.json`: the frozen G2B skeleton copied verbatim by Python plus, per planned event, an
+`authoring` block (resolved speaker, the model's text template, the Python-rendered `planned_text` and exact
+`value_mentions` with character offsets) and `derived_constraints`. The model only returns, per skeleton event, a text
+template with `[[PLACEHOLDER]]` slots, a speaker choice where more than one is allowed, spoken-form choices where the
+skeleton allows a choice, and (for read-backs) the extra fields it reads back; it never writes a value, event ID or any
+frozen field. Python renders every value (NRIC/FIN, date of birth, amounts, quantities, currencies, direction, order type,
+product, fee, limit price) and enforces the contract: exact event coverage, placeholder rules, forbidden digits/magnitude
+words/percentages/currency names/product names in the template wording, required spoken forms, read-back rules with derived
+ORDER constraints and cycle rejection, and the invariant that removing the G4 additions reproduces the canonical skeleton
+bytes (`serialize_json(project_check_plan_to_skeleton(plan)) == skeleton bytes`). G4 acceptance is STRUCTURAL: whether the
+wording really establishes a compliance behaviour is G5's semantic verification, not G4's. G4 refuses to run unless G0-G2B
+validate and G3 is complete and valid; the plan records the G3 config hash, so a reopened G3 config makes it stale.
+
+```powershell
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_010] [--print-request]
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --sync --call-id CALL_010   # ONE paid live request
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]       # paid Batch
+python scripts/generate_check_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --collect | --status | --validate [--require-complete] | --check
+```
+
+The CLI, modifiers, retry budgets, `SUBMISSION_UNKNOWN` recovery and audit layout are identical to G3 (audit under
+`.llm_audit/<dataset_id>/G4/`; provenance and record under `authoring/check_plan_provenance/` and
+`authoring/check_plan_record.json`).
+
+### Upstream versions, stale responses and dependency status (G3/G4)
+
+Accepted G3 and G4 outputs are versioned through the provenance `accepted_history` (a `--reopen --reason` keeps the
+superseded version). Because a G4 plan depends on a G3 config, three rules keep the pair consistent without ever
+regenerating accepted data:
+
+- **Historical reproduction.** `--validate`/`--check` rebuild every G4 version (current or historical) against the G3
+  version it was built from: the G3 config hash is read from that version's committed attempt summary
+  (`upstream_sha256.call_config`) and the matching G3 version is reconstructed from G3's own accepted history and verified
+  against its recorded `artifact_sha256`. If any link is missing or corrupted the command fails explicitly; it never falls
+  back to the current inputs. Nothing under `.llm_audit/` is needed.
+- **Acceptance safety.** Before a paid response is accepted, the upstream files are re-hashed from disk under a short shared
+  write lock (`<dataset root>/.stage_write.lock`, keyed by the resolved dataset root, independent of `--audit-dir`, taken after
+  the stage's own audit lock and never held across a provider call). A response whose recorded upstream hashes differ from the
+  files now closes as `STALE_UPSTREAM`: terminal, kept for audit, budget-neutral, never resubmitted automatically (use
+  `--submit`/`--sync`, or `--reopen --reason` if an older version is accepted). If the lock stays busy the response stays
+  `RESPONDED` (`DEFERRED_WRITE_LOCK`) and the next `--collect` finishes it; if the upstream cannot be read or fails validation
+  it stays `RESPONDED` as `BLOCKED_UPSTREAM_INVALID` with the exact error, and acceptance resumes once the upstream is repaired.
+  A leftover lock file after a crash is never removed silently: confirm that no G3/G4 process is active, then delete it.
+- **Dependency status.** `dependency_status()` (shown by `--status` as `dependency=` and the labels `ACCEPTED_STALE` /
+  `ACCEPTED_UPSTREAM_INVALID`) compares each accepted artifact's recorded upstream hashes with hashes re-read from disk, for G3
+  and G4 alike. After a G3 change the old G4 plan stays historically valid but is `stale`: a later stage must not use it until
+  it is regenerated with `--reopen`. `--check` then also reports the G4 record as changed until that happens, by design.
 
 ## Required generation order
 

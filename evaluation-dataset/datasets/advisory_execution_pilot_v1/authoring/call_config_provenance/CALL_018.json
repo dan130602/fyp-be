@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_018",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_018-G3-A001",
+      "transport": "batch",
+      "state": "ACCEPTED",
+      "submission_id": "SUB_0001",
+      "batch_id": "batch_6ac8c73794bc819085191cc2bbe3434e",
+      "provider_response_id": "resp_0fb4b081e0e9e64e016ac8c7a3e95087d1b999ffc881b34440",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+      "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+      "request_sha256": "76c428ac8b8f333e77b02599431de0ab9000225612915beb7ceb153e96c8336a",
+      "upstream_sha256": {
+        "call_spec": "f85f38621f0321a083b2173c5dc7206c2787fb6fe13b99bfe487c5b2ef9310e5",
+        "check_plan_skeleton": "527ea189fea06534c925492f4a94d83a60b6b392adf35aa0a05bd52f2d72d7df",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 3470,
+        "cached_tokens": 2868,
+        "cache_write_tokens": 599,
+        "output_tokens": 588,
+        "reasoning_tokens": 0
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.003835,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-09T10:51:32Z",
+      "finished_at": "2026-10-09T10:55:56Z",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "parsed_response": {
+      "client": {
+        "name": "Clara Tan",
+        "background": "Clara Tan is a private-banking client who runs a family-owned business and prefers concise explanations before making investment decisions. She manages several currency balances and sometimes confuses the funding account with the intended transaction currency.",
+        "investment_objective": "To build a diversified source of investment income while accepting fluctuations in the value of the investment.",
+        "loss_attitude": "She is willing to accept investment losses and understands that an income-oriented investment can decline in value, but prefers to avoid unnecessarily concentrated exposure."
+      },
+      "employee": {
+        "name": "Adrian Lim"
+      },
+      "setting": {
+        "call_reason": "The client has arranged a short telephone appointment to discuss Orion Global Income Fund and place a purchase instruction, using a limit order to control the maximum unit price.",
+        "conversation_style": "Concise, courteous Singapore English with a practical tone. The client is generally decisive but briefly consults her account information to resolve the currency confusion."
+      },
+      "final_product": {
+        "description": "Orion Global Income Fund is a bond fund providing pooled exposure to bonds across global markets, with an income-oriented investment approach. Its unit value and income distributions can fluctuate.",
+        "concrete_risks": [
+          "Rising market interest rates can reduce the value of bonds held by the fund and cause its unit value to fall.",
+          "An issuer's deteriorating credit quality or default can reduce the value of the fund's holdings and disrupt income payments.",
+          "Reduced liquidity in bond markets can make holdings harder to sell at favourable prices."
+        ],
+        "recommendation_basis": "The fund's income-oriented bond exposure supports the client's aim of developing investment income, while pooled holdings offer diversification rather than reliance on an individual issuer."
+      },
+      "other_products": [],
+      "holding_context": null,
+      "fee_disclosure": {
+        "basis": "RATE",
+        "value": 0.5,
+        "currency": null
+      },
+      "limit_prices": {
+        "final": 300,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_031",
+          "motivation": "The client initially has her usual funding account in mind, then recalls a different available balance, before consulting her allocation notes and settling on the intended transaction currency. The revisions reflect confusion between funding arrangements and the investment instruction rather than a change of product."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's preference for telephone appointments",
+        "Recent changes to the client's work routine"
+      ]
+    },
+    "parsed_response_sha256": "83ca0c6ea92b6e784861f8649e9d287066e80df8799b2b7eac055c4c9e0707d4",
+    "artifact_sha256": "95709277fd7ecb6d98f86ffd6ed072bffd7299992d212f33ff2c0d397f4b073d"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_048",
+  "call_spec_sha256": "b27dbc4ccc0e5090eb121604d79aa192f41fa54014b1b1a29c30fb4a60756d53",
+  "check_plan_skeleton_sha256": "7d702f29fa52dc19864e04eb97cb2019484b567c3d72f4028a87411cc5929872",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "92843d6e4a0570cf065b24b1d641ceecbb51ef38c1068e7fb2a0ac07f686d3b0",
+    "response_schema_sha256": "92069eb76405545dec1921a281f8fcc35df477ab1fdea992c5a0efbff3e549c6",
+    "accepted_response_sha256": "ba78f0975343f508c00ab00cd92fa778e0119460dd101b6593b90ee7116732f1"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Orion Global Income Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Adrian Tan",
+      "background": "Adrian Tan manages a family-owned trading business and maintains an established private-banking relationship. He follows portfolio developments closely but prefers concise conversations.",
+      "investment_objective": "Reduce exposure to credit-sensitive investments and make existing investment proceeds available for business liquidity needs.",
+      "loss_attitude": "He accepts that disposing of an existing holding can crystallise a loss and is willing to bear that outcome rather than maintain unwanted credit exposure."
+    },
+    "employee": {
+      "name": "Melissa Goh"
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a disposal from his existing holding after reviewing his need for business liquidity. His urgency also stems from confidential information about an underlying issuer.",
+      "conversation_style": "A brief, businesslike Singapore private-banking conversation in English, with concise explanations, a distracted identity-verification restart and a hurried close."
+    },
+    "final_product": {
+      "description": "Orion Global Income Fund is a bond fund providing exposure to a diversified portfolio of income-generating debt securities, with its value affected by credit conditions, interest rates and underlying market liquidity.",
+      "concrete_risks": [
+        "Deteriorating issuer credit quality or defaults among underlying bond holdings can reduce the fund's value.",
+        "Rising market interest rates can depress the prices of bonds held by the fund.",
+        "Stressed bond-market liquidity can make portfolio assets harder to sell and adversely affect the value realised on redemption."
+      ],
+      "recommendation_basis": "Reducing the holding would reduce the client's exposure to bond-market credit and interest-rate risks and release investment proceeds for his business liquidity needs."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Orion Global Income Fund in his investment portfolio and wants to dispose of part of that holding.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.25,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": "The client's sell instruction is explicitly based on confidential, material information from a contact involved in an underlying bond issuer's restructuring: the issuer is about to announce a payment default that has not been made public."
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_087",
+        "motivation": "The client recalls an earlier investment contribution while reviewing his holding and refers to a separate hypothetical disposal illustration from his notes. These have distinct historical and illustrative purposes and are not instructions for the current disposal."
+      },
+      {
+        "assignment_id": "EA_088",
+        "motivation": "The client starts the identity-verification response while distracted by business paperwork, then pauses to consult the correct record and restarts."
+      },
+      {
+        "assignment_id": "EA_089",
+        "motivation": "A business interruption divides the client's attention near the end of the call, leaving his closing response unclear as an authorisation despite his earlier clear disposal instruction."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone contact rather than visiting the branch",
+      "The client's busy schedule managing the family business"
+    ]
+  }
+}
