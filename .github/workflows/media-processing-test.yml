@@ -1,0 +1,43 @@
+name: Media Processing Service Tests
+
+on:
+  pull_request:
+    paths:
+      - 'media-processing-service/**'
+      - '.github/workflows/media-processing-test.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: media-processing-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: media-processing-service
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: '25'
+          cache: maven
+
+      - name: Run unit tests
+        run: ./mvnw -B test
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: media-processing-service/target/surefire-reports
+          if-no-files-found: ignore
