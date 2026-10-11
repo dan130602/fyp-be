@@ -32,3 +32,7 @@ class RetryableError(TransportError):
 
 class AmbiguousError(TransportError):
     """The outcome of a non-idempotent request (batch creation) is unknown; the request may have been accepted."""
+
+
+class CapacityError(RetryableError):
+    """The provider answered with a definite capacity rejection (HTTP 429/503): no response was produced for the request."""

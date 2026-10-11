@@ -1,0 +1,418 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_012",
+  "call_spec_sha256": "8bc2b59fa0318ae3c05e70bf66edd999c2dd65a6f06b6fb50d3c4169e959b17a",
+  "check_plan_skeleton_sha256": "1ae2ce1e9dc64f460e97dee10a451d1e485c5fde7bc4ae5ab660da95a7b0802c",
+  "call_config_sha256": "68cf8fa64f7d5319aaca86fffc1a1300b1a113299035f48a35aedd89a69db717",
+  "check_plan_sha256": "d30e80d00f1bfe186a1c62fe143dab81012e6303927b76ece11ff886c7905c77",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "accepted_response_sha256": "396744ce56356682fc23a3ff0c19b3013b8acdaefeb29dca119ee5ea4eabd1f7"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes the client's investment objective in EV_001, satisfying the pass condition.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "Your objective is to reduce your exposure to Asian equities and keep funds available for your business needs."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains concrete product-specific risks of the fund in EV_002, satisfying C02.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "Meridian Asia Equity Fund can fall in value when Asian equity markets weaken or its portfolio companies report disappointing results. Market volatility can also affect what you receive when you reduce the holding."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk disclosure, the employee explicitly checks the client's understanding in EV_003 and the client gives an unambiguous confirmation demonstrating understanding in EV_004.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "Do you understand how those market movements and company results can affect the fund's value and what you receive?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "Yes, I understand. Weaker markets or disappointing company results can push the fund's value down and reduce what I receive."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states the transaction fee rate as 0.25% in EV_005.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "The transaction fee is 0.25%."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly warns in EV_006 that the client may lose some or all of the invested capital.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "You may lose some or even all of the capital you invested in the fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The gold target is FAIL (NOT_ESTABLISH). There is no event or exchange confirming the client's willingness to accept investment losses anywhere in the plan.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete recommendation rationale in EV_007 connecting the action to the client's stated objective.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "I recommend reducing your holding in Meridian Asia Equity Fund because that lowers your exposure to Asian equity volatility and frees up liquidity for your business."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "After all order details are stated, the employee seeks explicit confirmation in EV_008 and the client confirms unequivocally in EV_009.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "Please confirm your final instruction: sell 5,000 units of Meridian Asia Equity Fund, with a transaction amount of 2,000,000 in Chinese yuan, using a market order. Is that your final instruction?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "Yes, I confirm that is my final transaction instruction. Please proceed."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The gold target is PASS (NOT_ESTABLISH). No indicators of money laundering or suspicious source of funds are authored anywhere in the scenario or plan.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The target is FAIL. EV_010 contains an explicit instruction based directly on unreleased, material non-public inside information.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "A senior executive at a company in the fund told me confidentially that its business has deteriorated materially, but the public announcement hasn't been made yet. I'm instructing you to reduce my holding now because of that unreleased information."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The gold target is PASS (NOT_ESTABLISH). The employee does not encourage or coach the client to overstate loss tolerance.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The gold target is PASS (NOT_ESTABLISH). The employee does not guarantee future investment returns anywhere in the plan.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G5684002Z"
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_011 establishes the client's FIN as G5684002Z in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "My FIN is G five six eight four zero zero two Z."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "29 September 1960"
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_012 establishes the client's date of birth as 29 September 1960 in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "My date of birth is 29 September 1960."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Meridian Asia Equity Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "EA_019 is correctly implemented via false start EV_014 followed by committed final statement EV_013 naming Meridian Asia Equity Fund.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_014",
+          "pointer": "/planned_events/13/authoring/planned_text",
+          "quote": "The holding I want to reduce is the—"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_013",
+          "pointer": "/planned_events/12/authoring/planned_text",
+          "quote": "Let me use the full name on my holding record: the holding I want to reduce is Meridian Asia Equity Fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_015 establishes the transaction currency as CNY (Chinese yuan) in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "Use Chinese yuan as the transaction currency."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 2000000
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_016 establishes the monetary amount as 2,000,000 in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "The transaction amount I am instructing is 2,000,000."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 5000
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_017 establishes the quantity as 5,000 units in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "The quantity for this transaction is 5,000 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_018 establishes the transaction direction as SELL in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_018",
+          "pointer": "/planned_events/17/authoring/planned_text",
+          "quote": "I want to sell from my existing holding."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_019 establishes the order type as MARKET in status FINAL, matching the gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_019",
+          "pointer": "/planned_events/18/authoring/planned_text",
+          "quote": "Please place this as a market order."
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

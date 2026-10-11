@@ -1,0 +1,405 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_002",
+  "call_spec_sha256": "9971ed65b6b6c7441bb058f17c5bcf5fddc3377eceb58bdb9ade704ee6893480",
+  "check_plan_skeleton_sha256": "1ee3174a479f2019acbb24a29a7eceac35a01b390af4f03e8df9fa0b585b409c",
+  "call_config_sha256": "ca17021de58c57e59dc9f0be44c6db8309dd1e289ce1f090ec699618569df86a",
+  "check_plan_sha256": "83ab9ea56910004f6c78cc85b10f02488a5af83e18996a712b89b92c8fdbbdd9",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "accepted_response_sha256": "1846e53c6a7114d3cc3af269587b666c204196c4d548ecabcf166f3ff99deed0"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly confirms the client's stated investment objective of building diversified income over the long term with minimal oversight.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "So your goal is to build a diversified source of investment income over the longer term, with little day-to-day oversight."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains concrete product-specific risks (interest rate risk and issuer default risk impacting unit values and distributions) without copying checklist wording, satisfying EA_004.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "With Orion Global Income Fund, rising market interest rates can push down the value of the bonds it holds, which lowers the fund's unit value. If issuers default, that can also hurt the holdings and disrupt income payments."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly asks whether the client understands the risks, and the client responds with an unambiguous demonstration of understanding.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "Do you understand how rising interest rates and issuer defaults could affect the fund's value and income payments?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "Yes, I understand. Rising rates can lower the fund's unit value, and issuer defaults can hurt its holdings and interrupt the income."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly discloses the transaction fee as a percentage rate (0.5%).",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "The transaction fee is 0.5% of the transaction amount."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee clearly explains that the client could lose part or all of the invested capital.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "You could lose part or even all of the money you invest in this fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks about willingness to bear losses and the client explicitly confirms acceptance of investment losses without capital protection.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "Are you willing to bear investment losses while pursuing your income objective?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "Yes, I'm willing to bear those investment losses in pursuit of income. I'm not expecting my capital to be protected."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete recommendation basis linking fund features directly to the client's income objective and oversight preferences.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "I recommend Orion Global Income Fund because its income-focused bond portfolio fits your income goal, and pooled management suits your preference for less day-to-day oversight. Spreading the holdings across issuers also reduces reliance on any individual issuer."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "C08 is targeted to FAIL. No transaction confirmation request or client confirmation of the completed order is planned in G4.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No indicators of money laundering or suspicious source of funds are authored anywhere in the scenario or events.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No inside information or material non-public information is mentioned in the scenario or events.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks a neutral question regarding risk tolerance without encouraging, pressuring, or coaching the client to overstate willingness to take losses.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No guarantees of future investment performance or returns are given by the employee.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T8508720T"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly provides their NRIC number matching the target value T8508720T.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "My identification number is T eight five zero eight seven two zero T."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "13 March 1999"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their date of birth as 13 March 1999, matching the expected target.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "My date of birth is 13 March 1999."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Orion Global Income Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly selects Orion Global Income Fund as the final transaction instrument.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "The product I want to transact in is Orion Global Income Fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly designates EUR (euros) as the transaction currency.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_013",
+          "pointer": "/planned_events/12/authoring/planned_text",
+          "quote": "Use euros as the transaction currency."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 500000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies a monetary investment amount of 500,000.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_014",
+          "pointer": "/planned_events/13/authoring/planned_text",
+          "quote": "The amount I want to invest is 500,000."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 10000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a transaction quantity of 10,000 units.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "The quantity for my order is 10,000 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states an order direction to BUY.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "I want to buy the units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a LIMIT order type.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "Please place it as a limit order with a limit price of 50 euros per unit."
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

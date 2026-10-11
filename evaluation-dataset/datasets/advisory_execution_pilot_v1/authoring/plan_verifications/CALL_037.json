@@ -1,0 +1,410 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_037",
+  "call_spec_sha256": "e356b44ff004b010995c3edb4825414f2917976f394b711763681555ac838e9e",
+  "check_plan_skeleton_sha256": "38292e86b1a0c5fde1bfff921f3d3d34b0df2d1749406a60004b75e61beda315",
+  "call_config_sha256": "3ef9672788770e84f60b58ae063c8152b7f507b8804006ed7e496d0d09b6bdcd",
+  "check_plan_sha256": "f246a6468d9bdc8d0ff3e7aeb50e9c62de47d2b4b1c4adfc940d1e792f44332c",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "accepted_response_sha256": "55cdf3e8b8d52faec65ae42fec4de56d128d024a6db5d719edf7660754c11be4"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call in EV_001.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "As we discussed, your objective is long-term growth through a diversified portfolio, with a balance between growth potential and stability."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "There is no event in the plan where the employee explains a concrete product-specific risk of the fund, correctly fulfilling the FAIL requirement.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "No risk disclosure or understanding verification exchange is present in the plan, faithfully matching the FAIL target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states the transaction fee as an explicit rate (0.5%) in EV_002.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "The transaction fee is 0.5%."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks about loss tolerance in EV_003 but never provides an explicit explanation that the client may lose some or all invested capital, correctly fulfilling the FAIL condition.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly inquires whether the client accepts losses, and the client unambiguously confirms willingness to accept investment losses.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "Can you confirm that you're willing to accept investment losses as part of your long-term approach?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "Yes, I'm willing to accept investment losses and fluctuations, provided the investment stays consistent with my long-term approach."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly gives a concrete rationale linking the product's structure and management style to the client's stated objective and preferences.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "I recommend Pioneer Balanced Opportunities Fund because its mix of growth-oriented and defensive assets supports your long-term growth objective. The manager handles allocation adjustments, which suits your preference not to manage them yourself."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "After the readback correction, the employee summarizes the complete final instruction and the client provides an explicit, unambiguous confirmation.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "With the currency corrected, your final instruction is to buy 2,000 units of Pioneer Balanced Opportunities Fund, for an amount of 500,000 in US dollars, using a market order. Do you confirm this final instruction?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "Yes, I confirm that final instruction with the corrected currency. Please proceed."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The call plan contains no indications of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly bases the purchase instruction on confidential, non-public material information from an internal fund contact, establishing a violation for C10 (FAIL).",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "Please place this purchase because my contact in the fund's operations team confidentially told me a material upward asset-valuation adjustment is imminent. It hasn't been made public, so I want to buy before the announcement."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not coach or encourage the client to overstate loss tolerance.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No future investment returns are guaranteed by the employee anywhere in the plan.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "S8522208M"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their NRIC using 'oh' for the digit zero per EA_069, canonicalizing to S8522208M.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "My NRIC is S eight five two two two oh eight M."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "23 July 1969"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly provides their date of birth as 23 July 1969.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "My date of birth is 23 July 1969."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Pioneer Balanced Opportunities Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly instructs transacting in the Pioneer Balanced Opportunities Fund.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "The fund I want to transact in is Pioneer Balanced Opportunities Fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "assessment": "MATCH",
+      "rationale": "Under EA_068, the client initially specifies USD, rejects the employee's erroneous readback of CNY, and corrects the currency to US dollars (USD).",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "Use USD as the currency for this transaction."
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_013",
+          "pointer": "/planned_events/12/authoring/planned_text",
+          "quote": "Let me read that back: the fund is Pioneer Balanced Opportunities Fund, and the transaction currency is CNY."
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_014",
+          "pointer": "/planned_events/13/authoring/planned_text",
+          "quote": "No, the transaction currency should be US dollars. Please correct that in your notes."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 500000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the monetary transaction amount as 500,000.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "The amount I'm committing to this transaction is 500,000."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 2000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction quantity as 2,000 units.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "The quantity I want is 2,000 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the order direction as BUY.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "I want to buy the units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the order type as MARKET.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_018",
+          "pointer": "/planned_events/17/authoring/planned_text",
+          "quote": "Please place it as a market order."
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

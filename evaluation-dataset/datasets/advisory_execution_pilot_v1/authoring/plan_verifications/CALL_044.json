@@ -1,0 +1,418 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_044",
+  "call_spec_sha256": "f2c5b5c800ab8d9b26f49e5dad180875a180b7debafd05b88262694847512e55",
+  "check_plan_skeleton_sha256": "9f76f6fddd24772027aa563f45fc52b757aab1c9102ea79f3426800ec9a66cfc",
+  "call_config_sha256": "74755b21e8edd6f07541093c261bd707cfaa7935306300fab1c0d5e540cc6fa0",
+  "check_plan_sha256": "9553fa57fd53a26196f60e1c3421a02b36cc527ad9137249f837579a072ce3bf",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "accepted_response_sha256": "bf35c3dcfedd79b0d36fc01afab6fac698a9e6cb592ef87fe1a257b1ac7999fc"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "Your objective is to reduce market fluctuations in your portfolio and free up cash for your personal spending needs."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains multiple concrete product-specific risks associated with Pioneer Balanced Opportunities Fund.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "For Pioneer Balanced Opportunities Fund, the equity holdings can fall when company earnings weaken, and the bond holdings can fall when interest rates rise. The dealing value can also change before your sale is processed, so the eventual proceeds are uncertain."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk disclosure, the employee checks the client's understanding and the client provides an unambiguous demonstration of understanding.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "Do you understand those risks, including why the fund value can fall and why your sale proceeds may change before processing?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "Yes, I understand. The equity and bond holdings can lose value, and the value may change before my sale is processed."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee states the transaction fee explicitly as a percentage rate of 0.5%.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "The transaction fee for this sale is 0.5%."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly warns that the client may lose some or all of the invested capital.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "You could lose some or all of the capital you invested in this fund, and selling may realise a loss."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks about and obtains explicit confirmation of the client's willingness to accept investment losses.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "Are you willing to accept an investment loss, including realising a loss on this sale, to meet your liquidity needs?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "Yes, I am willing to accept an investment loss on this sale to free up cash and reduce my market exposure."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete rationale linking the sale recommendation directly to the client's liquidity and risk-reduction objectives.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "I recommend selling from your holding in Pioneer Balanced Opportunities Fund because it frees up cash for your personal spending and reduces your exposure to the fund's equity and bond market movements."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee summarizes all parameters of the final transaction instruction and the client gives an explicit, unambiguous confirmation.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "Your final instruction is to sell 100 units of Pioneer Balanced Opportunities Fund using a market order, in Chinese yuan, with a specified transaction amount of 50,000. Do you confirm this final instruction?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "Yes, I confirm that final transaction instruction. Please proceed with it."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The plan contains no indication of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The plan contains no instruction based on material non-public or inside information.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not encourage or coach the client to overstate loss tolerance.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee makes no guarantee of future returns.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G9616575A"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their FIN as G9616575A, matching the expected gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "My FIN is G nine six one six five seven five A."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "11 February 1985"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their date of birth as 11 February 1985, matching the expected gold value.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_013",
+          "pointer": "/planned_events/12/authoring/planned_text",
+          "quote": "My date of birth is the eleventh of February nineteen eighty-five."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Pioneer Balanced Opportunities Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client selects Pioneer Balanced Opportunities Fund as the transaction instrument.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_014",
+          "pointer": "/planned_events/13/authoring/planned_text",
+          "quote": "The holding I want to transact in is Pioneer Balanced Opportunities Fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies Chinese yuan (CNY) as the transaction currency.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "Please use Chinese yuan as the transaction currency."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 50000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies a monetary transaction amount of 50,000.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "The amount I am specifying for this transaction is 50,000."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 100
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly commits to transacting a quantity of 100 units.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "The quantity I want to transact is 100 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly states an order direction to sell.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_018",
+          "pointer": "/planned_events/17/authoring/planned_text",
+          "quote": "I want to sell from my existing holding."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies a market order type.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_019",
+          "pointer": "/planned_events/18/authoring/planned_text",
+          "quote": "Please place this as a market order."
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

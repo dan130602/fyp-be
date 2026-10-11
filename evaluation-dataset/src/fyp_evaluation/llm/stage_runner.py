@@ -1,4 +1,4 @@
-"""Shared lifecycle of a model-assisted authoring stage (G3 call configs, G4 check plans).
+"""Shared lifecycle of a model-assisted stage (G3 call configs, G4 check plans, G5 plan verifications).
 
 `StageRunner` owns the workflow that does not depend on what the stage writes: selection and eligibility, attempts,
 the sync and Batch flows, adjudication of responses, accepted artifacts with their provenance and history, recovery of
@@ -145,6 +145,38 @@ class StageRunner:
         """
         return self._compile_artifact, self.builder.context(call_id)
 
+    # ---- provider hooks (defaults: the OpenAI Responses/Batch behaviour G3 and G4 use) ------------------------
+    # accepted/historical provenance entries carry these attempt fields into the artifact's generation block
+    GENERATION_KEYS = ("attempt_id", "model", "prompt_template_sha256", "response_schema_sha256")
+
+    def _default_transport_factory(self):
+        from fyp_evaluation.llm.openai_transport import OpenAITransport
+
+        return OpenAITransport.from_env
+
+    def _attempt_metadata(self):
+        """Request settings and price-table version recorded on every new attempt."""
+        return {"params": {"reasoning_effort": self.spec.reasoning_effort, "max_output_tokens": self.spec.max_output_tokens},
+                "price_table_version": pricing.PRICE_TABLE_VERSION}
+
+    def _parse_response(self, body):
+        """("ok", parsed, None) | ("rejected", None, reason) | ("transport", None, reason) | ("fatal", None, reason)."""
+        return parse_provider_response(body)
+
+    def _usage_and_cost(self, attempt, body):
+        usage = pricing.usage_summary(body.get("usage"))
+        return usage, pricing.estimate_cost(attempt["model"], usage, "batch" if attempt["transport"] == "batch" else "standard")
+
+    def _cost_estimate(self, usage):
+        """The --dry-run cost block for an estimated usage."""
+        return {"batch_cost_usd": pricing.estimate_cost(self.spec.model, usage, "batch"),
+                "sync_cost_usd": pricing.estimate_cost(self.spec.model, usage, "standard"),
+                "price_table_version": pricing.PRICE_TABLE_VERSION}
+
+    def _send(self, attempt, transport, body):
+        """One synchronous provider request; raises TransportError subclasses."""
+        return transport.create_response(body)
+
     # ---- lazy collaborators --------------------------------------------------------------------------
     @property
     def inputs(self):
@@ -174,9 +206,7 @@ class StageRunner:
         """The injected transport, or a real one built on first use (raises CredentialsError before any request)."""
         if self._transport is None:
             if self._transport_factory is None:
-                from fyp_evaluation.llm.openai_transport import OpenAITransport
-
-                self._transport_factory = OpenAITransport.from_env
+                self._transport_factory = self._default_transport_factory()
             self._transport = self._transport_factory()
         return self._transport
 
@@ -307,18 +337,19 @@ class StageRunner:
         body = self.builder.build(call_id, attempt_id)
         text = canonical_request_text(body)
         inputs = self.inputs
+        metadata = self._attempt_metadata()
         attempt = {
             "schema_version": "1.0", "stage": self.spec.stage, "dataset_id": inputs.dataset_id, "call_id": call_id,
             "attempt_id": attempt_id, "attempt_number": number, "custom_id": self.spec.custom_id(call_id, attempt_id),
             "transport": transport, "state": "PREPARED", "submission_id": submission_id, "batch_id": None,
             "provider_response_id": None, "model": self.spec.model,
-            "params": {"reasoning_effort": self.spec.reasoning_effort, "max_output_tokens": self.spec.max_output_tokens},
+            "params": metadata["params"],
             "prompt_template_sha256": self.builder.prompt_template_sha256,
             "response_schema_sha256": self.builder.response_schema_sha256,
             "request_sha256": text_hash(text),
             "upstream_sha256": self._upstream_hashes(call_id),
             "api_status": None, "rejection_reason": None, "validation_errors": [], "fatal": False, "possibly_billed": False,
-            "usage": None, "service_tier": None, "estimated_cost_usd": None, "price_table_version": pricing.PRICE_TABLE_VERSION,
+            "usage": None, "service_tier": None, "estimated_cost_usd": None, "price_table_version": metadata["price_table_version"],
             "reopen": {"reason": reopen_reason, "previous_attempt_id": reopen_of} if reopen_reason else None,
             "created_at": self.clock(), "finished_at": "",
         }
@@ -348,15 +379,18 @@ class StageRunner:
         self.store.write_raw_response(attempt["call_id"], attempt["attempt_id"], {"meta": meta, "response": body})
         attempt.update(state="RESPONDED", provider_response_id=body.get("id"), api_status=body.get("status"),
                        service_tier=body.get("service_tier"))
-        usage = pricing.usage_summary(body.get("usage"))
+        usage, cost = self._usage_and_cost(attempt, body)
         attempt["usage"] = usage
-        attempt["estimated_cost_usd"] = pricing.estimate_cost(attempt["model"], usage, "batch" if attempt["transport"] == "batch" else "standard")
+        attempt["estimated_cost_usd"] = cost
         self._save(attempt)
 
     def _adjudicate(self, attempt):
         """Judge a RESPONDED attempt: parse, validate, then accept or reject. Idempotent for crash recovery."""
         raw = self.store.read_raw_response(attempt["call_id"], attempt["attempt_id"])
-        kind, parsed, reason = parse_provider_response(raw["response"])
+        kind, parsed, reason = self._parse_response(raw["response"])
+        if kind == "fatal":  # a configuration-level problem (never produced by the default parser): stop the whole run
+            self._close(attempt, "TRANSPORT_FAILED", reason=reason, fatal=True, possibly_billed=True)
+            raise FatalRequestError(f"{attempt['call_id']} {attempt['attempt_id']}: {reason}")
         if kind == "transport":
             self._close(attempt, "TRANSPORT_FAILED", reason=reason, possibly_billed=True)
             return attempt
@@ -440,7 +474,7 @@ class StageRunner:
                 if entry["attempt_id"] == previous["attempt_id"]:
                     entry["state"] = "SUPERSEDED"
             self._mark_audit_superseded(call_id, previous["attempt_id"])
-        generation = {key: attempt[key] for key in ("attempt_id", "model", "prompt_template_sha256", "response_schema_sha256")}
+        generation = {key: attempt[key] for key in self.GENERATION_KEYS}
         artifact_text = serialize_json(self._compile_artifact(ctx, parsed, generation))
         scenario = canonical_response(parsed, schema)
         record["accepted"] = {**generation, "parsed_response": scenario, "parsed_response_sha256": response_hash(parsed, schema),
@@ -552,9 +586,7 @@ class StageRunner:
             "feasibility": {"checked": len(feasibility), "infeasible": {k: v for k, v in feasibility.items() if v}},
             "estimate": {"eligible_calls": len(eligible), "approx_input_tokens": total_in,
                          "assumed_output_tokens_per_call": ESTIMATED_OUTPUT_TOKENS,
-                         "batch_cost_usd": pricing.estimate_cost(self.spec.model, usage, "batch"),
-                         "sync_cost_usd": pricing.estimate_cost(self.spec.model, usage, "standard"),
-                         "price_table_version": pricing.PRICE_TABLE_VERSION, "note": "rough planning estimate only"},
+                         **self._cost_estimate(usage), "note": "rough planning estimate only"},
         }
 
     @classmethod
@@ -638,7 +670,7 @@ class StageRunner:
                 reopen_of = next((a["attempt_id"] for a in reversed(previous["attempts"]) if a["state"] == "ACCEPTED"), None)
             attempt, body = self._new_attempt(call_id, "sync", reopen_reason=reopen_reason, reopen_of=reopen_of)
             try:
-                response = transport.create_response(body)
+                response = self._send(attempt, transport, body)
             except TransportError as error:
                 self._fail_transport(attempt, error, possibly_billed=not error.fatal)
                 if error.fatal:
@@ -964,7 +996,7 @@ class StageRunner:
     # ---- validate / check ----------------------------------------------------------------------------
     def _rebuild_text(self, call_id, entry):
         """Artifact text compiled from an accepted (or historical) provenance entry and the current frozen inputs."""
-        generation = {key: entry[key] for key in ("attempt_id", "model", "prompt_template_sha256", "response_schema_sha256")}
+        generation = {key: entry[key] for key in self.GENERATION_KEYS}
         compile_for_entry, ctx = self._entry_context(call_id, entry)
         return serialize_json(compile_for_entry(ctx, entry["parsed_response"], generation))
 

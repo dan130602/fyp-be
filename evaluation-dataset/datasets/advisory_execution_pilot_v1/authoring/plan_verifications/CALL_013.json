@@ -1,0 +1,405 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_013",
+  "call_spec_sha256": "e21235548ce9853e3c5f86d8fec325c010fe00f4c06a1a9fc08fffd8d3dafed5",
+  "check_plan_skeleton_sha256": "ab2a7a7131806ebd5f8a25b651dd6d2d69995dfb9de65d2ecc43c623931c47e0",
+  "call_config_sha256": "457143a506730bc891ddb31ffc9dd03c47a185f76fa94d332e3e13858a016b95",
+  "check_plan_sha256": "bd8b69a3264e5c55e2359494a781d2c9d6ed74aa1a3c20d78a1aeeb9ca490de7",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "accepted_response_sha256": "7f39db2807dbcdd2480850c64cc4513177055ab14b8f25cabfc1ee00bbbf3ffd"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "Your objective is income and broader exposure through emerging-market debt, and you're prepared to hold through market fluctuations. That's the objective we're working towards."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "No concrete product-specific risk of the recommended bond fund is explained anywhere in the planned dialogue, faithfully implementing the expected FAIL target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "There is no disclosure of key risks nor any employee check of the client's understanding of product risks, faithfully implementing the expected FAIL target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states the transaction fee as a concrete percentage rate.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "The transaction fee is 0.5% of the amount invested."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly warns the client that they may lose some or all of the invested capital.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "You could lose some or all of the capital you invest."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee checks and confirms the client's willingness to accept investment losses, and the client gives an unambiguous confirmation.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "Are you willing to accept investment losses in pursuing your income objective?"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "Yes, I'm willing to bear investment losses in pursuit of income."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains a concrete recommendation basis linking the fund's features to the client's income objective and diversification preferences.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "I recommend Crest Emerging Markets Bond Fund because its emerging-market debt holdings support your income objective and spread your exposure across issuers and markets."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee reads back all final transaction parameters and receives the client's explicit, unambiguous confirmation after all order details are stated.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "Your final instruction is to buy 1,000 units of Crest Emerging Markets Bond Fund, for an amount of 250,000 euros, using a limit order with a limit price of 250 euros per unit. Please confirm that this is the instruction you want us to execute."
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "Yes, I confirm that final transaction instruction. Please proceed as you've just stated."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client reveals cash from an unnamed third party routed through a personal account to evade documentation, establishing a money-laundering red flag as required for FAIL.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "Part of the subscription money is cash I collected for a business associate I'd rather not name. He asked me to route it through my personal account and keep the underlying source off the paperwork."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The plan contains no indication of material non-public or inside information, satisfying the PASS target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not pressure, coach, or encourage the client to overstate risk tolerance, satisfying the PASS target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee makes no guarantee of future returns, satisfying the PASS target.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "S1163994E"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly states their NRIC as S1163994E.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "My NRIC is S one one six three nine nine four E."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "10 April 1967"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly provides their date of birth as 10 April 1967.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "My date of birth is 10 April 1967."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Crest Emerging Markets Bond Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly instructs transacting in Crest Emerging Markets Bond Fund.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "The fund I want to transact in is Crest Emerging Markets Bond Fund."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies EUR (euros) as the transaction currency.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_013",
+          "pointer": "/planned_events/12/authoring/planned_text",
+          "quote": "Use euros as the currency for this transaction."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 250000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies a transaction amount of 250,000.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_014",
+          "pointer": "/planned_events/13/authoring/planned_text",
+          "quote": "The amount I'm committing to this transaction is 250,000."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies the transaction quantity as 1,000 units.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "Set the quantity at 1,000 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly instructs the transaction direction as BUY.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "I want to buy, not dispose of my holding."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly specifies the order type as a limit order.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "Place it as a limit order, with a limit price of 250 euros per unit."
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

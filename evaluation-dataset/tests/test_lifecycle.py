@@ -353,7 +353,7 @@ def test_independent_dataset_roots_do_not_block_each_other(tmp_path):
 def test_a_leftover_lock_fails_explicitly_and_is_never_removed_silently(world):
     leftover = write_lock_path(world.root)
     leftover.write_text("pid 1\n")
-    with pytest.raises(StageWriteLockBusy, match="Confirm that no G3/G4 process is active") as raised:
+    with pytest.raises(StageWriteLockBusy, match="Confirm that no G3/G4/G5 process is active") as raised:
         with dataset_write_lock(world.root, wait_seconds=0.05):
             pass
     assert str(leftover) in str(raised.value) and isinstance(raised.value, LockHeldError)

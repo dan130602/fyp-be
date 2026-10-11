@@ -1,0 +1,325 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_047",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_047-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "d1e821ae4a3024c831b8e96141f29c13b14a2422dcdc9c349184880806c824f0",
+      "upstream_sha256": {
+        "call_spec": "9d0d001376011775b6e65043b2decb14e1896cc57d7a203f2c74ddb4a6da3bd6",
+        "check_plan_skeleton": "78b2e86e045230a0a3be785cf30c692424d61cd4f4f834f6990af1e526e5bf18",
+        "call_config": "b2a0b1438cadff5789406368d015031349a4216aed6eefec90d1f096167c117e",
+        "check_plan": "95985ea9025d7033cd8c5a67e2e566f7757ca3d7d0443a88e4730ba4e9afce89",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11139,
+        "cached_tokens": 0,
+        "output_tokens": 2620,
+        "thought_tokens": 1538,
+        "total_tokens": 15297
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.011973,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:38:50Z",
+      "finished_at": "2026-10-11T08:39:11Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your objective remains long-term growth through a diversified investment, with a balance between growth potential and stability."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective in EV_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Pioneer Balanced Opportunities Fund, the equity holdings can pull the fund's value down when stock markets fall, while its fixed-income holdings can decline when interest rates rise."
+            }
+          ],
+          "rationale": "The employee explicitly explains concrete risks specific to the multi-asset fund's equity and fixed-income components in EV_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how stock-market declines and rising interest rates can affect the fund's value?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand that falling stock markets can affect the equity holdings, and rising interest rates can reduce the value of the fixed-income holdings."
+            }
+          ],
+          "rationale": "Following the risk disclosure in EV_002, the employee asks whether the client understands the risks (EV_003), and the client provides an unambiguous confirmation demonstrating understanding (EV_004).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee is 0.5% of the subscription amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee as a rate (0.5%) in EV_005.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "Target is FAIL (NOT_ESTABLISH). No event contains an explicit explanation that the client may lose some or all of their invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Can you confirm whether you are willing to accept investment losses within your planned allocation?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Yes, I am willing to accept investment losses and fluctuations, provided this stays within my planned allocation."
+            }
+          ],
+          "rationale": "The employee explicitly checks the client's willingness to accept investment losses (EV_006), and the client unambiguously confirms acceptance (EV_007).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [],
+          "rationale": "Target is FAIL (NOT_ESTABLISH). The employee does not state a concrete rationale or basis for recommending the product anywhere in the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "With your corrections applied, your final instruction is to buy 2,000 units of Pioneer Balanced Opportunities Fund for 150,000 euros, using a limit order at a limit price of 75 euros per unit. Do you confirm this instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Yes, I confirm that final instruction with the corrected amount. Please proceed."
+            }
+          ],
+          "rationale": "After all corrections, the employee reads back the final complete order instruction (EV_008) and obtains the client's explicit confirmation (EV_009).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "Target is PASS (NOT_ESTABLISH fail condition). No indicators of money laundering or suspicious source of funds are present in the planned text.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "Target is PASS (NOT_ESTABLISH fail condition). No transaction instruction is based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "Target is PASS (NOT_ESTABLISH fail condition). The employee does not coach, pressure, or encourage the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "Target is PASS (NOT_ESTABLISH fail condition). The employee makes no guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "My FIN is F seven nine nine seven nine one seven Y."
+            }
+          ],
+          "rationale": "The client states their FIN as F7997917Y in EV_010, which matches the expected target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My date of birth is 24 July 1962."
+            }
+          ],
+          "rationale": "The client states their date of birth as 24 July 1962 in EV_011, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "The fund I want to transact in is Pioneer Balanced Opportunities Fund."
+            }
+          ],
+          "rationale": "The client specifies Pioneer Balanced Opportunities Fund as the transaction instrument in EV_012, matching the gold target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Please use euros as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies EUR ('euros') as the transaction currency in EV_013, matching the gold target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "Looking at my allocation notes, the amount I want to subscribe is 1,000,000."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Sorry, I read the overall budget rather than the subscription entry. Change the subscription amount to 75,000."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "Actually, that entry was provisional; I've now found my completed allocation decision. The final subscription amount is 150,000, replacing what I just said."
+            }
+          ],
+          "rationale": "The client executes multiple corrections (EA_086), initially stating 1,000,000, correcting it to 75,000, and finally settling on 150,000 in EV_016, which resolves to the expected gold value 150000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The quantity for this transaction is 2,000 units."
+            }
+          ],
+          "rationale": "The client specifies the quantity as 2,000 units in EV_017, matching the gold value 2000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to buy those units."
+            }
+          ],
+          "rationale": "The client explicitly instructs to buy the units in EV_018, matching the gold value BUY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please place a limit order with a limit price of 75 euros per unit."
+            }
+          ],
+          "rationale": "The client explicitly chooses a limit order in EV_019, matching the gold value LIMIT.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "d43be6844004cb46842c96fcd80bf780b9fe7f79eb1c7bf17c1a09f7f09eeaf7",
+    "artifact_sha256": "4e43828b245f52a5121855d5ab44a5dafa8b00a954427f19a1401ef01cd33c62"
+  },
+  "accepted_history": []
+}

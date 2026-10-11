@@ -1,0 +1,333 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_007",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_007-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "7f3a50cdc1791218236cdb9b02cb44197ac1b44db2892a2191ba0138f61d1977",
+      "upstream_sha256": {
+        "call_spec": "6d0eed4c9801b671dd6f7923a2edfe0ea9de34d3b9f6fb534ee310aca8520488",
+        "check_plan_skeleton": "9b9ffc98b1f8895ffae793dcc0c9c1658064ba0377e7d8793c22387df7705344",
+        "call_config": "6716525b71261de225ef8ab2831d4e81d836b523aa55fc767470e1df84463850",
+        "check_plan": "27774b9d232e7883efd6ae2a05274446a32afef3c18b96d55e1635ea2f419abe",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11179,
+        "cached_tokens": 0,
+        "output_tokens": 2472,
+        "thought_tokens": 1205,
+        "total_tokens": 14856
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.011086,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:00:33Z",
+      "finished_at": "2026-10-11T08:03:31Z",
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-11T08:00:36Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your aim is to reduce your exposure to global equity market swings and free up funds for your personal spending plans, while keeping a measured approach to your remaining investments."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "With Summit Global Equity ETF, falling global share markets can pull down the value of your holding. If buyers won't meet your minimum sale price, your order may remain unfilled and you'll still be exposed to further market movements."
+            }
+          ],
+          "rationale": "The employee explains concrete risks associated with the ETF and the limit order structure.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand that the holding can fall in value, and that setting a minimum sale price could leave the sale uncompleted while the market continues moving?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. The holding can fall with the market, and if buyers don't meet my minimum price, I'll still be holding it and exposed to further falls."
+            }
+          ],
+          "rationale": "The employee explicitly checks the client's understanding of the disclosed key risks, and the client unambiguously confirms understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee for this sale is 0.3% of the transaction value."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee as a rate of 0.3%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could get back less than you originally put into this holding, and you could lose part or even all of that original investment."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose part or all of their original invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to accept investment losses, including realising a loss on this sale, to reduce your market exposure?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I'm willing to accept investment losses and realise a loss on this sale if that helps me reduce my exposure and meet my spending needs."
+            }
+          ],
+          "rationale": "The employee checks and unambiguously confirms the client's willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I'd suggest reducing your holding in Summit Global Equity ETF because that would lower your exposure to global share markets and release funds for your personal spending. Setting a minimum sale price gives you the price control you prefer, although it means the sale may not complete."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking product and transaction features to the client's objectives, satisfying EA_010 with paraphrased wording.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "To confirm your final instruction, you want to sell 700 units of Summit Global Equity ETF using a limit order at 35.71 Singapore dollars, with transaction currency Singapore dollars and stated transaction amount 25,000. Do you confirm that I should submit this instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that final transaction instruction exactly as you've just stated it. Please submit the order."
+            }
+          ],
+          "rationale": "The employee reads back the final transaction instruction after all parameters are stated, and the client gives explicit confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No indications of money laundering or suspicious source of funds are present in the scenario or planned text.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No inside information or material non-public information is mentioned in the planned events or scenario.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach or pressure the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not promise or guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is F zero three two six one seven five H."
+            }
+          ],
+          "rationale": "The client states their FIN as F0326175H, matching the target value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is the seventh of September nineteen sixty-five."
+            }
+          ],
+          "rationale": "The client states their date of birth as 07 September 1965, matching the expected value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The holding I want you to transact in is Summit Global Equity ETF."
+            }
+          ],
+          "rationale": "The client instructs the transaction in Summit Global Equity ETF, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Please use Singapore dollars as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client explicitly specifies Singapore dollars (SGD) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The monetary amount I'm specifying for this transaction is 25,000."
+            }
+          ],
+          "rationale": "The client explicitly specifies a monetary transaction amount of 25,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Please transact 700 units from my existing holding."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 700 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The client instructs the employee to sell from the existing holding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please place this as a limit order, with a minimum sale price of 35.71 Singapore dollars per unit."
+            }
+          ],
+          "rationale": "The client instructs a limit order with an explicit limit price.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "3ea76cdab01135afd3f471ea3ee3b314e624158466f77b8da553bb935d89fd4b",
+    "artifact_sha256": "d14f54dc17161bd51867b315fb09ce0e97e7eba220193f071354e8a5ead79603"
+  },
+  "accepted_history": []
+}

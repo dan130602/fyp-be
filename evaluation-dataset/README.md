@@ -100,7 +100,12 @@ call_spec (immutable call specifications), G2B check_plan_skeleton (deterministi
 skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
 verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
 G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
-(`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only). G5 onwards is not yet implemented.
+(`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only),
+and G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated). G6 onwards is not
+yet implemented.
+
+Model decisions per stage: G3, G4 and (future) G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
+level `medium` on the paid Flex tier; (future) G7 will use `gemini-3.8-flash` with thinking level `high` on Flex.
 
 ```powershell
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
@@ -237,11 +242,72 @@ regenerating accepted data:
   `--submit`/`--sync`, or `--reopen --reason` if an older version is accepted). If the lock stays busy the response stays
   `RESPONDED` (`DEFERRED_WRITE_LOCK`) and the next `--collect` finishes it; if the upstream cannot be read or fails validation
   it stays `RESPONDED` as `BLOCKED_UPSTREAM_INVALID` with the exact error, and acceptance resumes once the upstream is repaired.
-  A leftover lock file after a crash is never removed silently: confirm that no G3/G4 process is active, then delete it.
+  A leftover lock file after a crash is never removed silently: confirm that no G3/G4/G5 process is active, then delete it.
 - **Dependency status.** `dependency_status()` (shown by `--status` as `dependency=` and the labels `ACCEPTED_STALE` /
   `ACCEPTED_UPSTREAM_INVALID`) compares each accepted artifact's recorded upstream hashes with hashes re-read from disk, for G3
   and G4 alike. After a G3 change the old G4 plan stays historically valid but is `stale`: a later stage must not use it until
   it is regenerated with `--reopen`. `--check` then also reports the G4 record as changed until that happens, by design.
+
+The same three rules apply to G5, whose upstream is the call spec, skeleton, G3 config, G4 plan and the five G0 files.
+
+### G5: plan verification (gold-aware semantic verification)
+
+G5 (`fyp_evaluation.plan_verifications`, `scripts/verify_authoring_plans.py`) checks, per call, whether the accepted G3
+scenario and G4 evidence plan **together** faithfully implement the frozen G0-G2B gold. It never derives, revises or
+predicts gold and it does not look at dialogue (that is G7). The verifier is `gemini-3.8-flash` (thinking `medium`, paid
+**Flex** tier, `store=false`, no tools, strict JSON output, one stateless Interactions request per call); there is never a
+fallback to the Standard tier or another model.
+
+- **Brief (Python-built, deterministic).** The stable system instruction (`prompts/stage5/plan_verification.v1.md` plus the
+  frozen checklist and `check_semantics.json`) and a per-call brief: the expected outcome/value and resolved pass/fail
+  condition of all 20 questions, the G3 `products`/`scenario`, the assigned edge cases with their catalog entries, EVERY
+  planned G4 event (speaker, planned text, values, relations) and every frozen or derived constraint. The gold is the target
+  being checked, never evidence: a G3 fact is not a performed act, and array order is not dialogue order (chronology comes
+  only from constraints, explicit relations and statuses). UNCLEAR is reserved for a named unresolved dependency.
+- **Report and adjudication.** Gemini returns, per question, evidence (G4 `event_id` or a G3 JSON Pointer, with a verbatim
+  quote or null), a rationale and MATCH/MISMATCH/UNCLEAR, plus issues (code, affected questions/assignments, evidence,
+  advisory `repair_scope` G4_ONLY/G3_PLUS_G4/REVIEW). Python rejects any report that breaks a rule (20 questions in
+  checklist order, two-way issue linkage, severity consistency, resolvable references, quotes grounded after a narrow
+  normalisation of curly quotes, ellipses, dashes and whitespace - the exact source substring is stored, and an ambiguous
+  match is rejected - and a quoted own evidence event for every PRESENCE MATCH). Python then derives the verdict: any
+  MISMATCH -> `INVALID`, otherwise any UNCLEAR -> `UNCLEAR`, otherwise `VALID`, and the recommended repair.
+- **Provider schema limits (found with the real API).** Gemini rejects the response schema with an uninformative HTTP 400 when
+  `minItems`/`maxItems` are also set on arrays nested inside the bounded `checks` array. The provider-facing schema therefore
+  bounds only `checks` (exactly 20); the evidence (at most 6) and issue (at most 20) limits are enforced by Python.
+- **Completed versus VALID.** A structurally valid report is ACCEPTED whatever its verdict: INVALID and UNCLEAR are completed
+  verifications, stored like VALID ones and never retried automatically. Only a current (`dependency=current`) VALID report
+  that is also intact makes a call eligible for G6 (`g6_eligibility()`, shown by `--status`). Intact means the same per-call
+  validation `--validate` runs passes: schema-valid accepted provenance that agrees with the artifact, matching artifact and
+  response hashes, a rebuild against the exact G3/G4 versions, and no stale upstream. An orphan or edited report is never
+  eligible (it fails closed and its `verdict` shows as `None`). `--status` also prints observational usage (provider sends,
+  capacity retries, tokens, estimated cost, completed/outstanding calls); it is an estimate, not a provider balance, and
+  never limits a run. Repair scopes are advice for a future controller;
+  G5 never regenerates G3 or G4. Re-verification of an accepted report is explicit (`--reopen --reason`) and keeps history;
+  a historical report is rebuilt against the exact G3/G4 versions it verified.
+- **Retries and recovery.** The application is the only retry owner (the SDK's automatic retries are switched off and a
+  test proves one HTTP request per send). HTTP 429/503 capacity rejections are resent with identical bytes inside the same
+  attempt (up to 4 sends, ~30/90/270 s backoff); persistent capacity stops the run. A timeout, connection loss or other
+  5xx is AMBIGUOUS (possibly billed): the attempt closes as an ambiguous `TRANSPORT_FAILED`, the run stops, and the call is
+  blocked (`AWAITING_ACKNOWLEDGEMENT`) until `--run --call-id X --acknowledge-possible-duplicate`. A provider echo of a tier
+  other than `flex` (or another model) is fatal and stops the run, also when found while recovering a stored response; a
+  missing tier echo is accepted and counted as `tier_not_echoed`. Malformed or truncated reports are REJECTED (3 per call,
+  retried only with `--retry-rejected`). `--run` always recovers first, under the G5 lock and before eligibility: a stored
+  response is adjudicated without resending, and an attempt interrupted mid-request becomes ambiguous.
+
+```powershell
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_021] [--print-request]
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --run --call-id CALL_021   # paid Flex request(s)
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --run [--limit N]          # all eligible calls
+python scripts/verify_authoring_plans.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check
+python scripts/build_g5_controls.py --dataset-root datasets/advisory_execution_pilot_v1 --out ../g5_controls             # offline control copies
+```
+
+Credentials: `GEMINI_API_KEY` in the operating-system environment or in `.env` (the OS wins); offline modes and tests need
+none. Outputs: `authoring/plan_verifications/CALL_XXX.json` (the report with Python-derived verdict), the committed
+`authoring/plan_verification_provenance/CALL_XXX.json` (attempt summaries with requested and observed tier, usage and cost,
+accepted response, history) and `authoring/plan_verification_record.json`; operational state under
+`.llm_audit/<dataset_id>/G5/`. G5 never writes G3/G4 files. The control builder writes three isolated copies (unchanged,
+an omission leak, a contradictory final instruction) through G4's own acceptance path for smoke-testing the verifier.
 
 ## Required generation order
 

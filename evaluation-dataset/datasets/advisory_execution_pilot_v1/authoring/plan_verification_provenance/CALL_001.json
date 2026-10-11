@@ -1,0 +1,324 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_001",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_001-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "5a5d1b114ee20f78c1b6a8522a67698d92652a9d4932106c1084d4eb58d495cd",
+      "upstream_sha256": {
+        "call_spec": "7426fb58f3f19cb3b7193813a0dc1aa8e41ca7e63003a5e8edeae134de23ecb0",
+        "check_plan_skeleton": "93fa63a37a6f72f639eff5a709b2d68764972405c549db92837cc29b41dcd1df",
+        "call_config": "57e46aff2658076a6f6ffeed64e5bab2121bed23c524f0c26486a306579beb47",
+        "check_plan": "f5337a346887302e1ec36c0c5c3f137006ca7d8f2c1a894706ea67aac3818fcd",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11435,
+        "cached_tokens": 0,
+        "output_tokens": 2452,
+        "thought_tokens": 1913,
+        "total_tokens": 15800
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.012472,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T07:51:26Z",
+      "finished_at": "2026-10-11T07:52:02Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "No event in the plan establishes or confirms the client's investment objective, correctly failing C01 as required.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Nova Technology Equity Fund is concentrated in technology shares, so its value can swing sharply when sentiment towards that sector changes."
+            }
+          ],
+          "rationale": "The employee explicitly explains a concrete risk specific to the fund's concentration in technology equities and sector sentiment shifts.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "Do you understand how that concentration in technology shares can cause sharp swings in the fund's value?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Yes, I understand. A change in sentiment towards technology shares can make the fund's value fluctuate sharply."
+            }
+          ],
+          "rationale": "The employee explicitly asks whether the client understands the concrete risk disclosed, and the client unambiguously confirms and demonstrates understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "No fee or charge amount or rate is stated anywhere in the plan, faithfully matching the expected failure for C04.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "You could lose part or even all of the money you invest in this fund."
+            }
+          ],
+          "rationale": "The employee explicitly warns the client that they may lose part or all of their invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Are you willing to accept investment losses on this investment?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Yes, I am willing to accept investment losses and substantial fluctuations in value."
+            }
+          ],
+          "rationale": "The employee explicitly checks the client's willingness to accept losses, and the client explicitly confirms acceptance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [],
+          "rationale": "The employee does not state any concrete rationale or basis for recommending the product during the call, correctly fulfilling the FAIL target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Please confirm your final instruction: buy 5,000 units of Nova Technology Equity Fund, for an amount of 1,000,000 in euros, using a limit order at a limit price of 200 euros. Is that the instruction you want me to execute?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I confirm that final instruction. Please proceed exactly as you have stated."
+            }
+          ],
+          "rationale": "Following the establishment of all final order parameters, the employee requests explicit confirmation and the client confirms without ambiguity.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious sources of funds anywhere in the planned text or scenario.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no reference or instruction based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage, pressure, or coach the client to overstate their willingness to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "My NRIC is S six five three two five three nine A."
+            }
+          ],
+          "rationale": "The client states their NRIC as S6532539A, matching gold K01.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "My date of birth is the sixteenth of May nineteen ninety-eight."
+            }
+          ],
+          "rationale": "The client states their date of birth as 16 May 1998, matching gold K02.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "The fund I want to transact in is Nova Technology Equity Fund."
+            }
+          ],
+          "rationale": "The client explicitly selects Nova Technology Equity Fund as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Please use euros as the transaction currency."
+            }
+          ],
+          "rationale": "The client instructs EUR (euros) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "The amount I am committing to this transaction is 1,000,000."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "My earlier investment in this fund was 150,000 euros. That's just my budgeting history, not the amount for today's instruction."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "For illustration only, a subscription of 100,000 euros would translate into units based on the applicable unit price. That example is not your current order amount."
+            }
+          ],
+          "rationale": "The client commits 1,000,000 to the transaction in EV_013, with 150,000 and 100,000 clearly distinguished as budgeting history and an illustrative example respectively under EA_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "I have 5,000 units in mind, but let me settle the details before committing to that quantity."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "For the final order, use the unit quantity I mentioned earlier. I'm committing to that quantity now."
+            }
+          ],
+          "rationale": "The client mentions 5,000 units in EV_016 and subsequently refers back to it in EV_017 to commit to it, resolving to 5000 under EA_002.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to buy, please."
+            }
+          ],
+          "rationale": "The client explicitly instructs a BUY order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please place a limit order with a limit price of 200 euros per unit."
+            }
+          ],
+          "rationale": "The client explicitly specifies a LIMIT order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "cdd202b76d77b9b63869766147347220d9b8c665dfad526db88a9038e1234037",
+    "artifact_sha256": "689f8e28f96e7d894ab59cb4dae3832a60fab71809d99eb58bc962fd0fda9565"
+  },
+  "accepted_history": []
+}

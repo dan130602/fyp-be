@@ -1,0 +1,316 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_002",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_002-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "d4551b4f1078d9b2a79494a152d79e6a7dca1e927347a84e6557eb3a715f8a6d",
+      "upstream_sha256": {
+        "call_spec": "9971ed65b6b6c7441bb058f17c5bcf5fddc3377eceb58bdb9ade704ee6893480",
+        "check_plan_skeleton": "1ee3174a479f2019acbb24a29a7eceac35a01b390af4f03e8df9fa0b585b409c",
+        "call_config": "ca17021de58c57e59dc9f0be44c6db8309dd1e289ce1f090ec699618569df86a",
+        "check_plan": "83ab9ea56910004f6c78cc85b10f02488a5af83e18996a712b89b92c8fdbbdd9",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 10120,
+        "cached_tokens": 0,
+        "output_tokens": 2288,
+        "thought_tokens": 1261,
+        "total_tokens": 13669
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.010449,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T07:52:02Z",
+      "finished_at": "2026-10-11T07:52:44Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your goal is to build a diversified source of investment income over the longer term, with little day-to-day oversight."
+            }
+          ],
+          "rationale": "The employee explicitly confirms the client's stated investment objective of building diversified income over the long term with minimal oversight.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "With Orion Global Income Fund, rising market interest rates can push down the value of the bonds it holds, which lowers the fund's unit value. If issuers default, that can also hurt the holdings and disrupt income payments."
+            }
+          ],
+          "rationale": "The employee explains concrete product-specific risks (interest rate risk and issuer default risk impacting unit values and distributions) without copying checklist wording, satisfying EA_004.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand how rising interest rates and issuer defaults could affect the fund's value and income payments?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. Rising rates can lower the fund's unit value, and issuer defaults can hurt its holdings and interrupt the income."
+            }
+          ],
+          "rationale": "The employee explicitly asks whether the client understands the risks, and the client responds with an unambiguous demonstration of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee is 0.5% of the transaction amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee as a percentage rate (0.5%).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose part or even all of the money you invest in this fund."
+            }
+          ],
+          "rationale": "The employee clearly explains that the client could lose part or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to bear investment losses while pursuing your income objective?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I'm willing to bear those investment losses in pursuit of income. I'm not expecting my capital to be protected."
+            }
+          ],
+          "rationale": "The employee asks about willingness to bear losses and the client explicitly confirms acceptance of investment losses without capital protection.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend Orion Global Income Fund because its income-focused bond portfolio fits your income goal, and pooled management suits your preference for less day-to-day oversight. Spreading the holdings across issuers also reduces reliance on any individual issuer."
+            }
+          ],
+          "rationale": "The employee provides a concrete recommendation basis linking fund features directly to the client's income objective and oversight preferences.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [],
+          "rationale": "C08 is targeted to FAIL. No transaction confirmation request or client confirmation of the completed order is planned in G4.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No indicators of money laundering or suspicious source of funds are authored anywhere in the scenario or events.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No inside information or material non-public information is mentioned in the scenario or events.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee asks a neutral question regarding risk tolerance without encouraging, pressuring, or coaching the client to overstate willingness to take losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "No guarantees of future investment performance or returns are given by the employee.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "My identification number is T eight five zero eight seven two zero T."
+            }
+          ],
+          "rationale": "The client explicitly provides their NRIC number matching the target value T8508720T.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My date of birth is 13 March 1999."
+            }
+          ],
+          "rationale": "The client states their date of birth as 13 March 1999, matching the expected target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "The product I want to transact in is Orion Global Income Fund."
+            }
+          ],
+          "rationale": "The client explicitly selects Orion Global Income Fund as the final transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Use euros as the transaction currency."
+            }
+          ],
+          "rationale": "The client explicitly designates EUR (euros) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The amount I want to invest is 500,000."
+            }
+          ],
+          "rationale": "The client explicitly specifies a monetary investment amount of 500,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "The quantity for my order is 10,000 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 10,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "I want to buy the units."
+            }
+          ],
+          "rationale": "The client states an order direction to BUY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Please place it as a limit order with a limit price of 50 euros per unit."
+            }
+          ],
+          "rationale": "The client specifies a LIMIT order type.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "1846e53c6a7114d3cc3af269587b666c204196c4d548ecabcf166f3ff99deed0",
+    "artifact_sha256": "ac25c27069d228751e065653aabf924f3973a6733d4ab4458e6534bb8d4766a8"
+  },
+  "accepted_history": []
+}

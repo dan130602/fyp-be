@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_034",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_034-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "9566d731469fa437cdee650d2ad67fdc65b05d8fa9957901c6f07644c02ea035",
+      "upstream_sha256": {
+        "call_spec": "8eb0825c22009da987b3a22793b0b3f28f8fd0ee0b5d077bb132dfc59acb550b",
+        "check_plan_skeleton": "68450fbb972e46fdcd0383a04e96acbc43cf345d14726312d26d6496f98f2f83",
+        "call_config": "bbaa0d76339cb19012e503c3e6031f66a81378ffc770e31cce8d80b5ff09cc18",
+        "check_plan": "e1e76116e5254b38462fd0763b4caf07d7a3d8df3572539051be316b35cb1599",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 12085,
+        "cached_tokens": 0,
+        "output_tokens": 2566,
+        "thought_tokens": 1990,
+        "total_tokens": 16641
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.013074,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:32:02Z",
+      "finished_at": "2026-10-11T08:33:03Z",
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-11T08:32:09Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your aim is to build investment income, while holding through ordinary market ups and downs."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call, matching the scenario profile.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "With Atlas USD Corporate Bond 2031, the issuer could run into financial difficulty and miss interest payments or fail to repay the principal."
+            }
+          ],
+          "rationale": "The employee explains a concrete product-specific credit/default risk associated with the corporate bond issuer.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "No event checks or verifies the client's understanding of the disclosed product risks, correctly satisfying the FAIL target via absence.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "The transaction charge is 0.3%."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction charge as a percentage rate (0.3%).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "You could lose some or even all of the capital you invest."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Are you willing to accept some investment loss with this purchase?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Yes, I am willing to accept some investment loss, but I'm cautious. Sharp declines would unsettle me."
+            }
+          ],
+          "rationale": "The employee asks about willingness to accept investment loss and the client explicitly confirms acceptance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "I recommend Atlas USD Corporate Bond 2031 because its contractual interest payments fit your income objective, and your plan to hold reduces the need to sell during short-term market swings. Those payments still depend on the issuer meeting its obligations."
+            }
+          ],
+          "rationale": "The employee articulates a concrete recommendation rationale linking the bond's interest payments and holding features to the client's income objective and horizon.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "With your correction included, your final instruction is to buy 1,500 units of Atlas USD Corporate Bond 2031, for 75k in US dollars, using a limit order at 50 US dollars. Do you confirm this final instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Yes, I confirm that final instruction, including the corrected order type and price limit. Please proceed."
+            }
+          ],
+          "rationale": "Following the order type correction, the employee recaps the final order terms and the client gives explicit confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The plan contains no indications of money laundering or suspicious source of funds, satisfying the prohibition requirement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no instruction based on material non-public or inside information anywhere in the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "If we record how cautious you really are about losses, it could hold up the purchase. Tell me you're comfortable accepting larger losses than you actually feel comfortable with, so we can get it through."
+            }
+          ],
+          "rationale": "The employee explicitly pressures and coaches the client to overstate her loss tolerance to avoid delaying the transaction, establishing the compliance violation (FAIL target).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns across the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My identification number is T one eight seven five six five nine H."
+            }
+          ],
+          "rationale": "The client states her NRIC/FIN as T1875659H, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My date of birth is the twenty-eighth of March nineteen sixty-nine."
+            }
+          ],
+          "rationale": "The client states her date of birth as 28 March 1969, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "The investment I want to transact in is Atlas USD Corporate Bond 2031."
+            }
+          ],
+          "rationale": "The client selects Atlas USD Corporate Bond 2031 as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "For this purchase, my transaction currency is US dollars."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "My existing account is in euros, but that's separate from this purchase. Does that account have any bearing on the settlement arrangements?"
+            }
+          ],
+          "rationale": "The client explicitly designates USD as the transaction currency, distinguishing it from her separate EUR account currency distractor.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "I'm committing 75k to this transaction."
+            }
+          ],
+          "rationale": "The client commits 75k, which normalises to the monetary amount 75000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The quantity I want is 1,500 units."
+            }
+          ],
+          "rationale": "The client specifies 1,500 units as the transaction quantity.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to buy, please."
+            }
+          ],
+          "rationale": "The client explicitly instructs an order to buy.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please use a limit order; I want control over the execution price."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "Let me read that back: the product is Atlas USD Corporate Bond 2031, and we're using a market order."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "No, please correct the order type to a limit order, with the price limit at 50 US dollars. I don't want execution above that price."
+            }
+          ],
+          "rationale": "The employee reads back 'market order' erroneously, which the client rejects and corrects to a limit order, establishing LIMIT as the final resolved order type.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "3afbc4b72319e0bfb219e24b4eaceed11baccab3824af23433e4d2733511c0af",
+    "artifact_sha256": "90cd0cc47108fea6778eb71ed9c1128d0cd466d54e5d764cdbd3f0f461ad40e1"
+  },
+  "accepted_history": []
+}

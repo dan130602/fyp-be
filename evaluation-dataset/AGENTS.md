@@ -36,13 +36,14 @@ them, regenerate instead. G2A (`fyp_evaluation.call_specs`, `scripts/compile_cal
 immutable `authoring/call_specs/CALL_XXX.json` by pure join of the G1 files; never hand-edit them and
 never let a later stage change a call spec. G2B (`fyp_evaluation.check_plan_skeletons`,
 `scripts/build_check_plan_skeletons.py`) builds `authoring/check_plan_skeletons/CALL_XXX.json` from the call specs and
-G0 only: structural events, checks and relative constraints, never wording, turn numbers or SSML. Implemented: G0, G1, G2A, G2B, G3, G4. Not yet implemented: G5 onwards
-(do not implement G5 or any later stage until approved). G2B conventions (speakers, run structure) are in the README.
+G0 only: structural events, checks and relative constraints, never wording, turn numbers or SSML. Implemented: G0, G1, G2A, G2B, G3, G4, G5. Not yet implemented: G6 onwards
+(do not implement G6 or any later stage until approved). G2B conventions (speakers, run structure) are in the README.
 G3 (`fyp_evaluation.call_configs`, `scripts/generate_call_configs.py`) is the first model-assisted stage: Python owns
 every immutable fact, hash, product reference, required slot and validation; the model returns scenario content only.
-Never run `--sync`, `--submit` or `--collect` against the real OpenAI API without explicit approval (they spend money);
-tests use `fyp_evaluation.llm.fake_transport` and never need `OPENAI_API_KEY`. Never print, log or persist the key, never
-commit `.env` or `.llm_audit/`, and never hand-edit generated call configs, provenance or the record.
+Never run `--sync`, `--submit` or `--collect` against the real OpenAI API, or G5 `--run` against the real Gemini API,
+without explicit approval (they spend money); tests use `fyp_evaluation.llm.fake_transport` /
+`fyp_evaluation.llm.fake_gemini_transport` and never need `OPENAI_API_KEY` or `GEMINI_API_KEY`. Never print, log or persist a
+key, never commit `.env` or `.llm_audit/`, and never hand-edit generated configs, plans, reports, provenance or records.
 Validate rule references and exact downstream checklist-ID/type coverage.
 Derive LangGraph input as `{id: item.id, question: item.question}` preserving
 IDs and order. Do not duplicate a checklist within a release or change production LangGraph.
@@ -140,3 +141,5 @@ contracts. Report unresolved contract decisions instead of silently guessing.
 G4 (`fyp_evaluation.check_plans`, `scripts/generate_check_plans.py`) shares the `StageRunner` lifecycle in `fyp_evaluation.llm.stage_runner` with G3. G4 acceptance is structural only (schemas, placeholders, rendering, spans, skeleton projection); semantic adequacy of wording is G5's job, so never add a subjective semantic gate to G4. The frozen skeleton is copied by Python and must project back byte-for-byte.
 
 G3/G4 lifecycle: acceptance re-verifies upstream hashes from disk under `.stage_write.lock` (see README); `STALE_UPSTREAM`, `DEFERRED_WRITE_LOCK` and `BLOCKED_UPSTREAM_INVALID` are deliberate states, never overridden by deleting files or locks without confirming no run is active. Historical G4 reconstruction resolves the matching G3 version from G3 accepted history and must fail explicitly rather than use current inputs.
+
+G5 (`fyp_evaluation.plan_verifications`, `scripts/verify_authoring_plans.py`) verifies the G3+G4 authoring plan against the frozen gold with `gemini-3.8-flash`, thinking `medium`, paid Flex tier (G7 will use the same model with thinking `high` on Flex); never add a Standard-tier or other-model fallback, and keep the SDK's automatic retries disabled (the application is the only retry owner). The gold is supplied to the verifier as the target, never as evidence. Python owns the brief, every rule check, quote grounding (exact source substrings) and the verdict (any MISMATCH -> INVALID, else any UNCLEAR -> UNCLEAR, else VALID); the model never states a verdict. INVALID and UNCLEAR are completed G5 outcomes: never retry them to get a better verdict, and only a current, intact (per-call integrity validation passes) VALID report makes a call G6-eligible, and `g6_eligibility()` fails closed. Do not put `minItems`/`maxItems` on arrays nested inside other bounded arrays in the response schema (Gemini answers HTTP 400 without detail); keep such limits in Python. Repair scopes are advice only: G5 never regenerates G3/G4 and never adds semantic gates to them. Historical G5 reports are rebuilt against the exact G3/G4 versions they verified and must fail explicitly otherwise. Ambiguous outcomes (timeouts, connection loss) block the call until explicitly acknowledged; `--run` recovers interrupted state before eligibility.

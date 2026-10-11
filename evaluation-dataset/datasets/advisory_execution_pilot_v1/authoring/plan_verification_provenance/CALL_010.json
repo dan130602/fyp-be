@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_010",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_010-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "58d7c7296e3103f0b264be04bee73e2cf2d70d3444694530fc14ba137e85036c",
+      "upstream_sha256": {
+        "call_spec": "33ba17c45b6104886429879e740d547d65e572f4f0a171078e4cd214a00e44a0",
+        "check_plan_skeleton": "93653359421e6100fd15b392efb58f7de9fafa8bac9e1c59700cdb87dee20638",
+        "call_config": "e0e15dc412d8c8d58f19765d26edbc4d30626a9a574c871229348b68e95aad1c",
+        "check_plan": "60dbdec9f94f70e7313a60f8abde534603a156fad9ba405463dcc8a477de2fbd",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 10813,
+        "cached_tokens": 0,
+        "output_tokens": 2487,
+        "thought_tokens": 1681,
+        "total_tokens": 14981
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.01187,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:11:29Z",
+      "finished_at": "2026-10-11T08:19:10Z",
+      "send_count": 4,
+      "sends": [
+        {
+          "at": "2026-10-11T08:11:31Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        },
+        {
+          "at": "2026-10-11T08:12:11Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        },
+        {
+          "at": "2026-10-11T08:13:52Z",
+          "outcome": "capacity rejection: HTTP 429 RateLimitError: Error code: 429 - {'error': {'message': 'Your project has exceeded a quota. See https://ai.dev/rate-limit to manage your rate limits.', 'code': 'too_many_requests'}}"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "So your objective is to free up cash for upcoming personal expenses while reducing your exposure to investment-value fluctuations."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective in EV_001.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Orion Global Income Fund, rising interest rates can lower the value of the bonds it holds and bring down its unit value. A limit sale may also remain unexecuted if the dealing price does not meet your limit."
+            }
+          ],
+          "rationale": "The employee explains concrete product-specific risks (interest rate risk on unit value, execution risk of limit sale) for the recommended fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "No event verifies the client's understanding of the risks, correctly fulfilling the FAIL target via absence.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "The transaction charge for this sale is 0.3%."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction charge as a percentage rate (0.3%).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "You could lose some or all of the capital you invested, and selling may realise that loss."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "Are you willing to accept an investment loss when reducing your holding to meet your cash needs?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Yes, I am willing to realise a loss if reducing the holding helps meet my personal expenses."
+            }
+          ],
+          "rationale": "The employee asks about accepting investment losses and the client unambiguously confirms willingness to realise losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "I recommend reducing your holding in Orion Global Income Fund because that releases cash for your expenses and reduces your remaining exposure to interest-rate and credit fluctuations."
+            }
+          ],
+          "rationale": "The employee gives a concrete rationale linking the sale recommendation to the client's liquidity need and objective to reduce exposure.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [],
+          "rationale": "There is no post-order readback or final confirmation exchange following the replacement order in EV_010, correctly fulfilling the FAIL target via absence.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no indications of material non-public or inside information in the dialogue plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not pressure, coach, or encourage the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "My identification number is T one two three four nine five five F."
+            }
+          ],
+          "rationale": "The client states NRIC/FIN T1234955F in EV_011 as a final value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My date of birth is the thirteenth of September nineteen eighty-eight."
+            }
+          ],
+          "rationale": "The client explicitly states date of birth 13 September 1988 in EV_012.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Please sell 1,000 units of Meridian Asia Equity Fund using a limit order, with a minimum price per unit of 500 Chinese yuan. The transaction amount is 500k, in Chinese yuan."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Actually, cancel that whole instruction; don't execute it. I've changed my mind about which holding to reduce."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Instead, please sell 2,000 units of Orion Global Income Fund using a limit order, with a minimum price per unit of 250 Chinese yuan. The replacement transaction amount is 500k, in Chinese yuan."
+            }
+          ],
+          "rationale": "The initial instruction for Meridian Asia Equity Fund is superseded and cancelled, and the replacement order explicitly specifies Orion Global Income Fund as final.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "The replacement transaction amount is 500k, in Chinese yuan."
+            }
+          ],
+          "rationale": "The client specifies Chinese yuan (CNY) in the final committed order EV_010.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "The replacement transaction amount is 500k, in Chinese yuan."
+            }
+          ],
+          "rationale": "The client specifies '500k' in EV_010, which resolves canonically to 500,000 CNY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Instead, please sell 2,000 units of Orion Global Income Fund using a limit order, with a minimum price per unit of 250 Chinese yuan."
+            }
+          ],
+          "rationale": "The client commits to selling 2,000 units in the final replacement order EV_010.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Instead, please sell 2,000 units of Orion Global Income Fund using a limit order, with a minimum price per unit of 250 Chinese yuan."
+            }
+          ],
+          "rationale": "The client explicitly instructs to 'sell' in the final transaction instruction EV_010.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "For the execution method, I'd like to use—"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Instead, please sell 2,000 units of Orion Global Income Fund using a limit order, with a minimum price per unit of 250 Chinese yuan."
+            }
+          ],
+          "rationale": "Following an incomplete false start in EV_013 within the same turn, the client specifies a 'limit order' in EV_010.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "aa5ccb9e66d081547aba34637fa5163eb31732c4545767c7490281e593f14032",
+    "artifact_sha256": "91fbc29b118c00e98d15733d76301db44cff604bc7b14b9bc45ceefd68740fde"
+  },
+  "accepted_history": []
+}

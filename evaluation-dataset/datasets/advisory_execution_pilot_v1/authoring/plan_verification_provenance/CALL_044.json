@@ -1,0 +1,327 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_044",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_044-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "bb78ea61f3b286c959f09b0899b4d2857e1f0b9f8c0fd45da06422d1ede1b37d",
+      "upstream_sha256": {
+        "call_spec": "f2c5b5c800ab8d9b26f49e5dad180875a180b7debafd05b88262694847512e55",
+        "check_plan_skeleton": "9f76f6fddd24772027aa563f45fc52b757aab1c9102ea79f3426800ec9a66cfc",
+        "call_config": "74755b21e8edd6f07541093c261bd707cfaa7935306300fab1c0d5e540cc6fa0",
+        "check_plan": "9553fa57fd53a26196f60e1c3421a02b36cc527ad9137249f837579a072ce3bf",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 10687,
+        "cached_tokens": 0,
+        "output_tokens": 2349,
+        "thought_tokens": 885,
+        "total_tokens": 13921
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.010071,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:37:20Z",
+      "finished_at": "2026-10-11T08:37:36Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "Your objective is to reduce market fluctuations in your portfolio and free up cash for your personal spending needs."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "For Pioneer Balanced Opportunities Fund, the equity holdings can fall when company earnings weaken, and the bond holdings can fall when interest rates rise. The dealing value can also change before your sale is processed, so the eventual proceeds are uncertain."
+            }
+          ],
+          "rationale": "The employee explains multiple concrete product-specific risks associated with Pioneer Balanced Opportunities Fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Do you understand those risks, including why the fund value can fall and why your sale proceeds may change before processing?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I understand. The equity and bond holdings can lose value, and the value may change before my sale is processed."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks the client's understanding and the client provides an unambiguous demonstration of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "The transaction fee for this sale is 0.5%."
+            }
+          ],
+          "rationale": "The employee states the transaction fee explicitly as a percentage rate of 0.5%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "You could lose some or all of the capital you invested in this fund, and selling may realise a loss."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Are you willing to accept an investment loss, including realising a loss on this sale, to meet your liquidity needs?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "Yes, I am willing to accept an investment loss on this sale to free up cash and reduce my market exposure."
+            }
+          ],
+          "rationale": "The employee asks about and obtains explicit confirmation of the client's willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "I recommend selling from your holding in Pioneer Balanced Opportunities Fund because it frees up cash for your personal spending and reduces your exposure to the fund's equity and bond market movements."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking the sale recommendation directly to the client's liquidity and risk-reduction objectives.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Your final instruction is to sell 100 units of Pioneer Balanced Opportunities Fund using a market order, in Chinese yuan, with a specified transaction amount of 50,000. Do you confirm this final instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Yes, I confirm that final transaction instruction. Please proceed with it."
+            }
+          ],
+          "rationale": "The employee summarizes all parameters of the final transaction instruction and the client gives an explicit, unambiguous confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The plan contains no indication of money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The plan contains no instruction based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is G nine six one six five seven five A."
+            }
+          ],
+          "rationale": "The client states their FIN as G9616575A, matching the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is the eleventh of February nineteen eighty-five."
+            }
+          ],
+          "rationale": "The client states their date of birth as 11 February 1985, matching the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The holding I want to transact in is Pioneer Balanced Opportunities Fund."
+            }
+          ],
+          "rationale": "The client selects Pioneer Balanced Opportunities Fund as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Please use Chinese yuan as the transaction currency."
+            }
+          ],
+          "rationale": "The client explicitly specifies Chinese yuan (CNY) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The amount I am specifying for this transaction is 50,000."
+            }
+          ],
+          "rationale": "The client explicitly specifies a monetary transaction amount of 50,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The quantity I want to transact is 100 units."
+            }
+          ],
+          "rationale": "The client explicitly commits to transacting a quantity of 100 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The client explicitly states an order direction to sell.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client explicitly specifies a market order type.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "bf35c3dcfedd79b0d36fc01afab6fac698a9e6cb592ef87fe1a257b1ac7999fc",
+    "artifact_sha256": "0c5c31e7e14f0ae85d11ace983b02dc7c6cb6a766389cb869bd2ba3fb80ff7a2"
+  },
+  "accepted_history": []
+}

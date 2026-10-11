@@ -1,0 +1,314 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_025",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_025-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+      "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+      "request_sha256": "214833eabb718ba83ab0b17af2be14e5fbbe7bf664b493b51f6fbc109fdbaa3e",
+      "upstream_sha256": {
+        "call_spec": "0b37fdf52e7dc961ad18830ae7dc25aa718a1bd0a86a5db02a09632e591040f9",
+        "check_plan_skeleton": "0944edc88b482b3b9b66f71c92f2f72126124154c6bfe5731fd6682131f28993",
+        "call_config": "6dde3e3b214b6ce99b0e59c9dd356832d9af032af4289a1831af7c2a2e317f49",
+        "check_plan": "856d2850e6ccebe398f1d5c7aac305941ff1ea506157379876d72eef371841f3",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 11065,
+        "cached_tokens": 0,
+        "output_tokens": 2389,
+        "thought_tokens": 1774,
+        "total_tokens": 15228
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.011955,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T08:25:33Z",
+      "finished_at": "2026-10-11T08:25:54Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "330eb2ae00ee6d063ee2ff7377b52258e296d23f5b553a36a51bd5cdbcc09b5e",
+    "response_schema_sha256": "688978b5f7ae9af72274e98072b4beb8749313de9d3af7197c5f72c28bc7beb0",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "The plan contains no event establishing or confirming the client's investment objective, faithfully fulfilling the target FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "For Orion Global Income Fund, rising market interest rates can push down the value of the bonds it holds, which can lower the fund's value. If the bond issuers run into credit problems or default, the fund's value and income can also fall."
+            }
+          ],
+          "rationale": "EV_001 explicitly explains concrete product-specific risks of the fund (interest rate risk and credit default risk).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "Do you understand how rising interest rates and problems with the bond issuers can affect the fund's value and income?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Yes, I understand. Rising rates can reduce the value of the bonds, and issuer defaults can reduce the fund's value and the income it pays."
+            }
+          ],
+          "rationale": "EV_002 checks understanding following risk disclosure, and EV_003 provides unambiguous confirmation and demonstration of understanding by the client.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "No event discloses a transaction fee or charge as an amount or rate, correctly satisfying target FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "You could lose some or even all of the capital invested in this fund. Selling below what you originally paid would crystallise a loss."
+            }
+          ],
+          "rationale": "EV_004 explicitly explains that the client may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [],
+          "rationale": "No event seeks or confirms the client's willingness to accept investment losses, correctly implementing target FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "I recommend reducing your holding in Orion Global Income Fund because that reduces your exposure to interest-rate movements and issuer credit problems, making those factors less dominant in your portfolio."
+            }
+          ],
+          "rationale": "EV_005 articulates a concrete rationale linking the recommendation to reducing exposure to interest-rate and credit fluctuations.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "To confirm your final instruction: sell 500 units of Orion Global Income Fund, for an amount of 75,000 in Singapore dollars, using a limit order with a limit price of 150 Singapore dollars. Do you confirm that instruction?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Yes, I confirm that final instruction exactly as you have stated it. Please proceed."
+            }
+          ],
+          "rationale": "EV_006 states the complete final transaction details and EV_007 provides unambiguous confirmation by the client.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No indications of money laundering or suspicious source of funds are present in the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No material non-public or inside information is present in the plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "My NRIC is S zero nine three nine double five eight T."
+            }
+          ],
+          "rationale": "EV_008 states the client's NRIC as 'S zero nine three nine double five eight T', resolving correctly to S0939558T.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "My date of birth is the ninth of October nineteen eighty-seven."
+            }
+          ],
+          "rationale": "EV_009 establishes the client's date of birth as 09 October 1987.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "The holding I want to reduce is Orion Global Income Fund."
+            }
+          ],
+          "rationale": "EV_010 establishes Orion Global Income Fund as the final product instructed for transaction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "For this transaction, please use Singapore dollars as the settlement currency."
+            },
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "Separately, my account in euros isn't showing on this portfolio screen. Could you check the display later? That account has nothing to do with this sale."
+            }
+          ],
+          "rationale": "EV_011 sets SGD as the settlement currency. EV_012 mentions EUR as an unrelated account currency distractor per EA_041.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The sale amount should be, let me find the entry on my summary—"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "Ah, found the entry. The amount I want to sell is 75,000."
+            }
+          ],
+          "rationale": "EV_014 contains an incomplete false start, followed in the same turn by EV_013 committing to 75,000, faithfully implementing EA_043.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "The quantity for the sale is 500 units."
+            }
+          ],
+          "rationale": "EV_015 states the final quantity of 500 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "I want to sell, not add to the holding."
+            }
+          ],
+          "rationale": "EV_016 explicitly commits the transaction direction to SELL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "Please place a limit order with a limit price of 150 Singapore dollars."
+            }
+          ],
+          "rationale": "EV_017 commits the order type to LIMIT.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "18528ad1b7cf4a37b68221ce43c23504530cb2a71a430acb4b5371c2767ed383",
+    "artifact_sha256": "05b444fabeeab8ee39620a2b314545e7fd5fe70dadd4b9fe1def6ac43465dd71"
+  },
+  "accepted_history": []
+}

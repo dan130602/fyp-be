@@ -32,7 +32,7 @@ class StageWriteLockBusy(LockHeldError):
     """The short dataset write lock stayed busy for the whole wait: contention, or a crash leftover (see the message)."""
 
 
-STALE_LOCK_ADVICE = ("Confirm that no G3/G4 process is active, and only then delete that file; "
+STALE_LOCK_ADVICE = ("Confirm that no G3/G4/G5 process is active, and only then delete that file; "
                      "deleting a lock that is in use can corrupt a concurrent write.")
 
 
