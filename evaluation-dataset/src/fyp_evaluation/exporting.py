@@ -1,4 +1,4 @@
-"""Export validated, committed JSON data; no Git mutations or model calls."""
+"""Export validated JSON data (committed by default; --allow-uncommitted for a provisional export); no Git mutations or model calls."""
 
 import argparse
 import hashlib
@@ -45,13 +45,42 @@ def resolve_dataset_root(project, dataset_root=DEFAULT_DATASET_ROOT):
     return (dataset if dataset.is_absolute() else project / dataset).resolve()
 
 
-def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT):
-    """Validate the prepared source and return deterministic snapshot bytes."""
+G8_RECORD = "authoring/ground_truth_record.json"
+
+
+def is_g8_release(dataset):
+    """A release whose calls/ were compiled by G8 (`fyp_evaluation.ground_truths`); it owns its normalization.json."""
+    return (Path(dataset) / G8_RECORD).is_file()
+
+
+def _g8_errors(dataset, schemas, paths):
+    """G8 releases: every exported call file must equal a fresh G8 compilation from the CURRENT accepted inputs.
+
+    The compiler itself refuses unless G6 (and so G0-G5) is complete, valid and current, and it re-checks every evidence span
+    against the plan, so an exported snapshot can never be stale or hand-edited.
+    """
+    from .ground_truths.cli import expected_outputs
+
+    expected = expected_outputs(dataset, schemas)
+    errors = []
+    for name, path in paths.items():
+        if name.startswith("calls/") and path.read_bytes().decode("utf-8").replace("\r\n", "\n") != expected.get(name):
+            errors.append(f"{name}: differs from a fresh G8 compilation; run scripts/compile_ground_truth.py --write first")
+    return errors
+
+
+def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncommitted=False):
+    """Validate the prepared source and return deterministic snapshot bytes.
+
+    By default every input must match committed HEAD. `allow_uncommitted=True` skips that comparison (for a provisional
+    export); the manifest then records `source.uncommitted: true`, because `source.git_commit` no longer identifies the data.
+    """
     project = Path(project).resolve()
     repo = Path(git(project, "rev-parse", "--show-toplevel").decode().strip())
     commit = git(repo, "rev-parse", "HEAD").decode().strip()
     dataset = resolve_dataset_root(project, dataset_root)
     schemas = project / "schemas"
+    g8 = is_g8_release(dataset)
     calls = sorted(p for p in (dataset / "calls").iterdir() if p.is_dir())
     if not calls:
         raise ValueError("No call directories found")
@@ -78,24 +107,31 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT):
 
     # Validate the exact local bytes, and require them to match HEAD. This also
     # detects ignored/untracked inputs and works with Git's CRLF checkout rules.
-    inputs = [source_manifest_path, *paths.values(), project / "configs/normalization.json", *schemas.glob("*.json")]
+    normalization_path = dataset / "normalization.json" if g8 else project / "configs/normalization.json"
+    inputs = [source_manifest_path, *paths.values(), normalization_path, *schemas.glob("*.json")]
     for path in inputs:
         no_links(path)
+        if allow_uncommitted:
+            continue
         relative = path.relative_to(repo).as_posix()
         committed = git(repo, "show", f"{commit}:{relative}")
         local = path.read_bytes()
         if local.replace(b"\r\n", b"\n") != committed.replace(b"\r\n", b"\n"):
-            raise ValueError(f"Source differs from committed data; commit it first: {relative}")
+            raise ValueError(f"Source differs from committed data; commit it first (or use --allow-uncommitted): {relative}")
 
     checklist = load_json(paths["checklist.json"])
-    normalization = load_json(project / "configs/normalization.json")
-    errors = validate_checklist(checklist, normalization, schemas)
+    if g8:
+        errors = _g8_errors(dataset, schemas, paths)
+    else:
+        normalization = load_json(normalization_path)
+        errors = validate_checklist(checklist, normalization, schemas)
     for call in calls:
         gt, transcript, roles = [load_json(call / name) for name in CALL_FILES]
         if gt.get("call_id") != call.name:
             errors.append(f"{call.name}: ground truth call_id differs from directory")
-        errors += [f"{call.name}: {e}" for e in validate_answers(gt, "ground_truth", checklist, normalization, schemas)]
-        errors += [f"{call.name}: {e}" for e in validate_transcript_pair(gt, transcript, roles, schemas)]
+        if not g8:
+            errors += [f"{call.name}: {e}" for e in validate_answers(gt, "ground_truth", checklist, normalization, schemas)]
+            errors += [f"{call.name}: {e}" for e in validate_transcript_pair(gt, transcript, roles, schemas)]
         if any(s["start_time"] != "0.0" or s["end_time"] != "0.0" for s in transcript["audio_segments"]):
             errors.append(f"{call.name}: v1 export supports placeholder_zero timings only")
     if errors:
@@ -114,6 +150,10 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT):
         "timing_status": "placeholder_zero",
         "files": {name: digest(data) for name, data in files.items()},
     }
+    if allow_uncommitted:  # added only when used, so committed exports stay byte-identical to before
+        manifest["source"]["uncommitted"] = True
+    if g8:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
+        manifest["dataset_status"] = load_json(calls[0] / "ground_truth.json")["status"]
     manifest["dataset_sha256"] = digest(serialize(manifest["files"]))
     files["manifest.json"] = serialize(manifest)
     return files
@@ -153,14 +193,14 @@ def verify_snapshot(destination):
     return manifest
 
 
-def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False):
+def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False, allow_uncommitted=False):
     destination = Path(destination).absolute()
     no_links(destination)
     destination = destination.resolve()
     project = Path(project).resolve()
     if destination == project or project in destination.parents or destination in project.parents:
         raise ValueError("Destination must be outside the dataset project")
-    files = prepare_snapshot(project, dataset_root)  # Complete validation before any writes.
+    files = prepare_snapshot(project, dataset_root, allow_uncommitted=allow_uncommitted)  # Complete validation before any writes.
     if destination.exists():
         if not overwrite:
             raise ValueError("Destination exists; use --overwrite for a verified snapshot update")
@@ -210,6 +250,8 @@ def main(argv=None):
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--check", action="store_true", help="Verify destination only; write nothing")
+    parser.add_argument("--allow-uncommitted", action="store_true",
+                        help="Export without requiring the source to match committed HEAD (manifest records source.uncommitted)")
     args = parser.parse_args(argv)
     try:
         manifest = verify_snapshot(args.destination) if args.check else export_snapshot(
@@ -217,11 +259,14 @@ def main(argv=None):
             args.destination,
             dataset_root=args.dataset_root,
             overwrite=args.overwrite,
+            allow_uncommitted=args.allow_uncommitted,
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(f"Export error: {error}", file=sys.stderr)
         return 2
     print(f"{'Verified' if args.check else 'Exported'} {len(manifest['call_ids'])} calls: {args.destination}")
-    print(f"Source commit: {manifest['source']['git_commit']}")
+    print(f"Source commit: {manifest['source']['git_commit']}" + (" (plus UNCOMMITTED changes)" if manifest["source"].get("uncommitted") else ""))
+    if manifest.get("dataset_status"):
+        print(f"Dataset status: {manifest['dataset_status']}")
     print(f"Dataset SHA256: {manifest['dataset_sha256']}")
     return 0

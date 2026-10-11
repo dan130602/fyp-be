@@ -58,12 +58,19 @@ def build_transcript_artifacts(ground_truth, *, timings=None, schema_dir=_SCHEMA
         )
     if errors := validate(ground_truth, "ground_truth", schema_dir):
         raise ValueError("\n".join(errors))
+    return transcript_artifacts_from_dialogue(ground_truth.get("call_id"), ground_truth["dialogue"], schema_dir=schema_dir)
 
-    dialogue = ground_truth["dialogue"]
+
+def transcript_artifacts_from_dialogue(call_id, dialogue, *, schema_dir=_SCHEMAS):
+    """(transcript, speaker_roles) from already-validated dialogue turns; only `turn_id`, `speaker` and `text` are read.
+
+    Shared by the legacy path above and the release-specific G8 compiler, so both produce identical transcript shapes and
+    speaker mappings. Timings stay placeholders until audio-derived timings exist.
+    """
     present_speakers = {turn["speaker"] for turn in dialogue}
     if unmapped := present_speakers - SPEAKER_LABELS.keys():
         raise ValueError(
-            f"{ground_truth.get('call_id')}: no transcript speaker-label mapping for: {sorted(unmapped)}"
+            f"{call_id}: no transcript speaker-label mapping for: {sorted(unmapped)}"
         )
 
     audio_segments = [

@@ -39,6 +39,19 @@ changes do not block export; commit the exporter too before sharing the tooling.
 Git must trust the source checkout under your user account. No dependencies are
 added beyond the project's existing Python requirements and Git.
 
+## Releases compiled by G8, and uncommitted exports
+
+`--dataset-root` may be a G8 release such as `datasets/advisory_execution_pilot_v1`. The destination folder name is whatever you pass to
+`--destination`; use the release name (for example `../../fyp-ai/evaluation/datasets/advisory_execution_pilot_v1`) and keep the legacy
+`pilot/` folder untouched. For such a release the exporter uses the release's own `normalization.json` (never
+`configs/normalization.json`), re-runs the G8 compilation in memory and refuses any `ground_truth.json`, `transcript.json` or
+`speaker_roles.json` that differs from a fresh compilation of the current accepted inputs (so a stale or hand-edited snapshot cannot be
+exported), and writes `dataset_status` (G7 verification and timing state) into `manifest.json`.
+
+`--allow-uncommitted` skips the "source must equal committed HEAD" check, for a provisional export. The manifest then carries
+`source.uncommitted: true`, because `source.git_commit` no longer identifies the exported bytes. Prefer committing first for anything
+others will rely on.
+
 ## Manifest
 
 `format` versions the snapshot contract. `source.git_commit`,

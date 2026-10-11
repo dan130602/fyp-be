@@ -1,0 +1,793 @@
+{
+  "schema_version": "1.0",
+  "stage": "G8",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_048",
+  "status": {
+    "g7_dialogue_verification": "PENDING",
+    "timings": "PLACEHOLDER_ZERO"
+  },
+  "source": {
+    "call_spec_sha256": "b27dbc4ccc0e5090eb121604d79aa192f41fa54014b1b1a29c30fb4a60756d53",
+    "check_plan_skeleton_sha256": "7d702f29fa52dc19864e04eb97cb2019484b567c3d72f4028a87411cc5929872",
+    "call_config_sha256": "3c9b13186cdc5eafba1d59e04fdc5a2a8b773cd7fd25015062691a2f7b960b28",
+    "check_plan_sha256": "b6d2d44fdc33f954cfe303c2ff9c954a6c8a85fd80752df395eee9b3bc658a76",
+    "plan_verification_sha256": "9dfcdae1c8967c87e7875f0cb362788080b750422fccbebbd4d786dd1bef70fb",
+    "dialogue_sha256": "ec3205f07689e31259cf8a77031539754c7f5d57dc1f2f9abf83415dc9d00a94",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language": "en-SG",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 120,
+          "text": "Your objective is to reduce credit-sensitive exposure and free up investment proceeds for your business liquidity needs."
+        }
+      ],
+      "gold_evidence_text": "Your objective is to reduce credit-sensitive exposure and free up investment proceeds for your business liquidity needs.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 121,
+          "end": 252,
+          "text": "With Orion Global Income Fund, deteriorating credit quality or defaults by the underlying bond issuers can reduce the fund's value."
+        }
+      ],
+      "gold_evidence_text": "With Orion Global Income Fund, deteriorating credit quality or defaults by the underlying bond issuers can reduce the fund's value.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 253,
+          "end": 352,
+          "text": "Do you understand how those underlying issuer credit problems can affect the value of your holding?"
+        },
+        {
+          "event_id": "EV_004",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 99,
+          "text": "Yes, I understand that worsening issuer credit quality or defaults can bring down the fund's value."
+        }
+      ],
+      "gold_evidence_text": "Do you understand how those underlying issuer credit problems can affect the value of your holding?\nYes, I understand that worsening issuer credit quality or defaults can bring down the fund's value.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 50,
+          "text": "The transaction charge for this disposal is 0.25%."
+        }
+      ],
+      "gold_evidence_text": "The transaction charge for this disposal is 0.25%.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_006",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 51,
+          "end": 169,
+          "text": "You could lose some or all of the capital invested in this fund, and disposing of your holding may crystallise a loss."
+        }
+      ],
+      "gold_evidence_text": "You could lose some or all of the capital invested in this fund, and disposing of your holding may crystallise a loss.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10,
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 170,
+          "end": 262,
+          "text": "Are you willing to accept investment losses, including a loss crystallised by this disposal?"
+        },
+        {
+          "event_id": "EV_008",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 73,
+          "text": "Yes, I am willing to bear that loss rather than keep the credit exposure."
+        }
+      ],
+      "gold_evidence_text": "Are you willing to accept investment losses, including a loss crystallised by this disposal?\nYes, I am willing to bear that loss rather than keep the credit exposure.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_009",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 54,
+          "end": 244,
+          "text": "I recommend reducing your holding in Orion Global Income Fund because it reduces your exposure to bond credit and interest-rate risks and releases proceeds for your business liquidity needs."
+        }
+      ],
+      "gold_evidence_text": "I recommend reducing your holding in Orion Global Income Fund because it reduces your exposure to bond credit and interest-rate risks and releases proceeds for your business liquidity needs.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": [
+        "weak_confirmation"
+      ]
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        15
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "start": 49,
+          "end": 309,
+          "text": "I'm instructing this disposal because a contact involved in an underlying bond issuer's restructuring told me confidentially that the issuer is about to announce a payment default. That hasn't been made public, and it's why I want this holding disposed of now."
+        }
+      ],
+      "gold_evidence_text": "I'm instructing this disposal because a contact involved in an underlying bond issuer's restructuring told me confidentially that the issuer is about to announce a payment default. That hasn't been made public, and it's why I want this holding disposed of now.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G5581630F"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 53,
+          "text": "My identification number is, hang on, this paperwork—"
+        },
+        {
+          "event_id": "EV_013",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 54,
+          "end": 136,
+          "text": "Let me check the correct record; my FIN is G five five eight one six three zero F."
+        }
+      ],
+      "gold_evidence_text": "My identification number is, hang on, this paperwork—\nLet me check the correct record; my FIN is G five five eight one six three zero F.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "G5581630F"
+        }
+      ],
+      "challenge_tags": [
+        "false_start"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "26 May 1996"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_015",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 137,
+          "end": 169,
+          "text": "My date of birth is 26 May 1996."
+        }
+      ],
+      "gold_evidence_text": "My date of birth is 26 May 1996.",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "26 May 1996"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Orion Global Income Fund"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 61,
+          "text": "The holding I want to dispose of is Orion Global Income Fund."
+        }
+      ],
+      "gold_evidence_text": "The holding I want to dispose of is Orion Global Income Fund.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Orion Global Income Fund"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_017",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 103,
+          "end": 166,
+          "text": "Use Chinese yuan as the transaction currency for this disposal."
+        }
+      ],
+      "gold_evidence_text": "Use Chinese yuan as the transaction currency for this disposal.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_017",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "CNY"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 5000000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5,
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_018",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 167,
+          "end": 209,
+          "text": "The amount for this disposal is 5,000,000."
+        },
+        {
+          "event_id": "EV_019",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 126,
+          "text": "My notes show an earlier investment contribution of 750,000 Chinese yuan; that's historical, not the amount for this disposal."
+        },
+        {
+          "event_id": "EV_020",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 127,
+          "end": 261,
+          "text": "There's also a hypothetical disposal illustration of 250,000 Chinese yuan in my notes, but that's just an example, not an instruction."
+        }
+      ],
+      "gold_evidence_text": "The amount for this disposal is 5,000,000.\nMy notes show an earlier investment contribution of 750,000 Chinese yuan; that's historical, not the amount for this disposal.\nThere's also a hypothetical disposal illustration of 250,000 Chinese yuan in my notes, but that's just an example, not an instruction.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 5000000
+        },
+        {
+          "turn_id": 7,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 750000
+        },
+        {
+          "turn_id": 7,
+          "event_id": "EV_020",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 250000
+        }
+      ],
+      "challenge_tags": [
+        "multiple_monetary_values"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 5000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_021",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 262,
+          "end": 309,
+          "text": "The quantity I want disposed of is 5,000 units."
+        }
+      ],
+      "gold_evidence_text": "The quantity I want disposed of is 5,000 units.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_021",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 5000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_022",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 62,
+          "end": 102,
+          "text": "I want to sell from my existing holding."
+        }
+      ],
+      "gold_evidence_text": "I want to sell from my existing holding.",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_022",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "SELL"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_023",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 310,
+          "end": 339,
+          "text": "Place this as a market order."
+        }
+      ],
+      "gold_evidence_text": "Place this as a market order.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_023",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "Good morning, Adrian. Melissa Goh speaking. Nice to hear from you. Are you somewhere you can speak privately?"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "Hi, Melissa. Yes, I'm in my office with the door closed. I've got a staff meeting shortly, so I'd prefer to handle this over the phone. Going down to the branch is quite difficult these days."
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "Certainly. We can keep the conversation focused. Before we get into it, let's do the identity checks. Please have your own details ready."
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "My identification number is, hang on, this paperwork— Let me check the correct record; my FIN is G five five eight one six three zero F. My date of birth is 26 May 1996. Sorry, there are several folders on my desk and I picked up the wrong one."
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "Thank you, Adrian. No need to rush through the paperwork. I'm listening."
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "The holding I want to dispose of is Orion Global Income Fund. I want to sell from my existing holding. Use Chinese yuan as the transaction currency for this disposal. The amount for this disposal is 5,000,000."
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "I'll let you finish speaking before I take you through the remaining points."
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "My notes show an earlier investment contribution of 750,000 Chinese yuan; that's historical, not the amount for this disposal. There's also a hypothetical disposal illustration of 250,000 Chinese yuan in my notes, but that's just an example, not an instruction. The quantity I want disposed of is 5,000 units. Place this as a market order."
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "Your objective is to reduce credit-sensitive exposure and free up investment proceeds for your business liquidity needs. With Orion Global Income Fund, deteriorating credit quality or defaults by the underlying bond issuers can reduce the fund's value. Do you understand how those underlying issuer credit problems can affect the value of your holding?"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "Yes, I understand that worsening issuer credit quality or defaults can bring down the fund's value."
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "The transaction charge for this disposal is 0.25%. You could lose some or all of the capital invested in this fund, and disposing of your holding may crystallise a loss. Are you willing to accept investment losses, including a loss crystallised by this disposal?"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "Yes, I am willing to bear that loss rather than keep the credit exposure. Sorry if I sound distracted. Managing the family business means people are always knocking on the door, even when I've blocked out time for a call."
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "No problem. I'll keep to the points we need to cover. I recommend reducing your holding in Orion Global Income Fund because it reduces your exposure to bond credit and interest-rate risks and releases proceeds for your business liquidity needs."
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "Thanks. Telephone contact is still the easiest way to reach me. If I'm with the warehouse team, I may miss the first ring, but I'll call back when I'm somewhere quiet."
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "I'll note your contact preference. Please explicitly confirm that the final disposal instruction you've given is what you want me to submit."
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "Mm, okay, someone from the office is calling me. I'm instructing this disposal because a contact involved in an underlying bond issuer's restructuring told me confidentially that the issuer is about to announce a payment default. That hasn't been made public, and it's why I want this holding disposed of now. I really have to get back to the office discussion now."
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "That information needs internal review. I won't take any processing action during this call. I'll refer the matter to the appropriate team and contact you separately. You can return to your meeting."
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "All right, Melissa. Please use the telephone when you need to reach me. I need to go now. Bye."
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "Noted, Adrian. Thank you for your time. Goodbye."
+    }
+  ]
+}

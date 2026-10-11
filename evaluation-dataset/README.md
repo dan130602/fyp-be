@@ -102,7 +102,9 @@ verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fy
 G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
 (`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only),
 G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated) and G6
-(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only). G7 onwards is not yet implemented.
+(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only), and a PROVISIONAL G8
+(`fyp_evaluation.ground_truths`, deterministic canonical ground-truth compilation). G7 (dialogue verification) and G9 (SSML, Polly
+audio, timings) are not yet implemented.
 
 Model decisions per stage: G3, G4 and G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
 level `medium` on the paid Flex tier; (future) G7 will use `gemini-3.8-flash` with thinking level `high` on Flex.
@@ -339,7 +341,7 @@ dialogue is structurally valid and ready for G7; it is never semantic verificati
 - **Outputs.** `authoring/dialogues/CALL_XXX.json` (turns, `event_alignment`, length metrics), committed
   `authoring/dialogue_provenance/CALL_XXX.json` and `authoring/dialogue_record.json`; operational state under
   `.llm_audit/<dataset_id>/G6/`. Spoken-turn consumers read only `turns[].turn_id/speaker/text`. The legacy ground-truth compiler
-  does not accept this artifact; a later G8 adapter will translate it (not implemented here).
+  does not accept this artifact; the G8 compiler (below) translates it.
 
 ```powershell
 python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_027] [--print-request]
@@ -349,6 +351,40 @@ python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_
 ```
 
 Credentials: `OPENAI_API_KEY` in the operating-system environment or `.env`; offline modes and tests need none.
+
+## G8: canonical ground truth (provisional until G7 and audio timings)
+
+G8 (`fyp_evaluation.ground_truths`, `scripts/compile_ground_truth.py`) is deterministic: no LLM, no network. It combines the frozen gold
+(G2A call spec), the accepted G4 check plan and the accepted G6 dialogue into the three files each call needs, written to
+`datasets/<release>/calls/CALL_XXX/`:
+
+- `ground_truth.json`: the 20 expected answers (copied from the frozen gold, never derived from the dialogue) plus ACTUAL evidence
+  from the dialogue: `gold_evidence_turns`, exact spans (`gold_evidence`: event, turn, speaker, character offsets, text) and
+  `gold_evidence_text`; `final_turn_id` and a `value_history` (every turn that states a value, with its status such as
+  SUPERSEDED / FINAL, readback errors included) for extraction questions; `challenge_tags` from the assigned edge cases; the full
+  dialogue turns; source hashes; and a `status` block. Absence questions have empty evidence by design. The check plan holds
+  PLANNED evidence; this file holds what is actually in the accepted dialogue, and the compiler refuses unless each span equals the
+  planned text and is spoken by the planned speaker.
+- `transcript.json` and `speaker_roles.json`: the AWS-Transcribe-shaped pair (EMPLOYEE = spk_0 = RM, CLIENT = spk_1 = Customer),
+  from the same converter as the legacy pilot, with every segment time still the placeholder `"0.0"`.
+
+`authoring/ground_truth_record.json` hashes every compiled file and `dataset_manifest.json` lists the call IDs. `--write` refuses unless
+G6 is complete, valid and current, and refuses to replace differing files without `--overwrite`; `--check` rebuilds in memory and
+compares byte for byte. Outputs are therefore always regenerable and never hand-edited.
+
+**Status: PROVISIONAL.** `status.g7_dialogue_verification` is `PENDING` and `status.timings` is `PLACEHOLDER_ZERO`. The remaining order of work is:
+
+1. **G7** dialogue verification (gold-aware, report-only). Anything it flags is fixed by regenerating the affected G6 dialogue (or
+   upstream authoring), never by editing gold or the compiled files.
+2. **SSML, Polly audio and `timings.json`** (render per turn; stitch; derive per-turn start/end times).
+3. **Recompile G8** with the verified dialogues and the real timings (`--write --overwrite`), so `status` becomes `VERIFIED` /
+   `AUDIO_DERIVED` and `transcript.json` carries real start and end times in the AWS Transcribe shape. The converter already has the
+   `timings` parameter reserved for this; accepting real timings (and the exporter accepting non-placeholder times with explicit
+   timing provenance) is not implemented yet.
+4. Re-export to fyp-ai as a new version of the same snapshot folder.
+
+The exporter (`scripts/export_dataset.py`, see EXPORTING.md) understands G8 releases (it uses the release's own `normalization.json`,
+re-compiles G8 in memory and refuses any call file that differs) and records `dataset_status` in the snapshot manifest.
 
 ## Required generation order
 
