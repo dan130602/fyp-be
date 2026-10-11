@@ -1,0 +1,126 @@
+"""G6 dialogue context, the per-call brief and the canonical Responses API request body (Batch only).
+
+The brief is deliberately narrow: harmless scenario background, the planned events as markers with their exact text, the
+placement constraints and the absence conditions. Ready-to-speak compliance material from G3 (concrete risks, product
+description, recommendation basis, fees, limit prices, red flags, objectives, loss attitude) is never shown: every planned
+use of it already exists as a G4 event, so supporting speech cannot leak what the model never sees. No gold values,
+verdicts, question IDs, G5 rationales, hashes or offsets are included.
+"""
+
+from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json
+from fyp_evaluation.planning import outputs as g1
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+
+from .config import (
+    EVENT_RELATIONS, IDENTITY_QUESTIONS, LENGTH_POLICY, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, REASONING_EFFORT,
+    RESPONSE_FORMAT_NAME, RESPONSE_SCHEMA, STAGE,
+)
+
+
+def schema_path(name, schema_dir=DEFAULT_SCHEMA_DIR):
+    return schema_dir / "stage6" / f"{name}.schema.json"
+
+
+def marker(event_id):
+    return f"[[{event_id}]]"
+
+
+class DialogueContext:
+    """Everything one call's validation and compilation need, bound to ONE version of its G3/G4 inputs and length policy."""
+
+    def __init__(self, inputs, call_id, length_policy=LENGTH_POLICY):
+        self.inputs, self.call_id = inputs, call_id
+        self.spec = inputs.specs[call_id]
+        self.config = inputs.configs[call_id]
+        self.plan = inputs.plans[call_id]
+        self.metadata = self.spec["metadata"]
+        self.profile = self.metadata["duration_profile"]
+        self.length_policy = length_policy
+        self.bounds = length_policy["profiles"][self.profile]
+        self.events = self.plan["planned_events"]
+        self.event_index = {event["event_id"]: index for index, event in enumerate(self.events)}
+        self.speakers = {event["event_id"]: event["authoring"]["speaker"] for event in self.events}
+        self.texts = {event["event_id"]: event["authoring"]["planned_text"] for event in self.events}
+        self.constraints = self.plan["constraints"] + self.plan["derived_constraints"]
+        mentions = sorted({(m["question_id"], m["surface"]) for event in self.events for m in event["authoring"]["value_mentions"]
+                           if m.get("question_id")})  # scenario placeholders (fee, limit price) carry no question
+        self.identity_surfaces = [item for item in mentions if item[0] in IDENTITY_QUESTIONS]
+        self.value_surfaces = [item for item in mentions if item[0] not in IDENTITY_QUESTIONS]
+        semantics = {entry["question_id"]: entry for entry in inputs.documents["check_semantics"]["checks"]}
+        self.absence_conditions = [
+            {"question_id": check["question_id"],
+             "condition": semantics[check["question_id"]][check["forbidden_condition_ref"].split(".")[-1]]}
+            for check in self.plan["checks"] if check["kind"] == "COMPLIANCE" and check["evidence_mode"] == "ABSENCE"]
+
+
+def _event_brief(event):
+    entry = {"event_id": event["event_id"], "marker": marker(event["event_id"]), "speaker": event["authoring"]["speaker"],
+             "kind": event["kind"], "status": event["status"], "text": event["authoring"]["planned_text"]}
+    for key in EVENT_RELATIONS:
+        if key in event:
+            entry[key] = event[key]
+    return entry
+
+
+def _constraint_brief(constraint):
+    keys = ("before", "after") if constraint["type"] == "ORDER" else ("events",)
+    entry = {"type": constraint["type"], **{key: constraint[key] for key in keys}}
+    if constraint["type"] == "MIN_INTERVENING_TURNS":
+        entry["turns"] = constraint["turns"]
+    return entry
+
+
+def build_brief(ctx):
+    scenario, catalog = ctx.config["scenario"], {e["id"]: e for e in ctx.inputs.documents["edge_case_catalog"]["edge_cases"]}
+    final = next(p for p in ctx.config["products"] if "FINAL" in p["roles"])
+    bounds = ctx.bounds
+    return {
+        "call": {"call_id": ctx.call_id, "language": ctx.metadata["language"], "duration_profile": ctx.profile,
+                 "target_words": {"min": bounds["target_words"][0], "max": bounds["target_words"][1]},
+                 "accepted_words": {"min": bounds["accepted_words"][0], "max": bounds["accepted_words"][1]}},
+        "people": {"client": {"name": scenario["client"]["name"], "background": scenario["client"]["background"]},
+                   "employee": {"name": scenario["employee"]["name"]}},
+        "setting": {"call_reason": scenario["setting"]["call_reason"], "conversation_style": scenario["setting"]["conversation_style"]},
+        "holding_context": scenario["holding_context"],
+        "final_product": {"name": final["name"], "category": final["category"]},
+        "discussion_topics": list(scenario["additional_discussion_topics"]),
+        "events": [_event_brief(event) for event in ctx.events],
+        "placement_constraints": [_constraint_brief(c) for c in ctx.constraints],
+        "must_never_be_expressed_outside_events": [item["condition"] for item in ctx.absence_conditions],
+        "edge_cases": [{"edge_case_id": e["edge_case_id"], "description": catalog[e["edge_case_id"]]["description"]}
+                       for e in ctx.spec["edge_cases"]],
+    }
+
+
+class RequestBuilder:
+    """Builds the identical request body for any call; computes the template/schema hashes once."""
+
+    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
+        self.inputs = inputs
+        template_path = prompt_dir / PROMPT_TEMPLATE
+        self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
+        response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
+        self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
+        self.response_schema = parse_json_text(response_path.read_text(encoding="utf-8"))
+        self.artifact_schema = parse_json_text(schema_path("dialogue", schema_dir).read_text(encoding="utf-8"))
+        self.developer_message = template_path.read_text(encoding="utf-8").replace("\r\n", "\n")
+        self._contexts = {}
+
+    def context(self, call_id):
+        if call_id not in self._contexts:
+            self._contexts[call_id] = DialogueContext(self.inputs, call_id)
+        return self._contexts[call_id]
+
+    def build(self, call_id, attempt_id):
+        return {
+            "model": MODEL,
+            "input": [
+                {"role": "developer", "content": self.developer_message},
+                {"role": "user", "content": serialize_json(build_brief(self.context(call_id)))},
+            ],
+            "text": {"format": {"type": "json_schema", "name": RESPONSE_FORMAT_NAME, "strict": True, "schema": self.response_schema}},
+            "reasoning": {"effort": REASONING_EFFORT},
+            "max_output_tokens": MAX_OUTPUT_TOKENS,
+            "store": False,
+            "metadata": {"dataset_id": self.inputs.dataset_id, "call_id": call_id, "stage": STAGE, "attempt_id": attempt_id},
+        }

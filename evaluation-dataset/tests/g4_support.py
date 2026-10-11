@@ -79,13 +79,16 @@ def snapshot(*directories):
 
 
 G4_OUTPUTS = ("authoring/check_plans", "authoring/check_plan_provenance", "authoring/check_plan_record")
+# Later stages' accepted outputs describe the real G4 plans, so an isolated copy that regenerates G4 must not carry them.
+LATER_STAGE_OUTPUTS = ("authoring/plan_verification", "authoring/dialogue")
 
 
 def copy_release(destination, *, keep_g3=True):
-    """Copy file contents only (shutil.copytree would copy a OneDrive ReadOnly directory attribute); never any G4 output."""
+    """Copy file contents only (shutil.copytree would copy a OneDrive ReadOnly directory attribute); never any G4 output
+    (nor any G5/G6 output, which would otherwise show the isolated copy as already verified)."""
     import shutil
 
-    skip = G4_OUTPUTS + (() if keep_g3 else ("authoring/call_config",))
+    skip = G4_OUTPUTS + LATER_STAGE_OUTPUTS + (() if keep_g3 else ("authoring/call_config",))
     destination.mkdir(parents=True, exist_ok=True)
     for path in sorted(RELEASE.rglob("*")):
         relative = path.relative_to(RELEASE).as_posix()

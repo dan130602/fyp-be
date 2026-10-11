@@ -1,0 +1,324 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage6/dialogue_provenance.schema.json",
+  "title": "G6 dialogue provenance",
+  "description": "Committed audit trail for one call (G6, OpenAI Batch only): compact attempt summaries with their generation params (length policy included), the accepted parsed response and the history of superseded accepted versions. Raw provider envelopes live in the gitignored audit directory, never here. No credentials are ever stored.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "stage": {
+      "const": "G6"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attempt"
+      }
+    },
+    "accepted": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/accepted"
+        }
+      ]
+    },
+    "accepted_history": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/accepted"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "superseded_at": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "superseded_at",
+              "reason"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "attempts",
+    "accepted",
+    "accepted_history"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "accepted": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parsed_response": {
+          "type": "object"
+        },
+        "parsed_response_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "params": {
+          "$ref": "#/$defs/params"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "model",
+        "params",
+        "prompt_template_sha256",
+        "response_schema_sha256",
+        "parsed_response",
+        "parsed_response_sha256",
+        "artifact_sha256"
+      ],
+      "additionalProperties": true
+    },
+    "attempt": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "state": {
+          "enum": [
+            "ACCEPTED",
+            "REJECTED",
+            "TRANSPORT_FAILED",
+            "SUPERSEDED",
+            "STALE_UPSTREAM"
+          ]
+        },
+        "transport": {
+          "const": "batch"
+        },
+        "submission_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "batch_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "custom_id": {
+          "type": "string"
+        },
+        "provider_response_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "params": {
+          "$ref": "#/$defs/params"
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "request_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "upstream_sha256": {
+          "type": "object"
+        },
+        "api_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rejection_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fatal": {
+          "type": "boolean"
+        },
+        "possibly_billed": {
+          "type": "boolean"
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estimated_cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "price_table_version": {
+          "type": "string"
+        },
+        "reopen_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "finished_at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "state",
+        "transport",
+        "custom_id",
+        "model",
+        "request_sha256",
+        "validation_errors",
+        "fatal",
+        "created_at",
+        "finished_at",
+        "params"
+      ],
+      "additionalProperties": true
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reasoning_effort",
+        "max_output_tokens",
+        "length_policy"
+      ],
+      "properties": {
+        "reasoning_effort": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "length_policy": {
+          "$ref": "#/$defs/length_policy"
+        }
+      }
+    },
+    "length_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "assumed_wpm",
+        "profiles"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumed_wpm": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "profiles": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "accepted_words",
+              "target_words"
+            ],
+            "properties": {
+              "accepted_words": {
+                "$ref": "#/$defs/word_range"
+              },
+              "target_words": {
+                "$ref": "#/$defs/word_range"
+              }
+            }
+          }
+        }
+      }
+    },
+    "word_range": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}

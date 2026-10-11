@@ -101,10 +101,10 @@ skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dial
 verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
 G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
 (`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only),
-and G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated). G6 onwards is not
-yet implemented.
+G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated) and G6
+(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only). G7 onwards is not yet implemented.
 
-Model decisions per stage: G3, G4 and (future) G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
+Model decisions per stage: G3, G4 and G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
 level `medium` on the paid Flex tier; (future) G7 will use `gemini-3.8-flash` with thinking level `high` on Flex.
 
 ```powershell
@@ -308,6 +308,47 @@ none. Outputs: `authoring/plan_verifications/CALL_XXX.json` (the report with Pyt
 accepted response, history) and `authoring/plan_verification_record.json`; operational state under
 `.llm_audit/<dataset_id>/G5/`. G5 never writes G3/G4 files. The control builder writes three isolated copies (unchanged,
 an omission leak, a contradictory final instruction) through G4's own acceptance path for smoke-testing the verifier.
+
+## G6 dialogue generation
+
+G6 turns each call's accepted G3 scenario and G4 evidence plan into one EMPLOYEE/CLIENT dialogue
+(`fyp_evaluation.dialogues`, `scripts/generate_dialogues.py`). It uses `gpt-6.1-sol` (medium reasoning, Responses Structured
+Outputs) and is **Batch-only**: `--sync` is refused (the OpenAI SDK retries sync generation silently). G6 acceptance means the
+dialogue is structurally valid and ready for G7; it is never semantic verification.
+
+- **Evidence is inserted by Python.** The model writes whole-token markers such as `[[EV_013]]`; Python substitutes each event's
+  exact G4 `planned_text`, assigns zero-based contiguous `turn_id` values and derives every span (`text[start:end]` of the turn
+  equals the planned text). The model outputs only `turns[{speaker, text}]`. Nothing is copied or paraphrased by the model, so
+  false-start dashes, ellipses and spelled identifiers are preserved by construction.
+- **Structural rules** (REJECTED on failure): schema; every event exactly once, in a turn by its G4 speaker; strict EMPLOYEE/CLIENT
+  alternation; every frozen and derived ORDER, SAME_TURN, NOT_SAME_TURN and MIN_INTERVENING_TURNS constraint; no planned text repeated
+  outside its marker (a text contained in another event, as in CALL_017, is allowed); no unplanned K01/K02 value; length inside the band.
+  Other value surfaces outside events are recorded as `review_notes` for G7, not rejected.
+- **Brief.** Only harmless background (names, setting, holding context, final product name and category, discussion topics), the
+  events, the placement constraints and the absence conditions. Speakable compliance content from G3 (risks, fees, recommendation
+  basis, red flags, objectives, loss attitude) is never shown. That restriction is a G6 authoring policy, not a frozen G0 rule.
+- **Length policy `g6-length-v1`.** Estimated from words at 160 wpm, measured on the repository's own Polly renders (150-169 wpm).
+  SHORT accepts 510-750 words, LONG 5,103-9,000, so each band stays inside the frozen duration profile for any rate from 150 to 170
+  wpm. The policy is recorded in every attempt's `params` and rebuilt from there, so a later recalibration never changes an accepted
+  dialogue. `estimated_seconds` is an estimate, never a guaranteed audio duration.
+- **G5 gate.** A call is eligible only while its G5 report is current, intact and VALID (`g6_eligibility()`), per call. At acceptance,
+  under the dataset write lock: unreadable inputs hold the response (resumable `UPSTREAM_INVALID`); changed fingerprints, a
+  confirmed-deleted G5 report included, close it as terminal `STALE_UPSTREAM` (raw response kept, never resent); changed G6
+  settings do the same; a failing G5 approval with unchanged fingerprints is a resumable hold. Historical dialogues are rebuilt
+  against the exact G3/G4 versions and the verified G5 approval they recorded. Freeze G3-G5 authoring while G6 runs.
+- **Outputs.** `authoring/dialogues/CALL_XXX.json` (turns, `event_alignment`, length metrics), committed
+  `authoring/dialogue_provenance/CALL_XXX.json` and `authoring/dialogue_record.json`; operational state under
+  `.llm_audit/<dataset_id>/G6/`. Spoken-turn consumers read only `turns[].turn_id/speaker/text`. The legacy ground-truth compiler
+  does not accept this artifact; a later G8 adapter will translate it (not implemented here).
+
+```powershell
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_027] [--print-request]
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --submit [--call-id ...]    # paid Batch
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --collect
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check
+```
+
+Credentials: `OPENAI_API_KEY` in the operating-system environment or `.env`; offline modes and tests need none.
 
 ## Required generation order
 
