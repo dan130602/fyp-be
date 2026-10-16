@@ -21,11 +21,11 @@ from fyp_evaluation.planning import outputs as g1
 
 from .compile import build_record, compile_artifact
 from .config import (
-    ARTIFACT_DIR, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, LENGTH_POLICY, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE,
+    ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, LENGTH_POLICY, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE,
     PROVENANCE_DIR, REASONING_EFFORT, RECORD, RESPONSE_SCHEMA, SEMANTIC_BUDGET, STAGE, TRANSPORT_BUDGET,
 )
 from .feasibility import preflight_errors, synthesize_dialogue
-from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs
+from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs, read_dialogue
 from .request import DialogueContext, RequestBuilder, schema_path
 from .validate_response import DialogueValidator
 
@@ -42,12 +42,26 @@ class DialogueRunner(StageRunner):
                           "plan_verification": "plan_verification_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
 
+    def __init__(self, root, *, repair_feedback=None, **kwargs):
+        """`repair_feedback` (optional, see `request.load_repair_feedback`): call-specific guidance derived from a G7 report, added
+        to that call's request brief and recorded on its attempts. It changes no acceptance rule."""
+        super().__init__(root, **kwargs)
+        self.repair_feedback = repair_feedback or {}
+
     # ---- stage hooks ---------------------------------------------------------------------------------
     def _load_inputs(self):
         return load_inputs(self.root, self.schema_dir)
 
     def _make_builder(self):
-        return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)
+        return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir, self.repair_feedback)
+
+    def _new_attempt(self, call_id, transport, **kwargs):
+        attempt, body = super()._new_attempt(call_id, transport, **kwargs)
+        feedback = self.repair_feedback.get(call_id)
+        if feedback:  # the source G7 report and the guidance go into the attempt record, next to the stored request
+            attempt["repair_feedback"] = {key: deepcopy(feedback[key]) for key in ("source_g7_report_sha256", "source_g7_attempt_id", "round", "guidance")}
+            self._save(attempt)
+        return attempt, body
 
     def _make_validator(self):
         return DialogueValidator(self.builder.response_schema)
@@ -178,6 +192,47 @@ class DialogueRunner(StageRunner):
                 result[call_id] = {"status": "upstream_invalid", "changed": [], "error": "the G5 report is unreadable"}
             elif info["status"] == "current" and (gate := self._g5_gate(call_id)):
                 result[call_id] = {"status": "upstream_invalid", "changed": [], "error": gate}
+        return result
+
+    # ---- the G7 gate (read-only) -----------------------------------------------------------------------
+    def _verified_dialogue(self, call_id):
+        """(text, problem): the accepted dialogue's text, but only once its integrity is established, else (None, why).
+
+        `_validate_call` alone is not proof of acceptance (it returns no errors when both files are absent), so the file is read
+        directly and the committed provenance must record an accepted attempt whose artifact hash matches these exact bytes.
+        """
+        fingerprint, text = read_dialogue(self.inputs.root, call_id)
+        if fingerprint is None:
+            return None, "no accepted G6 dialogue (the file is absent)"
+        if fingerprint == DIALOGUE_UNREADABLE or text is None:
+            return None, "the G6 dialogue cannot be read"
+        try:
+            errors = self._validate_call(call_id, self._schema_validators())
+            if errors:
+                return None, f"integrity check failed: {errors[0]}"[:300]
+            accepted = self._prov_state(call_id)[0]["accepted"]
+            if accepted is None:
+                return None, "no accepted G6 dialogue (provenance records no accepted attempt)"
+            if text_hash(text) != accepted["artifact_sha256"]:
+                return None, "integrity check failed: the dialogue does not match its accepted provenance"
+            return text, None
+        except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+            return None, f"integrity check failed: {error!r}"[:300]
+
+    def g7_eligibility(self, call_ids=None):
+        """{call_id: {eligible, reason}}: a call may be verified by G7 only with an accepted, current, intact G6 dialogue whose
+        required G5 approval is still current, intact and VALID. Fails closed; reads only, never changes G6 behaviour."""
+        result = {}
+        for call_id, dependency in self.dependency_status(call_ids).items():
+            if dependency["status"] == "none":
+                reason = "no accepted G6 dialogue"
+            elif dependency["status"] != "current":
+                reason = f"G6 dialogue is {dependency['status']}" + (
+                    f" ({', '.join(dependency['changed'])} changed)" if dependency["changed"] else f" ({dependency['error']})" if dependency["error"] else "")
+            else:
+                _, problem = self._verified_dialogue(call_id)
+                reason = problem or "eligible"
+            result[call_id] = {"eligible": reason == "eligible", "reason": reason}
         return result
 
     # ---- version-matched context (historical dialogues) -------------------------------------------------

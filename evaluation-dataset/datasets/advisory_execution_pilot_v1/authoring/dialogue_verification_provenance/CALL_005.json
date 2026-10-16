@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_005",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_005-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "4a1af62cf6487329df983eaf2611b3b593b3ddb9bc8b131873a6ee8723d50ca3",
+      "upstream_sha256": {
+        "call_spec": "087f9e6af870d69870650a2b07e79086b0caef8541c8e430e0cd0cff0c1c775e",
+        "check_plan_skeleton": "41a34fd3f28eb7138fb6d38d1be3db06e70bb9dd445550675923c8f6f477a28d",
+        "call_config": "9a4a50a1ce4632cf0609b644cc4797cc481a3907e2c2de9d45fa4885acbbf8a8",
+        "check_plan": "613186a328647038c887e0a90c5c17079bd6cc17e5eb96def31ac9e498d79bfb",
+        "plan_verification": "92bdd31e1ce98165903afba1f2dad6995255d108a7702d371011d5414e40dbfb",
+        "dialogue": "08e0a76bafebf31bf3b622f02529204a5a1f52ed9031e5da795a3f9bed44f4d8",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15651,
+        "cached_tokens": 0,
+        "output_tokens": 2425,
+        "thought_tokens": 3834,
+        "total_tokens": 21910
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.017605,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:23:05Z",
+      "finished_at": "2026-10-11T23:24:47Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "The employee does not establish or confirm the client's investment objective at any point during the call, matching the planned FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Meridian Asia Equity Fund holds shares across Asian markets, so weaker regional economic conditions or changes in local regulations can push down the value of its holdings."
+            }
+          ],
+          "rationale": "The employee explains concrete risks specific to the fund's regional equity holdings (regional economic conditions and local regulatory changes).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Do you understand how those economic and regulatory changes could affect the fund's value?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I understand. If conditions worsen or regulations change in those markets, the shares the fund holds can fall in value."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee explicitly checks the client's understanding, and the client provides an unambiguous demonstration and confirmation of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For this transaction, we'll charge 0.5% of the transaction value."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction charge as a percentage rate (0.5%).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "You could lose part or even all of the money you've invested in this fund."
+            }
+          ],
+          "rationale": "The employee explicitly explains that the client could lose part or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [],
+          "rationale": "Neither the employee nor the client confirms or establishes the client's willingness to accept investment losses, matching the planned FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "I recommend reducing this holding because it would leave your portfolio less concentrated in regional shares and reduce the amount of monitoring it needs."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale for recommending the reduction of the holding, linking it to lessening regional concentration and portfolio monitoring.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Please confirm your final instruction: sell 1,000 units of Meridian Asia Equity Fund using a market order, with a transaction amount of 25,000 in euros. Is that what you want me to submit?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I confirm that final instruction. Please submit it as you've just stated."
+            }
+          ],
+          "rationale": "The employee requests explicit confirmation of the complete final transaction details, and the client unambiguously confirms the order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The call contains no indications of money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The call contains no instruction based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The fund's future investment returns are guaranteed, so you can count on it delivering a positive return."
+            }
+          ],
+          "rationale": "The employee explicitly guarantees future returns, realising the planned violation for C12 FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My NRIC is S zero eight five nine six zero nine E."
+            }
+          ],
+          "rationale": "The client states her NRIC as S zero eight five nine six zero nine E, resolving to S0859609E.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 27 October 1991."
+            }
+          ],
+          "rationale": "The client states her date of birth as 27 October 1991.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Meridian Asia Equity Fund is the regional equity fund in your portfolio that we're discussing."
+            },
+            {
+              "turn_id": 5,
+              "quote": "Let's transact in the regional fund you mentioned first, not the technology-focused one."
+            }
+          ],
+          "rationale": "The client selects Meridian Asia Equity Fund by descriptive reference to the employee's antecedent explanation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "Use euros as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client specifies euros (EUR) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The monetary amount I want to transact is 25,000."
+            }
+          ],
+          "rationale": "The client explicitly specifies a monetary transaction amount of 25,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The quantity for my instruction is 1,000 units."
+            }
+          ],
+          "rationale": "The client explicitly specifies the quantity of 1,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "I want to sell that holding."
+            }
+          ],
+          "rationale": "The client instructs a sell transaction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "Please place it as a market order."
+            }
+          ],
+          "rationale": "The client explicitly selects a market order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_007",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Meridian Asia Equity Fund is the regional equity fund in your portfolio that we're discussing. By comparison, Nova Technology Equity Fund focuses on technology businesses; I'm mentioning it just to distinguish the funds, not as another recommendation."
+            },
+            {
+              "turn_id": 5,
+              "quote": "Let's transact in the regional fund you mentioned first, not the technology-focused one."
+            }
+          ],
+          "rationale": "The employee introduces two candidate products, and the client selects Meridian Asia Equity Fund using an unambiguous descriptive reference pointing back to the first fund mentioned.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_008",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For this transaction, we'll charge 0.5% of the transaction value."
+            }
+          ],
+          "rationale": "The employee discloses the fee rate clearly using natural phrasing rather than copying the checklist wording verbatim.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "6ed11ae7a158817ae5883139b6634b595a62d0c000e01fe337fe49c391cf30d6",
+    "artifact_sha256": "b90fd753440970d9b6d14b6c824c894a0034e24921bb1776bcc0e12b563dde01"
+  },
+  "accepted_history": []
+}

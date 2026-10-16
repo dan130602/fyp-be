@@ -221,6 +221,19 @@ class StageRunner:
                 self.schema_dir / self.spec.schema_subdir / f"{self.spec.provenance_schema}.schema.json"))
         return self._prov_validator
 
+    def _schema_validators(self):
+        """The artifact/record/provenance schema validators `validate()` uses, built once per runner (read-only integrity gates
+        of later stages call `_validate_call` with these)."""
+        if getattr(self, "_stage_schemas", None) is None:
+            from jsonschema import Draft202012Validator
+
+            from fyp_evaluation.validation.schemas import load_json
+
+            self._stage_schemas = {role: Draft202012Validator(load_json(self.schema_dir / self.spec.schema_subdir / f"{name}.schema.json"))
+                                   for role, name in (("artifact", self.spec.artifact_schema), ("record", self.spec.record_schema),
+                                                      ("provenance", self.spec.provenance_schema))}
+        return self._stage_schemas
+
     def _prov_state(self, call_id):
         """(provenance, problem): the schema-valid provenance (empty if absent), or (None, reason) if unreadable/invalid."""
         if not (self.root / self.spec.provenance_path(call_id)).is_file():

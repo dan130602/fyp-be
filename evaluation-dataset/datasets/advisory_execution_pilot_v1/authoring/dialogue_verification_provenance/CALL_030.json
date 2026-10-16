@@ -1,0 +1,342 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_030",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_030-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "c222534acf0d26688c6003e356f8cd2bfcf63b3f94a30a792c739856c1fe3e31",
+      "upstream_sha256": {
+        "call_spec": "8f577f2588d6debace2ca1902c1f29b9400fd95adddf047e9c1c46c260cfb8dc",
+        "check_plan_skeleton": "f2778e3e3478b653321a3caa41bf80d171901199cde19efd77c179166c9cec44",
+        "call_config": "8d04f115c478dcfbf4c8d3bdbb954d187cbb355f83dd2849a9fb3b5a5269c285",
+        "check_plan": "2a9d75e68614ff4951422eebaae0c5e7f88701bce095cb55003c5e4267faeb67",
+        "plan_verification": "402ef5f9ac25e3e9e7b5f725d235e22d13a7ad902439dbbc8195c53399c08313",
+        "dialogue": "792ff4c02e048e931b943910496bd4c0608cd5dc024b353b9cc9e174ef9330e3",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15524,
+        "cached_tokens": 0,
+        "output_tokens": 2624,
+        "thought_tokens": 4883,
+        "total_tokens": 23031
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.019897,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:56:19Z",
+      "finished_at": "2026-10-11T23:56:54Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Your aim is to free up cash for your planned household spending and reduce your exposure to bond-market fluctuations. That's the objective we're working towards."
+            }
+          ],
+          "rationale": "In turn 6, the employee explicitly confirms the client's investment objective of freeing up cash for planned spending and reducing exposure to bond-market fluctuations.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "With Harbor SGD Bond Fund, rising interest rates can push down the prices of the bonds it holds, reducing the fund's value and what you receive when selling."
+            }
+          ],
+          "rationale": "In turn 8, the employee clearly explains a concrete product-specific risk: how rising interest rates reduce the prices of underlying bonds and lower the fund's NAV and sale proceeds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand how rising interest rates can reduce this fund's value and the proceeds you receive when you sell?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand. If rates rise, the fund's bond holdings can fall in value, so I may receive less when I sell."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks the client's understanding in turn 8, and the client unambiguously confirms and demonstrates understanding in turn 9.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The transaction fee for this sale is 0.2%."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee as a rate of 0.2% in turn 10.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "You could lose some or all of the capital you invested in this fund. Selling can crystallise that loss."
+            }
+          ],
+          "rationale": "The employee explicitly warns the client in turn 10 that she could lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Are you willing to accept an investment loss, including crystallising a loss when you sell this holding?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I'm willing to accept that loss. Having cash available for my spending matters more to me than waiting for a possible recovery."
+            }
+          ],
+          "rationale": "In turns 10 and 11, the employee asks and the client explicitly confirms her willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "I recommend selling from your holding in Harbor SGD Bond Fund because it frees up cash for your planned spending and reduces your ongoing exposure to interest-rate changes and issuers' credit problems."
+            }
+          ],
+          "rationale": "In turn 12, prior to the final transaction confirmation, the employee provides a concrete recommendation to sell, linking the decision to the client's objectives and risk considerations.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "Please explicitly confirm your final instruction: sell 10,000 units of Harbor SGD Bond Fund using a market order, with a transaction amount of 1.2 million in Singapore dollars. Is that the instruction you want me to carry out?"
+            },
+            {
+              "turn_id": 15,
+              "quote": "Yes, I confirm that final instruction exactly as you've stated it. Please proceed with the sale."
+            }
+          ],
+          "rationale": "In turn 14, the employee requests confirmation of the final instruction with all transaction terms, and in turn 15, the client explicitly confirms.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The dialogue contains no indication or red flag regarding money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The call contains no indication of material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not pressure, coach, or encourage the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "The future investment returns on this fund are guaranteed."
+            }
+          ],
+          "rationale": "The employee commits an authored violation by stating in turn 12 that future investment returns on the fund are guaranteed, matching the planned FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My FIN is T five seven two double eight five nine D."
+            }
+          ],
+          "rationale": "The client states her FIN as T five seven two double eight five nine D, which normalizes to T5728859D.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is the seventeenth of March nineteen sixty-six."
+            }
+          ],
+          "rationale": "The client gives her date of birth as the seventeenth of March nineteen sixty-six, resolving to 17 March 1966.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The holding I want to transact in is Harbor SGD Bond Fund."
+            }
+          ],
+          "rationale": "The client specifies Harbor SGD Bond Fund as the product to transact in, confirmed in turn 14/15.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "Please use Singapore dollars as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies Singapore dollars as the currency, matching SGD.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount for this transaction is 1.2 million."
+            }
+          ],
+          "rationale": "The client specifies the transaction amount as 1.2 million, which evaluates to 1200000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The quantity I want to transact is 10,000 units."
+            }
+          ],
+          "rationale": "The client explicitly states the quantity as 10,000 units, resolving to 10000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The client specifies that she wants to sell from her existing holding, resolving to SELL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client specifies a market order, resolving to MARKET.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_053",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My FIN is T five seven two double eight five nine D."
+            }
+          ],
+          "rationale": "The client speaks the repeated digit 8 as 'double eight' within the FIN T5728859D, correctly realizing the DOUBLE variant of EC_DOUBLE_TRIPLE_DIGITS.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_054",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount for this transaction is 1.2 million."
+            }
+          ],
+          "rationale": "The monetary amount of 1,200,000 is spoken as '1.2 million', correctly realizing EC_LARGE_NUMBER_EXPRESSION.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "9e6ef40c33dc92fb7a97f23ce8c12fae71aadb80a1a6a0dd0922ccf314fa9d43",
+    "artifact_sha256": "b58ba92be09189313ccb2ae88494cff7dd4c090cdda02acfe711ce27d71298fa"
+  },
+  "accepted_history": []
+}

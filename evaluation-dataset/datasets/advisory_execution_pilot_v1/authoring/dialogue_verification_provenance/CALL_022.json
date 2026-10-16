@@ -1,0 +1,366 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_022",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_022-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "9c293698535357b16e838ea79d1970dba7972094c1a9e46ed97dd8e17fe1fab1",
+      "upstream_sha256": {
+        "call_spec": "5029d9f1804ba95d91111db894132ca507cc92e69d80cd936c767fb31c99b293",
+        "check_plan_skeleton": "251df33d949233c5d45bd3bd96f335d89dd1ff8c159c476523dbcd8eb1cd19ff",
+        "call_config": "1ea3ab109ca576e5247394b196e2408d69cd2640d4bb66235572d74e61e795fa",
+        "check_plan": "6a8f5dd0f46d6032f1879d7d3f20c5def80240b99969a6bbf9c90cc6502a9dec",
+        "plan_verification": "68692b4ac066c9c50f666ff6d52009ccacb4cac234bb0bbeb3e5b79d2315c7eb",
+        "dialogue": "5c0968b7ccfd6db69090cc7f9e57a9ba88d3684982e14ac826a64486abf93499",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15972,
+        "cached_tokens": 0,
+        "output_tokens": 2828,
+        "thought_tokens": 3266,
+        "total_tokens": 22066
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.017416,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:50:58Z",
+      "finished_at": "2026-10-11T23:51:25Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "From our review, your aim is to cut equity exposure and smooth out portfolio swings, while keeping flexibility for personal needs. That's what we're working towards here."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective to reduce equity exposure and portfolio volatility while maintaining flexibility.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "With Summit Global Equity ETF, the underlying global shares can fall together in a broad market downturn, so diversification won't prevent the holding from dropping in value."
+            }
+          ],
+          "rationale": "The employee explains a concrete risk of the product: that underlying shares may fall together during a market downturn, meaning diversification does not prevent value decline.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Do you understand that the underlying shares can fall together, even though the fund is diversified?"
+            },
+            {
+              "turn_id": 5,
+              "quote": "Yes, I understand. A broad market fall can pull down the holding despite its diversification."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks understanding and the client demonstrates clear comprehension in an explicit exchange.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "The transaction charge for this sale is 0.2% of the traded amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction charge as a rate of 0.2% of the traded amount.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "You could lose part or even all of the money you invested in this holding, and selling below your purchase cost would realise a loss."
+            }
+          ],
+          "rationale": "The employee explicitly explains that the client could lose part or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Are you willing to accept investment losses, including realising a loss to reduce your exposure?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I'm willing to accept those losses, including realising a loss to reduce my equity exposure."
+            }
+          ],
+          "rationale": "The employee asks and the client explicitly confirms her willingness to accept investment losses, completing the required exchange.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "I recommend reducing your holding in Summit Global Equity ETF because that cuts your exposure to broad equity-market swings, which fits your aim of a less volatile portfolio."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale for recommending the sale, linking it directly to the client's stated objective of lowering exposure to market swings and reducing portfolio volatility.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "To recap, you want to sell 2,000 units of Summit Global Equity ETF, with a transaction amount of 1,000,000 in US dollars, using a limit order at 500 US dollars. Can you explicitly confirm this final instruction?"
+            },
+            {
+              "turn_id": 13,
+              "quote": "Mm, okay... my staff is calling me about something at work, hang on."
+            }
+          ],
+          "rationale": "When the employee seeks final confirmation, the client offers only a weak acknowledgement before becoming distracted by a work matter, and the call ends without explicit confirmation. C08 correctly fails.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "My relative works in the finance team of a major company held by this fund and told me confidentially that they're about to announce unexpectedly severe financial difficulties; it's not public yet. That's why I'm instructing you to sell this holding now, before the announcement."
+            }
+          ],
+          "rationale": "The client explicitly bases her sell instruction on confidential, non-public information from a relative in a fund constituent's finance team, establishing the planned violation for C10 FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach or encourage the client to overstate her loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not make any guarantee regarding future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My identification number is T nine three three seven eight one six U."
+            }
+          ],
+          "rationale": "The client states her NRIC as T9337816U, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is the third of April nineteen eighty-two."
+            }
+          ],
+          "rationale": "The client states her date of birth as the third of April 1982, matching the gold canonical date '03 April 1982'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The holding I want to transact in is Summit Global Equity ETF."
+            }
+          ],
+          "rationale": "The client explicitly selects Summit Global Equity ETF as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "The dealing currency for this holding is US dollars."
+            },
+            {
+              "turn_id": 9,
+              "quote": "Use that dealing currency you just mentioned for my transaction."
+            }
+          ],
+          "rationale": "The client refers back to the dealing currency established by the employee (US dollars), correctly setting T02 to USD.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "Set the transaction amount at 1,000,000."
+            }
+          ],
+          "rationale": "The client specifies the transaction amount as 1,000,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The quantity I want to transact is 2,000 units."
+            }
+          ],
+          "rationale": "The client explicitly instructs a quantity of 2,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "I want to sell, to reduce my existing holding."
+            }
+          ],
+          "rationale": "The client specifies the order direction as SELL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "Use a limit order, with the minimum sale price per unit set at 500 US dollars."
+            }
+          ],
+          "rationale": "The client specifies a limit order with a limit price of 500 USD.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_037",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "The dealing currency for this holding is US dollars."
+            },
+            {
+              "turn_id": 9,
+              "quote": "Use that dealing currency you just mentioned for my transaction."
+            }
+          ],
+          "rationale": "The client refers back to the employee's explicit antecedent mention of 'US dollars' as the dealing currency rather than restating it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_038",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "From our review, your aim is to cut equity exposure and smooth out portfolio swings, while keeping flexibility for personal needs. That's what we're working towards here."
+            }
+          ],
+          "rationale": "The employee establishes the client's investment objective naturally in Singapore English business phrasing without reproducing checklist wording.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_039",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "Can you explicitly confirm this final instruction?"
+            },
+            {
+              "turn_id": 13,
+              "quote": "Mm, okay... my staff is calling me about something at work, hang on."
+            }
+          ],
+          "rationale": "The client responds to the recap and confirmation request with a weak acknowledgement due to a workplace distraction, resulting in an unconfirmed instruction (C08 FAIL).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "70cd2d719f933b086d9d8039ddef0641a2d8be8bad4a51d3849f65d6b08d9a76",
+    "artifact_sha256": "f1aafe2eb5c1119534cdd375a4a0f40aefdb725394fcb61c10bf0551c1b98e34"
+  },
+  "accepted_history": []
+}

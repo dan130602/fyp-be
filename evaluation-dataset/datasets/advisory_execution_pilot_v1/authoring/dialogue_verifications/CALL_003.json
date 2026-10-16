@@ -1,0 +1,666 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_003",
+  "call_spec_sha256": "4515979fdcce8ed9be6c2746d402db51e65560c91434be40b187ac81d9093dad",
+  "check_plan_skeleton_sha256": "5d659931a2801fcf26e3d5c3b72b688fccacefaf9426eadec27d385933f3698c",
+  "call_config_sha256": "ce6bef0a545569487faa728d6bb840b01662d9a5df6b4df6a2564c261e03361e",
+  "check_plan_sha256": "aa32511318d413a5e74e331210a7b4cb453989a6caae268394091887588f7314",
+  "plan_verification_sha256": "3a3846704b24b9aa7d7a0535641a9949927cd01cd3d9cfeeff9216d1b44b5258",
+  "dialogue_sha256": "eddfd2308d6da79cbf4fa6cee8dfc4f1207c301b527fb55f9056ae4e02dd5015",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "53af2555c99b426ac3f54e3170235eed40f917c22982a0a02e6c1dcfff083ca9"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 2,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 6, the employee explicitly confirms the client's investment objective of long-term capital growth through a diversified investment with balanced market exposure.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Adrian, your objective is long-term capital growth through a diversified investment, with a balanced approach to market exposure.",
+          "spans": [
+            [
+              85,
+              214
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 8, the employee explains concrete risks associated with the fund, including equity declines from weak earnings, bond declines from rising interest rates, and correlated drops in stressed markets.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "With Pioneer Balanced Opportunities Fund, the equity holdings can fall if company earnings weaken, while the bond holdings can fall when interest rates rise. In stressed markets, these holdings can decline together, so diversification may offer less protection.",
+          "spans": [
+            [
+              0,
+              261
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk disclosure, the employee checks the client's understanding in turn 8, and the client unambiguously confirms and demonstrates understanding in turn 9.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand how those market movements could affect the fund, including the possibility that its equity and bond holdings fall together?",
+          "spans": [
+            [
+              262,
+              404
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand. Weak earnings can affect the equities, rising interest rates can affect the bonds, and they can fall together even though the fund is diversified.",
+          "spans": [
+            [
+              0,
+              165
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 10, the employee explicitly states the transaction fee as a rate of 0.5% of the amount invested.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee is 0.5% of the amount invested.",
+          "spans": [
+            [
+              39,
+              90
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 10, the employee explicitly explains that the client could lose some or all of the invested capital.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose some or all of the capital you invest in this fund.",
+          "spans": [
+            [
+              91,
+              157
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not check or confirm the client's willingness to accept investment losses anywhere in the dialogue, matching the expected FAIL.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 6, the employee recommends the fund and provides a concrete rationale linking the product's multi-asset structure and professional management to the client's objectives and preferences.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend Pioneer Balanced Opportunities Fund because its mix of equities and bonds supports your diversified, balanced approach to long-term growth. The manager handles the allocation, which suits your preference not to monitor individual holdings.",
+          "spans": [
+            [
+              215,
+              466
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turns 14 and 15, after the quantity readback error is corrected, the employee requests explicit confirmation of the final order terms, and the client explicitly confirms.",
+      "evidence": [
+        {
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "quote": "With the quantity corrected, your final instruction is to buy 1,500 units of Pioneer Balanced Opportunities Fund, with a transaction amount of 25,000,000 in Japanese yen, using a market order. Please explicitly confirm that this is the instruction you want me to carry out.",
+          "spans": [
+            [
+              65,
+              338
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        },
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that final instruction, including the corrected quantity. Please proceed with it.",
+          "spans": [
+            [
+              0,
+              96
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The call contains no indications of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The call contains no indications of material non-public or inside information.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not encourage, pressure, or coach the client to overstate loss tolerance.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not state or imply that future investment returns are guaranteed.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F9933222B"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 5, the client states their FIN as F9933222B, using 'triple two' for the run of three 2s.",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My FIN is F nine nine three three triple two B.",
+          "spans": [
+            [
+              35,
+              82
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "03 November 1960"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 5, the client states their date of birth as the third of November nineteen sixty, normalizing to 03 November 1960.",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is the third of November nineteen sixty.",
+          "spans": [
+            [
+              83,
+              140
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Pioneer Balanced Opportunities Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 7, the client specifies Pioneer Balanced Opportunities Fund as the product to invest in, which is reaffirmed in the final order.",
+      "evidence": [
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "I'd like to invest in Pioneer Balanced Opportunities Fund.",
+          "spans": [
+            [
+              0,
+              58
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "JPY"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 11, the client explicitly designates Japanese yen (JPY) as the transaction currency.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Use Japanese yen as the transaction currency.",
+          "spans": [
+            [
+              0,
+              45
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 25000000
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 11, the client states the monetary amount committed as 25,000,000, confirmed in turn 14.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The amount I want to commit to this transaction is 25,000,000.",
+          "spans": [
+            [
+              46,
+              108
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1500
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 11, the client requests 1,500 units. The employee reads back 5,000 units in turn 12, which the client corrects back to 1,500 units in turn 13, confirmed as final.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please set the quantity at 1,500 units.",
+          "spans": [
+            [
+              134,
+              173
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        },
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Let me read back the quantity I've noted: 5,000 units.",
+          "spans": [
+            [
+              0,
+              54
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "No, that quantity isn't correct. It should be 1,500 units.",
+          "spans": [
+            [
+              0,
+              58
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 11, the client explicitly instructs to buy the units.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "I want to buy the units.",
+          "spans": [
+            [
+              109,
+              133
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 11, the client specifies placing the transaction as a market order.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please place it as a market order.",
+          "spans": [
+            [
+              174,
+              208
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_005",
+      "edge_case_id": "EC_EMPLOYEE_READBACK_ERROR",
+      "target_question_ids": [
+        "T04"
+      ],
+      "assessment": "MATCH",
+      "rationale": "The employee reads back an incorrect quantity of 5,000 units in turn 12, which the client explicitly rejects and corrects to 1,500 units in turn 13, fully realising EC_EMPLOYEE_READBACK_ERROR.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please set the quantity at 1,500 units.",
+          "spans": [
+            [
+              134,
+              173
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        },
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Let me read back the quantity I've noted: 5,000 units.",
+          "spans": [
+            [
+              0,
+              54
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "No, that quantity isn't correct. It should be 1,500 units.",
+          "spans": [
+            [
+              0,
+              58
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_006",
+      "edge_case_id": "EC_DOUBLE_TRIPLE_DIGITS",
+      "target_question_ids": [
+        "K01"
+      ],
+      "assessment": "MATCH",
+      "rationale": "The client speaks the maximal 3-digit run in the FIN 'F9933222B' as 'triple two', while the remaining characters are spoken character by character, correctly implementing the TRIPLE variant of EC_DOUBLE_TRIPLE_DIGITS.",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My FIN is F nine nine three three triple two B.",
+          "spans": [
+            [
+              35,
+              82
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": []
+}

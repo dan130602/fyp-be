@@ -42,6 +42,8 @@ LENGTH_POLICY = {
 
 # A G5 report that exists but cannot be read: its fingerprint cannot be established (never confused with deletion).
 G5_UNREADABLE = "UNREADABLE"
+# The same for a G6 dialogue as seen by G7: a file that exists but cannot be read is never classified as deleted.
+DIALOGUE_UNREADABLE = "UNREADABLE"
 
 IDENTITY_QUESTIONS = ("K01", "K02")
 EVENT_RELATIONS = ("corrects_event_id", "refers_to_event_id", "invalidates_event_id")

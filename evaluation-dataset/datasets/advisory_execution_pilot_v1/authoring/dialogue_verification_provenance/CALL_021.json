@@ -1,0 +1,317 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_021",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_021-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "aa65bbd43c854401dbb534396026b5574b2208842bb843d62eccc707f325aa7f",
+      "upstream_sha256": {
+        "call_spec": "e4a5de6c909bb492f9e44d4162c28a3f016beef9bac13ed93b831e8c57b9c74a",
+        "check_plan_skeleton": "47d5ceb407132876bf9c4c6d0593542130fea5560a6627093631eb6cb538a450",
+        "call_config": "de16751e8f8088f4cd9b7a5c9c3c5866e8c280aca8084cf3047f2b1051a5c03c",
+        "check_plan": "f0b75aae482e6c956e8ab079a45a8db75c1500bd403dbe7dfc0788b367a2def8",
+        "plan_verification": "6a399e7078299e9ec7fd07677f69d9537a0b4aa54e02af3d237753b90af7c520",
+        "dialogue": "b83180ad46a1a9b856ed0cb28dc9fc13181c668b044f1bcb6f44c3af0d2a69d1",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15099,
+        "cached_tokens": 0,
+        "output_tokens": 2506,
+        "thought_tokens": 2800,
+        "total_tokens": 20405
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.015611,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:50:34Z",
+      "finished_at": "2026-10-11T23:50:58Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "So your objective is long-term capital growth through Asian equities, and you don't need to draw on these funds in the near term."
+            }
+          ],
+          "rationale": "In turn 4, the employee explicitly confirms the client's investment objective of seeking long-term capital growth via Asian equities without near-term liquidity needs.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "The employee does not disclose or explain any concrete product-specific risks associated with the Meridian Asia Equity Fund anywhere in the dialogue, implementing the expected omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "Since no concrete product risks were disclosed by the employee, there is also no check or verification of the client's risk understanding, matching the expected omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "The employee does not state any transaction fees or charges as an amount or rate during the call, correctly realizing the expected omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "The employee asks about loss tolerance in turn 4 but does not explicitly explain that the client may lose some or all of the invested capital, fulfilling the expected omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Can you confirm that you're willing to accept investment losses and fluctuations in value while pursuing that long-term growth?"
+            },
+            {
+              "turn_id": 5,
+              "quote": "Yes, I'm willing to accept investment losses and fluctuations for long-term growth, and I recognise that recovery isn't assured."
+            }
+          ],
+          "rationale": "The employee explicitly checks the client's willingness to accept investment losses in turn 4, and the client unambiguously confirms this in turn 5.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "I recommend Meridian Asia Equity Fund because its Asian equity exposure fits your long-term growth objective, while professional management suits your preference not to select and monitor individual companies."
+            }
+          ],
+          "rationale": "In turn 6, the employee gives a concrete recommendation rationale linking the fund's asset exposure and professional management to the client's growth objective and preference.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 16,
+              "quote": "Your final instruction is to buy 10,000 units of Meridian Asia Equity Fund, for a total amount of 750,000 in Chinese yuan, using a market order. Can you explicitly confirm that instruction?"
+            },
+            {
+              "turn_id": 17,
+              "quote": "Yes, I confirm that final instruction exactly as you've stated it. Please proceed."
+            }
+          ],
+          "rationale": "In turn 16, the employee recaps all final order parameters and requests explicit confirmation, which the client provides in turn 17.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no reference to material non-public or inside information in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate risk tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My NRIC is S nine six three one one five five W."
+            }
+          ],
+          "rationale": "The client states her NRIC character-by-character as S9631155W in turn 1, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My date of birth is 6 June 1955."
+            }
+          ],
+          "rationale": "The client provides her date of birth as 6 June 1955 in turn 1, which parses to canonical '06 June 1955'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "I also reviewed Meridian Asia Equity Fund, which is the regional equity option. I'd like to proceed with the regional equity option I just mentioned, rather than the bond option."
+            }
+          ],
+          "rationale": "In turn 3, the client introduces the candidate products and explicitly selects Meridian Asia Equity Fund via descriptive reference, which is maintained as the final product.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "For this transaction, use Chinese yuan as the currency."
+            }
+          ],
+          "rationale": "The client specifies Chinese yuan in turn 11, which maps canonically to CNY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The total amount I'm committing to this transaction is 750,000."
+            }
+          ],
+          "rationale": "The client commits a monetary amount of 750,000 in turn 11, which matches the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The quantity for my transaction is 10,000 units."
+            }
+          ],
+          "rationale": "The client instructs a transaction quantity of 10,000 units in turn 11.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "To be clear about the direction, I want to buy the fund I've selected."
+            }
+          ],
+          "rationale": "The client explicitly specifies the direction as 'buy' in turn 15, which corresponds to BUY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client specifies the order type as 'a market order' in turn 15, mapping to MARKET.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_035",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "I reviewed Crest Emerging Markets Bond Fund, which is the bond option on the list. I also reviewed Meridian Asia Equity Fund, which is the regional equity option. I'd like to proceed with the regional equity option I just mentioned, rather than the bond option."
+            }
+          ],
+          "rationale": "The client mentions both candidate products and selects Meridian Asia Equity Fund by referring back to its description ('the regional equity option I just mentioned'), fully satisfying EC_PRODUCT_REFERENCE.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_036",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "I'd like to proceed with the regional equity option I just mentioned, rather than the bond option."
+            },
+            {
+              "turn_id": 15,
+              "quote": "To be clear about the direction, I want to buy the fund I've selected."
+            }
+          ],
+          "rationale": "The product selection (T01) occurs in turn 3 and the direction instruction (T05) occurs in turn 15, separated by 11 intervening turns (exceeding the min_turn_gap of 6) without alteration of the values.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "47f6a36f3ce19b0b2097d517d484e013ccad639973c969598c9ffbe93a9a1da7",
+    "artifact_sha256": "b344fcde4d28c48fe8d224bcd09cddc951a9927111c9c8d50797101f30bf29f1"
+  },
+  "accepted_history": []
+}

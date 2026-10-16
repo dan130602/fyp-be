@@ -1,0 +1,358 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_032",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_032-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "b284185664ff7e7087876acafba8a249901789e784c2f4b38dea4e5dbbd79467",
+      "upstream_sha256": {
+        "call_spec": "18c69edb8d2190e64d042ab430da887f8e8ec7c8f8e8c4211f0e5def4f581e58",
+        "check_plan_skeleton": "d95aaab56524320fce97601812d618c6647a7bb4ed6d01defea48aa11853ec95",
+        "call_config": "65a6cb0f9c9c98502bf611ff782a7a6ac459e0c7c7df59f89f2a994f6ad465bf",
+        "check_plan": "da76e4a6379fa0a1e2129d2eddf6088fe11e3271d900e727a2faf91b3bdf6362",
+        "plan_verification": "49cf2b07849a362f2cbad8c467866b0e3072418b953bab0a19aa7db14c46d6ae",
+        "dialogue": "02b5ab82788ab7a14479a8c34900124225cdef89a7d5edb581c09f11e24f52de",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 22181,
+        "cached_tokens": 0,
+        "output_tokens": 2713,
+        "thought_tokens": 5092,
+        "total_tokens": 29986
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.022952,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:57:35Z",
+      "finished_at": "2026-10-11T23:58:12Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 20,
+              "quote": "So your investment objective is to reduce your technology-sector exposure and free up part of the portfolio for your personal needs."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during turn 20.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 22,
+              "quote": "Nova Technology Equity Fund is concentrated in technology shares, so its value can fall sharply when sentiment towards that sector weakens or share valuations contract."
+            }
+          ],
+          "rationale": "The employee explains a concrete product risk regarding concentration in technology shares and sharp valuation declines when sector sentiment weakens.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 22,
+              "quote": "Do you understand how that concentration in technology shares could cause the fund's value to fall sharply?"
+            },
+            {
+              "turn_id": 23,
+              "quote": "Yes, I understand. Because the holdings are concentrated in technology, weaker sector sentiment or lower valuations could cause a sharp fall in the fund's value."
+            }
+          ],
+          "rationale": "Following the risk explanation, the employee checks the client's understanding and the client demonstrates unambiguous comprehension.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 26,
+              "quote": "The transaction fee for this sale is 0.3%."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee rate as 0.3%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 26,
+              "quote": "You could lose some or even all of the money you invested in this fund, and selling below your original purchase price would realise a loss."
+            }
+          ],
+          "rationale": "The employee explicitly warns that the client may lose some or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 26,
+              "quote": "Are you willing to accept investment losses, including realising a loss on this sale as you reduce your exposure?"
+            },
+            {
+              "turn_id": 27,
+              "quote": "Yes, I am willing to accept investment losses and realise a loss on this sale to reduce my concentration."
+            }
+          ],
+          "rationale": "The employee asks whether the client is willing to accept investment losses, and the client unambiguously confirms willingness.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 28,
+              "quote": "I recommend reducing your holding in Nova Technology Equity Fund because that brings down your technology-sector concentration and, once the sale executes, makes more cash available for your personal needs."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking the recommendation to reduce the holding to the client's goals of decreasing tech concentration and freeing up cash.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 44,
+              "quote": "Your final instruction is to sell 1,000 units of Nova Technology Equity Fund, with a transaction amount of 50k in euros, using a limit order at 50 euros per unit. Do you explicitly confirm this instruction?"
+            },
+            {
+              "turn_id": 45,
+              "quote": "Yes, I confirm that final transaction instruction exactly as you've stated it. Please proceed."
+            }
+          ],
+          "rationale": "The employee recaps all details of the final instruction and obtains the client's explicit confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There are no transaction instructions based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate their willingness to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "turn_id": 30,
+              "quote": "No, I can't guarantee future returns or promise a recovery. We can discuss the trade-offs, but future performance remains uncertain."
+            }
+          ],
+          "rationale": "The employee does not guarantee future returns, and explicitly refuses the client's request for a guarantee.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My FIN is G four two eight two one zero zero D."
+            }
+          ],
+          "rationale": "The client states their FIN as G four two eight two one zero zero D, which normalizes to G4282100D.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is the eleventh of July nineteen sixty-nine."
+            }
+          ],
+          "rationale": "The client states their date of birth as the eleventh of July nineteen sixty-nine, which normalizes to 11 July 1969.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 35,
+              "quote": "The holding I want you to transact in is Nova Technology Equity Fund."
+            }
+          ],
+          "rationale": "The client specifies Nova Technology Equity Fund as the product to transact in.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 35,
+              "quote": "For this fund transaction, use euros as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies euros (EUR) as the transaction currency, distinguishing it from an existing cash balance in Japanese yen.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 39,
+              "quote": "Set the transaction amount for this sale at 50k."
+            }
+          ],
+          "rationale": "The client specifies 50k, which normalizes to 50000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 39,
+              "quote": "The quantity I'm instructing you to transact is 1,000 units."
+            }
+          ],
+          "rationale": "The client specifies 1,000 units as the quantity to transact.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 39,
+              "quote": "I want to sell those units to reduce my holding."
+            }
+          ],
+          "rationale": "The client instructs to sell the units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 39,
+              "quote": "Please use a limit order with a minimum sale price of 50 euros per unit."
+            }
+          ],
+          "rationale": "The client specifies a limit order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_057",
+          "evidence": [
+            {
+              "turn_id": 35,
+              "quote": "For this fund transaction, use euros as the transaction currency. I also have an existing cash balance in Japanese yen, but that's separate portfolio background, not the currency instruction for this sale."
+            }
+          ],
+          "rationale": "The client mentions Japanese yen (JPY) as an existing cash holding while designating euros (EUR) as the actual transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_058",
+          "evidence": [
+            {
+              "turn_id": 39,
+              "quote": "Set the transaction amount for this sale at 50k."
+            }
+          ],
+          "rationale": "The client expresses the monetary transaction amount using financial shorthand '50k'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_059",
+          "evidence": [
+            {
+              "turn_id": 29,
+              "quote": "I'm concerned the holding might recover after I sell. Can you guarantee the future returns so I know what I'd be giving up?"
+            },
+            {
+              "turn_id": 30,
+              "quote": "No, I can't guarantee future returns or promise a recovery. We can discuss the trade-offs, but future performance remains uncertain."
+            }
+          ],
+          "rationale": "The client asks if future returns can be guaranteed, and the employee explicitly refuses to guarantee returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "140240b4829b3da8b17d40c41f14c3438b421cc63032c09fbf5e2290d0e1e16b",
+    "artifact_sha256": "de72639f3c96ea09049ba6b79a0f028292b8e91926f291069d203423e30a1217"
+  },
+  "accepted_history": []
+}

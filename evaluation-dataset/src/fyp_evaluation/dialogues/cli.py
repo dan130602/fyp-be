@@ -2,14 +2,41 @@
 
 Identical modes, modifiers, guards and exit codes to G3/G4. G6 is Batch-only: `--sync` exits 2 without sending anything.
 Offline modes never need credentials.
+
+One G6-only option: `--repair-feedback FILE` (with `--dry-run` or `--submit`) adds call-specific repair guidance, derived from the
+call's current INVALID G7 report, to that call's request (see `request.load_repair_feedback`) and records its source on the attempt.
 """
+
+import argparse
+import sys
+from pathlib import Path
 
 from fyp_evaluation.call_configs.cli import main as stage_main
 
+from .request import load_repair_feedback
 from .run import DialogueRunner
 
 
 def main(argv=None, **kwargs):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--repair-feedback", type=Path)
+    pre.add_argument("--dataset-root", type=Path)
+    known, rest = pre.parse_known_args(argv)
+    if known.repair_feedback is not None:
+        if known.dataset_root is None:
+            print("--repair-feedback needs --dataset-root", file=sys.stderr)
+            return 2
+        if not any(mode in rest for mode in ("--submit", "--dry-run")):
+            print("--repair-feedback applies to --submit or --dry-run", file=sys.stderr)
+            return 2
+        try:
+            feedback = load_repair_feedback(known.repair_feedback, known.dataset_root)
+        except (OSError, ValueError, KeyError) as error:
+            print(f"repair feedback: {error}", file=sys.stderr)
+            return 2
+        argv = ["--dataset-root", str(known.dataset_root), *rest]
+        kwargs.setdefault("runner_class", lambda root, **kw: DialogueRunner(root, repair_feedback=feedback, **kw))
     kwargs.setdefault("runner_class", DialogueRunner)
     return stage_main(argv, **kwargs)
 

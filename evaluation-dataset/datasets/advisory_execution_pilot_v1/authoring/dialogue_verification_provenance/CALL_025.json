@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_025",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_025-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "91061fb7cf589953ed43a778681918a3f75abe67a6147810de1ecf3e57043153",
+      "upstream_sha256": {
+        "call_spec": "0b37fdf52e7dc961ad18830ae7dc25aa718a1bd0a86a5db02a09632e591040f9",
+        "check_plan_skeleton": "0944edc88b482b3b9b66f71c92f2f72126124154c6bfe5731fd6682131f28993",
+        "call_config": "6dde3e3b214b6ce99b0e59c9dd356832d9af032af4289a1831af7c2a2e317f49",
+        "check_plan": "856d2850e6ccebe398f1d5c7aac305941ff1ea506157379876d72eef371841f3",
+        "plan_verification": "05b444fabeeab8ee39620a2b314545e7fd5fe70dadd4b9fe1def6ac43465dd71",
+        "dialogue": "8219a51f92c6830df12ee9218d50a5ae7c6f2166bc8f93e279cc0c4e58cd15b9",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15481,
+        "cached_tokens": 0,
+        "output_tokens": 2659,
+        "thought_tokens": 6008,
+        "total_tokens": 24148
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.022056,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:53:24Z",
+      "finished_at": "2026-10-11T23:54:08Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "The employee does not establish or confirm the client's investment objective at any point during the call, correctly implementing the planned omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For Orion Global Income Fund, rising market interest rates can push down the value of the bonds it holds, which can lower the fund's value. If the bond issuers run into credit problems or default, the fund's value and income can also fall."
+            }
+          ],
+          "rationale": "In turn 8, the employee explains concrete product-specific risks associated with Orion Global Income Fund, specifically interest-rate risk and issuer default/credit risk.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand how rising interest rates and problems with the bond issuers can affect the fund's value and income?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand. Rising rates can reduce the value of the bonds, and issuer defaults can reduce the fund's value and the income it pays."
+            }
+          ],
+          "rationale": "Immediately following the risk disclosure in turn 8, the employee explicitly checks the client's understanding, and the client unambiguously confirms and demonstrates understanding in turn 9.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "Neither fees nor charges are stated or referenced by amount or rate anywhere in the call, satisfying the planned omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "You could lose some or even all of the capital invested in this fund. Selling below what you originally paid would crystallise a loss."
+            }
+          ],
+          "rationale": "In turn 10, the employee explicitly states that the client could lose some or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [],
+          "rationale": "The employee mentions that selling below original cost crystallises a loss, but never confirms the client's willingness to accept investment losses, correctly realising the planned omission.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "I recommend reducing your holding in Orion Global Income Fund because that reduces your exposure to interest-rate movements and issuer credit problems, making those factors less dominant in your portfolio."
+            }
+          ],
+          "rationale": "In turn 10, the employee provides a concrete rationale for recommending the reduction of the position, linking it to reducing exposure to interest-rate movements and credit risks. This advisory recommendation occurs prior to the execution confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 16,
+              "quote": "To confirm your final instruction: sell 500 units of Orion Global Income Fund, for an amount of 75,000 in Singapore dollars, using a limit order with a limit price of 150 Singapore dollars. Do you confirm that instruction?"
+            },
+            {
+              "turn_id": 17,
+              "quote": "Yes, I confirm that final instruction exactly as you have stated it. Please proceed."
+            }
+          ],
+          "rationale": "In turns 16 and 17, following all order details, the employee requests explicit confirmation of the complete final instruction, and the client gives an unambiguous confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no indication of inside information or material non-public information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My NRIC is S zero nine three nine double five eight T."
+            }
+          ],
+          "rationale": "The client gives her NRIC as 'S zero nine three nine double five eight T', normalizing to S0939558T.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is the ninth of October nineteen eighty-seven."
+            }
+          ],
+          "rationale": "The client provides her date of birth as 'the ninth of October nineteen eighty-seven', normalizing to canonical '09 October 1987'.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 7,
+              "quote": "The holding I want to reduce is Orion Global Income Fund."
+            }
+          ],
+          "rationale": "The client specifies Orion Global Income Fund as the instrument to transact in, confirmed across subsequent turns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "For this transaction, please use Singapore dollars as the settlement currency."
+            }
+          ],
+          "rationale": "The client designates Singapore dollars as the settlement currency for the transaction (normalizing to SGD). The mention of euros is explicitly separated as an unrelated account query.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Ah, found the entry. The amount I want to sell is 75,000."
+            }
+          ],
+          "rationale": "In turn 11, following a disfluent false start, the client confirms the monetary transaction amount as 75,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The quantity for the sale is 500 units."
+            }
+          ],
+          "rationale": "The client explicitly commits to selling a quantity of 500 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 7,
+              "quote": "I want to sell, not add to the holding."
+            }
+          ],
+          "rationale": "The client instructs the employee that the transaction direction is to sell.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "Please place a limit order with a limit price of 150 Singapore dollars."
+            }
+          ],
+          "rationale": "The client specifies a limit order with a limit price of 150 SGD, normalizing to LIMIT.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_041",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "For this transaction, please use Singapore dollars as the settlement currency."
+            },
+            {
+              "turn_id": 13,
+              "quote": "Separately, my account in euros isn't showing on this portfolio screen. Could you check the display later? That account has nothing to do with this sale."
+            }
+          ],
+          "rationale": "The client mentions an account in euros regarding a screen display issue while explicitly distinguishing it from the settlement currency for this transaction, which is Singapore dollars.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_042",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My NRIC is S zero nine three nine double five eight T."
+            }
+          ],
+          "rationale": "The client speaks the repeated digits 55 in the NRIC compactly as 'double five', correctly implementing the DOUBLE variant.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_043",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The sale amount should be, let me find the entry on my summary— Ah, found the entry. The amount I want to sell is 75,000."
+            }
+          ],
+          "rationale": "In turn 11, the client begins stating the amount with an incomplete utterance ('The sale amount should be, let me find the entry on my summary—'), abandons it to check her summary, and then states the final committed value of 75,000 in the same turn.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "b88c2f80623ec7b0d88e733005647b56c814d5b2aa85751956d60fda9decf188",
+    "artifact_sha256": "b72fabe2335fb33541d87aa0960730b97e9f284b1207f20c778fac6a5cffdd90"
+  },
+  "accepted_history": []
+}

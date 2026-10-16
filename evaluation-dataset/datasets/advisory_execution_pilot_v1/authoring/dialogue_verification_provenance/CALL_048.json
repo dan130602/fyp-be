@@ -1,0 +1,366 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_048",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_048-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "ab5249a7cbf7feed07e849a3573944ba6638d453fa90914820d3ddb18918a188",
+      "upstream_sha256": {
+        "call_spec": "b27dbc4ccc0e5090eb121604d79aa192f41fa54014b1b1a29c30fb4a60756d53",
+        "check_plan_skeleton": "7d702f29fa52dc19864e04eb97cb2019484b567c3d72f4028a87411cc5929872",
+        "call_config": "3c9b13186cdc5eafba1d59e04fdc5a2a8b773cd7fd25015062691a2f7b960b28",
+        "check_plan": "b6d2d44fdc33f954cfe303c2ff9c954a6c8a85fd80752df395eee9b3bc658a76",
+        "plan_verification": "9dfcdae1c8967c87e7875f0cb362788080b750422fccbebbd4d786dd1bef70fb",
+        "dialogue": "ec3205f07689e31259cf8a77031539754c7f5d57dc1f2f9abf83415dc9d00a94",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 16359,
+        "cached_tokens": 0,
+        "output_tokens": 2941,
+        "thought_tokens": 4454,
+        "total_tokens": 23754
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.02,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-12T00:06:50Z",
+      "finished_at": "2026-10-12T00:07:26Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Your objective is to reduce credit-sensitive exposure and free up investment proceeds for your business liquidity needs."
+            }
+          ],
+          "rationale": "In turn 8, the employee explicitly confirms the client's investment objective to reduce credit-sensitive exposure and free up investment proceeds for business liquidity needs.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "With Orion Global Income Fund, deteriorating credit quality or defaults by the underlying bond issuers can reduce the fund's value."
+            }
+          ],
+          "rationale": "In turn 8, the employee explains the concrete credit risk associated with the fund, specifically noting that deteriorating credit quality or defaults by underlying issuers can reduce the fund's value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand how those underlying issuer credit problems can affect the value of your holding?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand that worsening issuer credit quality or defaults can bring down the fund's value."
+            }
+          ],
+          "rationale": "Following the risk disclosure in turn 8, the employee explicitly checks the client's understanding, and in turn 9 the client gives an unambiguous confirmation demonstrating understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The transaction charge for this disposal is 0.25%."
+            }
+          ],
+          "rationale": "In turn 10, the employee explicitly discloses the transaction fee as a rate of 0.25%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "You could lose some or all of the capital invested in this fund, and disposing of your holding may crystallise a loss."
+            }
+          ],
+          "rationale": "In turn 10, the employee explicitly states that the client could lose some or all of the capital invested in the fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Are you willing to accept investment losses, including a loss crystallised by this disposal?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I am willing to bear that loss rather than keep the credit exposure."
+            }
+          ],
+          "rationale": "In turn 10, the employee asks if the client is willing to accept investment losses, and the client unambiguously confirms acceptance in turn 11.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "I recommend reducing your holding in Orion Global Income Fund because it reduces your exposure to bond credit and interest-rate risks and releases proceeds for your business liquidity needs."
+            }
+          ],
+          "rationale": "In turn 12, the employee recommends reducing the holding and provides a concrete rationale linking product risks to the client's liquidity and credit risk objectives, occurring prior to the final confirmation attempt.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "Please explicitly confirm that the final disposal instruction you've given is what you want me to submit."
+            },
+            {
+              "turn_id": 15,
+              "quote": "Mm, okay, someone from the office is calling me."
+            }
+          ],
+          "rationale": "When asked for explicit confirmation of the final disposal instruction in turn 14, the client provides only a distracted, weak acknowledgement in turn 15, satisfying the expected FAIL condition.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds throughout the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "I'm instructing this disposal because a contact involved in an underlying bond issuer's restructuring told me confidentially that the issuer is about to announce a payment default. That hasn't been made public, and it's why I want this holding disposed of now."
+            }
+          ],
+          "rationale": "In turn 15, the client explicitly bases the disposal instruction on confidential, non-public information received about an imminent payment default, satisfying the expected FAIL condition.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach or pressure the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "Let me check the correct record; my FIN is G five five eight one six three zero F."
+            }
+          ],
+          "rationale": "In turn 3, after an initial false start, the client states their FIN as G5581630F.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 26 May 1996."
+            }
+          ],
+          "rationale": "In turn 3, the client states their date of birth as 26 May 1996.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The holding I want to dispose of is Orion Global Income Fund."
+            }
+          ],
+          "rationale": "In turn 5, the client specifies Orion Global Income Fund as the product to transact in.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "Use Chinese yuan as the transaction currency for this disposal."
+            }
+          ],
+          "rationale": "In turn 5, the client specifies Chinese yuan (CNY) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount for this disposal is 5,000,000."
+            }
+          ],
+          "rationale": "In turn 5, the client specifies 5,000,000 as the transaction amount. The amounts mentioned in turn 7 are explicitly distinguished as historical and illustrative distractors.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 7,
+              "quote": "The quantity I want disposed of is 5,000 units."
+            }
+          ],
+          "rationale": "In turn 7, the client specifies a quantity of 5,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "In turn 5, the client explicitly states that they want to sell from their holding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 7,
+              "quote": "Place this as a market order."
+            }
+          ],
+          "rationale": "In turn 7, the client instructs the order to be placed as a market order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_087",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount for this disposal is 5,000,000."
+            },
+            {
+              "turn_id": 7,
+              "quote": "My notes show an earlier investment contribution of 750,000 Chinese yuan; that's historical, not the amount for this disposal."
+            },
+            {
+              "turn_id": 7,
+              "quote": "There's also a hypothetical disposal illustration of 250,000 Chinese yuan in my notes, but that's just an example, not an instruction."
+            }
+          ],
+          "rationale": "The dialogue includes the final committed amount of 5,000,000 alongside two distractor monetary values with distinct semantic roles: a historical investment contribution (750,000 CNY) and a hypothetical illustration (250,000 CNY).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_088",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My identification number is, hang on, this paperwork— Let me check the correct record; my FIN is G five five eight one six three zero F."
+            }
+          ],
+          "rationale": "In turn 3, the client begins stating their identification number, interrupts themselves with an incomplete fragment due to paperwork confusion, and then states the full, correct FIN within the same turn.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_089",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "Please explicitly confirm that the final disposal instruction you've given is what you want me to submit."
+            },
+            {
+              "turn_id": 15,
+              "quote": "Mm, okay, someone from the office is calling me."
+            }
+          ],
+          "rationale": "When the employee seeks explicit confirmation of the transaction in turn 14, the client gives only a weak and distracted acknowledgement ('Mm, okay...') before digressing, resulting in a failure of C08.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "e7f3137a4af7a9ff28b691d5de561922d89c6509ac240bf2757e2bacd1451808",
+    "artifact_sha256": "a96fe6176f12e585b9828d9a1bb1df9a285f350e7debe9f1d54722ebd8a97d09"
+  },
+  "accepted_history": []
+}
