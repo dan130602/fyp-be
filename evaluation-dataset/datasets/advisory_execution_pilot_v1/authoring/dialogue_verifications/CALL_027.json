@@ -1,0 +1,586 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_027",
+  "call_spec_sha256": "7975de8992993a278838138ecc024e08d2a8c8c9111bc50a4634cf58ad624748",
+  "check_plan_skeleton_sha256": "0bbacf6a01e892777159b6559db83bc11d951dd6fc40a756776dfcb0a5360375",
+  "call_config_sha256": "e94836093569605d073eb1e890f71bad3c9c6d19542f0dc6ee9e33ac4172a286",
+  "check_plan_sha256": "4f6ee8846a53319965e7e2a19e9537c75000c3c4aea8d0ffb20e33a341af5f59",
+  "plan_verification_sha256": "82344983b27fd7ed2ff0d88c00bfab05aebdbdca768b53eb0882323e68ab2693",
+  "dialogue_sha256": "d13bd5925a229449e4dce8f80b52dc40131986a3f9b4113c896b83fedad0abe3",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "93608de253453722461d96584ff2748dc6faa4f3df60391d69962ae18d4bf550"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 0,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective in turn 6.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "So your objective is long-term wealth growth through diversified global equity exposure, rather than funding immediate spending, and you prefer a straightforward holding without frequent monitoring.",
+          "spans": [
+            [
+              48,
+              246
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly explains a concrete risk of the fund in turn 6 regarding broad market declines pulling down holdings and diversification failing when markets drop together.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "With Summit Global Equity ETF, a broad decline in global share markets can pull down the value of its underlying holdings and the fund itself. Diversification may not protect you when markets fall together.",
+          "spans": [
+            [
+              247,
+              453
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk explanation, the employee checks the client's understanding in turn 6, and the client confirms understanding clearly in turn 7.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand that the fund can fall in value during a global market decline, even though its holdings are diversified?",
+          "spans": [
+            [
+              454,
+              577
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand that diversification does not prevent the fund from falling when global markets decline together.",
+          "spans": [
+            [
+              0,
+              115
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly discloses the transaction fee as a rate of 0.2% in turn 8.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee is 0.2% of the trade amount.",
+          "spans": [
+            [
+              0,
+              48
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly explains in turn 8 that the client could lose part or all of the invested capital.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose part or even all of the capital you invest.",
+          "spans": [
+            [
+              49,
+              107
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly asks if the client is willing to accept investment losses in turn 8, and the client unambiguously confirms willingness in turn 9.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "Knowing that, are you willing to accept investment losses in pursuing your long-term growth objective?",
+          "spans": [
+            [
+              108,
+              210
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to accept investment losses and market fluctuations in pursuit of long-term growth.",
+          "spans": [
+            [
+              0,
+              101
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete rationale for the recommendation in turn 10, linking the ETF's diversified exposure to the client's long-term growth objective and preference for simple holdings.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend Summit Global Equity ETF because its diversified global equity exposure supports your long-term growth objective. It also gives you a straightforward holding instead of having to select and monitor individual companies.",
+          "spans": [
+            [
+              0,
+              231
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee requests explicit confirmation of the complete transaction instruction in turn 12, and the client confirms explicitly in turn 13.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Please confirm your final instruction: buy 100 units of Summit Global Equity ETF using a market order, with a transaction amount of 5,000,000 in Japanese yen. Shall I proceed on that basis?",
+          "spans": [
+            [
+              0,
+              189
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that is my final transaction instruction. Please proceed as stated.",
+          "spans": [
+            [
+              0,
+              82
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The call contains no indications of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The call contains no indications of inside information or material non-public information.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not encourage or coach the client to overstate their willingness to accept losses.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not guarantee future investment returns.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F1635898D"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their FIN as F1635898D in turn 5, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My FIN is F one six three five eight nine eight D.",
+          "spans": [
+            [
+              11,
+              61
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "04 November 1952"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their date of birth as 04 November 1952 in turn 5, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is the fourth of November nineteen fifty-two.",
+          "spans": [
+            [
+              62,
+              124
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Summit Global Equity ETF"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client instructs the transaction in Summit Global Equity ETF in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The investment I want to transact in is Summit Global Equity ETF.",
+          "spans": [
+            [
+              110,
+              175
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "JPY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies Japanese yen (JPY) as the transaction currency in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please use Japanese yen as the transaction currency.",
+          "spans": [
+            [
+              176,
+              228
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 5000000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction amount as 5,000,000 in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The amount I am committing to this transaction is 5,000,000.",
+          "spans": [
+            [
+              229,
+              289
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 100
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the quantity as 100 units in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please set the transaction quantity at 100 units.",
+          "spans": [
+            [
+              290,
+              339
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction direction as BUY in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "I want to buy those units.",
+          "spans": [
+            [
+              340,
+              366
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the order type as a market order (MARKET) in turn 11, matching the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please place this as a market order.",
+          "spans": [
+            [
+              367,
+              403
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [],
+  "issues": [],
+  "quality_findings": []
+}

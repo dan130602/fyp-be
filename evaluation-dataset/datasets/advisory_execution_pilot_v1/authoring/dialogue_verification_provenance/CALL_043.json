@@ -1,0 +1,373 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_043",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_043-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "aea278c597c740839a22083cf8f2fb87423559bf652bcd7e4cbc5d968553d6d1",
+      "upstream_sha256": {
+        "call_spec": "511c0728dee229e325f603104a4c72bf4ec61175cc23ef9b538d34eab08438c3",
+        "check_plan_skeleton": "0383da4b876fdc40c4c4e143b579c3224711cfb872bdf25c5f2c428e7b419abf",
+        "call_config": "a3fe5266a76aaf79e60d196ec48255f27cc2bb2c84e25bc5be9e5c815bfb7798",
+        "check_plan": "fa6084e8524633007e9e1b0565bd30f46dc2d7e4a8ca0a812c5f341daf0a7192",
+        "plan_verification": "de13fe8863539854f1b53efaeb3b8f942b0a52f54f65aeb34f0ad983e980ff4d",
+        "dialogue": "f9646495827969b7f2884c66fa1ec9f6db5837a3bd0526ba7e93072732089e28",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 16812,
+        "cached_tokens": 0,
+        "output_tokens": 3113,
+        "thought_tokens": 4722,
+        "total_tokens": 24647
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.020995,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-12T00:04:13Z",
+      "finished_at": "2026-10-12T00:04:48Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Your investment objective is to build a diversified portfolio focused on income and steadier performance, rather than aggressive growth. I'll use that as the basis for our discussion."
+            }
+          ],
+          "rationale": "In turn 4, the employee explicitly confirms the client's investment objective to build a diversified income-oriented portfolio focused on steadier performance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "For Harbor SGD Bond Fund, rising market interest rates can push down the value of the bonds it holds, which can lower the fund's value."
+            }
+          ],
+          "rationale": "In turn 6, the employee explains the concrete risk of rising market interest rates lowering the value of bonds held by the fund and reducing fund value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Do you understand how rising interest rates could lower the value of this fund?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I understand. If interest rates rise, the bonds held by the fund can fall in value, and my fund investment can fall too."
+            }
+          ],
+          "rationale": "In turn 6, the employee explicitly checks the client's understanding of the disclosed interest rate risk, and in turn 7 the client demonstrates clear, unambiguous understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "The transaction charge is 0.5% of the investment amount."
+            }
+          ],
+          "rationale": "In turn 8, the employee explicitly states the transaction charge as a rate of 0.5% of the investment amount.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "You could lose some or even all of the capital you invest in this fund."
+            }
+          ],
+          "rationale": "In turn 8, the employee explicitly warns the client that they could lose some or even all of their invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Having heard those risks, are you willing to accept investment losses on this investment?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I am willing to accept investment losses and fluctuations in the fund's value. I understand the risks you've explained."
+            }
+          ],
+          "rationale": "In turn 8, the employee asks if the client is willing to accept investment losses, and in turn 9 the client gives an unambiguous affirmative confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "I recommend Harbor SGD Bond Fund because its pooled fixed-income holdings support your income objective and spread exposure across issuers, rather than concentrating it with an individual issuer."
+            }
+          ],
+          "rationale": "In turn 6, prior to the transaction confirmation, the employee recommends Harbor SGD Bond Fund with a concrete rationale linking pooled fixed-income exposure to the client's income objective and diversification needs.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "With the direction corrected, your final instruction is to buy 1,500 units of Harbor SGD Bond Fund, with an investment amount of 500,000 in Singapore dollars, using a market order. Do you explicitly confirm that final instruction?"
+            },
+            {
+              "turn_id": 15,
+              "quote": "Yes, I confirm that final transaction instruction as you've just stated it. Please proceed."
+            }
+          ],
+          "rationale": "In turn 14, after all corrections, the employee summarizes the final instruction and requests confirmation; in turn 15, the client explicitly confirms the final transaction instruction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The dialogue contains no indications of money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The dialogue contains no transaction instruction based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage, pressure, or coach the client to overstate their willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My FIN is F zero zero seven zero five eight five Q."
+            }
+          ],
+          "rationale": "The client states their FIN as F0070585Q in turn 3, matching the expected gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 16 April 1978."
+            }
+          ],
+          "rationale": "The client explicitly provides their date of birth as 16 April 1978 in turn 3.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The fund I want to invest in is Harbor SGD Bond Fund."
+            }
+          ],
+          "rationale": "The client specifies Harbor SGD Bond Fund in turn 5, which is confirmed in turns 6 and 14.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "For this transaction, please use Singapore dollars."
+            }
+          ],
+          "rationale": "In turn 11, the client instructs Singapore dollars (SGD) for the transaction, distinguishing it from an existing CNY holding mentioned in turn 9.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The amount I'm committing to this investment is 500,000."
+            }
+          ],
+          "rationale": "In turn 11, the client commits 500,000 to the transaction, distinguished from the account value (1,200,000) and illustrative allocation (25,000).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The quantity I want for this transaction is 1,500 units."
+            }
+          ],
+          "rationale": "In turn 11, the client specifies a quantity of 1,500 units, which remains unchanged and is confirmed in turn 14.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "I want to buy the fund units to add to my portfolio."
+            },
+            {
+              "turn_id": 12,
+              "quote": "Let me read back the direction: you want to sell the fund units."
+            },
+            {
+              "turn_id": 13,
+              "quote": "No, I said buy. I'm adding to my investment, not disposing of it."
+            }
+          ],
+          "rationale": "The client specifies BUY in turn 11. After the employee's incorrect readback of SELL in turn 12, the client corrects the direction back to BUY in turn 13, which is confirmed in turn 14.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "In turn 11, the client instructs a market order, which is confirmed in turn 14.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_081",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "Let me read back the direction: you want to sell the fund units."
+            },
+            {
+              "turn_id": 13,
+              "quote": "No, I said buy. I'm adding to my investment, not disposing of it."
+            }
+          ],
+          "rationale": "The employee executes an incorrect readback of direction as 'sell' in turn 12, and the client corrects it to 'buy' in turn 13, satisfying EC_EMPLOYEE_READBACK_ERROR.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_082",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "My existing holding is denominated in Chinese yuan, but that's separate from this new investment."
+            },
+            {
+              "turn_id": 11,
+              "quote": "For this transaction, please use Singapore dollars."
+            }
+          ],
+          "rationale": "Chinese yuan (CNY) is introduced as the currency of an existing holding in turn 9, while Singapore dollars (SGD) is instructed for this transaction in turn 11, satisfying EC_MULTIPLE_CURRENCIES.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_083",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "My overall account value is 1,200,000 in Singapore dollars. That's portfolio context, not the amount I'm investing today."
+            },
+            {
+              "turn_id": 10,
+              "quote": "An allocation of 25,000 in Singapore dollars would just be an illustration for our sizing discussion, not your actual transaction amount."
+            },
+            {
+              "turn_id": 11,
+              "quote": "The amount I'm committing to this investment is 500,000."
+            }
+          ],
+          "rationale": "Multiple monetary amounts appear with clear distinct roles: 1,200,000 (account value context in turn 9), 25,000 (illustrative allocation in turn 10), and 500,000 (final transaction amount in turn 11), satisfying EC_MULTIPLE_MONETARY_VALUES.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "b9043ba1b1d73f9195492564ed55df1a98c72cabf78a43803ab5cb52332c6fe4",
+    "artifact_sha256": "47301d1eb5b4162b0e0c19bc0db84918e4de3e02dcb0d256d9b9d69d0eb5a681"
+  },
+  "accepted_history": []
+}

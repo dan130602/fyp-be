@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage7/dialogue_verification_record.schema.json",
+  "title": "G7 dialogue_verification record",
+  "description": "Deterministic summary of the accepted dialogue verifications; rebuilt by --validate. Covers only calls that have an accepted report. A verdict and a quality review here are the semantic result of a completed verification; current dependency validity and G8 eligibility are computed separately from the files on disk.",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "stage": {"const": "G7"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "generator": {
+      "type": "object",
+      "properties": {"package": {"const": "fyp_evaluation.dialogue_verifications"}, "version": {"type": "string"}},
+      "required": ["package", "version"],
+      "additionalProperties": false
+    },
+    "hashing": {"type": "string"},
+    "upstream": {
+      "type": "object",
+      "properties": {
+        "dialogue_record_sha256": {"$ref": "#/$defs/sha256_or_null"},
+        "checklist_sha256": {"$ref": "#/$defs/sha256"},
+        "check_semantics_sha256": {"$ref": "#/$defs/sha256"},
+        "edge_case_catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "normalization_sha256": {"$ref": "#/$defs/sha256"},
+        "generation_plan_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["dialogue_record_sha256", "checklist_sha256", "check_semantics_sha256", "edge_case_catalog_sha256", "normalization_sha256", "generation_plan_sha256"],
+      "additionalProperties": false
+    },
+    "calls": {
+      "type": "object",
+      "patternProperties": {
+        "^CALL_[0-9]{3,}$": {
+          "type": "object",
+          "properties": {
+            "artifact_sha256": {"$ref": "#/$defs/sha256"},
+            "accepted_attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+            "verdict": {"enum": ["VALID", "INVALID", "UNCLEAR"]},
+            "quality_review": {"enum": ["CLEAR", "REVIEW_REQUIRED"]},
+            "recommended_repair": {"enum": [null, "G6_ONLY", "UPSTREAM_REVIEW", "REVIEW"]},
+            "observed_service_tier": {"type": ["string", "null"]},
+            "call_spec_sha256": {"$ref": "#/$defs/sha256"},
+            "check_plan_skeleton_sha256": {"$ref": "#/$defs/sha256"},
+            "call_config_sha256": {"$ref": "#/$defs/sha256"},
+            "check_plan_sha256": {"$ref": "#/$defs/sha256"},
+            "plan_verification_sha256": {"$ref": "#/$defs/sha256"},
+            "dialogue_sha256": {"$ref": "#/$defs/sha256"},
+            "previous_artifact_sha256": {"type": "array", "items": {"$ref": "#/$defs/sha256"}}
+          },
+          "required": ["artifact_sha256", "accepted_attempt_id", "verdict", "quality_review", "recommended_repair", "observed_service_tier", "call_spec_sha256", "check_plan_skeleton_sha256", "call_config_sha256", "check_plan_sha256", "plan_verification_sha256", "dialogue_sha256", "previous_artifact_sha256"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "accepted_calls": {"type": "integer", "minimum": 0},
+        "total_calls": {"type": "integer", "minimum": 1},
+        "reopened_calls": {"type": "integer", "minimum": 0},
+        "verdicts": {
+          "type": "object",
+          "properties": {"VALID": {"type": "integer", "minimum": 0}, "INVALID": {"type": "integer", "minimum": 0}, "UNCLEAR": {"type": "integer", "minimum": 0}},
+          "required": ["VALID", "INVALID", "UNCLEAR"],
+          "additionalProperties": false
+        },
+        "quality_reviews": {
+          "type": "object",
+          "properties": {"CLEAR": {"type": "integer", "minimum": 0}, "REVIEW_REQUIRED": {"type": "integer", "minimum": 0}},
+          "required": ["CLEAR", "REVIEW_REQUIRED"],
+          "additionalProperties": false
+        },
+        "tier_not_echoed": {"type": "integer", "minimum": 0}
+      },
+      "required": ["accepted_calls", "total_calls", "reopened_calls", "verdicts", "quality_reviews", "tier_not_echoed"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema_version", "stage", "dataset_id", "generator", "hashing", "upstream", "calls", "summary"],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sha256_or_null": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]}
+  }
+}

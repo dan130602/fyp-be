@@ -61,12 +61,15 @@ def build_transcript_artifacts(ground_truth, *, timings=None, schema_dir=_SCHEMA
     return transcript_artifacts_from_dialogue(ground_truth.get("call_id"), ground_truth["dialogue"], schema_dir=schema_dir)
 
 
-def transcript_artifacts_from_dialogue(call_id, dialogue, *, schema_dir=_SCHEMAS):
+def transcript_artifacts_from_dialogue(call_id, dialogue, *, schema_dir=_SCHEMAS, timings=None):
     """(transcript, speaker_roles) from already-validated dialogue turns; only `turn_id`, `speaker` and `text` are read.
 
-    Shared by the legacy path above and the release-specific G8 compiler, so both produce identical transcript shapes and
-    speaker mappings. Timings stay placeholders until audio-derived timings exist.
+    Shared by the legacy path above and the release-specific G9 compiler, so both produce identical transcript shapes and
+    speaker mappings. Timings stay placeholders unless `timings` is given: the audio-derived per-turn rows of a G8 render
+    (`[{"turn_id", "start_seconds", "end_seconds"}, ...]`), which must cover every dialogue turn exactly once, in order, with
+    non-negative, non-overlapping, strictly positive-length intervals. Times are written as fixed three-decimal strings.
     """
+    times = _segment_times(call_id, dialogue, timings)
     present_speakers = {turn["speaker"] for turn in dialogue}
     if unmapped := present_speakers - SPEAKER_LABELS.keys():
         raise ValueError(
@@ -77,8 +80,8 @@ def transcript_artifacts_from_dialogue(call_id, dialogue, *, schema_dir=_SCHEMAS
         {
             "id": turn["turn_id"],
             "transcript": turn["text"],
-            "start_time": PLACEHOLDER_TIME,
-            "end_time": PLACEHOLDER_TIME,
+            "start_time": times[turn["turn_id"]][0],
+            "end_time": times[turn["turn_id"]][1],
             "speaker_label": SPEAKER_LABELS[turn["speaker"]],
         }
         for turn in dialogue
@@ -101,3 +104,18 @@ def transcript_artifacts_from_dialogue(call_id, dialogue, *, schema_dir=_SCHEMAS
     if errors := validate(speaker_roles, "speaker_roles", schema_dir):
         raise ValueError("\n".join(errors))
     return transcript, speaker_roles
+
+
+def _segment_times(call_id, dialogue, timings):
+    """{turn_id: (start_time, end_time)} as strings: the placeholders, or the validated audio-derived times."""
+    if timings is None:
+        return {turn["turn_id"]: (PLACEHOLDER_TIME, PLACEHOLDER_TIME) for turn in dialogue}
+    if [row.get("turn_id") for row in timings] != [turn["turn_id"] for turn in dialogue]:
+        raise ValueError(f"{call_id}: the timings do not cover every dialogue turn exactly once, in order")
+    previous_end = 0.0
+    for row in timings:
+        start, end = row["start_seconds"], row["end_seconds"]
+        if not (isinstance(start, (int, float)) and isinstance(end, (int, float))) or start < previous_end or end <= start:
+            raise ValueError(f"{call_id}: turn {row['turn_id']} has an invalid or overlapping interval")
+        previous_end = end
+    return {row["turn_id"]: (f"{row['start_seconds']:.3f}", f"{row['end_seconds']:.3f}") for row in timings}

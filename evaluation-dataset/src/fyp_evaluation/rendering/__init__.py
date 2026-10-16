@@ -1,1 +1,1 @@
-"""Reserved for future SSML, audio rendering and timing logic."""
+"""G8: SSML conversion, Amazon Polly rendering and per-turn timings of the G7-verified dialogues (see README)."""

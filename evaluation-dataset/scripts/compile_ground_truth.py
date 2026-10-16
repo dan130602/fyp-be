@@ -1,4 +1,4 @@
-"""Run G8: compile the canonical calls/CALL_XXX/{ground_truth,transcript,speaker_roles}.json of a release (offline; see README).
+"""Run G9: compile the canonical calls/CALL_XXX/{ground_truth,transcript,speaker_roles}.json of a release (offline; see README).
 
     python scripts/compile_ground_truth.py --dataset-root datasets/advisory_execution_pilot_v1 --write
     python scripts/compile_ground_truth.py --dataset-root datasets/advisory_execution_pilot_v1 --check

@@ -12,7 +12,7 @@ from fyp_evaluation.plan_verifications.inputs import fresh_upstream_hashes as g5
 from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5_inputs
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
-from .config import G5_ARTIFACT_DIR, G5_RECORD, G5_UNREADABLE
+from .config import ARTIFACT_DIR, DIALOGUE_UNREADABLE, G5_ARTIFACT_DIR, G5_RECORD, G5_UNREADABLE
 
 
 def g5_report_fingerprint(root, call_id):
@@ -28,6 +28,26 @@ def g5_report_fingerprint(root, call_id):
     except OSError:
         return G5_UNREADABLE
     return g1.sha256(data)
+
+
+def read_dialogue(root, call_id):
+    """(fingerprint, text): sha256 and CRLF-normalised text of the call's G6 dialogue, (None, None) when it is confirmed
+    absent, or (DIALOGUE_UNREADABLE, None). Never raises; the read itself is the only classifier (see g5_report_fingerprint)."""
+    try:
+        data = (Path(root) / ARTIFACT_DIR / f"{call_id}.json").read_bytes()
+    except FileNotFoundError:
+        return None, None
+    except OSError:
+        return DIALOGUE_UNREADABLE, None
+    try:
+        return g1.sha256(data), data.decode("utf-8").replace("\r\n", "\n")
+    except UnicodeDecodeError:
+        return g1.sha256(data), None  # readable bytes that are not text: the integrity gate reports it
+
+
+def dialogue_fingerprint(root, call_id):
+    """sha256 of the call's G6 dialogue, None when confirmed absent, or DIALOGUE_UNREADABLE. Never raises."""
+    return read_dialogue(root, call_id)[0]
 
 
 class DialogueInputs:

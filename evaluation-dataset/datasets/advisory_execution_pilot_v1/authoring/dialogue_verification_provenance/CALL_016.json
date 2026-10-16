@@ -1,0 +1,329 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_016",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_016-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "f6d0d0733bf2a793b6ec556629c8c26172ec78d0211bf1a61797cac7e5414e7d",
+      "upstream_sha256": {
+        "call_spec": "b21ce7231c7e0ab7d84b60b2604b44bc437146319a37e1ab3273399dbc95c65a",
+        "check_plan_skeleton": "f1b94123bfcabbed4f0f30ee6cd4de4a0969582311f1fb792bd57c9e56304d89",
+        "call_config": "d64b196b45bee887bae77a696e66e3681d19ba60b2ec5a2d060651ceaecca25f",
+        "check_plan": "c78d4a1d4b0124c40b7c4c7192a8bfe4f49ca593c08d7fc6abc27f79ff3b6e5c",
+        "plan_verification": "82631cb82fe0c79be2186d9c945ac9be56800ca4319b1ce5696e3062496f20a9",
+        "dialogue": "3312946330fe9b7b261685bc3a0e97a9a935ea0fd349a2a732fb2a5326df409f",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 22019,
+        "cached_tokens": 0,
+        "output_tokens": 2382,
+        "thought_tokens": 6512,
+        "total_tokens": 30913
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.024933,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:46:42Z",
+      "finished_at": "2026-10-11T23:47:56Z",
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-11T23:46:43Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "So your objective is to free up money from your existing holding for upcoming household commitments and simplify your remaining portfolio."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective to free up funds for household commitments and simplify his portfolio.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "The employee does not explain any concrete, product-specific risk associated with Pioneer Balanced Opportunities Fund anywhere in the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "Because key product risks are not disclosed, no check or confirmation of the client's risk understanding occurs.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "The employee makes no statement regarding transaction fees or charges as an amount or rate.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Please bear in mind that you could lose part or even all of the money you invested."
+            }
+          ],
+          "rationale": "The employee explicitly warns the client that he could lose part or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Are you willing to accept an investment loss when reducing this holding to meet your liquidity needs?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I am willing to accept that loss. I would rather release the money for my household commitments than keep waiting for a recovery."
+            }
+          ],
+          "rationale": "The employee explicitly asks whether the client is willing to accept investment losses, and the client gives an unambiguous confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "I recommend reducing your holding in Pioneer Balanced Opportunities Fund because that frees up money for your household commitments and leaves you with less to manage, which fits your wish to simplify your finances."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale for recommending the sale, linking it directly to the client's stated goals of freeing up money for household commitments and simplifying his finances.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 60,
+              "quote": "Please confirm your final instruction is to sell 700 units of Pioneer Balanced Opportunities Fund using a market order, with a transaction amount of 10m in Japanese yen. Shall I proceed on that basis?"
+            },
+            {
+              "turn_id": 61,
+              "quote": "Yes, I confirm that is my final transaction instruction. Please proceed as you have just stated."
+            }
+          ],
+          "rationale": "After all details are finalized, the employee presents the complete order instruction for confirmation, and the client explicitly confirms it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The dialogue contains no indication of money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The call contains no indication of trading based on material non-public or insider information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage, pressure, or coach the client to overstate his willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For the portion of your investment that you retain, future returns are guaranteed."
+            }
+          ],
+          "rationale": "The employee commits an authored violation by explicitly guaranteeing future returns on the retained investment portion.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "Let me read from my notes: my FIN is G nine two four five four three one X. Sorry, I misread my handwriting; my correct FIN is G nine two four seven four three one X."
+            }
+          ],
+          "rationale": "The client states an initial FIN and corrects it within the same turn to G9247431X, which is the final stated identifier.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is the twenty-fourth of April nineteen eighty-one."
+            }
+          ],
+          "rationale": "The client states his date of birth as 24 April 1981, which matches the expected date under the normalization profile.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 21,
+              "quote": "The holding I want you to transact in is Pioneer Balanced Opportunities Fund."
+            }
+          ],
+          "rationale": "The client explicitly specifies Pioneer Balanced Opportunities Fund as the instrument for the transaction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 23,
+              "quote": "Please use Japanese yen as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client specifies Japanese yen as the transaction currency, which normalizes to JPY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 23,
+              "quote": "The amount I am committing to this transaction is 10m."
+            }
+          ],
+          "rationale": "The client specifies 10m as the transaction amount, which normalizes to 10000000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 23,
+              "quote": "The quantity I want to transact is 700 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 700 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 21,
+              "quote": "I want to sell that holding."
+            }
+          ],
+          "rationale": "The client instructs a sell order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 23,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client designates the order as a market order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_027",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "Let me read from my notes: my FIN is G nine two four five four three one X. Sorry, I misread my handwriting; my correct FIN is G nine two four seven four three one X."
+            }
+          ],
+          "rationale": "The client provides an initial FIN (G9245431X) and immediately corrects it within the same turn to the gold value (G9247431X), genuinely realising EC_CORRECTION_SAME_TURN.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_028",
+          "evidence": [
+            {
+              "turn_id": 23,
+              "quote": "The amount I am committing to this transaction is 10m."
+            }
+          ],
+          "rationale": "The client specifies the monetary amount using the shorthand form '10m', genuinely realising EC_FINANCIAL_SHORTHAND.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "476b43aeaf4102cc6fb2f0145aab4973c59a0512fdc676a65d0185b9aa8fdeee",
+    "artifact_sha256": "85511f0c3767457b0c54bc68cac0a6f910daac38d3c3f0eac68c6329effeb2f8"
+  },
+  "accepted_history": []
+}

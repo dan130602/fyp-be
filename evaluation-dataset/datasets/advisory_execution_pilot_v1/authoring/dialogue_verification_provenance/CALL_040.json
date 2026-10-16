@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_040",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_040-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "f548ea76edbf05423a9c037a6f04a69ea95f91fac396fdefd3651fbea7442475",
+      "upstream_sha256": {
+        "call_spec": "60fb8c453d7e6a48391a3315101705d334a6a902f697a6d553c87cff1a66fc55",
+        "check_plan_skeleton": "a9503ffeedfd212aebd4a4aa0500ce5bdc5b2c7d4e886c4e0015b2a18ba5b050",
+        "call_config": "459b1b13506f3fa8e1531a6e3a5a7caa2cd9bbac82ab9d7e0995fb9402ac075c",
+        "check_plan": "665486fc453514749f38a7d03d42478f531d5eb2842ebb698541b5550a06e529",
+        "plan_verification": "671e2cc47a0b02b170e8fb50f24c822478fb8db65388e7ee98a600e8536ad5c0",
+        "dialogue": "fd284d3f019f8b3ebeb9b13439d0021487649217e593dabfda26f5cdf8d1eff2",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 16421,
+        "cached_tokens": 0,
+        "output_tokens": 2933,
+        "thought_tokens": 4027,
+        "total_tokens": 23381
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.019208,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-12T00:02:17Z",
+      "finished_at": "2026-10-12T00:02:50Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Your aim is to free up cash for upcoming spending and reduce exposure to changes in bond valuations. I'll use that as the objective for this review."
+            }
+          ],
+          "rationale": "In turn 4, the employee explicitly confirms and establishes the client's investment objective to free up cash and reduce exposure to bond valuation fluctuations.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "With Orion Global Income Fund, rising market interest rates can push down the value of its underlying bonds, which can lower the fund's valuation."
+            }
+          ],
+          "rationale": "In turn 4, the employee explains the concrete product-specific risk that rising market interest rates can depress underlying bond values and lower the fund's valuation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Do you understand how rising interest rates can lower the value of this fund?"
+            },
+            {
+              "turn_id": 5,
+              "quote": "Yes, I understand. Rising interest rates can reduce the value of the bonds it holds and bring down the fund's value."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks the client's understanding in turn 4, and the client unambiguously confirms and demonstrates understanding in turn 5.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "The transaction charge for this sale is 0.25%."
+            }
+          ],
+          "rationale": "In turn 6, the employee explicitly discloses the transaction charge as a rate of 0.25%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "You could lose some or all of the capital invested in this fund. Selling may crystallise a loss rather than recover what you originally invested."
+            }
+          ],
+          "rationale": "In turn 6, the employee explicitly warns that the client could lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Are you willing to accept an investment loss from this sale in exchange for freeing up cash and reducing your exposure?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I'm willing to accept that loss. Having the cash available and reducing my exposure matters more to me now."
+            }
+          ],
+          "rationale": "In turns 6 and 7, the employee explicitly asks and confirms the client's willingness to accept investment losses, and the client gives an unambiguous confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "I recommend reducing your holding in Orion Global Income Fund because it releases cash for your spending needs and leaves you less exposed to interest-rate and credit-market fluctuations."
+            }
+          ],
+          "rationale": "In turn 8, the employee provides a concrete rationale for recommending the sale, linking it directly to releasing liquidity and reducing exposure to interest-rate and credit fluctuations.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "With the amount corrected, your instruction is to sell 250 units of Orion Global Income Fund for an amount of 250,000 in Chinese yuan, using a market order. Do you confirm this as your final instruction?"
+            },
+            {
+              "turn_id": 15,
+              "quote": "Yes, I confirm that final instruction, including the corrected amount. Please proceed."
+            }
+          ],
+          "rationale": "In turns 14 and 15, after the amount readback correction, the employee recaps the final complete order details and the client explicitly confirms the instruction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no mention or indication of material non-public or inside information in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage, pressure, or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For the portion of the holding you retain, future investment returns are guaranteed."
+            }
+          ],
+          "rationale": "The employee explicitly violates the prohibition in turn 8 by stating that future investment returns are guaranteed, correctly realising the planned FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My identification number is G three six four nine four seven eight Q."
+            }
+          ],
+          "rationale": "The client states the identification number G3649478Q in turn 1, which remains uncorrected and final.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My date of birth is the thirteenth of February nineteen eighty-seven."
+            }
+          ],
+          "rationale": "The client states the date of birth as 13 February 1987 in turn 1, matching gold canonical format.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "The holding I want to transact in is Orion Global Income Fund."
+            }
+          ],
+          "rationale": "The client specifies the product Orion Global Income Fund in turn 3, confirmed in the final instruction in turns 14-15.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "For this holding, the transaction currency available is Chinese yuan."
+            },
+            {
+              "turn_id": 11,
+              "quote": "Use the currency you just mentioned for my transaction."
+            }
+          ],
+          "rationale": "The employee mentions Chinese yuan in turn 10, and the client selects it by reference in turn 11. Chinese yuan maps to canonical CNY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The amount for this transaction is 250,000."
+            },
+            {
+              "turn_id": 12,
+              "quote": "Let me read that back: the holding is Orion Global Income Fund, and the transaction amount is 50,000."
+            },
+            {
+              "turn_id": 13,
+              "quote": "Sorry, the amount should be 250,000. The rest of my instruction is unchanged."
+            }
+          ],
+          "rationale": "The client initially states 250,000 in turn 11, rejects the readback of 50,000 in turn 12, and corrects the amount back to 250,000 in turn 13.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The quantity I want to transact is 250 units."
+            }
+          ],
+          "rationale": "The client specifies 250 units in turn 11, which is confirmed in turn 15.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The client instructs to sell in turn 3, which is maintained and confirmed as a sale in turns 14 and 15.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client specifies a market order in turn 11, confirmed in turns 14 and 15.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_076",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "Let me read that back: the holding is Orion Global Income Fund, and the transaction amount is 50,000."
+            },
+            {
+              "turn_id": 13,
+              "quote": "Sorry, the amount should be 250,000. The rest of my instruction is unchanged."
+            }
+          ],
+          "rationale": "In turn 12, the employee reads back two transaction fields (instrument and amount) with only the target field (amount) incorrect (50,000 instead of 250,000). The client corrects only that field in turn 13, matching all catalog constraints.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_077",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "For this holding, the transaction currency available is Chinese yuan."
+            },
+            {
+              "turn_id": 11,
+              "quote": "Use the currency you just mentioned for my transaction."
+            }
+          ],
+          "rationale": "In turn 10, the employee establishes Chinese yuan as the available currency. In turn 11, the client resolves the transaction currency by referring back to that prior mention without repeating the currency name.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "5a93ad7adb71b314f9a106643a11038bd7d9a5f700cef191130511d7c72020eb",
+    "artifact_sha256": "1a6983fe19fedbc79ff540dc41a938dec3dfe3a11c7e67bf34db53d4185abcbf"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,642 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_023",
+  "call_spec_sha256": "decfcfd20eacc3aff6b37e436b909746c8f64413888e7c0dab2b95a1a755cf3c",
+  "check_plan_skeleton_sha256": "5006cee309f1fc05a39c5d076041b86f5874b1e179bf7ec11ea82be078c73ca7",
+  "call_config_sha256": "bdb96e663931a9f9f23b0f92955a629eab291c7f3d91a0438de2e1195e3cc2d2",
+  "check_plan_sha256": "c25c69f9dfd1b8797b5a45d95feaeb340378316ca875dab5bec70787ea3acaf3",
+  "plan_verification_sha256": "96cd006a19437ecab400a94a5598fa05c7e494227fff03842d8c7e20e40cd6a7",
+  "dialogue_sha256": "9f816f0e0b6516b9aa870cef0192f355e8560c70dc06cec94aa56a039f5a405c",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "c79785940e65c1d93f990c131826818e55bcb8980e9c8448b2ace06165d1d6fc"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 1,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective to reduce technology-sector concentration and decrease sensitivity to equity-market movements.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "So your objective is to reduce your technology-sector concentration and make your portfolio less sensitive to sharp equity-market movements.",
+          "spans": [
+            [
+              0,
+              140
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains concrete product-specific risks, namely how tech sector concentration amplifies declines during negative sentiment and how market movements may change the redemption value before pricing.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "Nova Technology Equity Fund is concentrated in technology businesses, so worsening sentiment towards that sector can amplify its declines. Market movements can also change the redemption value before your sale is priced.",
+          "spans": [
+            [
+              141,
+              361
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk disclosures, the employee checks the client's understanding in turn 4, and the client unambiguously confirms and demonstrates understanding in turn 5.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand that technology-sector concentration can amplify declines, and that the redemption value can still change before your sale is priced?",
+          "spans": [
+            [
+              362,
+              513
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand those risks. The technology exposure can make declines sharper, and the value I receive can still change before pricing.",
+          "spans": [
+            [
+              0,
+              138
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states the transaction fee as a rate of 0.25% of the sale value.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction charge for this sale is 0.25% of the sale value.",
+          "spans": [
+            [
+              0,
+              64
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly warns the client that they could lose part or all of their invested capital.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose part or even all of the capital you invested in this fund. Selling can crystallise a loss if the redemption value is below what you invested.",
+          "spans": [
+            [
+              65,
+              221
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee confirms the client's willingness to accept investment losses in turn 6, and the client explicitly confirms acceptance in turn 7.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Are you willing to accept investment losses, including a loss that may be crystallised by this sale?",
+          "spans": [
+            [
+              222,
+              322
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to accept investment losses, including crystallising a loss on this sale, although the uncertainty makes me uneasy.",
+          "spans": [
+            [
+              0,
+              133
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides an advisory recommendation prior to the final transaction confirmation, linking the recommendation to the client's stated objective of reducing technology concentration and market sensitivity.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend reducing your holding in Nova Technology Equity Fund because that would lower your concentrated exposure to technology-sector volatility and support your aim of a less market-sensitive portfolio.",
+          "spans": [
+            [
+              0,
+              207
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee recaps all parameters of the final transaction instruction in turn 12, and the client explicitly confirms the instruction in turn 13.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Please confirm your final instruction: sell 1,500 units of Nova Technology Equity Fund using a market order, with transaction currency Japanese yen and transaction amount 50,000,000. Shall I proceed on that basis?",
+          "spans": [
+            [
+              16,
+              229
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that final transaction instruction exactly as you stated it. Please proceed.",
+          "spans": [
+            [
+              0,
+              91
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The dialogue contains no indication of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client explicitly grounds the sell order on material non-public inside information received from a company insider ahead of an unreleased earnings announcement, establishing the planned violation for C10.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "A senior employee at a business held by the fund privately told me its unreleased earnings announcement will reveal a material deterioration in trading. That confidential information is why I am instructing you to sell before it becomes public.",
+          "spans": [
+            [
+              133,
+              377
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not coach, encourage, or pressure the client to overstate their willingness to accept losses.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not guarantee future investment returns, and explicitly refuses to do so when asked in turn 10.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F0445450N"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their FIN as F zero four four five four five zero N, corresponding to F0445450N.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My FIN is F zero four four five four five zero N.",
+          "spans": [
+            [
+              135,
+              184
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "18 July 1971"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client gives their date of birth as 18 July 1971.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is 18 July 1971.",
+          "spans": [
+            [
+              185,
+              218
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Nova Technology Equity Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies Nova Technology Equity Fund as the investment product to transact.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The holding I want to transact in is Nova Technology Equity Fund.",
+          "spans": [
+            [
+              163,
+              228
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "JPY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies Japanese yen (JPY) as the transaction currency.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Use Japanese yen as the transaction currency.",
+          "spans": [
+            [
+              306,
+              351
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 50000000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the monetary amount as 50,000,000.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The transaction amount I am instructing is 50,000,000.",
+          "spans": [
+            [
+              352,
+              406
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1500
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a transaction quantity of 1,500 units.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The quantity I want to transact is 1,500 units.",
+          "spans": [
+            [
+              258,
+              305
+            ]
+          ],
+          "event_ids": [
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client instructs the direction as sell.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "I want to sell that holding.",
+          "spans": [
+            [
+              229,
+              257
+            ]
+          ],
+          "event_ids": [
+            "EV_021"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a market order.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Please place it as a market order.",
+          "spans": [
+            [
+              407,
+              441
+            ]
+          ],
+          "event_ids": [
+            "EV_022"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_040",
+      "edge_case_id": "EC_GUARANTEE_REQUEST_REFUSAL",
+      "target_question_ids": [
+        "C12"
+      ],
+      "assessment": "MATCH",
+      "rationale": "In turn 9, the client asks whether following the recommendation guarantees a favourable return, and in turn 10, the employee explicitly refuses to guarantee returns or promise an outcome, fulfilling EC_GUARANTEE_REQUEST_REFUSAL.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "Can you guarantee that following your recommendation will give me a favourable investment return?",
+          "spans": [
+            [
+              0,
+              97
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        },
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "No, I cannot guarantee future returns or promise a favourable investment outcome.",
+          "spans": [
+            [
+              0,
+              81
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": []
+}

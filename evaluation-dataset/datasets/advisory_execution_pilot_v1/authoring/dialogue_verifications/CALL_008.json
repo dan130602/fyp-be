@@ -1,0 +1,601 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_008",
+  "call_spec_sha256": "b0f095df475ed93333c85f3eafd55f2d8147006e097675ebb4565a102a6a4219",
+  "check_plan_skeleton_sha256": "8f31bfa64f70e88b2741c9eeea3580bc38de600c116086506eae4e0f3c76cfc1",
+  "call_config_sha256": "546a1fd7125496808d317ee0cd58fe83363c32d98a49b711345933e36e79b4b6",
+  "check_plan_sha256": "4f65012401bea8a4d77df9cfb991aaef0ab47ab3d0381b5b9cf49ab3f1e0329c",
+  "plan_verification_sha256": "a907fdf0902985e3b33c003bf8a5bfb4ef0031a9250bfe38058a67a6ac390c96",
+  "dialogue_sha256": "458fd28defe4b96f91a4dc8214ebb99de96c2ffa1e62fdad21f80cf185d077da",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "00eb4ab3de87fea99e4695564f0ba1c848160bf339ae9335060e54d73a13c827"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 0,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective during turn 6.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "So your aim is to broaden your portfolio's income sources, and you can hold through market fluctuations because you don't need this money for immediate spending.",
+          "spans": [
+            [
+              93,
+              254
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explains a concrete risk of the fund, specifically credit/default risk of emerging-market borrowers.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "With Crest Emerging Markets Bond Fund, the emerging-market borrowers whose bonds it holds may fail to repay their debt. That can reduce the value of the fund's holdings.",
+          "spans": [
+            [
+              0,
+              169
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Following the risk disclosure, the employee checks the client's understanding in turn 8 and the client confirms and demonstrates understanding in turn 9.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand that borrowers failing to repay can bring down the value of this fund?",
+          "spans": [
+            [
+              170,
+              258
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand. If those borrowers don't repay, the bonds held by the fund can lose value, and my investment can fall too.",
+          "spans": [
+            [
+              0,
+              125
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states the transaction fee rate as 0.5% of the transaction amount.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee is 0.5% of the transaction amount.",
+          "spans": [
+            [
+              0,
+              54
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly states that the client could lose part or all of the invested capital.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose part or even all of the money you invest in this fund.",
+          "spans": [
+            [
+              55,
+              124
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks about willingness to accept investment losses and the client confirms willingness, albeit cautiously.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Knowing that your invested money could be lost, are you willing to accept investment losses?",
+          "spans": [
+            [
+              125,
+              217
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to accept some investment loss, but I'm cautious about it. Falling values make me uncomfortable, and I worry that my caution might stop me from proceeding.",
+          "spans": [
+            [
+              0,
+              173
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete rationale linking product characteristics to the client's investment objectives prior to order commitment.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend Crest Emerging Markets Bond Fund because its emerging-market bonds add different borrowers and another source of bond income to your portfolio. That fits your aim of broadening income sources while being able to stay invested through fluctuations.",
+          "spans": [
+            [
+              255,
+              514
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee requests explicit confirmation of the complete transaction instruction and receives unambiguous confirmation from the client.",
+      "evidence": [
+        {
+          "turn_id": 16,
+          "speaker": "EMPLOYEE",
+          "quote": "Please confirm your final instruction: buy 500 units of Crest Emerging Markets Bond Fund, for a transaction amount of 25,000 in US dollars, using a limit order with a limit price of 50 US dollars per unit. Shall I proceed on that basis?",
+          "spans": [
+            [
+              0,
+              236
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        },
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that is my final transaction instruction. Please proceed exactly as you've stated.",
+          "spans": [
+            [
+              0,
+              97
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "There is no transaction instruction based on material non-public or inside information.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The dialogue contains the authored violation required for the planned FAIL: the employee explicitly coaches and pressures the client to overstate willingness to accept losses.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Even if you're only cautiously willing to accept losses, tell me you're fully comfortable accepting them so we can get this through. Don't mention your hesitation when you give your answer.",
+          "spans": [
+            [
+              0,
+              189
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not guarantee future investment returns.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G4165213R"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their FIN as G4165213R, matching the gold value.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My FIN is G four one six five two one three R.",
+          "spans": [
+            [
+              55,
+              101
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "19 June 1998"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states their date of birth as 19 June 1998, matching the gold value.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is the nineteenth of June nineteen ninety-eight.",
+          "spans": [
+            [
+              102,
+              167
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Crest Emerging Markets Bond Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client instructs the employee to transact in Crest Emerging Markets Bond Fund.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "The fund I want to transact in is Crest Emerging Markets Bond Fund.",
+          "spans": [
+            [
+              14,
+              81
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies US dollars (USD) as the transaction currency.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Please use US dollars as the transaction currency.",
+          "spans": [
+            [
+              107,
+              157
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 25000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction amount as 25,000.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "The amount I want to invest is 25,000.",
+          "spans": [
+            [
+              158,
+              196
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 500
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies an order quantity of 500 units.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Please place the order for 500 units.",
+          "spans": [
+            [
+              197,
+              234
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction direction as buy.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "I want to buy the units.",
+          "spans": [
+            [
+              82,
+              106
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a limit order.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Please use a limit order with a limit price of 50 US dollars per unit.",
+          "spans": [
+            [
+              235,
+              305
+            ]
+          ],
+          "event_ids": [
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [],
+  "issues": [],
+  "quality_findings": []
+}

@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
 RELEASE = ROOT / "datasets" / "advisory_execution_pilot_v1"
 CALL_IDS = [f"CALL_{n:03d}" for n in range(1, 51)]
-G6_OUTPUTS = ("authoring/dialogues", "authoring/dialogue_provenance", "authoring/dialogue_record")
+# later stages' outputs describe the real G6 dialogues, so an isolated copy that regenerates G6 must not carry them either
+G6_OUTPUTS = ("authoring/dialogues", "authoring/dialogue_provenance", "authoring/dialogue_record", "authoring/dialogue_verification")
 
 _INPUTS = None
 
@@ -63,13 +64,14 @@ def good_responder(runner, overrides=None):
     return respond
 
 
-def make_runner(tmp_path, *, overrides=None):
+def make_runner(tmp_path, *, overrides=None, repair_feedback=None):
     """A runner over an EMPTY output root sharing the validated (read-only) upstream state of the real release."""
     root = tmp_path / "release"
     root.mkdir(parents=True, exist_ok=True)
     holder = {}
     fake = FakeTransport(lambda body: holder["responder"](body))
-    runner = DialogueRunner(root, audit_root=tmp_path / "audit", schema_dir=SCHEMAS, transport=fake, clock=Clock(), inputs=shared_inputs())
+    runner = DialogueRunner(root, audit_root=tmp_path / "audit", schema_dir=SCHEMAS, transport=fake, clock=Clock(), inputs=shared_inputs(),
+                            repair_feedback=repair_feedback)
     holder["responder"] = good_responder(runner, overrides)
     return runner, fake
 

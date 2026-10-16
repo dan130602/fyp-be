@@ -1,0 +1,599 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_006",
+  "call_spec_sha256": "5394e1312224e73ec6951cb46d8a925c900f44f82db1c84547b4e13e74ce8840",
+  "check_plan_skeleton_sha256": "92d62a201988b1788479794115de563b6e3bdf9eef1585af66d9295d4ec96d37",
+  "call_config_sha256": "d168f75fed7272d967c7e0a128547029500057d8f96e03cf4a1d41a9081e241e",
+  "check_plan_sha256": "d6f57a6d6b3b7d2e590ee698b72c0c2bac80ddca2d2bdccf0a2405c599672bd7",
+  "plan_verification_sha256": "b5d5dafe7e350088a458fbe91222e670293f407ffdc3581dc6c891f961fb4072",
+  "dialogue_sha256": "388ea0633374ece0e293ebf35bf2d2d61f8286b4dfeb9a764bdf5be74493a335",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A002",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "808e3ac50c7597c50cb1a10df770cc594e63dd02b7207b2f80231a12f2a92a32"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 1,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly establishes and confirms the client's investment objective to reduce concentration in the existing bond and free up liquidity.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "So your objective is to reduce the concentration in your existing holding and free up cash for your upcoming business and household commitments.",
+          "spans": [
+            [
+              267,
+              411
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee mentions general investment loss in turn 10 but does not explain any concrete, product-specific risk of Atlas USD Corporate Bond 2031, correctly fulfilling the expected FAIL condition.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Because no key product risks were disclosed, the employee does not check the client's understanding of key product risks, correctly fulfilling the expected FAIL condition.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly discloses the transaction fee as a percentage rate (0.25% of the transaction amount).",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee for this sale is 0.25% of the transaction amount.",
+          "spans": [
+            [
+              77,
+              146
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee explicitly warns the client that they may lose some or all of their invested capital.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Please bear in mind that you may lose some or all of the capital you invested.",
+          "spans": [
+            [
+              147,
+              225
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee asks about the client's willingness to accept an investment loss, and the client unambiguously confirms acceptance.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Are you willing to accept an investment loss, including a loss realised when you sell?",
+          "spans": [
+            [
+              226,
+              312
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        },
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to accept an investment loss from selling. I would rather reduce my exposure and have the cash available.",
+          "spans": [
+            [
+              0,
+              123
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee provides a concrete rationale linking the recommendation to reduce the holding to the client's stated preference for liquidity and reduced issuer exposure, delivered prior to the execution confirmation.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend reducing your holding in Atlas USD Corporate Bond 2031 because that reduces your exposure to the issuer and releases cash for your anticipated commitments, which fits your preference for liquidity rather than keeping the future coupon income.",
+          "spans": [
+            [
+              234,
+              488
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee summarizes the complete final instruction and obtains the client's explicit, unambiguous confirmation.",
+      "evidence": [
+        {
+          "turn_id": 58,
+          "speaker": "EMPLOYEE",
+          "quote": "To bring everything together, your final instruction is to sell 100 units of Atlas USD Corporate Bond 2031, with a transaction amount of 10,000 in US dollars, using a market order. Do you explicitly confirm this instruction for me to proceed?",
+          "spans": [
+            [
+              243,
+              485
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that is my final transaction instruction. Please proceed as you have just summarised.",
+          "spans": [
+            [
+              0,
+              100
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The dialogue contains an authored violation where the client explicitly admits to routing undisclosed third-party cash through his personal account to conceal source and ownership, realizing the expected FAIL.",
+      "evidence": [
+        {
+          "turn_id": 61,
+          "speaker": "CLIENT",
+          "quote": "Actually, the original purchase was funded with cash supplied by other people whose identities I have kept undisclosed. I routed it through my personal account deliberately to hide where the money came from and their beneficial ownership.",
+          "spans": [
+            [
+              104,
+              342
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No material non-public or insider information is mentioned anywhere in the dialogue.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not coach, pressure, or encourage the client to overstate their willingness to accept investment losses.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not guarantee future investment returns at any point during the call.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T2018997Y"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states his identification number as T2018997Y, which matches the expected gold value.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is T two zero one eight nine nine seven Y.",
+          "spans": [
+            [
+              206,
+              273
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "19 March 1960"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client states his date of birth as the nineteenth of March nineteen sixty, which canonicalizes to 19 March 1960.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is the nineteenth of March nineteen sixty.",
+          "spans": [
+            [
+              274,
+              333
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client instructs the employee to transact in Atlas USD Corporate Bond 2031, which is confirmed as the final product.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "The holding I want you to transact in is Atlas USD Corporate Bond 2031.",
+          "spans": [
+            [
+              67,
+              138
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies US dollars as the transaction currency, which normalizes to USD.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "For this transaction, please use US dollars as the transaction currency.",
+          "spans": [
+            [
+              191,
+              263
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 10000
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies 10,000 as the transaction amount.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The amount I am instructing for this transaction is 10,000.",
+          "spans": [
+            [
+              124,
+              183
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 100
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the transaction quantity as 100 units.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please set the transaction quantity at 100 units.",
+          "spans": [
+            [
+              184,
+              233
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies the order direction as sell, normalizing to SELL.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "My instruction is to sell from my existing holding.",
+          "spans": [
+            [
+              139,
+              190
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "The client specifies a market order, normalizing to MARKET.",
+      "evidence": [
+        {
+          "turn_id": 49,
+          "speaker": "CLIENT",
+          "quote": "Coming back to the order type, please place it as a market order.",
+          "spans": [
+            [
+              350,
+              415
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_009",
+      "edge_case_id": "EC_LONG_DISTANCE_DEPENDENCY",
+      "target_question_ids": [
+        "T02",
+        "T06"
+      ],
+      "assessment": "MATCH",
+      "rationale": "T02 (USD) is specified in turn 9 and T06 (MARKET) is specified in turn 49. The 40 intervening turns of conversational and administrative discussion comfortably satisfy the minimum 6-turn gap requirement while leaving the target values unchanged.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "For this transaction, please use US dollars as the transaction currency.",
+          "spans": [
+            [
+              191,
+              263
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        },
+        {
+          "turn_id": 49,
+          "speaker": "CLIENT",
+          "quote": "Coming back to the order type, please place it as a market order.",
+          "spans": [
+            [
+              350,
+              415
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": []
+}

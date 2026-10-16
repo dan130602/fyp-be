@@ -262,11 +262,132 @@ def test_brief_excludes_speakable_compliance_content_and_gold(builder):
         assert secret not in text
     brief = json.loads(body["input"][1]["content"])
     assert set(brief) == {"call", "people", "setting", "holding_context", "final_product", "discussion_topics", "events",
-                          "placement_constraints", "must_never_be_expressed_outside_events", "edge_cases"}
+                          "planned_recommendation_event_ids", "placement_constraints", "must_never_be_expressed_outside_events",
+                          "edge_cases"}
     assert "question_ids" not in body["input"][1]["content"] and "expected" not in brief
     assert body["max_output_tokens"] == 32768 and body["store"] is False and body["text"]["format"]["strict"] is True
     assert body["metadata"]["stage"] == "G6" and body["model"] == "gpt-6.1-sol"
     assert builder.build("CALL_006", "A001") == body  # deterministic
+
+
+# ============================================================================================ advisory component (call intents)
+C07_FAIL_CALLS = ["CALL_001", "CALL_024", "CALL_031", "CALL_036", "CALL_042", "CALL_047", "CALL_049"]
+# natural wordings of the unplanned recommendation: it names the frozen product and action; "recommend" is optional
+RECOMMENDATION_SHAPES = [
+    "I recommend that you {verb} {product}.",
+    "I'd suggest that we {verb} {product}.",
+    "My advice is to {verb} {product}.",
+    "I would back a decision to {verb} {product}.",
+]
+VERBS = {"BUY": "buy", "SELL": "sell"}
+
+
+def squashed(text):
+    import re
+    return re.sub(r"\s+", " ", text)
+
+
+def test_the_brief_carries_the_call_intents_unchanged_and_the_planned_recommendation_events_from_the_c07_plan(builder):
+    inputs = shared_inputs()
+    empty = []
+    for call_id in CALL_IDS:
+        brief = json.loads(builder.build(call_id, "A001")["input"][1]["content"])
+        assert brief["call"]["call_intents"] == inputs.specs[call_id]["metadata"]["call_intents"] == ["ADVISORY", "EXECUTION"]
+        carriers = [e["event_id"] for e in inputs.plans[call_id]["planned_events"] if "C07" in e["question_ids"]]
+        assert brief["planned_recommendation_event_ids"] == carriers
+        gold = next(g["expected"]["expected_verdict"] for g in inputs.specs[call_id]["gold"] if g["question_id"] == "C07")
+        assert (not carriers) == (gold == "FAIL")  # C07 FAIL is an absence check: the plan has no recommendation event
+        if carriers:
+            (event_id,) = carriers
+            assert next(e for e in brief["events"] if e["event_id"] == event_id)["speaker"] == "EMPLOYEE"
+        else:
+            empty.append(call_id)
+    assert empty == C07_FAIL_CALLS
+    for call_id in CALL_IDS:  # the advisory brief key exists for exactly the calls whose plan has no planned recommendation
+        assert ("advisory_recommendation" in json.loads(builder.build(call_id, "A001")["input"][1]["content"])) == (call_id in C07_FAIL_CALLS)
+    assert "C07" not in json.dumps(brief)  # event IDs only: question IDs and gold stay out of the brief
+
+
+def test_the_g6_prompt_asks_for_a_named_rationale_free_recommendation_only_where_the_plan_has_no_recommendation():
+    text = squashed((PROMPTS / "dialogue.v1.md").read_text(encoding="utf-8"))
+    for required in ("the first one comes first", "ADVISORY and then EXECUTION", "BEFORE the final confirmation exchange",
+                     "The client may mention a product, an amount or an intention earlier", "planned_recommendation_event_ids",
+                     "those events ARE the recommendation", "do not add any recommendation or endorsement of your own",
+                     "When it is empty, the brief has `advisory_recommendation`", "ONE clear employee recommendation",
+                     "names the product exactly as `product_name`", "when `direction` is BUY", "when `direction` is SELL",
+                     'You do not have to use the word "recommend"', "NO reason, basis, benefit, feature, performance, suitability or comparison",
+                     "a listener must not be able to tell WHY", '"because", "since", "given"',
+                     "no quantity, amount, currency, price, order type, date or other order detail",
+                     "does not copy, repeat or paraphrase any planned event", "After every event in `place_after_event_ids`",
+                     "before every event in `place_before_event_ids`", "naming the product earlier would give the answer away",
+                     "Not in the same turn as, and not as the employee's immediate reply to, the events in `keep_apart_from_event_ids`",
+                     "Preferred, not required", "contains no planned question", "begins with a mild acknowledgement",
+                     '"Okay, noted." or "Okay, thanks."', "is not an instruction, a commitment, agreement to proceed or a confirmation",
+                     'It never says "I understand"', "The only exceptions to these rules are the single recommendation and the client's mild acknowledgement"):
+        assert required in text, required
+    assert "must use the word" not in text and "fixed sentence" not in text and "[[ADV" not in text
+    assert "Do not restate the product name" not in text and "It must only recommend or endorse" not in text  # the old endorsement rule is gone
+    for kept in ("explain any risk, possible loss, fee, charge or reason for a recommendation", "promise or guarantee any return",
+                 "must_never_be_expressed_outside_events", "ask whether the client understands any product, risk or disclosure"):
+        assert kept in text  # the unrelated prohibitions survive
+
+
+def confirmation_turn(ctx, response):
+    """Index of the first model turn that carries a C08 event marker."""
+    c08 = [e["event_id"] for e in ctx.events if "C08" in e["question_ids"]]
+    return min(turn_of(response, event_id) for event_id in c08)
+
+
+@pytest.mark.parametrize("call_id", C07_FAIL_CALLS)
+@pytest.mark.parametrize("shape", RECOMMENDATION_SHAPES)
+def test_an_isolated_recommendation_fixture_is_structurally_accepted_and_preserves_every_frozen_event(builder, validator, call_id, shape):
+    ctx = builder.context(call_id)
+    sentence = shape.format(verb=VERBS[ctx.advisory["direction"]], product=ctx.advisory["product_name"])
+    base = synthesize_dialogue(ctx)
+    before, _, _ = render(ctx, base)
+    first = confirmation_turn(ctx, base)
+    index = max(i for i, t in enumerate(base["turns"][:first]) if t["speaker"] == "EMPLOYEE")
+    response = json.loads(json.dumps(base))
+    response["turns"][index]["text"] = response["turns"][index]["text"].rstrip() + " " + sentence
+    response["turns"][index + 1]["text"] = "Okay, noted. " + response["turns"][index + 1]["text"]  # the client's mild acknowledgement
+    assert validator.errors(response, ctx) == []  # structure only: acceptance does not judge advisory meaning
+    turns, alignment, errors = render(ctx, response)
+    assert errors == [] and index < first
+    assert {s["event_id"]: s["turn_id"] for s in alignment} == {s["event_id"]: s["turn_id"] for s in render(ctx, base)[1]}
+    assert all(turns[s["turn_id"]]["text"][s["start"]:s["end"]] == ctx.texts[s["event_id"]] for s in alignment)  # frozen text is exact
+    assert [t["speaker"] for t in turns] == [t["speaker"] for t in before]
+    generation = {"attempt_id": "A001", "model": config.MODEL, "params": {"reasoning_effort": "medium", "max_output_tokens": 32768,
+                  "length_policy": config.LENGTH_POLICY}, "prompt_template_sha256": "0" * 64, "response_schema_sha256": "0" * 64}
+    artifact = compile_artifact(shared_inputs(), ctx, response, generation, builder.response_schema)
+    assert sentence in artifact["turns"][index]["text"]
+    # naming the product outside the events is never a rejection: it is recorded for G7 (acceptance stays structural)
+    assert {n["surface"] for n in artifact["review_notes"]} <= {ctx.advisory["product_name"], VERBS[ctx.advisory["direction"]]}  # product and action only
+    assert [a["event_id"] for a in artifact["event_alignment"]] == [a["event_id"] for a in sorted(alignment, key=lambda s: (s["turn_id"], s["start"]))]
+
+
+def test_a_recommendation_that_echoes_planned_text_is_still_rejected_and_naming_the_product_is_only_a_review_note(builder, validator):
+    ctx = builder.context("CALL_001")
+    base = synthesize_dialogue(ctx)
+    index = max(i for i, t in enumerate(base["turns"][:confirmation_turn(ctx, base)]) if t["speaker"] == "EMPLOYEE")
+    naming = json.loads(json.dumps(base))
+    naming["turns"][index]["text"] += " I recommend that you buy Nova Technology Equity Fund."
+    assert validator.errors(naming, ctx) == []  # accepted structurally, but G7 gets the review note
+    generation = {"attempt_id": "A001", "model": config.MODEL, "params": {"reasoning_effort": "medium", "max_output_tokens": 32768,
+                  "length_policy": config.LENGTH_POLICY}, "prompt_template_sha256": "0" * 64, "response_schema_sha256": "0" * 64}
+    notes = compile_artifact(shared_inputs(), ctx, naming, generation, builder.response_schema)["review_notes"]
+    assert any(n["question_id"] == "T01" and n["surface"] == "Nova Technology Equity Fund" for n in notes)
+    echoing = json.loads(json.dumps(base))
+    echoing["turns"][index]["text"] += " " + ctx.texts[next(e["event_id"] for e in ctx.events if "C08" in e["question_ids"])]
+    assert any("repeated outside its event marker" in e for e in validator.errors(echoing, ctx))
+
+
+def test_other_unrelated_prohibitions_are_not_weakened_by_the_recommendation_exception(builder):
+    """The brief still hides every speakable compliance fact an endorsement could leak, and still lists the absence conditions."""
+    brief = json.loads(builder.build("CALL_001", "A001")["input"][1]["content"])
+    scenario = shared_inputs().configs["CALL_001"]["scenario"]
+    text = json.dumps(brief)
+    assert scenario["final_product"]["recommendation_basis"] not in text and scenario["client"]["investment_objective"] not in text
+    assert any("concrete rationale for recommending the product" in c for c in brief["must_never_be_expressed_outside_events"])
 
 
 # ============================================================================================ G5 fingerprint reader

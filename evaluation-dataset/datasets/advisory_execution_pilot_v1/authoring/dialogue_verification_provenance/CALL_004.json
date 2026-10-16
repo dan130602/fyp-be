@@ -1,0 +1,312 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_004",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_004-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "021e3b75f779be0b70a2ed75b204de3b8a0588cd40465d56fba5c7e6aa2e365e",
+      "upstream_sha256": {
+        "call_spec": "edff51d2dd173f359f461f74df9a46ca9bdf64148df647462980ee258b69842f",
+        "check_plan_skeleton": "f5ef5962c71b1fa593c9feda1532468b12186a27e340dd7b5edddcfcda2438eb",
+        "call_config": "72b33f14b6b953e3ce2b1ae52cbf897ec094863f033d2c00a059b6d2603b6717",
+        "check_plan": "d7fa6d3a4ad0b6c00ce50b037cfbf463f3be00c8352bdf179638f8a3342a7e25",
+        "plan_verification": "7577e3b3876e9f6b15eb2577aa4b91a6417111f459c6d3131eada072ee3c0758",
+        "dialogue": "26c68b2e91b67d04a02d38e98e08cf01049f3f10d4df2b06a93733c5b9758123",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15177,
+        "cached_tokens": 0,
+        "output_tokens": 2194,
+        "thought_tokens": 5472,
+        "total_tokens": 22843
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.020065,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:22:21Z",
+      "finished_at": "2026-10-11T23:23:05Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "So your objective is to build investment income while keeping portfolio fluctuations more moderate than an equity-focused approach."
+            }
+          ],
+          "rationale": "The employee explicitly establishes the client's investment objective based on records on file.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For Harbor SGD Bond Fund, rising market interest rates can reduce the value of the bonds it holds, which can bring down the fund's unit value."
+            }
+          ],
+          "rationale": "The employee explicitly explains the concrete interest-rate risk specifically associated with the bond fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand how rising interest rates can affect the bonds held by the fund and its unit value?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand that rising interest rates can lower the value of the fund's bonds and bring its unit value down."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks the client's understanding and the client provides an unambiguous demonstration of understanding.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The transaction charge is 0.3% of the transaction amount."
+            }
+          ],
+          "rationale": "The employee explicitly discloses the transaction fee as a percentage rate.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "The dialogue does not contain an explicit explanation that the client may lose some or all of the invested capital, fulfilling the planned omission FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Can you confirm that you're willing to accept investment losses and fluctuations in value?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I'm willing to accept investment losses and fluctuations in value, though I prefer to avoid highly volatile investments."
+            }
+          ],
+          "rationale": "The employee explicitly asks for confirmation of willingness to accept investment losses and the client confirms.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "I recommend Harbor SGD Bond Fund because its bond exposure and income potential fit your aim of building investment income with a less equity-driven approach."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking the fund's features to the client's stated investment objective, prior to the transaction confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "Please confirm your final instruction: buy 2,000 units of Harbor SGD Bond Fund for an amount of 10,000 in Singapore dollars, using a limit order at a limit price of 5 Singapore dollars per unit."
+            },
+            {
+              "turn_id": 15,
+              "quote": "Yes, I confirm that final instruction exactly as you've stated it. Please proceed."
+            }
+          ],
+          "rationale": "The employee requests explicit confirmation of the complete final transaction details, and the client unambiguously confirms.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "My relative working in treasury at an issuer held by this fund told me confidentially about an unannounced refinancing agreement that will materially improve the issuer's financial position. I'm instructing you to buy the fund based on that information, before it becomes public."
+            }
+          ],
+          "rationale": "The client explicitly bases the purchase instruction on material non-public inside information received from a relative before public disclosure, fulfilling the planned violation FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage or coach the client to overstate their willingness to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not make any guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My FIN is G eight eight eight two four nine one K."
+            }
+          ],
+          "rationale": "The client states their FIN as G8882491K.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 22 July 1961."
+            }
+          ],
+          "rationale": "The client states their date of birth as 22 July 1961.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "The fund I want to transact in is Harbor SGD Bond Fund."
+            }
+          ],
+          "rationale": "The client specifies Harbor SGD Bond Fund as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "Use Singapore dollars as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies Singapore dollars (SGD) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "The amount I want to commit to this transaction is 10,000."
+            }
+          ],
+          "rationale": "The client specifies a monetary amount of 10,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "The quantity for my order is 2,000 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 2,000 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "I want to buy the units."
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as buy.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "Place this as a limit order with a limit price of 5 Singapore dollars per unit."
+            }
+          ],
+          "rationale": "The client instructs a limit order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "b1a5e50225c5e0043df70cd294be1d4c2c09215b9257161a282bded548accc1c",
+    "artifact_sha256": "ee8bca1af8ed06c6bd24cd198a3398fa26ad93a2a833ee4a453c906c1c8236bd"
+  },
+  "accepted_history": []
+}

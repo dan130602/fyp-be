@@ -45,27 +45,29 @@ def resolve_dataset_root(project, dataset_root=DEFAULT_DATASET_ROOT):
     return (dataset if dataset.is_absolute() else project / dataset).resolve()
 
 
-G8_RECORD = "authoring/ground_truth_record.json"
+G9_RECORD = "authoring/ground_truth_record.json"
 
 
-def is_g8_release(dataset):
-    """A release whose calls/ were compiled by G8 (`fyp_evaluation.ground_truths`); it owns its normalization.json."""
-    return (Path(dataset) / G8_RECORD).is_file()
+def is_g9_release(dataset):
+    """A release whose calls/ were compiled by G9 (`fyp_evaluation.ground_truths`); it owns its normalization.json."""
+    return (Path(dataset) / G9_RECORD).is_file()
 
 
-def _g8_errors(dataset, schemas, paths):
-    """G8 releases: every exported call file must equal a fresh G8 compilation from the CURRENT accepted inputs.
+def _g9_errors(dataset, schemas, paths):
+    """G9 releases: every exported call file must equal a fresh G9 compilation from the CURRENT accepted inputs.
 
     The compiler itself refuses unless G6 (and so G0-G5) is complete, valid and current, and it re-checks every evidence span
     against the plan, so an exported snapshot can never be stale or hand-edited.
     """
     from .ground_truths.cli import expected_outputs
+    from .ground_truths.timings import recorded_render_id
 
-    expected = expected_outputs(dataset, schemas)
+    # a FINAL record (audio-derived timings) names its G8 render; the in-memory recompile then uses the same render and the same gates
+    expected = expected_outputs(dataset, schemas, recorded_render_id(dataset))
     errors = []
     for name, path in paths.items():
         if name.startswith("calls/") and path.read_bytes().decode("utf-8").replace("\r\n", "\n") != expected.get(name):
-            errors.append(f"{name}: differs from a fresh G8 compilation; run scripts/compile_ground_truth.py --write first")
+            errors.append(f"{name}: differs from a fresh G9 compilation; run scripts/compile_ground_truth.py --write first")
     return errors
 
 
@@ -80,7 +82,12 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
     commit = git(repo, "rev-parse", "HEAD").decode().strip()
     dataset = resolve_dataset_root(project, dataset_root)
     schemas = project / "schemas"
-    g8 = is_g8_release(dataset)
+    g9 = is_g9_release(dataset)
+    final_render = None
+    if g9:
+        from .ground_truths.timings import recorded_render_id
+
+        final_render = recorded_render_id(dataset)  # None: PROVISIONAL placeholder times; else the render whose times were stitched in
     calls = sorted(p for p in (dataset / "calls").iterdir() if p.is_dir())
     if not calls:
         raise ValueError("No call directories found")
@@ -107,7 +114,7 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
 
     # Validate the exact local bytes, and require them to match HEAD. This also
     # detects ignored/untracked inputs and works with Git's CRLF checkout rules.
-    normalization_path = dataset / "normalization.json" if g8 else project / "configs/normalization.json"
+    normalization_path = dataset / "normalization.json" if g9 else project / "configs/normalization.json"
     inputs = [source_manifest_path, *paths.values(), normalization_path, *schemas.glob("*.json")]
     for path in inputs:
         no_links(path)
@@ -120,8 +127,8 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
             raise ValueError(f"Source differs from committed data; commit it first (or use --allow-uncommitted): {relative}")
 
     checklist = load_json(paths["checklist.json"])
-    if g8:
-        errors = _g8_errors(dataset, schemas, paths)
+    if g9:
+        errors = _g9_errors(dataset, schemas, paths)
     else:
         normalization = load_json(normalization_path)
         errors = validate_checklist(checklist, normalization, schemas)
@@ -129,11 +136,14 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
         gt, transcript, roles = [load_json(call / name) for name in CALL_FILES]
         if gt.get("call_id") != call.name:
             errors.append(f"{call.name}: ground truth call_id differs from directory")
-        if not g8:
+        if not g9:
             errors += [f"{call.name}: {e}" for e in validate_answers(gt, "ground_truth", checklist, normalization, schemas)]
             errors += [f"{call.name}: {e}" for e in validate_transcript_pair(gt, transcript, roles, schemas)]
-        if any(s["start_time"] != "0.0" or s["end_time"] != "0.0" for s in transcript["audio_segments"]):
+        placeholder = all(s["start_time"] == s["end_time"] == "0.0" for s in transcript["audio_segments"])
+        if not final_render and not placeholder:
             errors.append(f"{call.name}: v1 export supports placeholder_zero timings only")
+        if final_render and placeholder:  # already guaranteed by the recompile; kept as an explicit guard against a half-written release
+            errors.append(f"{call.name}: the record says audio-derived timings but the transcript still has placeholder times")
     if errors:
         raise ValueError("\n".join(errors))
     # Canonical JSON serialization makes hashes independent of OS line endings.
@@ -147,12 +157,12 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
             "checklist_id": source_manifest["checklist_id"],
         },
         "call_ids": discovered_call_ids,
-        "timing_status": "placeholder_zero",
+        "timing_status": "audio_derived" if final_render else "placeholder_zero",
         "files": {name: digest(data) for name, data in files.items()},
     }
     if allow_uncommitted:  # added only when used, so committed exports stay byte-identical to before
         manifest["source"]["uncommitted"] = True
-    if g8:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
+    if g9:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
         manifest["dataset_status"] = load_json(calls[0] / "ground_truth.json")["status"]
     manifest["dataset_sha256"] = digest(serialize(manifest["files"]))
     files["manifest.json"] = serialize(manifest)

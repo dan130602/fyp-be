@@ -1,0 +1,312 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_046",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_046-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "491d583307feaad484996f3202d6b85e27c47c455ef6f4fd5222d80eec7d6c55",
+      "upstream_sha256": {
+        "call_spec": "70bc6a3a33b17c319e3a60811f6ddc6dbae59f9bcd66d1aeb7eb491226f9ee23",
+        "check_plan_skeleton": "e9ab518ee945b81ded0e9f75620048fc1539f90d6d8def8b01453fc3ff0b2d6a",
+        "call_config": "3ad6b59dc10441bddb1f42f48e10379ed34f5751a644ddee5bf9eb3b7792a65c",
+        "check_plan": "b0c91f79e61d4b9e6a91bdffd46f275af2a2c930525c5a863af968b15a830055",
+        "plan_verification": "211bcf1c555a928c2178904e96dfac09615c248b9886d04077114f8917da066c",
+        "dialogue": "36915a71d056207ca451b5e79ffaf9fd010e917d854361bb9f50ae17823c77ae",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15035,
+        "cached_tokens": 0,
+        "output_tokens": 2308,
+        "thought_tokens": 4105,
+        "total_tokens": 21448
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.017663,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-12T00:05:54Z",
+      "finished_at": "2026-10-12T00:06:25Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "Your objective is long-term capital growth through technology companies, with no immediate need to draw on these funds. That's the objective we're working towards."
+            }
+          ],
+          "rationale": "In turn 4, the employee explicitly confirms the client's investment objective of seeking long-term capital growth through technology companies with no immediate draw need.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Nova Technology Equity Fund concentrates on technology companies, so its value can fall sharply when sentiment towards that sector deteriorates."
+            }
+          ],
+          "rationale": "In turn 6, the employee explains the concrete product-specific risk of technology-sector concentration leading to sharp drops when sector sentiment deteriorates.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "Do you understand how the fund's technology-sector concentration could lead to a sharp fall in its value?"
+            },
+            {
+              "turn_id": 7,
+              "quote": "Yes, I understand. Because the fund is concentrated in technology companies, a downturn in sector sentiment could make its value fall sharply."
+            }
+          ],
+          "rationale": "The employee explicitly checks the client's understanding of the disclosed concentration risk in turn 6, and the client unambiguously confirms and demonstrates understanding in turn 7.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "The transaction fee is 0.5% of the amount invested."
+            }
+          ],
+          "rationale": "In turn 8, the employee explicitly discloses the transaction fee as a rate of 0.5% of the amount invested.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "You could lose some or even all of the capital you invest in this fund."
+            }
+          ],
+          "rationale": "In turn 8, the employee explicitly states that the client may lose some or even all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Are you willing to accept investment losses, including substantial losses, in pursuing your long-term growth objective?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I'm willing to accept substantial investment losses in pursuit of long-term growth."
+            }
+          ],
+          "rationale": "In turn 8, the employee asks to confirm the client's willingness to accept losses, and the client gives an unambiguous affirmative confirmation in turn 9.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "I recommend Nova Technology Equity Fund because its technology focus supports your long-term growth objective, while the pooled structure lets the fund manager select the holdings rather than you picking individual shares."
+            }
+          ],
+          "rationale": "In turn 10, prior to the transaction instruction and confirmation, the employee recommends the fund with a concrete rationale linking its technology focus and pooled structure to the client's objective and preferences.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "Please confirm your final instruction: buy 500 units of Nova Technology Equity Fund for a total investment amount of 10,000,000 in Japanese yen, using a market order. Is that what you want me to proceed with?"
+            },
+            {
+              "turn_id": 13,
+              "quote": "Yes, I confirm that final instruction exactly as you've stated it. Please proceed."
+            }
+          ],
+          "rationale": "In turn 12, the employee recaps the full final transaction instruction and asks for confirmation, which the client explicitly confirms in turn 13.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "The dialogue contains no indication or red flag regarding money laundering or suspicious source of funds.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "The dialogue contains no indication of material non-public or inside information; the client explicitly notes following public conference talks and interviews.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not coach, pressure, or encourage the client to overstate their willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not state or imply that future investment returns are guaranteed.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My identification number is T four five six zero seven seven three L."
+            }
+          ],
+          "rationale": "The client states their NRIC/FIN character by character as T4560773L, which matches the expected target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 26 March 1981."
+            }
+          ],
+          "rationale": "The client provides their date of birth as 26 March 1981, matching the expected canonical date.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The fund I want to transact in is Nova Technology Equity Fund."
+            }
+          ],
+          "rationale": "The client instructs a transaction in Nova Technology Equity Fund, which matches the expected instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Please use Japanese yen as the transaction currency."
+            }
+          ],
+          "rationale": "The client instructs Japanese yen (JPY) as the transaction currency, matching the target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "The total amount I'm committing to this transaction is 10,000,000."
+            }
+          ],
+          "rationale": "The client specifies committing a monetary amount of 10,000,000, matching the expected value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Please set the transaction quantity at 500 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 500 units, matching the target.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "I want to buy those units."
+            }
+          ],
+          "rationale": "The client instructs an order to buy, matching the target BUY direction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "Please place this as a market order."
+            }
+          ],
+          "rationale": "The client specifies placing the order as a market order, matching MARKET.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "1d25791aa2f87763b03ed6ee1e75ebd11e49c52dbdb823da0559ec698f19e274",
+    "artifact_sha256": "5e49ec674c6e055b681cc5fb33c38c592b13aca18a25dda5c530ffd5edd55f93"
+  },
+  "accepted_history": []
+}

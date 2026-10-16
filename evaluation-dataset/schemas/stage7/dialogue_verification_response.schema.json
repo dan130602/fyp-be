@@ -1,0 +1,146 @@
+{
+  "title": "G7 dialogue verification report",
+  "description": "One report per call. Sent to Gemini as the structured-output schema and re-validated by Python with this same file. Uses only the JSON Schema subset Gemini supports (no pattern, const, oneOf or uniqueItems). Python enforces everything this schema cannot express (exact checklist and assignment order, linkage, item limits, quote grounding in the cited turn) and derives the verdict. Array bounds are limited to the top-level checks array: Gemini rejects (HTTP 400, no detail) a schema that also bounds the arrays nested inside it.",
+  "type": "object",
+  "properties": {
+    "checks": {
+      "type": "array",
+      "description": "Exactly one entry per checklist question, in checklist order (C01..C12, K01, K02, T01..T06).",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "enum": ["C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "K01", "K02", "T01", "T02", "T03", "T04", "T05", "T06"]
+          },
+          "evidence": {
+            "type": "array",
+            "description": "Actual dialogue speech supporting the assessment. May be empty for an omission or genuine uncertainty. At most 6 items (enforced by Python).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn_id": {"type": "integer", "description": "The turn_id of the dialogue turn that contains the quote."},
+                "quote": {"type": "string", "description": "A verbatim excerpt of that single turn's text. Never blank."}
+              },
+              "required": ["turn_id", "quote"],
+              "additionalProperties": false
+            }
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Concise reasoning from the dialogue to the assessment, stating the finding observed in the whole dialogue (at most 700 characters)."
+          },
+          "assessment": {"type": "string", "enum": ["MATCH", "MISMATCH", "UNCLEAR"]},
+          "issue_ids": {
+            "type": "array",
+            "description": "Empty for MATCH; at least one issue for MISMATCH or UNCLEAR.",
+            "items": {"type": "string"}
+          }
+        },
+        "required": ["question_id", "evidence", "rationale", "assessment", "issue_ids"],
+        "additionalProperties": false
+      }
+    },
+    "edge_cases": {
+      "type": "array",
+      "description": "Exactly one entry per assigned edge case, in the given assignment order; an empty array when the call has none. Exact length enforced by Python.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "assignment_id": {"type": "string"},
+          "evidence": {
+            "type": "array",
+            "description": "Actual dialogue speech that realises (or fails to realise) the edge case. At most 6 items (enforced by Python).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn_id": {"type": "integer"},
+                "quote": {"type": "string"}
+              },
+              "required": ["turn_id", "quote"],
+              "additionalProperties": false
+            }
+          },
+          "rationale": {"type": "string", "description": "At most 700 characters."},
+          "assessment": {"type": "string", "enum": ["MATCH", "MISMATCH", "UNCLEAR"]},
+          "issue_ids": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["assignment_id", "evidence", "rationale", "assessment", "issue_ids"],
+        "additionalProperties": false
+      }
+    },
+    "issues": {
+      "type": "array",
+      "description": "At most 20 issues (enforced by Python).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue_id": {"type": "string", "description": "I1, I2, ..."},
+          "assessment": {"type": "string", "enum": ["MISMATCH", "UNCLEAR"]},
+          "code": {
+            "type": "string",
+            "enum": ["COMPLIANCE_MEANING", "OMISSION_LEAKAGE", "EXTRACTION_STATE", "SCENARIO_CONTRADICTION", "EDGE_CASE", "CROSS_CHECK_INTERFERENCE", "MISSING_SUPPORT"]
+          },
+          "question_ids": {
+            "type": "array",
+            "description": "Checklist questions this issue affects; empty for a whole-dialogue issue.",
+            "items": {
+              "type": "string",
+              "enum": ["C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "K01", "K02", "T01", "T02", "T03", "T04", "T05", "T06"]
+            }
+          },
+          "assignment_ids": {"type": "array", "description": "Edge-case assignment IDs this issue concerns.", "items": {"type": "string"}},
+          "evidence": {
+            "type": "array",
+            "description": "A MISMATCH issue must cite the dialogue speech it rests on unless its code is MISSING_SUPPORT; an UNCLEAR issue may cite none. At most 6 items (enforced by Python).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn_id": {"type": "integer"},
+                "quote": {"type": "string"}
+              },
+              "required": ["turn_id", "quote"],
+              "additionalProperties": false
+            }
+          },
+          "explanation": {"type": "string", "description": "At most 1200 characters."},
+          "repair_scope": {"type": "string", "enum": ["G6_ONLY", "UPSTREAM_REVIEW", "REVIEW"]}
+        },
+        "required": ["issue_id", "assessment", "code", "question_ids", "assignment_ids", "evidence", "explanation", "repair_scope"],
+        "additionalProperties": false
+      }
+    },
+    "quality_findings": {
+      "type": "array",
+      "description": "Naturalness findings that change no expected outcome. At most 10 (enforced by Python).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quality_id": {"type": "string", "description": "Q1, Q2, ..."},
+          "severity": {"type": "string", "enum": ["NOTE", "SERIOUS"]},
+          "code": {"type": "string", "enum": ["REPETITION", "ARTIFICIAL_EXTENSION", "INCOHERENT_FLOW", "IMPLAUSIBLE_TURN", "SPEAKER_ROLE"]},
+          "evidence": {
+            "type": "array",
+            "description": "At least one citation of the actual turn concerned. At most 6 items (enforced by Python).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn_id": {"type": "integer"},
+                "quote": {"type": "string"}
+              },
+              "required": ["turn_id", "quote"],
+              "additionalProperties": false
+            }
+          },
+          "explanation": {"type": "string", "description": "At most 1200 characters."}
+        },
+        "required": ["quality_id", "severity", "code", "evidence", "explanation"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["checks", "edge_cases", "issues", "quality_findings"],
+  "additionalProperties": false
+}

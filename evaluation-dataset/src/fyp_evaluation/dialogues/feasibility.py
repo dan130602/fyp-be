@@ -7,6 +7,7 @@ filler pairs pad the dialogue into the length band. The model chooses its own pl
 
 import heapq
 
+from .advisory import advisory_conflicts
 from .render import render, word_count
 
 FILLER = {
@@ -82,7 +83,8 @@ def _plan(ctx):
 
 
 def preflight_errors(ctx):
-    return _plan(ctx)[0]
+    """Structural infeasibility plus contradictory advisory placement requirements, all found offline before any request."""
+    return _plan(ctx)[0] + advisory_conflicts(ctx.advisory, ctx.events, ctx.constraints)
 
 
 def synthesize_dialogue(ctx):

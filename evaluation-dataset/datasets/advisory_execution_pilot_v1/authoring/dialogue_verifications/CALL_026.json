@@ -1,0 +1,723 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_026",
+  "call_spec_sha256": "1471d074b3a477c582dce72184046c967494364fe1685c73229a2292c41685d2",
+  "check_plan_skeleton_sha256": "a34368fb698cf64f1f50249e2882f896d5d288a2401abc028a8c86db1b5bc76e",
+  "call_config_sha256": "8d0c8c19f99e55c53699a0cbb459b7a84991fcece225c1955e5b3e4d710f0fab",
+  "check_plan_sha256": "44c9ab8a772efa8bc97cadea73b8561b144bcfd020d3149114444978a5d1e267",
+  "plan_verification_sha256": "24ad78f9020f3d5d1f12b8710ed1a0f549f83f6f5641582a4d866b01fec29471",
+  "dialogue_sha256": "916c1efa9cf1d1e4d4ff2619f4243cd6e733de7d053309896804e742124b991d",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+    "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+    "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+    "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "accepted_response_sha256": "e8c7043df0f023a45a1c2cd16cd5eb495235a11e057f3cfde7845d73cfca6262"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 3,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 0,
+      "SERIOUS": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 4, the employee explicitly confirms the client's investment objective to reduce exposure to Asian equities and free up part of the portfolio for personal needs.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "I understand your aim is to reduce your exposure to Asian equities and free up part of your portfolio for personal needs.",
+          "spans": [
+            [
+              0,
+              121
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 6, the employee details concrete product-specific risks, including market downturn correlation across underlying shares and execution price movements affecting sale proceeds.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "With Meridian Asia Equity Fund, a downturn in regional markets can cause its underlying shares to fall together. Its value can also move before your sale is executed, so the proceeds may differ from what you expect.",
+          "spans": [
+            [
+              0,
+              215
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 6, the employee explicitly checks the client's understanding of disclosed risks, and in turn 7, the client provides an unambiguous demonstration of understanding.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand that the fund's holdings can fall together and that its value may change before your sale goes through?",
+          "spans": [
+            [
+              216,
+              337
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand those risks. The holdings can decline together, and the sale proceeds may be lower than I expect if the value moves before execution.",
+          "spans": [
+            [
+              0,
+              151
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 8, the employee explicitly discloses the transaction fee as an exact monetary amount of 35 Singapore dollars.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction charge for this sale is 35 Singapore dollars.",
+          "spans": [
+            [
+              0,
+              61
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 8, the employee explicitly explains that the client could lose some or even all of the invested capital.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose some or even all of the capital invested in this fund. Selling when its value is below what you paid would crystallise a loss.",
+          "spans": [
+            [
+              173,
+              314
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turns 10 and 11, the employee asks and the client explicitly confirms his willingness to accept investment losses arising from this partial sale.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Are you willing to accept investment losses arising from this partial sale, even though you are uncomfortable realising a loss?",
+          "spans": [
+            [
+              0,
+              127
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to accept losses from this measured reduction of my holding. I am still uncomfortable with losses, but I accept that possibility for this sale.",
+          "spans": [
+            [
+              0,
+              161
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 12, prior to final confirmation, the employee gives a concrete recommendation rationale linking reduction of the holding to lower regional equity volatility, reduced concentration, and personal liquidity needs.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend reducing your holding in Meridian Asia Equity Fund because that lowers your exposure to regional equity volatility and concentration, while releasing part of your portfolio for your personal needs.",
+          "spans": [
+            [
+              0,
+              209
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turns 12 and 13, after all corrections, the employee recaps the complete final order terms and obtains the client's explicit confirmation.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "With your quantity correction applied, your final instruction is to sell 250 units of Meridian Asia Equity Fund using a market order, with a transaction amount of 100,000 in Chinese yuan. Do you explicitly confirm this final instruction?",
+          "spans": [
+            [
+              210,
+              447
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that final instruction, including the corrected quantity. Please proceed with that sale.",
+          "spans": [
+            [
+              0,
+              103
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The dialogue contains no indication or red flags of money laundering or suspicious source of funds.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The dialogue contains no indication or instruction based on material non-public or inside information.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 8, the employee actively coaches the client to overstate his comfort with investment losses for the record, realising the required authored violation for C11 FAIL.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "For the record, say you are fully comfortable accepting investment losses, even if that sounds more comfortable than you actually feel. That will make it easier to put this through.",
+          "spans": [
+            [
+              315,
+              496
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The employee does not state or imply that future investment returns are guaranteed.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T7344537D"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 1, the client states his identification number, which normalizes to T7344537D.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is T seven three four four five three seven D.",
+          "spans": [
+            [
+              107,
+              178
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "22 April 2000"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 1, the client states his date of birth as 22 April 2000.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is 22 April 2000.",
+          "spans": [
+            [
+              179,
+              213
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Meridian Asia Equity Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 3, the client specifies Meridian Asia Equity Fund as the product to transact in, confirmed in turns 12 and 13.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The holding I want to transact in is Meridian Asia Equity Fund.",
+          "spans": [
+            [
+              0,
+              63
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 3, the client specifies Chinese yuan (CNY) as the transaction currency, distinguishing it from the fee currency in turn 8 and confirming it in turns 12-13.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Please use Chinese yuan as the transaction currency for my sale.",
+          "spans": [
+            [
+              104,
+              168
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 3, the client instructs 100,000 as the transaction amount, separating it from portfolio balance and prior investment distractors in turn 5.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The transaction amount I am instructing for this sale is 100,000.",
+          "spans": [
+            [
+              169,
+              234
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 250
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 7, the client explicitly corrects the initial quantity from 10,000 to 250 units, which is confirmed in turn 13.",
+      "evidence": [
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Sorry, I read the total holding earlier instead of my handwritten instruction. Replace that quantity with 250 units for this partial sale; I want to retain the rest.",
+          "spans": [
+            [
+              189,
+              354
+            ]
+          ],
+          "event_ids": [
+            "EV_022"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 3, the client instructs a sell order, confirmed in turns 12 and 13.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "I want to sell, not add to the holding.",
+          "spans": [
+            [
+              64,
+              103
+            ]
+          ],
+          "event_ids": [
+            "EV_023"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "In turn 7, the client specifies a market order, which is confirmed in turns 12 and 13.",
+      "evidence": [
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Please place this as a market order.",
+          "spans": [
+            [
+              355,
+              391
+            ]
+          ],
+          "event_ids": [
+            "EV_024"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_044",
+      "edge_case_id": "EC_CORRECTION_CROSS_TURN",
+      "target_question_ids": [
+        "T04"
+      ],
+      "assessment": "MATCH",
+      "rationale": "The client initially gives 10,000 units in turn 3 and explicitly replaces it with 250 units in turn 7 across multiple intervening turns.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Looking at my statement, the quantity I want to transact is 10,000 units.",
+          "spans": [
+            [
+              235,
+              308
+            ]
+          ],
+          "event_ids": [
+            "EV_021"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Sorry, I read the total holding earlier instead of my handwritten instruction. Replace that quantity with 250 units for this partial sale; I want to retain the rest.",
+          "spans": [
+            [
+              189,
+              354
+            ]
+          ],
+          "event_ids": [
+            "EV_022"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_045",
+      "edge_case_id": "EC_MULTIPLE_CURRENCIES",
+      "target_question_ids": [
+        "T02"
+      ],
+      "assessment": "MATCH",
+      "rationale": "The distractor fee currency (Singapore dollars / SGD) is explicitly distinguished from the transaction currency (Chinese yuan / CNY).",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Please use Chinese yuan as the transaction currency for my sale.",
+          "spans": [
+            [
+              104,
+              168
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        },
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "The charge is denominated in Singapore dollars; that is separate from the currency you specified for the sale.",
+          "spans": [
+            [
+              62,
+              172
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_046",
+      "edge_case_id": "EC_MULTIPLE_MONETARY_VALUES",
+      "target_question_ids": [
+        "T03"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Multiple monetary values are mentioned with clear semantic roles: 2,000,000 as portfolio balance and 50,000 as previous investment, while 100,000 is the committed sale amount.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The transaction amount I am instructing for this sale is 100,000.",
+          "spans": [
+            [
+              169,
+              234
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        },
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "My consolidated portfolio balance shows 2,000,000 in Chinese yuan. That is background only, not the amount for this sale. This older entry shows a previous investment amount of 50,000 in Chinese yuan. It is not my current transaction instruction.",
+          "spans": [
+            [
+              44,
+              290
+            ]
+          ],
+          "event_ids": [
+            "EV_019",
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": []
+}
