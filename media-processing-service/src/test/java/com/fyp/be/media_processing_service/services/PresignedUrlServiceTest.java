@@ -7,6 +7,7 @@ import com.fyp.be.media_processing_service.dtos.PresignedUploadResponse;
 import com.fyp.be.media_processing_service.exceptions.InvalidFileException;
 import com.fyp.be.media_processing_service.exceptions.PresignedUrlGenerationException;
 import com.fyp.be.media_processing_service.models.MediaAsset;
+import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ class PresignedUrlServiceTest {
 
     private static final UUID USER_ID = UUID.randomUUID();
     private static final String BUCKET = "test-bucket";
+    private static final String BATCH_BUCKET = "test-batch-bucket";
 
     private S3Presigner presigner;
     private MediaAssetRepository mediaAssetRepository;
@@ -54,7 +56,7 @@ class PresignedUrlServiceTest {
 
         UploadProperties props = new UploadProperties(
                 2, 1_000L, List.of("Audio/MP3", "audio/wav"), List.of("MP3", "wav"));
-        service = new PresignedUrlService(presigner, mediaAssetRepository, checklistService, props, BUCKET, 15, 30);
+        service = new PresignedUrlService(presigner, mediaAssetRepository, checklistService, props, BUCKET, BATCH_BUCKET, 15, 30);
     }
 
     private static FileUploadRequest file(String name, String type, Long size) {
@@ -87,6 +89,55 @@ class PresignedUrlServiceTest {
         assertThat(saved.getTranscribeJobName()).matches("transcribe-" + USER_ID + "-[0-9a-f]{16}");
         assertThat(upload.id()).isEqualTo(saved.getId());
         verify(checklistService).createForUpload(saved.getId(), USER_ID, null);
+    }
+
+    @Test
+    void generatePresignedUploads_batchMode_keysByAssetIdInBatchBucketAndPersistsBatchAsset() {
+        PresignedUploadResponse response = service.generatePresignedUploads(
+                USER_ID, List.of(file("call.mp3", "audio/mp3", 500L)), ProcessingMode.BATCH);
+
+        FileUploadResponse upload = response.uploads().get(0);
+        assertThat(upload.objectKey()).isEqualTo(upload.id() + "/call.mp3");
+
+        ArgumentCaptor<PutObjectPresignRequest> presign = ArgumentCaptor.forClass(PutObjectPresignRequest.class);
+        verify(presigner).presignPutObject(presign.capture());
+        assertThat(presign.getValue().putObjectRequest().bucket()).isEqualTo(BATCH_BUCKET);
+        assertThat(presign.getValue().putObjectRequest().key()).isEqualTo(upload.objectKey());
+
+        ArgumentCaptor<MediaAsset> captor = ArgumentCaptor.forClass(MediaAsset.class);
+        verify(mediaAssetRepository).save(captor.capture());
+        MediaAsset saved = captor.getValue();
+        assertThat(saved.getId()).isEqualTo(upload.id());
+        assertThat(saved.getProcessingMode()).isEqualTo(ProcessingMode.BATCH);
+        assertThat(saved.getObjectKey()).isEqualTo(upload.objectKey());
+        // Must match the Lambda's _batch_job_name_for_key: id segment is the asset id (key index 0).
+        assertThat(saved.getTranscribeJobName()).matches("transcribe-" + upload.id() + "-[0-9a-f]{16}");
+        verify(checklistService).createForUpload(saved.getId(), USER_ID, null);
+    }
+
+    @Test
+    void generatePresignedUploads_immediateMode_isUnchangedAndUsesMainBucket() {
+        service.generatePresignedUploads(USER_ID, List.of(file("call.mp3", "audio/mp3", 500L)), ProcessingMode.IMMEDIATE);
+
+        ArgumentCaptor<PutObjectPresignRequest> presign = ArgumentCaptor.forClass(PutObjectPresignRequest.class);
+        verify(presigner).presignPutObject(presign.capture());
+        assertThat(presign.getValue().putObjectRequest().bucket()).isEqualTo(BUCKET);
+
+        ArgumentCaptor<MediaAsset> captor = ArgumentCaptor.forClass(MediaAsset.class);
+        verify(mediaAssetRepository).save(captor.capture());
+        assertThat(captor.getValue().getProcessingMode()).isEqualTo(ProcessingMode.IMMEDIATE);
+    }
+
+    @Test
+    void generatePresignedUploads_batchModeWithoutBatchBucket_isRejectedBeforeAnyWrite() {
+        UploadProperties props = new UploadProperties(2, 1_000L, List.of("audio/mp3"), List.of("mp3"));
+        PresignedUrlService noBatch =
+                new PresignedUrlService(presigner, mediaAssetRepository, checklistService, props, BUCKET, "", 15, 30);
+
+        assertThatThrownBy(() -> noBatch.generatePresignedUploads(
+                USER_ID, List.of(file("a.mp3", "audio/mp3", 10L)), ProcessingMode.BATCH))
+                .isInstanceOf(InvalidFileException.class);
+        verify(mediaAssetRepository, never()).save(any());
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
 import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
+import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepository;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
@@ -21,6 +22,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,12 +45,15 @@ class MediaAssetServiceTest {
     @Mock
     private LanggraphOutputRepository langgraphOutputRepository;
 
+    @Mock
+    private BatchObjectService batchObjectService;
+
     private final UUID ownerId = UUID.randomUUID();
     private final UUID assetId = UUID.randomUUID();
 
     private MediaAssetService service() {
         return new MediaAssetService(mediaAssetRepository, presignedUrlService, transcriptHandoffService,
-                checklistRepository, langgraphOutputRepository, new ObjectMapper());
+                checklistRepository, langgraphOutputRepository, batchObjectService, new ObjectMapper());
     }
 
     private MediaAsset asset(MediaAssetStatus status, String failureReason) {
@@ -128,6 +135,42 @@ class MediaAssetServiceTest {
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.FAILED);
         assertThat(result.failureReason()).isEqualTo("Transcribe failed");
         assertThat(result.result()).isNull();
+    }
+
+    @Test
+    void completedBatchAssetDeletesItsBatchObjectAfterHandoff() {
+        MediaAsset batch = asset(MediaAssetStatus.QUEUED, null);
+        batch.setProcessingMode(ProcessingMode.BATCH);
+        batch.setObjectKey(assetId + "/call.mp3");
+        when(mediaAssetRepository.findByTranscribeJobName("job-1")).thenReturn(Optional.of(batch));
+
+        service().applyTranscribeStatusUpdate("job-1", MediaAssetStatus.COMPLETED, "s3://out/t.json", null);
+
+        assertThat(batch.getStatus()).isEqualTo(MediaAssetStatus.COMPLETED);
+        verify(transcriptHandoffService).publish(batch);
+        verify(batchObjectService).delete(assetId + "/call.mp3");
+    }
+
+    @Test
+    void failedBatchAssetKeepsItsBatchObject() {
+        MediaAsset batch = asset(MediaAssetStatus.PROCESSING, null);
+        batch.setProcessingMode(ProcessingMode.BATCH);
+        when(mediaAssetRepository.findByTranscribeJobName("job-1")).thenReturn(Optional.of(batch));
+
+        service().applyTranscribeStatusUpdate("job-1", MediaAssetStatus.FAILED, null, "bad audio");
+
+        assertThat(batch.getStatus()).isEqualTo(MediaAssetStatus.FAILED);
+        verifyNoInteractions(batchObjectService);
+    }
+
+    @Test
+    void completedImmediateAssetNeverTouchesBatchBucket() {
+        MediaAsset immediate = asset(MediaAssetStatus.PENDING, null);
+        when(mediaAssetRepository.findByTranscribeJobName("job-1")).thenReturn(Optional.of(immediate));
+
+        service().applyTranscribeStatusUpdate("job-1", MediaAssetStatus.COMPLETED, "s3://out/t.json", null);
+
+        verify(batchObjectService, never()).delete(org.mockito.ArgumentMatchers.any());
     }
 
     @Test

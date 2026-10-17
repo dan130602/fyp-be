@@ -29,3 +29,15 @@ variable "expiration_in_days" {
   description = "Expiry ofS S3 files in days"
   type        = number
 }
+
+variable "ingestion_audio_batch_bucket_name" {
+  description = "S3 bucket for audio queued for the nightly batch run (no S3 event trigger)"
+  type        = string
+  default = "ingestion-audio-batch"
+}
+
+variable "batch_expiration_in_days" {
+  description = "Safety-net expiry for objects left in the batch bucket (normally deleted after processing)"
+  type        = number
+  default     = 7
+}

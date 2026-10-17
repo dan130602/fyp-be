@@ -37,13 +37,22 @@ def _job_name_for_key(key):
     return f"transcribe-{user_id}-{digest}"
 
 
-def _start_job(bucket, key):
+def _batch_job_name_for_key(key):
+    """Batch keys are "{record_id}/{filename}" (no "uploads/{userId}" prefix), so the id segment
+    is index 0 and is the MediaAsset id. Must match PresignedUrlService.jobNameForObjectKey (Java)
+    for ProcessingMode.BATCH."""
+    record_id = key.split("/")[0]
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
+    return f"transcribe-{record_id}-{digest}"
+
+
+def _start_job(bucket, key, job_name=None):
     media_format = _media_format_for_key(key)
     if media_format is None:
         logger.warning("Skipping s3://%s/%s: unsupported or unknown media format", bucket, key)
         return None
 
-    job_name = _job_name_for_key(key)
+    job_name = job_name or _job_name_for_key(key)
     output_bucket = os.environ["TRANSCRIBE_OUTPUT_BUCKET"]
     language_code = os.environ.get("TRANSCRIBE_LANGUAGE_CODE", "en-US")
     max_speaker_labels = int(os.environ.get("TRANSCRIBE_MAX_SPEAKER_LABELS", "2"))
@@ -67,6 +76,14 @@ def _start_job(bucket, key):
 
 
 def handler(event, context):
+    records = event.get("Records", [])
+    if records and records[0].get("eventSource") == "aws:sqs":
+        # Batch queue consumer. Imported lazily so the immediate (S3-triggered) path never loads
+        # the DB driver or needs any DB configuration.
+        from app import batch_worker
+
+        return batch_worker.handle(event)
+
     started = []
     errors = []
 
