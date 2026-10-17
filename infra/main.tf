@@ -29,6 +29,8 @@ module "s3" {
 
   ingestion_audio_bucket_name        = var.ingestion_audio_bucket_name
   ingestion_audio_output_bucket_name = var.ingestion_audio_output_bucket_name
+  ingestion_audio_batch_bucket_name  = var.ingestion_audio_batch_bucket_name
+  batch_expiration_in_days           = var.batch_expiration_in_days
   frontend_bucket_name               = var.frontend_bucket_name
   frontend_origins                   = split(",", var.cors_allowed_origins)
 
@@ -137,6 +139,18 @@ module "transcript_handoff_queue" {
   max_receive_count          = 3
 }
 
+# Dedicated queue for the nightly "process later" run (consumer: modules/batch_processing).
+# Separate from any live path so a nightly flood cannot starve "process now" jobs. Visibility
+# timeout is 6x the worker timeout (AWS guidance for Lambda consumers) and max_receive_count is
+# shared with the worker, which marks a record FAILED on its last allowed attempt.
+module "batch_queue" {
+  source = "./modules/sqs"
+
+  queue_name                 = "batch-processing"
+  visibility_timeout_seconds = var.batch_worker_timeout * 6
+  max_receive_count          = var.batch_max_receive_count
+}
+
 module "cognito" {
   source = "./modules/cognito"
 
@@ -222,6 +236,18 @@ data "aws_iam_policy_document" "media_processing_task" {
     resources = ["${module.s3.ingestion_audio_bucket_arn}/*"]
   }
 
+  # PutObject: the backend signs batch upload URLs with this role. DeleteObject: it removes each
+  # batch object once its Transcribe job completes.
+  statement {
+    sid    = "BatchBucketStorage"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = ["${module.s3.ingestion_audio_batch_bucket_arn}/*"]
+  }
+
   statement {
     sid       = "PlaybackReadAccess"
     effect    = "Allow"
@@ -297,6 +323,7 @@ module "media_processing_ecs" {
     SPRING_DATASOURCE_URL        = "jdbc:postgresql://${module.media_processing_rds.cluster_endpoint}:${module.media_processing_rds.port}/${module.media_processing_rds.database_name}"
     AWS_REGION                   = var.aws_region
     S3_BUCKET                    = module.s3.ingestion_audio_bucket_name
+    S3_BATCH_BUCKET              = module.s3.ingestion_audio_batch_bucket_name
     TRANSCRIBE_OUTPUT_BUCKET     = module.s3.ingestion_audio_output_bucket_name
     TRANSCRIBE_STATUS_QUEUE_URL  = module.transcribe_status_queue.queue_url
     TRANSCRIPT_HANDOFF_QUEUE_URL = module.transcript_handoff_queue.queue_url
@@ -322,6 +349,45 @@ module "media_processing_ecs" {
   ]
 
   depends_on = [module.media_processing_alb]
+}
+
+# -----------------------
+# Batch ("process later") processing - needs the RDS cluster above
+# -----------------------
+
+module "batch_processing" {
+  source = "./modules/batch_processing"
+
+  ecr_repository_url  = module.ecr.repository_url
+  ecr_repository_name = module.ecr.repository_name
+  image_tag           = var.transcribe_lambda_image_tag
+
+  batch_bucket_arn   = module.s3.ingestion_audio_batch_bucket_arn
+  batch_bucket_name  = module.s3.ingestion_audio_batch_bucket_name
+  output_bucket_arn  = module.s3.ingestion_audio_output_bucket_arn
+  output_bucket_name = module.s3.ingestion_audio_output_bucket_name
+
+  queue_arn         = module.batch_queue.queue_arn
+  queue_url         = module.batch_queue.queue_url
+  max_receive_count = var.batch_max_receive_count
+
+  vpc_id        = module.vpc.vpc_id
+  subnet_ids    = values(module.vpc.private_subnet_ids)
+  db_host       = module.media_processing_rds.cluster_endpoint
+  db_port       = module.media_processing_rds.port
+  db_name       = module.media_processing_rds.database_name
+  db_secret_arn = module.media_processing_secrets.rds_credentials_secret_arn
+
+  transcribe_max_speaker_labels = var.transcribe_max_speaker_labels
+
+  schedule_expression = var.batch_schedule_expression
+  schedule_timezone   = var.batch_schedule_timezone
+  schedule_enabled    = var.batch_schedule_enabled
+
+  worker_max_concurrency      = var.batch_worker_max_concurrency
+  worker_batch_size           = var.batch_worker_batch_size
+  worker_reserved_concurrency = var.batch_worker_reserved_concurrency
+  worker_timeout              = var.batch_worker_timeout
 }
 
 # Lets the same OIDC role CI uses to push images also roll the ECS service

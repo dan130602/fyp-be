@@ -42,3 +42,18 @@ output "ingestion_audio_output_bucket_name" {
   description = "Name of the transcribed audio (output) bucket"
   value       = aws_s3_bucket.ingestion_audio_output.bucket
 }
+
+output "ingestion_audio_batch_bucket_id" {
+  description = "ID of the batch (process later) bucket"
+  value       = aws_s3_bucket.ingestion_audio_batch.id
+}
+
+output "ingestion_audio_batch_bucket_arn" {
+  description = "ARN of the batch (process later) bucket"
+  value       = aws_s3_bucket.ingestion_audio_batch.arn
+}
+
+output "ingestion_audio_batch_bucket_name" {
+  description = "Name of the batch (process later) bucket"
+  value       = aws_s3_bucket.ingestion_audio_batch.bucket
+}

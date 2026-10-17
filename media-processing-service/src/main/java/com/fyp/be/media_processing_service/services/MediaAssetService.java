@@ -10,6 +10,7 @@ import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
 import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
+import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.models.Role;
 import com.fyp.be.media_processing_service.models.User;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
@@ -38,6 +39,7 @@ public class MediaAssetService {
     private final TranscriptHandoffService transcriptHandoffService;
     private final ChecklistRepository checklistRepository;
     private final LanggraphOutputRepository langgraphOutputRepository;
+    private final BatchObjectService batchObjectService;
     private final ObjectMapper objectMapper;
 
     public MediaAssetService(
@@ -46,6 +48,7 @@ public class MediaAssetService {
             TranscriptHandoffService transcriptHandoffService,
             ChecklistRepository checklistRepository,
             LanggraphOutputRepository langgraphOutputRepository,
+            BatchObjectService batchObjectService,
             ObjectMapper objectMapper
     ) {
         this.mediaAssetRepository = mediaAssetRepository;
@@ -53,6 +56,7 @@ public class MediaAssetService {
         this.transcriptHandoffService = transcriptHandoffService;
         this.checklistRepository = checklistRepository;
         this.langgraphOutputRepository = langgraphOutputRepository;
+        this.batchObjectService = batchObjectService;
         this.objectMapper = objectMapper;
     }
 
@@ -148,6 +152,11 @@ public class MediaAssetService {
             mediaAssetRepository.save(asset);
             if (newStatus == MediaAssetStatus.COMPLETED) {
                 transcriptHandoffService.publish(asset);
+                // Last, so a failed handoff (which rolls this update back for redelivery) never
+                // leaves a batch object deleted while its row is not completed.
+                if (asset.getProcessingMode() == ProcessingMode.BATCH) {
+                    batchObjectService.delete(asset.getObjectKey());
+                }
             }
         }, () -> log.warn("No MediaAsset found for transcribe job '{}': skipping", jobName));
     }
@@ -159,6 +168,7 @@ public class MediaAssetService {
                 asset.getContentType(),
                 asset.getFileSizeBytes(),
                 asset.getStatus(),
+                asset.getProcessingMode(),
                 ApiTime.of(asset.getCreatedAt())
         );
     }

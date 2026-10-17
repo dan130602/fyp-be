@@ -48,7 +48,8 @@ public class UploadController {
             Authentication authentication
     ) {
         User currentUser = currentUserService.getCurrentUser(authentication);
-        PresignedUploadResponse response = presignedUrlService.generatePresignedUploads(currentUser.getId(), request.files());
+        PresignedUploadResponse response = presignedUrlService.generatePresignedUploads(
+                currentUser.getId(), request.files(), request.processingMode());
         return ResponseEntity.ok(response);
     }
 

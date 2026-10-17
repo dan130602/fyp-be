@@ -7,6 +7,7 @@ import com.fyp.be.media_processing_service.dtos.PresignedUploadResponse;
 import com.fyp.be.media_processing_service.exceptions.InvalidFileException;
 import com.fyp.be.media_processing_service.exceptions.PresignedUrlGenerationException;
 import com.fyp.be.media_processing_service.models.MediaAsset;
+import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,7 @@ public class PresignedUrlService {
     private final List<String> allowedContentTypes;
     private final List<String> allowedExtensions;
     private final String bucketName;
+    private final String batchBucketName;
     private final long expiryMinutes;
     private final long playbackExpiryMinutes;
 
@@ -60,6 +62,7 @@ public class PresignedUrlService {
             ChecklistService checklistService,
             UploadProperties uploadProperties,
             @Value("${app.aws.s3.bucket}") String bucketName,
+            @Value("${app.aws.s3.batch-bucket:}") String batchBucketName,
             @Value("${app.aws.s3.presigned-url-expiry-minutes}") long expiryMinutes,
             @Value("${app.aws.s3.playback-url-expiry-minutes}") long playbackExpiryMinutes
     ) {
@@ -70,6 +73,7 @@ public class PresignedUrlService {
         this.allowedContentTypes = normalize(uploadProperties.allowedContentTypes());
         this.allowedExtensions = normalize(uploadProperties.allowedExtensions());
         this.bucketName = bucketName;
+        this.batchBucketName = batchBucketName;
         this.expiryMinutes = expiryMinutes;
         this.playbackExpiryMinutes = playbackExpiryMinutes;
     }
@@ -97,10 +101,20 @@ public class PresignedUrlService {
     }
 
     public PresignedUploadResponse generatePresignedUploads(UUID userId, List<FileUploadRequest> files) {
+        return generatePresignedUploads(userId, files, ProcessingMode.IMMEDIATE);
+    }
+
+    public PresignedUploadResponse generatePresignedUploads(
+            UUID userId, List<FileUploadRequest> files, ProcessingMode mode) {
         validateBatch(files);
+        if (mode == ProcessingMode.BATCH && batchBucketName.isBlank()) {
+            throw new InvalidFileException("Batch processing is not available: no batch bucket is configured");
+        }
 
         List<FileUploadResponse> uploads = files.stream()
-                .map(file -> generateForFile(userId, file))
+                .map(file -> mode == ProcessingMode.BATCH
+                        ? generateForBatchFile(userId, file)
+                        : generateForFile(userId, file))
                 .toList();
 
         return new PresignedUploadResponse(uploads);
@@ -181,16 +195,60 @@ public class PresignedUrlService {
         }
     }
 
+    /**
+     * The DB row is written BEFORE the presigned URL is minted, because the key embeds the row id
+     * ("{assetId}/{filename}") - that is how the nightly enqueuer maps a bucket object back to its
+     * row. A failed presign therefore leaves a PENDING row with no object, which the enqueuer
+     * never sees (it iterates bucket objects, not rows).
+     */
+    private FileUploadResponse generateForBatchFile(UUID userId, FileUploadRequest file) {
+        UUID assetId = UUID.randomUUID();
+        String objectKey = "%s/%s".formatted(assetId, sanitizeFilename(file.fileName()));
+
+        try {
+            MediaAsset asset = recordMediaAsset(assetId, userId, objectKey, file, ProcessingMode.BATCH);
+
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(batchBucketName)
+                    .key(objectKey)
+                    .contentType(file.contentType())
+                    .build();
+
+            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(expiryMinutes))
+                    .putObjectRequest(putObjectRequest)
+                    .build();
+
+            PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
+
+            return new FileUploadResponse(
+                    asset.getId(),
+                    file.fileName(),
+                    objectKey,
+                    presigned.url().toString(),
+                    Duration.ofMinutes(expiryMinutes).toSeconds()
+            );
+        } catch (Exception ex) {
+            throw new PresignedUrlGenerationException("Failed to generate presigned URL for file '%s'".formatted(file.fileName()), ex);
+        }
+    }
+
     private MediaAsset recordMediaAsset(UUID userId, String objectKey, FileUploadRequest file) {
+        return recordMediaAsset(UUID.randomUUID(), userId, objectKey, file, ProcessingMode.IMMEDIATE);
+    }
+
+    private MediaAsset recordMediaAsset(
+            UUID assetId, UUID userId, String objectKey, FileUploadRequest file, ProcessingMode mode) {
         LocalDateTime now = LocalDateTime.now();
         MediaAsset asset = mediaAssetRepository.save(MediaAsset.builder()
-                .id(UUID.randomUUID())
+                .id(assetId)
                 .userId(userId)
                 .objectKey(objectKey)
                 .originalFilename(file.fileName())
                 .contentType(file.contentType())
                 .fileSizeBytes(file.fileSize())
-                .transcribeJobName(jobNameForObjectKey(objectKey))
+                .processingMode(mode)
+                .transcribeJobName(jobNameForObjectKey(objectKey, mode))
                 .createdAt(now)
                 .updatedAt(now)
                 .build());
@@ -208,9 +266,12 @@ public class PresignedUrlService {
      * passed in separately, so both languages derive it from the identical string - passing a
      * typed UUID here and relying on toString() producing the same text would risk drifting
      * from whatever Python's string split happens to see.
+     *
+     * Batch keys are "{assetId}/{filename}" (no "uploads/{userId}" prefix), so the id segment is
+     * index 0 and is the asset id; mirrors _batch_job_name_for_key in the Lambda.
      */
-    private static String jobNameForObjectKey(String objectKey) {
-        String userId = objectKey.split("/")[1];
+    private static String jobNameForObjectKey(String objectKey, ProcessingMode mode) {
+        String userId = objectKey.split("/")[mode == ProcessingMode.BATCH ? 0 : 1];
 
         MessageDigest digest;
         try {

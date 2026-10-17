@@ -28,6 +28,17 @@ variable "ingestion_audio_output_bucket_name" {
   type = string
 }
 
+variable "ingestion_audio_batch_bucket_name" {
+  description = "S3 bucket for audio queued for the nightly batch run - globally unique, no S3 event trigger"
+  type        = string
+}
+
+variable "batch_expiration_in_days" {
+  description = "Safety-net expiry for objects left in the batch bucket (normally deleted after processing)"
+  type        = number
+  default     = 7
+}
+
 variable "frontend_bucket_name" {
   type = string
 }
@@ -288,4 +299,56 @@ variable "ai_reasoning_service_langsmith_tracing" {
 variable "ai_reasoning_service_langsmith_project" {
   type    = string
   default = "ai-reasoning-service"
+}
+
+# -----------------------
+# Batch ("process later") processing
+# -----------------------
+
+variable "batch_schedule_expression" {
+  description = "EventBridge Scheduler cron for the nightly enqueue - default 20:00 Monday-Friday"
+  type        = string
+  default     = "cron(0 20 ? * MON-FRI *)"
+}
+
+variable "batch_schedule_timezone" {
+  description = "IANA timezone the batch schedule is evaluated in"
+  type        = string
+  default     = "Asia/Singapore"
+}
+
+variable "batch_schedule_enabled" {
+  description = "Set false to pause the nightly run without destroying it"
+  type        = bool
+  default     = true
+}
+
+variable "batch_worker_max_concurrency" {
+  description = "Max parallel batch worker invocations (SQS event source mapping MaximumConcurrency, 2-1000). Each holds one DB connection."
+  type        = number
+  default     = 5
+}
+
+variable "batch_worker_batch_size" {
+  description = "Messages per batch worker invocation (1-10)"
+  type        = number
+  default     = 5
+}
+
+variable "batch_worker_reserved_concurrency" {
+  description = "Reserved concurrency for the batch worker - keep >= batch_worker_max_concurrency"
+  type        = number
+  default     = 5
+}
+
+variable "batch_worker_timeout" {
+  description = "Batch worker Lambda timeout in seconds; the batch queue visibility timeout is 6x this"
+  type        = number
+  default     = 60
+}
+
+variable "batch_max_receive_count" {
+  description = "Attempts per batch message before it is moved to the batch DLQ and its record marked FAILED"
+  type        = number
+  default     = 5
 }

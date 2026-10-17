@@ -186,3 +186,22 @@ output "ai_reasoning_service_langsmith_api_key_secret_arn" {
   description = "Raw LangSmith API key string - fill in via Secrets Manager before the service first starts"
   value       = aws_secretsmanager_secret.ai_reasoning_service_langsmith_api_key.arn
 }
+
+output "batch_bucket_name" {
+  description = "Presigned URLs for \"process later\" uploads point here; set as S3_BATCH_BUCKET on media-processing-service"
+  value       = module.s3.ingestion_audio_batch_bucket_name
+}
+
+output "batch_queue_url" {
+  value = module.batch_queue.queue_url
+}
+
+output "batch_dlq_url" {
+  description = "Batch messages that failed max_receive_count times land here (their records are marked FAILED)"
+  value       = module.batch_queue.dlq_url
+}
+
+output "batch_enqueuer_function_name" {
+  description = "Invoke manually to run the nightly enqueue on demand (payload {\"dry_run\": true} to preview)"
+  value       = module.batch_processing.enqueuer_function_name
+}

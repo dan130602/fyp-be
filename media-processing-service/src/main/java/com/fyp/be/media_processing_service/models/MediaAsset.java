@@ -49,6 +49,11 @@ public class MediaAsset {
     @Column(name = "status", nullable = false, length = 30)
     private MediaAssetStatus status = MediaAssetStatus.PENDING;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    @Column(name = "processing_mode", nullable = false, updatable = false, length = 20)
+    private ProcessingMode processingMode = ProcessingMode.IMMEDIATE;
+
     @Column(name = "transcribe_job_name", length = 255)
     private String transcribeJobName;
 
