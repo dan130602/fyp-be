@@ -169,3 +169,56 @@ def test_check_does_not_modify_any_file(calls_dir, monkeypatch):
     assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--check") == 0
     after = {name: (call_dir / name).read_bytes() for name in ("transcript.json", "speaker_roles.json")}
     assert before == after
+
+
+# --- Audio-derived times from a render (--render-id) -----------------------
+
+def _dialogue(count):
+    return [("EMPLOYEE" if index % 2 == 0 else "CLIENT", f"Turn {index}.") for index in range(count)]
+
+
+def _write_timings(call_dir, call_id, rows, render_id="clean_voice_A"):
+    render = call_dir / "renders" / render_id
+    render.mkdir(parents=True)
+    (render / "timings.json").write_text(json.dumps({"call_id": call_id, "render_id": render_id, "turns": rows}), encoding="utf-8")
+
+
+def _turns_of(call_dir):
+    return json.loads((call_dir / "transcript.json").read_text(encoding="utf-8"))["audio_segments"]
+
+
+def test_render_id_stitches_the_audio_derived_times_and_leaves_the_ground_truth_alone(calls_dir, monkeypatch):
+    call_dir = _write_call(calls_dir, "CALL_001", _dialogue(3))
+    before = (call_dir / "ground_truth.json").read_bytes()
+    rows = [{"turn_id": i, "start_seconds": i * 2.0, "end_seconds": i * 2.0 + 1.5} for i in range(3)]
+    _write_timings(call_dir, "CALL_001", rows)
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--render-id", "clean_voice_A") == 0
+    assert [(s["start_time"], s["end_time"]) for s in _turns_of(call_dir)] == [("0.000", "1.500"), ("2.000", "3.500"), ("4.000", "5.500")]
+    assert (call_dir / "ground_truth.json").read_bytes() == before
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--render-id", "clean_voice_A", "--check") == 0
+
+
+def test_check_with_a_render_id_flags_placeholder_times(calls_dir, monkeypatch, capsys):
+    call_dir = _write_call(calls_dir, "CALL_001", _dialogue(2))
+    _write_timings(call_dir, "CALL_001", [{"turn_id": 0, "start_seconds": 0, "end_seconds": 1}, {"turn_id": 1, "start_seconds": 1.4, "end_seconds": 3}])
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001") == 0  # placeholder times (0.0)
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--check") == 0
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--render-id", "clean_voice_A", "--check") == 1
+    assert "do not match the times of render clean_voice_A" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("rows", [
+    [{"turn_id": 0, "start_seconds": 0, "end_seconds": 1}],  # a turn is missing
+    [{"turn_id": 0, "start_seconds": 0, "end_seconds": 2}, {"turn_id": 1, "start_seconds": 1, "end_seconds": 3}],  # overlapping
+])
+def test_bad_timings_abort_the_build_without_writing(calls_dir, monkeypatch, rows):
+    call_dir = _write_call(calls_dir, "CALL_001", _dialogue(2))
+    _write_timings(call_dir, "CALL_001", rows)
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--render-id", "clean_voice_A") == 2
+    assert not (call_dir / "transcript.json").exists()
+
+
+def test_a_missing_render_is_a_clear_error(calls_dir, monkeypatch, capsys):
+    _write_call(calls_dir, "CALL_001", _dialogue(2))
+    assert run(monkeypatch, calls_dir, "--call", "CALL_001", "--render-id", "nope") == 2
+    assert "no timings at" in capsys.readouterr().err
