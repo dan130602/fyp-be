@@ -33,6 +33,7 @@ variable "expiration_in_days" {
 variable "ingestion_audio_batch_bucket_name" {
   description = "S3 bucket for audio queued for the nightly batch run (no S3 event trigger)"
   type        = string
+  default = "ingestion-audio-batch"
 }
 
 variable "batch_expiration_in_days" {
