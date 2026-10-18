@@ -170,6 +170,13 @@ resource "aws_service_discovery_service" "this" {
 
   # Lets ECS's own container health checks drive registration.
   health_check_custom_config {}
+
+  # The API returns this block as null, so every plan saw a diff and replaced the service -
+  # which deregisters the running task, and ECS only registers a task when it starts. The
+  # result was an empty Cloud Map record after every apply.
+  lifecycle {
+    ignore_changes = [health_check_custom_config]
+  }
 }
 
 resource "aws_ecs_service" "this" {
