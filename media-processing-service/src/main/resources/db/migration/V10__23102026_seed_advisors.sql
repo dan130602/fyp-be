@@ -1,0 +1,22 @@
+-- Fictional Singapore-based advisors for the POC; fixed UUIDs keep the seed deterministic across environments.
+INSERT INTO t_advisor (id, employee_id, full_name, email, department, status) VALUES
+    ('00000000-0000-0000-0001-000000000001', 'E100001', 'Hugh Mungus', 'hugh.mungus@clearcall-bank.example', 'Private Banking', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000002', 'E100002', 'Phua Chiu Cheng', 'phua.chiu.cheng@clearcall-bank.example', 'Private Banking', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000003', 'E100003', 'Lim Kopi', 'lim.kopi@clearcall-bank.example', 'Private Banking', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000004', 'E100004', 'Ho Seh Bo', 'ho.seh.bo@clearcall-bank.example', 'Private Banking', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000005', 'E100005', 'Kee Chiu', 'kee.chiu@clearcall-bank.example', 'Wealth Management', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000006', 'E100006', 'Low Kee', 'low.kee@clearcall-bank.example', 'Wealth Management', 'INACTIVE'),
+    ('00000000-0000-0000-0001-000000000007', 'E100007', 'Wong Way', 'wong.way@clearcall-bank.example', 'Wealth Management', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000008', 'E100008', 'Ho Liao', 'ho.liao@clearcall-bank.example', 'Wealth Management', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000009', 'E100009', 'Anna Lyst', 'anna.lyst@clearcall-bank.example', 'Ultra High Net Worth', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000010', 'E100010', 'Bea Rish', 'bea.rish@clearcall-bank.example', 'Ultra High Net Worth', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000011', 'E100011', 'Lee Kwi Dity', 'lee.kwi.dity@clearcall-bank.example', 'Ultra High Net Worth', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000012', 'E100012', 'Penny Wise', 'penny.wise@clearcall-bank.example', 'Ultra High Net Worth', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000013', 'E100013', 'Justin Case', 'justin.case@clearcall-bank.example', 'Investment Advisory', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000014', 'E100014', 'Ivana Refund', 'ivana.refund@clearcall-bank.example', 'Investment Advisory', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000015', 'E100015', 'Paige Turner', 'paige.turner@clearcall-bank.example', 'Investment Advisory', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000016', 'E100016', 'Al Beback', 'al.beback@clearcall-bank.example', 'Investment Advisory', 'INACTIVE'),
+    ('00000000-0000-0000-0001-000000000017', 'E100017', 'Rich Tan', 'rich.tan@clearcall-bank.example', 'External Asset Managers', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000018', 'E100018', 'Chin Chai', 'chin.chai@clearcall-bank.example', 'External Asset Managers', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000019', 'E100019', 'Sia Suay', 'sia.suay@clearcall-bank.example', 'External Asset Managers', 'ACTIVE'),
+    ('00000000-0000-0000-0001-000000000020', 'E100020', 'Koh Kia Su', 'koh.kia.su@clearcall-bank.example', 'External Asset Managers', 'ACTIVE');

@@ -34,12 +34,14 @@ import static org.mockito.Mockito.when;
 class PresignedUrlServiceTest {
 
     private static final UUID USER_ID = UUID.randomUUID();
+    private static final UUID ADVISOR_ID = UUID.randomUUID();
     private static final String BUCKET = "test-bucket";
     private static final String BATCH_BUCKET = "test-batch-bucket";
 
     private S3Presigner presigner;
     private MediaAssetRepository mediaAssetRepository;
     private ChecklistService checklistService;
+    private AdvisorService advisorService;
     private PresignedUrlService service;
 
     @BeforeEach
@@ -47,6 +49,7 @@ class PresignedUrlServiceTest {
         presigner = mock(S3Presigner.class);
         mediaAssetRepository = mock(MediaAssetRepository.class);
         checklistService = mock(ChecklistService.class);
+        advisorService = mock(AdvisorService.class);
 
         PresignedPutObjectRequest presignedPut = mock(PresignedPutObjectRequest.class);
         when(presignedPut.url()).thenReturn(URI.create("https://s3.example.com/put").toURL());
@@ -56,11 +59,11 @@ class PresignedUrlServiceTest {
 
         UploadProperties props = new UploadProperties(
                 2, 1_000L, List.of("Audio/MP3", "audio/wav"), List.of("MP3", "wav"));
-        service = new PresignedUrlService(presigner, mediaAssetRepository, checklistService, props, BUCKET, BATCH_BUCKET, 15, 30);
+        service = new PresignedUrlService(presigner, mediaAssetRepository, checklistService, advisorService, props, BUCKET, BATCH_BUCKET, 15, 30);
     }
 
     private static FileUploadRequest file(String name, String type, Long size) {
-        return new FileUploadRequest(name, type, size, null);
+        return new FileUploadRequest(name, type, size, null, ADVISOR_ID);
     }
 
     private String keyFor(String fileName) {
@@ -86,6 +89,7 @@ class PresignedUrlServiceTest {
         assertThat(saved.getUserId()).isEqualTo(USER_ID);
         assertThat(saved.getObjectKey()).isEqualTo(upload.objectKey());
         assertThat(saved.getFileSizeBytes()).isEqualTo(500L);
+        assertThat(saved.getAdvisorId()).isEqualTo(ADVISOR_ID);
         assertThat(saved.getTranscribeJobName()).matches("transcribe-" + USER_ID + "-[0-9a-f]{16}");
         assertThat(upload.id()).isEqualTo(saved.getId());
         verify(checklistService).createForUpload(saved.getId(), USER_ID, null);
@@ -132,7 +136,7 @@ class PresignedUrlServiceTest {
     void generatePresignedUploads_batchModeWithoutBatchBucket_isRejectedBeforeAnyWrite() {
         UploadProperties props = new UploadProperties(2, 1_000L, List.of("audio/mp3"), List.of("mp3"));
         PresignedUrlService noBatch =
-                new PresignedUrlService(presigner, mediaAssetRepository, checklistService, props, BUCKET, "", 15, 30);
+                new PresignedUrlService(presigner, mediaAssetRepository, checklistService, advisorService, props, BUCKET, "", 15, 30);
 
         assertThatThrownBy(() -> noBatch.generatePresignedUploads(
                 USER_ID, List.of(file("a.mp3", "audio/mp3", 10L)), ProcessingMode.BATCH))
@@ -251,6 +255,17 @@ class PresignedUrlServiceTest {
         List<FileUploadRequest> batch = List.of(file("a.mp3", "audio/mp3", 10L), file("b.exe", "audio/mp3", 10L));
 
         assertThatThrownBy(() -> service.generatePresignedUploads(USER_ID, batch))
+                .isInstanceOf(InvalidFileException.class);
+
+        verify(presigner, never()).presignPutObject(any(PutObjectPresignRequest.class));
+        verify(mediaAssetRepository, never()).save(any());
+    }
+
+    @Test
+    void generatePresignedUploads_inactiveOrUnknownAdvisor_nothingPresignedOrSaved() {
+        when(advisorService.requireActive(ADVISOR_ID)).thenThrow(new InvalidFileException("inactive"));
+
+        assertThatThrownBy(() -> service.generatePresignedUploads(USER_ID, List.of(file("a.mp3", "audio/mp3", 10L))))
                 .isInstanceOf(InvalidFileException.class);
 
         verify(presigner, never()).presignPutObject(any(PutObjectPresignRequest.class));

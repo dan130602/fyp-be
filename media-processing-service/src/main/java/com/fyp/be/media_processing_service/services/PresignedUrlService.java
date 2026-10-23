@@ -48,6 +48,7 @@ public class PresignedUrlService {
     private final S3Presigner s3Presigner;
     private final MediaAssetRepository mediaAssetRepository;
     private final ChecklistService checklistService;
+    private final AdvisorService advisorService;
     private final UploadProperties uploadProperties;
     private final List<String> allowedContentTypes;
     private final List<String> allowedExtensions;
@@ -60,6 +61,7 @@ public class PresignedUrlService {
             S3Presigner s3Presigner,
             MediaAssetRepository mediaAssetRepository,
             ChecklistService checklistService,
+            AdvisorService advisorService,
             UploadProperties uploadProperties,
             @Value("${app.aws.s3.bucket}") String bucketName,
             @Value("${app.aws.s3.batch-bucket:}") String batchBucketName,
@@ -69,6 +71,7 @@ public class PresignedUrlService {
         this.s3Presigner = s3Presigner;
         this.mediaAssetRepository = mediaAssetRepository;
         this.checklistService = checklistService;
+        this.advisorService = advisorService;
         this.uploadProperties = uploadProperties;
         this.allowedContentTypes = normalize(uploadProperties.allowedContentTypes());
         this.allowedExtensions = normalize(uploadProperties.allowedExtensions());
@@ -151,6 +154,9 @@ public class PresignedUrlService {
             throw new InvalidFileException(
                     "File '%s' exceeds the maximum allowed size of %d bytes".formatted(file.fileName(), uploadProperties.maxFileSizeBytes()));
         }
+
+        // Checked up front with the rest of the batch, before any row is written or URL minted.
+        advisorService.requireActive(file.advisorId());
     }
 
     private String extractExtension(String fileName) {
@@ -247,6 +253,7 @@ public class PresignedUrlService {
                 .originalFilename(file.fileName())
                 .contentType(file.contentType())
                 .fileSizeBytes(file.fileSize())
+                .advisorId(file.advisorId())
                 .processingMode(mode)
                 .transcribeJobName(jobNameForObjectKey(objectKey, mode))
                 .createdAt(now)
