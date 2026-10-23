@@ -54,6 +54,10 @@ public class MediaAsset {
     @Column(name = "processing_mode", nullable = false, updatable = false, length = 20)
     private ProcessingMode processingMode = ProcessingMode.IMMEDIATE;
 
+    /** Nullable only for rows uploaded before advisor selection existed. */
+    @Column(name = "advisor_id", updatable = false)
+    private UUID advisorId;
+
     @Column(name = "transcribe_job_name", length = 255)
     private String transcribeJobName;
 
