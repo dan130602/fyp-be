@@ -13,5 +13,7 @@ public record MediaAssetResponse(
         Long fileSizeBytes,
         MediaAssetStatus status,
         ProcessingMode processingMode,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        /** Null for assets uploaded before advisor selection existed. */
+        AdvisorResponse advisor
 ) {}

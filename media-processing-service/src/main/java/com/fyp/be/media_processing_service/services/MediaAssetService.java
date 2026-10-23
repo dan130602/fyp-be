@@ -1,11 +1,13 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.dtos.AdvisorResponse;
 import com.fyp.be.media_processing_service.dtos.AnalysisStatus;
 import com.fyp.be.media_processing_service.dtos.ApiTime;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.dtos.PlaybackUrlResponse;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
+import com.fyp.be.media_processing_service.models.Advisor;
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
 import com.fyp.be.media_processing_service.models.MediaAsset;
@@ -13,6 +15,7 @@ import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.models.Role;
 import com.fyp.be.media_processing_service.models.User;
+import com.fyp.be.media_processing_service.repositories.AdvisorRepository;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepository;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
@@ -27,8 +30,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,6 +47,7 @@ public class MediaAssetService {
     private final ChecklistRepository checklistRepository;
     private final LanggraphOutputRepository langgraphOutputRepository;
     private final BatchObjectService batchObjectService;
+    private final AdvisorRepository advisorRepository;
     private final ObjectMapper objectMapper;
 
     public MediaAssetService(
@@ -49,6 +57,7 @@ public class MediaAssetService {
             ChecklistRepository checklistRepository,
             LanggraphOutputRepository langgraphOutputRepository,
             BatchObjectService batchObjectService,
+            AdvisorRepository advisorRepository,
             ObjectMapper objectMapper
     ) {
         this.mediaAssetRepository = mediaAssetRepository;
@@ -57,12 +66,22 @@ public class MediaAssetService {
         this.checklistRepository = checklistRepository;
         this.langgraphOutputRepository = langgraphOutputRepository;
         this.batchObjectService = batchObjectService;
+        this.advisorRepository = advisorRepository;
         this.objectMapper = objectMapper;
     }
 
     public List<MediaAssetResponse> listForUser(UUID userId) {
-        return mediaAssetRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
-                .map(this::toResponse)
+        List<MediaAsset> assets = mediaAssetRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        // One lookup for every advisor on the page rather than one per asset.
+        Map<UUID, Advisor> advisors = advisorRepository.findAllById(assets.stream()
+                        .map(MediaAsset::getAdvisorId)
+                        .filter(Objects::nonNull)
+                        .distinct()
+                        .toList())
+                .stream()
+                .collect(Collectors.toMap(Advisor::getId, Function.identity()));
+        return assets.stream()
+                .map(asset -> toResponse(asset, advisors.get(asset.getAdvisorId())))
                 .toList();
     }
 
@@ -161,7 +180,7 @@ public class MediaAssetService {
         }, () -> log.warn("No MediaAsset found for transcribe job '{}': skipping", jobName));
     }
 
-    private MediaAssetResponse toResponse(MediaAsset asset) {
+    private MediaAssetResponse toResponse(MediaAsset asset, Advisor advisor) {
         return new MediaAssetResponse(
                 asset.getId(),
                 asset.getOriginalFilename(),
@@ -169,7 +188,8 @@ public class MediaAssetService {
                 asset.getFileSizeBytes(),
                 asset.getStatus(),
                 asset.getProcessingMode(),
-                ApiTime.of(asset.getCreatedAt())
+                ApiTime.of(asset.getCreatedAt()),
+                advisor == null ? null : AdvisorResponse.from(advisor)
         );
     }
 }

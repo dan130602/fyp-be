@@ -2,12 +2,15 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.AnalysisStatus;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
+import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
+import com.fyp.be.media_processing_service.models.Advisor;
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
 import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 import com.fyp.be.media_processing_service.models.ProcessingMode;
+import com.fyp.be.media_processing_service.repositories.AdvisorRepository;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepository;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
@@ -17,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,12 +52,15 @@ class MediaAssetServiceTest {
     @Mock
     private BatchObjectService batchObjectService;
 
+    @Mock
+    private AdvisorRepository advisorRepository;
+
     private final UUID ownerId = UUID.randomUUID();
     private final UUID assetId = UUID.randomUUID();
 
     private MediaAssetService service() {
         return new MediaAssetService(mediaAssetRepository, presignedUrlService, transcriptHandoffService,
-                checklistRepository, langgraphOutputRepository, batchObjectService, new ObjectMapper());
+                checklistRepository, langgraphOutputRepository, batchObjectService, advisorRepository, new ObjectMapper());
     }
 
     private MediaAsset asset(MediaAssetStatus status, String failureReason) {
@@ -72,6 +79,22 @@ class MediaAssetServiceTest {
                 .thenReturn(Optional.of(Checklist.builder().id(checklistId).mediaAssetId(assetId).build()));
         when(langgraphOutputRepository.findByChecklistId(checklistId))
                 .thenReturn(Optional.of(LanggraphOutput.builder().checklistId(checklistId).output(json).build()));
+    }
+
+    @Test
+    void listForUserAttachesAdvisorAndLeavesLegacyAssetsWithout() {
+        UUID advisorId = UUID.randomUUID();
+        MediaAsset withAdvisor = MediaAsset.builder().id(assetId).userId(ownerId).advisorId(advisorId).build();
+        MediaAsset legacy = MediaAsset.builder().id(UUID.randomUUID()).userId(ownerId).build();
+        when(mediaAssetRepository.findByUserIdOrderByCreatedAtDesc(ownerId)).thenReturn(List.of(withAdvisor, legacy));
+        when(advisorRepository.findAllById(List.of(advisorId))).thenReturn(List.of(Advisor.builder()
+                .id(advisorId).employeeId("E100001").fullName("Hugh Mungus")
+                .email("hugh.mungus@clearcall-bank.example").department("Private Banking").build()));
+
+        List<MediaAssetResponse> result = service().listForUser(ownerId);
+
+        assertThat(result.get(0).advisor().employeeId()).isEqualTo("E100001");
+        assertThat(result.get(1).advisor()).isNull();
     }
 
     @Test
