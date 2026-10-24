@@ -2,6 +2,7 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.AnalysisStatus;
 import com.fyp.be.media_processing_service.dtos.ApiTime;
+import com.fyp.be.media_processing_service.dtos.ChecklistDecisionResponse;
 import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
@@ -12,12 +13,14 @@ import com.fyp.be.media_processing_service.exceptions.AnalysisNotReadyException;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
 import com.fyp.be.media_processing_service.models.Advisor;
 import com.fyp.be.media_processing_service.models.Checklist;
+import com.fyp.be.media_processing_service.models.ChecklistDecision;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
 import com.fyp.be.media_processing_service.models.MediaAsset;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
 import com.fyp.be.media_processing_service.models.ProcessingMode;
 import com.fyp.be.media_processing_service.repositories.AdvisorRepository;
+import com.fyp.be.media_processing_service.repositories.ChecklistDecisionRepository;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepository;
 import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
@@ -59,6 +62,9 @@ class MediaAssetServiceTest {
     private LanggraphOutputRepository langgraphOutputRepository;
 
     @Mock
+    private ChecklistDecisionRepository checklistDecisionRepository;
+
+    @Mock
     private BatchObjectService batchObjectService;
 
     @Mock
@@ -74,7 +80,7 @@ class MediaAssetServiceTest {
     }
 
     private ChecklistService checklistService() {
-        return new ChecklistService(checklistRepository, langgraphOutputRepository, new ObjectMapper(), "[]");
+        return new ChecklistService(checklistRepository, langgraphOutputRepository, checklistDecisionRepository, new ObjectMapper(), "[]");
     }
 
     private MediaAsset asset(MediaAssetStatus status, String failureReason) {
@@ -237,8 +243,10 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         when(checklistRepository.findByMediaAssetId(assetId)).thenReturn(Optional.of(Checklist.builder()
                 .id(checklistId).mediaAssetId(assetId)
-                .review("[{\"checklistItemId\":\"K01\",\"aiVerdict\":\"PASS\",\"decision\":\"FAIL\",\"comment\":\"missed it\"}]")
                 .reviewedBy(ownerId).reviewedAt(reviewedAt).build()));
+        when(checklistDecisionRepository.findByChecklistIdOrderByDecidedAtAsc(checklistId)).thenReturn(List.of(
+                ChecklistDecision.builder().checklistId(checklistId).checklistItemId("K01").aiVerdict("PASS")
+                        .decision("FAIL").comment("missed it").decidedBy(ownerId).decidedAt(reviewedAt).build()));
         when(langgraphOutputRepository.findByChecklistId(checklistId))
                 .thenReturn(Optional.of(LanggraphOutput.builder().checklistId(checklistId).output("{\"final_results\":[]}").build()));
 
@@ -247,6 +255,8 @@ class MediaAssetServiceTest {
         assertThat(review.reviewedBy()).isEqualTo(ownerId);
         assertThat(review.reviewedAt()).isEqualTo(ApiTime.of(reviewedAt));
         assertThat(review.overrides()).containsExactly(new ReviewOverrideResponse("K01", "PASS", "FAIL", "missed it"));
+        assertThat(review.history()).containsExactly(new ChecklistDecisionResponse(
+                "K01", "PASS", "FAIL", "missed it", ownerId, ApiTime.of(reviewedAt)));
     }
 
     @Test
