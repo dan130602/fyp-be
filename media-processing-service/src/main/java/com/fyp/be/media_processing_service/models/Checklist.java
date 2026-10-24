@@ -45,10 +45,6 @@ public class Checklist {
     @Column(name = "status", nullable = false, length = 20)
     private ChecklistStatus status = ChecklistStatus.PENDING_REVIEW;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "review", columnDefinition = "jsonb")
-    private String review;
-
     @Column(name = "reviewed_by")
     private UUID reviewedBy;
 

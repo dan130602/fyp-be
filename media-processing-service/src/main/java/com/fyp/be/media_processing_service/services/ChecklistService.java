@@ -1,6 +1,7 @@
 package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.ApiTime;
+import com.fyp.be.media_processing_service.dtos.ChecklistDecisionResponse;
 import com.fyp.be.media_processing_service.dtos.ChecklistItemRequest;
 import com.fyp.be.media_processing_service.dtos.ChecklistItemResponse;
 import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
@@ -10,8 +11,10 @@ import com.fyp.be.media_processing_service.exceptions.AnalysisNotReadyException;
 import com.fyp.be.media_processing_service.exceptions.InvalidReviewException;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
 import com.fyp.be.media_processing_service.models.Checklist;
+import com.fyp.be.media_processing_service.models.ChecklistDecision;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
+import com.fyp.be.media_processing_service.repositories.ChecklistDecisionRepository;
 import com.fyp.be.media_processing_service.repositories.ChecklistRepository;
 import com.fyp.be.media_processing_service.repositories.LanggraphOutputRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +28,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,17 +47,20 @@ public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
     private final LanggraphOutputRepository langgraphOutputRepository;
+    private final ChecklistDecisionRepository checklistDecisionRepository;
     private final ObjectMapper objectMapper;
     private final String defaultChecklistJson;
 
     public ChecklistService(
             ChecklistRepository checklistRepository,
             LanggraphOutputRepository langgraphOutputRepository,
+            ChecklistDecisionRepository checklistDecisionRepository,
             ObjectMapper objectMapper,
             @Value("${app.checklist-json}") String defaultChecklistJson
     ) {
         this.checklistRepository = checklistRepository;
         this.langgraphOutputRepository = langgraphOutputRepository;
+        this.checklistDecisionRepository = checklistDecisionRepository;
         this.objectMapper = objectMapper;
         this.defaultChecklistJson = defaultChecklistJson;
     }
@@ -139,9 +147,11 @@ public class ChecklistService {
     }
 
     /**
-     * Records the reviewer's overrides of the AI verdicts (empty list = AI approved as-is),
-     * replacing any earlier review. Each override's aiVerdict is snapshotted here from the stored
-     * AI output, since saveLanggraphOutput overwrites it on an AI re-run.
+     * Records the reviewer's overrides of the AI verdicts (empty list = AI approved as-is) as the
+     * new current state: only items that changed since the last submit are appended to the decision
+     * log, and an earlier override missing from this list is logged as a revert. Each override's
+     * aiVerdict is snapshotted here from the stored AI output, since saveLanggraphOutput
+     * overwrites it on an AI re-run.
      */
     @Transactional
     public ChecklistReviewResponse submitReview(UUID checklistId, UUID reviewerId, List<ReviewOverrideRequest> overrides) {
@@ -185,27 +195,83 @@ public class ChecklistService {
             reviewed.add(new ReviewOverrideResponse(itemId, aiVerdict, override.decision(), override.comment()));
         }
 
+        List<ChecklistDecision> log = new ArrayList<>(
+                checklistDecisionRepository.findByChecklistIdOrderByDecidedAtAsc(checklistId));
+        Map<String, ChecklistDecision> current = new HashMap<>();
+        for (ChecklistDecision row : currentOverrides(log)) {
+            current.put(row.getChecklistItemId(), row);
+        }
+
         LocalDateTime now = LocalDateTime.now();
-        checklist.setReview(objectMapper.writeValueAsString(reviewed));
+        List<ChecklistDecision> changes = new ArrayList<>();
+        for (ReviewOverrideResponse override : reviewed) {
+            ChecklistDecision previous = current.remove(override.checklistItemId());
+            if (previous != null
+                    && Objects.equals(previous.getDecision(), override.decision())
+                    && Objects.equals(previous.getComment(), override.comment())) {
+                continue;
+            }
+            changes.add(decisionRow(checklistId, override.checklistItemId(), override.aiVerdict(),
+                    override.decision(), override.comment(), reviewerId, now));
+        }
+        // Whatever is left was overridden before and is no longer: back to the AI verdict.
+        for (ChecklistDecision removed : current.values()) {
+            changes.add(decisionRow(checklistId, removed.getChecklistItemId(), aiVerdicts.getOrDefault(
+                    removed.getChecklistItemId(), removed.getAiVerdict()), null, null, reviewerId, now));
+        }
+        checklistDecisionRepository.saveAll(changes);
+        log.addAll(changes);
+
         checklist.setReviewedBy(reviewerId);
         checklist.setReviewedAt(now);
         checklist.setStatus(ChecklistStatus.REVIEWED);
         checklist.setUpdatedAt(now);
         checklistRepository.save(checklist);
-        return new ChecklistReviewResponse(reviewerId, ApiTime.of(now), reviewed);
+        return reviewResponse(reviewerId, now, log);
     }
 
-    /** The stored review of this checklist, or null when it has never been reviewed. */
-    public ChecklistReviewResponse toReviewResponse(Checklist checklist) {
-        if (checklist.getReview() == null) return null;
-        List<ReviewOverrideResponse> overrides = new ArrayList<>();
-        for (JsonNode node : objectMapper.readTree(checklist.getReview())) {
-            overrides.add(new ReviewOverrideResponse(
-                    node.path("checklistItemId").asText(),
-                    node.path("aiVerdict").asText(),
-                    node.path("decision").asText(),
-                    node.path("comment").asText()));
+    private static ChecklistDecision decisionRow(UUID checklistId, String itemId, String aiVerdict, String decision,
+                                                 String comment, UUID decidedBy, LocalDateTime decidedAt) {
+        return ChecklistDecision.builder()
+                .id(UUID.randomUUID())
+                .checklistId(checklistId)
+                .checklistItemId(itemId)
+                .aiVerdict(aiVerdict)
+                .decision(decision)
+                .comment(comment)
+                .decidedBy(decidedBy)
+                .decidedAt(decidedAt)
+                .build();
+    }
+
+    /**
+     * The current overrides of a decision log (oldest first): the newest row per item, minus items
+     * whose newest row is a revert. Keeps the log order of those rows.
+     */
+    static List<ChecklistDecision> currentOverrides(List<ChecklistDecision> log) {
+        Map<String, ChecklistDecision> newest = new LinkedHashMap<>();
+        for (ChecklistDecision row : log) {
+            newest.remove(row.getChecklistItemId());
+            newest.put(row.getChecklistItemId(), row);
         }
-        return new ChecklistReviewResponse(checklist.getReviewedBy(), ApiTime.of(checklist.getReviewedAt()), overrides);
+        return newest.values().stream().filter(row -> row.getDecision() != null).toList();
+    }
+
+    private ChecklistReviewResponse reviewResponse(UUID reviewedBy, LocalDateTime reviewedAt, List<ChecklistDecision> log) {
+        List<ReviewOverrideResponse> overrides = currentOverrides(log).stream()
+                .map(row -> new ReviewOverrideResponse(row.getChecklistItemId(), row.getAiVerdict(), row.getDecision(), row.getComment()))
+                .toList();
+        List<ChecklistDecisionResponse> history = log.stream()
+                .map(row -> new ChecklistDecisionResponse(row.getChecklistItemId(), row.getAiVerdict(), row.getDecision(),
+                        row.getComment(), row.getDecidedBy(), ApiTime.of(row.getDecidedAt())))
+                .toList();
+        return new ChecklistReviewResponse(reviewedBy, ApiTime.of(reviewedAt), overrides, history);
+    }
+
+    /** The review of this checklist (current overrides plus decision history), or null when it has never been reviewed. */
+    public ChecklistReviewResponse toReviewResponse(Checklist checklist) {
+        if (checklist.getReviewedAt() == null) return null;
+        List<ChecklistDecision> log = checklistDecisionRepository.findByChecklistIdOrderByDecidedAtAsc(checklist.getId());
+        return reviewResponse(checklist.getReviewedBy(), checklist.getReviewedAt(), log);
     }
 }
