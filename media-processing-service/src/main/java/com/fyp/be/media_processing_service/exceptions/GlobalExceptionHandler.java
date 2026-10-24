@@ -31,6 +31,18 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage()));
     }
 
+    @ExceptionHandler(InvalidReviewException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidReview(InvalidReviewException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AnalysisNotReadyException.class)
+    public ResponseEntity<ErrorResponse> handleAnalysisNotReady(AnalysisNotReadyException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
