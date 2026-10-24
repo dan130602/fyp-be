@@ -1,6 +1,7 @@
 package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.AnalysisStatus;
+import com.fyp.be.media_processing_service.dtos.ApiTime;
 import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
@@ -244,7 +245,7 @@ class MediaAssetServiceTest {
         ChecklistReviewResponse review = service().getAnalysis(assetId, ownerId).review();
 
         assertThat(review.reviewedBy()).isEqualTo(ownerId);
-        assertThat(review.reviewedAt()).isEqualTo(reviewedAt);
+        assertThat(review.reviewedAt()).isEqualTo(ApiTime.of(reviewedAt));
         assertThat(review.overrides()).containsExactly(new ReviewOverrideResponse("K01", "PASS", "FAIL", "missed it"));
     }
 

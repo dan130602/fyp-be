@@ -1,5 +1,6 @@
 package com.fyp.be.media_processing_service.services;
 
+import com.fyp.be.media_processing_service.dtos.ApiTime;
 import com.fyp.be.media_processing_service.dtos.ChecklistItemRequest;
 import com.fyp.be.media_processing_service.dtos.ChecklistItemResponse;
 import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
@@ -191,7 +192,7 @@ public class ChecklistService {
         checklist.setStatus(ChecklistStatus.REVIEWED);
         checklist.setUpdatedAt(now);
         checklistRepository.save(checklist);
-        return new ChecklistReviewResponse(reviewerId, now, reviewed);
+        return new ChecklistReviewResponse(reviewerId, ApiTime.of(now), reviewed);
     }
 
     /** The stored review of this checklist, or null when it has never been reviewed. */
@@ -205,6 +206,6 @@ public class ChecklistService {
                     node.path("decision").asText(),
                     node.path("comment").asText()));
         }
-        return new ChecklistReviewResponse(checklist.getReviewedBy(), checklist.getReviewedAt(), overrides);
+        return new ChecklistReviewResponse(checklist.getReviewedBy(), ApiTime.of(checklist.getReviewedAt()), overrides);
     }
 }
