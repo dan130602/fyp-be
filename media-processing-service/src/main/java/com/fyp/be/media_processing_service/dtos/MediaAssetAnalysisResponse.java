@@ -11,5 +11,6 @@ public record MediaAssetAnalysisResponse(
         MediaAssetStatus assetStatus,
         AnalysisStatus analysisStatus,
         String failureReason,
-        JsonNode result
+        JsonNode result,
+        ChecklistReviewResponse review
 ) {}

@@ -3,9 +3,12 @@ package com.fyp.be.media_processing_service.services;
 import com.fyp.be.media_processing_service.dtos.AdvisorResponse;
 import com.fyp.be.media_processing_service.dtos.AnalysisStatus;
 import com.fyp.be.media_processing_service.dtos.ApiTime;
+import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.dtos.PlaybackUrlResponse;
+import com.fyp.be.media_processing_service.dtos.SubmitReviewRequest;
+import com.fyp.be.media_processing_service.exceptions.AnalysisNotReadyException;
 import com.fyp.be.media_processing_service.exceptions.ResourceNotFoundException;
 import com.fyp.be.media_processing_service.models.Advisor;
 import com.fyp.be.media_processing_service.models.Checklist;
@@ -48,6 +51,7 @@ public class MediaAssetService {
     private final LanggraphOutputRepository langgraphOutputRepository;
     private final BatchObjectService batchObjectService;
     private final AdvisorRepository advisorRepository;
+    private final ChecklistService checklistService;
     private final ObjectMapper objectMapper;
 
     public MediaAssetService(
@@ -58,6 +62,7 @@ public class MediaAssetService {
             LanggraphOutputRepository langgraphOutputRepository,
             BatchObjectService batchObjectService,
             AdvisorRepository advisorRepository,
+            ChecklistService checklistService,
             ObjectMapper objectMapper
     ) {
         this.mediaAssetRepository = mediaAssetRepository;
@@ -67,6 +72,7 @@ public class MediaAssetService {
         this.langgraphOutputRepository = langgraphOutputRepository;
         this.batchObjectService = batchObjectService;
         this.advisorRepository = advisorRepository;
+        this.checklistService = checklistService;
         this.objectMapper = objectMapper;
     }
 
@@ -109,14 +115,15 @@ public class MediaAssetService {
         }
 
         if (asset.getStatus() == MediaAssetStatus.FAILED) {
-            return analysisResponse(asset, AnalysisStatus.FAILED, asset.getFailureReason(), null);
+            return analysisResponse(asset, AnalysisStatus.FAILED, asset.getFailureReason(), null, null);
         }
 
-        Optional<LanggraphOutput> output = checklistRepository.findByMediaAssetId(assetId)
+        Optional<Checklist> checklist = checklistRepository.findByMediaAssetId(assetId);
+        Optional<LanggraphOutput> output = checklist
                 .map(Checklist::getId)
                 .flatMap(langgraphOutputRepository::findByChecklistId);
         if (output.isEmpty()) {
-            return analysisResponse(asset, AnalysisStatus.PENDING, null, null);
+            return analysisResponse(asset, AnalysisStatus.PENDING, null, null, null);
         }
 
         JsonNode result;
@@ -124,24 +131,41 @@ public class MediaAssetService {
             result = objectMapper.readTree(output.get().getOutput());
         } catch (JacksonException ex) {
             log.error("Stored AI output for media asset {} is not valid JSON", assetId, ex);
-            return analysisResponse(asset, AnalysisStatus.FAILED, "AI analysis returned an unreadable result", null);
+            return analysisResponse(asset, AnalysisStatus.FAILED, "AI analysis returned an unreadable result", null, null);
         }
         if (result.has("__error__")) {
-            return analysisResponse(asset, AnalysisStatus.FAILED, "AI analysis failed", null);
+            return analysisResponse(asset, AnalysisStatus.FAILED, "AI analysis failed", null, null);
         }
-        return analysisResponse(asset, AnalysisStatus.READY, null, result);
+        ChecklistReviewResponse review = checklist.map(checklistService::toReviewResponse).orElse(null);
+        return analysisResponse(asset, AnalysisStatus.READY, null, result, review);
     }
 
     private MediaAssetAnalysisResponse analysisResponse(
-            MediaAsset asset, AnalysisStatus status, String failureReason, JsonNode result) {
+            MediaAsset asset, AnalysisStatus status, String failureReason, JsonNode result,
+            ChecklistReviewResponse review) {
         return new MediaAssetAnalysisResponse(
                 asset.getId(),
                 asset.getOriginalFilename(),
                 asset.getStatus(),
                 status,
                 failureReason,
-                result
+                result,
+                review
         );
+    }
+
+    // Same 404 for missing and not-yours, as getAnalysis.
+    public ChecklistReviewResponse submitReview(UUID assetId, UUID userId, SubmitReviewRequest request) {
+        MediaAsset asset = mediaAssetRepository.findById(assetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Media asset not found: " + assetId));
+
+        if (!asset.getUserId().equals(userId)) {
+            throw new ResourceNotFoundException("Media asset not found: " + assetId);
+        }
+
+        Checklist checklist = checklistRepository.findByMediaAssetId(assetId)
+                .orElseThrow(() -> new AnalysisNotReadyException("AI analysis is not ready for review"));
+        return checklistService.submitReview(checklist.getId(), userId, request.overrides());
     }
 
     /** Owner or ADMIN/SUPER_ADMIN only - not found (not forbidden) for anyone else, so existence isn't leaked. */
