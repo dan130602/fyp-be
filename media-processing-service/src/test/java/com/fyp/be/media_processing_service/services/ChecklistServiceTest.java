@@ -415,4 +415,11 @@ class ChecklistServiceTest {
         assertThat(response.overrides()).containsExactly(new ReviewOverrideResponse("K02", "FAIL", "PASS", "b"));
         assertThat(response.history()).extracting(ChecklistDecisionResponse::decision).containsExactly("FAIL", "PASS", null);
     }
+
+    @Test
+    void checklistDecision_isAlwaysNew() {
+        ChecklistDecision row = ChecklistDecision.builder().id(UUID.randomUUID()).build();
+
+        assertThat(row.isNew()).isTrue();
+    }
 }

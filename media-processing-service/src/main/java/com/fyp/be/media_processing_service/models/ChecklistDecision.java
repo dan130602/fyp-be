@@ -4,7 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.*;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +22,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "t_checklist_decision")
-public class ChecklistDecision {
+public class ChecklistDecision implements Persistable<UUID> {
 
     @Id
     @Column(name = "id", nullable = false, updatable = false)
@@ -48,4 +50,11 @@ public class ChecklistDecision {
 
     @Column(name = "decided_at", nullable = false, updatable = false)
     private LocalDateTime decidedAt;
+
+    // Append-only log: every row is new, so save() persists directly instead of merge's pre-insert SELECT.
+    @Override
+    @Transient
+    public boolean isNew() {
+        return true;
+    }
 }
