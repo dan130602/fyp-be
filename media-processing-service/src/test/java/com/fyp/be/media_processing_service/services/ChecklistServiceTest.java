@@ -2,6 +2,11 @@ package com.fyp.be.media_processing_service.services;
 
 import com.fyp.be.media_processing_service.dtos.ChecklistItemRequest;
 import com.fyp.be.media_processing_service.dtos.ChecklistItemResponse;
+import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
+import com.fyp.be.media_processing_service.dtos.ReviewOverrideRequest;
+import com.fyp.be.media_processing_service.dtos.ReviewOverrideResponse;
+import com.fyp.be.media_processing_service.exceptions.AnalysisNotReadyException;
+import com.fyp.be.media_processing_service.exceptions.InvalidReviewException;
 import com.fyp.be.media_processing_service.models.Checklist;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.LanggraphOutput;
@@ -16,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -134,5 +140,128 @@ class ChecklistServiceTest {
         assertThat(existing.getId()).isEqualTo(rowId);
         assertThat(existing.getOutput()).isEqualTo("new");
         assertThat(existing.getUpdatedAt()).isNotNull();
+    }
+
+    private static final String AI_OUTPUT = "{\"final_results\":["
+            + "{\"item_id\":\"K01\",\"status\":\"PASS\"},"
+            + "{\"item_id\":\"K02\",\"status\":\"FAIL\"}]}";
+
+    private final UUID checklistId = UUID.randomUUID();
+    private final UUID reviewerId = UUID.randomUUID();
+
+    private Checklist givenChecklistWithOutput(String output) {
+        Checklist checklist = Checklist.builder().id(checklistId).status(ChecklistStatus.PENDING_REVIEW).build();
+        when(checklistRepository.findById(checklistId)).thenReturn(Optional.of(checklist));
+        when(outputRepository.findByChecklistId(checklistId)).thenReturn(
+                output == null ? Optional.empty() : Optional.of(LanggraphOutput.builder().checklistId(checklistId).output(output).build()));
+        return checklist;
+    }
+
+    private static ReviewOverrideRequest override(String itemId, String decision) {
+        return new ReviewOverrideRequest(itemId, decision, "because");
+    }
+
+    @Test
+    void submitReview_snapshotsAiVerdictAndMarksReviewed() {
+        Checklist checklist = givenChecklistWithOutput(AI_OUTPUT);
+
+        ChecklistReviewResponse response = persistingService().submitReview(checklistId, reviewerId, List.of(override("K01", "FAIL")));
+
+        assertThat(response.reviewedBy()).isEqualTo(reviewerId);
+        assertThat(response.reviewedAt()).isNotNull();
+        assertThat(response.overrides()).containsExactly(new ReviewOverrideResponse("K01", "PASS", "FAIL", "because"));
+        assertThat(checklist.getStatus()).isEqualTo(ChecklistStatus.REVIEWED);
+        assertThat(checklist.getReviewedBy()).isEqualTo(reviewerId);
+        assertThat(checklist.getReviewedAt()).isNotNull();
+        assertThat(checklist.getReview()).contains("\"aiVerdict\":\"PASS\"").contains("\"decision\":\"FAIL\"");
+        verify(checklistRepository).save(checklist);
+    }
+
+    @Test
+    void submitReview_emptyOverrides_storesEmptyArray() {
+        Checklist checklist = givenChecklistWithOutput(AI_OUTPUT);
+
+        ChecklistReviewResponse response = persistingService().submitReview(checklistId, reviewerId, List.of());
+
+        assertThat(response.overrides()).isEmpty();
+        assertThat(checklist.getReview()).isEqualTo("[]");
+        assertThat(checklist.getStatus()).isEqualTo(ChecklistStatus.REVIEWED);
+    }
+
+    @Test
+    void submitReview_unknownItem_isInvalid() {
+        Checklist checklist = givenChecklistWithOutput(AI_OUTPUT);
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of(override("K99", "FAIL"))))
+                .isInstanceOf(InvalidReviewException.class);
+        assertThat(checklist.getReview()).isNull();
+        verify(checklistRepository, never()).save(any());
+    }
+
+    @Test
+    void submitReview_duplicateItem_isInvalid() {
+        givenChecklistWithOutput(AI_OUTPUT);
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId,
+                List.of(override("K01", "FAIL"), override("K01", "PARTIAL"))))
+                .isInstanceOf(InvalidReviewException.class);
+    }
+
+    @Test
+    void submitReview_unknownDecision_isInvalid() {
+        givenChecklistWithOutput(AI_OUTPUT);
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of(override("K01", "MAYBE"))))
+                .isInstanceOf(InvalidReviewException.class);
+    }
+
+    @Test
+    void submitReview_decisionEqualToAiVerdict_isInvalid() {
+        givenChecklistWithOutput(AI_OUTPUT);
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of(override("K01", "PASS"))))
+                .isInstanceOf(InvalidReviewException.class);
+    }
+
+    @Test
+    void submitReview_noOutput_isNotReady() {
+        givenChecklistWithOutput(null);
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of()))
+                .isInstanceOf(AnalysisNotReadyException.class);
+    }
+
+    @Test
+    void submitReview_unreadableOutput_isNotReady() {
+        givenChecklistWithOutput("not json {");
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of()))
+                .isInstanceOf(AnalysisNotReadyException.class);
+    }
+
+    @Test
+    void submitReview_errorOutput_isNotReady() {
+        givenChecklistWithOutput("{\"__error__\":{\"message\":\"boom\"}}");
+
+        assertThatThrownBy(() -> persistingService().submitReview(checklistId, reviewerId, List.of()))
+                .isInstanceOf(AnalysisNotReadyException.class);
+        verify(checklistRepository, never()).save(any());
+    }
+
+    @Test
+    void submitReview_resubmit_overwritesPreviousReview() {
+        Checklist checklist = givenChecklistWithOutput(AI_OUTPUT);
+        ChecklistService service = persistingService();
+
+        service.submitReview(checklistId, reviewerId, List.of(override("K01", "FAIL")));
+        ChecklistReviewResponse second = service.submitReview(checklistId, reviewerId, List.of(override("K02", "PASS")));
+
+        assertThat(second.overrides()).containsExactly(new ReviewOverrideResponse("K02", "FAIL", "PASS", "because"));
+        assertThat(checklist.getReview()).contains("K02").doesNotContain("K01");
+    }
+
+    @Test
+    void toReviewResponse_neverReviewed_isNull() {
+        assertThat(persistingService().toReviewResponse(Checklist.builder().build())).isNull();
     }
 }
