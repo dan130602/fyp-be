@@ -1,17 +1,22 @@
 package com.fyp.be.media_processing_service.controllers;
 
+import com.fyp.be.media_processing_service.dtos.ChecklistReviewResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetAnalysisResponse;
 import com.fyp.be.media_processing_service.dtos.MediaAssetResponse;
 import com.fyp.be.media_processing_service.dtos.PlaybackUrlResponse;
+import com.fyp.be.media_processing_service.dtos.SubmitReviewRequest;
 import com.fyp.be.media_processing_service.models.User;
 import com.fyp.be.media_processing_service.services.CurrentUserService;
 import com.fyp.be.media_processing_service.services.MediaAssetService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,5 +55,13 @@ public class MediaAssetController {
     public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id, Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);
         return ResponseEntity.ok(mediaAssetService.getAnalysis(id, currentUser.getId()));
+    }
+
+    @PutMapping("/{id}/review")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    public ResponseEntity<ChecklistReviewResponse> submitReview(
+            @PathVariable UUID id, @Valid @RequestBody SubmitReviewRequest request, Authentication authentication) {
+        User currentUser = currentUserService.getCurrentUser(authentication);
+        return ResponseEntity.ok(mediaAssetService.submitReview(id, currentUser.getId(), request));
     }
 }
