@@ -12,7 +12,7 @@ import random
 from collections import Counter
 from datetime import timedelta
 
-from fyp_evaluation.validation.stage0 import numeric_prerequisite_met, validate_stage0
+from fyp_evaluation.validation.stage0 import is_multilingual, numeric_prerequisite_met, validate_stage0
 
 from .domain import Domain, format_dob, maximal_digit_runs
 from .edge_params import (
@@ -390,10 +390,14 @@ def build_plan(documents, *, max_attempts=MAX_ATTEMPTS):
         raise PlanningError(f"No G1 parameter builder registered for {missing}")
     domain = Domain(documents)
     seed = documents["generation_plan"]["random_seed"]
+    attempt_plan = _attempt
+    if is_multilingual(documents):
+        from .multilingual import multilingual_attempt  # deferred: that module reuses this module's helpers
+        attempt_plan = multilingual_attempt
     rejected = []
     for attempt in range(max_attempts):
         try:
-            result = _attempt(documents, domain, seed, attempt)
+            result = attempt_plan(documents, domain, seed, attempt)
         except Infeasible as reason:
             rejected.append(f"attempt {attempt}: {reason}")
             continue

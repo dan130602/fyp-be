@@ -39,7 +39,11 @@ def main(argv=None):
             return 0
         for path in write_outputs(args.dataset_root, texts, overwrite=args.overwrite):
             print(f"Wrote {path}")
-        print(f"G1 plan: {summary['calls']} calls; composition {summary['call_composition']}.")
+        if "by_language_profile" in summary:
+            print(f"G1 plan: {summary['calls']} calls; language profiles {summary['language_profiles']}; "
+                  f"{summary['total_compliance_fail_pairs']} FAIL labels; {summary['total_edge_case_assignments']} edge cases.")
+        else:
+            print(f"G1 plan: {summary['calls']} calls; composition {summary['call_composition']}.")
         return 0
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)

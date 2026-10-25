@@ -1,0 +1,665 @@
+{
+  "schema_version": "2.0",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "description": "Release-local normalization contract for advisory_execution_multilingual_v1. It owns canonical gold forms, accepted aliases, per-language spoken/reference-text forms, per-value generation surfaces (the allowlist Python renders from) and prediction-comparison steps for every extraction profile referenced by check_semantics.json. Each spoken form names its language; a call may use only the forms of its language profile's value_surface_languages. Spoken forms marked EDGE_CASE_ONLY are REQUIRED on the targeted value when their edge case is assigned and FORBIDDEN in every call where it is not. Gold values never change with language. This file is declarative: Mandarin rendering and decoding are implemented later.",
+  "implementation_status": "DECLARATIVE_ONLY",
+  "compliance_verdicts": [
+    "PASS",
+    "FAIL"
+  ],
+  "profiles": {
+    "synthetic_nric_fin": {
+      "value_type": "text",
+      "description": "Synthetic Singapore NRIC/FIN-shaped identifier used for K01.",
+      "canonical": {
+        "format": "One uppercase prefix letter, seven digits and one uppercase suffix letter, with no spaces or punctuation.",
+        "pattern": "^[STFGM][0-9]{7}[A-NP-Z]$",
+        "excluded_characters": [
+          "O"
+        ],
+        "excluded_characters_reason": "The letter O is acoustically ambiguous with the digit zero spoken as 'oh'."
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "SPOKEN_CHARACTERS_TO_SYMBOLS",
+          "REMOVE_SEPARATORS",
+          "UPPERCASE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "SPOKEN_CHARACTERS_TO_SYMBOLS covers digit words zero-nine, 'oh' for zero, and 'double'/'triple' digit runs.",
+          "Checksum validity is never repaired or used for comparison."
+        ]
+      },
+      "reference_text": {
+        "default_form": "CHARACTER_BY_CHARACTER",
+        "notes": [
+          "Letters and digits are spoken individually, every zero included."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "CHARACTER_BY_CHARACTER",
+          "usage": "DEFAULT",
+          "description": "Each letter and digit is spoken separately.",
+          "language": "en"
+        },
+        {
+          "id": "OH_FOR_ZERO",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Every zero digit in the identifier is spoken as 'oh'; all other characters stay character by character.",
+          "enabled_by_edge_case": "EC_OH_VS_ZERO",
+          "applies_to": "ALL_ZERO_DIGITS",
+          "remaining_characters_form": "CHARACTER_BY_CHARACTER",
+          "language": "en"
+        },
+        {
+          "id": "DOUBLE_OR_TRIPLE_DIGIT",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Every maximal run of identical digits whose length equals the assigned variant (DOUBLE = 2, TRIPLE = 3) is spoken as 'double' or 'triple' followed by the digit; all other characters stay character by character.",
+          "enabled_by_edge_case": "EC_DOUBLE_TRIPLE_DIGITS",
+          "applies_to": "ALL_RUNS_OF_ASSIGNED_VARIANT_LENGTH",
+          "remaining_characters_form": "CHARACTER_BY_CHARACTER",
+          "language": "en"
+        },
+        {
+          "id": "ZH_CHARACTER_BY_CHARACTER",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "Latin prefix and suffix letters with each digit read as a Mandarin digit (二 always)."
+        }
+      ]
+    },
+    "dob_dd_month_yyyy": {
+      "value_type": "dob_dd_month_yyyy",
+      "description": "Client date of birth used for K02.",
+      "canonical": {
+        "format": "DD Month YYYY: two-digit day, full title-case English month name, four-digit year, single spaces.",
+        "pattern": "^(0[1-9]|[12][0-9]|3[01]) (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{4}$",
+        "calendar_valid": true
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "PARSE_CALENDAR_DATE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "Equivalent spoken or written forms of the same calendar date compare equal after parsing to the canonical form.",
+          "All-numeric dates whose day/month order is ambiguous are rejected, never guessed."
+        ]
+      },
+      "reference_text": {
+        "default_form": "DAY_MONTH_YEAR",
+        "notes": [
+          "Reference text writes D Month YYYY with no leading zero on the day, for example '4 February 2001'; the locked gold value keeps the two-digit day."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "DAY_MONTH_YEAR",
+          "usage": "DEFAULT",
+          "description": "Day number without a leading zero, full month name and four-digit year.",
+          "language": "en"
+        },
+        {
+          "id": "ORDINAL_DAY",
+          "usage": "PERMITTED",
+          "description": "Ordinal day, optionally with 'of', for example 'the fourth of February'.",
+          "language": "en"
+        },
+        {
+          "id": "ZH_YEAR_MONTH_DAY",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "YYYY年M月D日 with the year read digit by digit."
+        }
+      ]
+    },
+    "synthetic_product_name": {
+      "value_type": "text",
+      "description": "Synthetic investment product name used for T01.",
+      "canonical": {
+        "format": "Exact product name as listed in the release product pool.",
+        "values_source": "authoring/generation_plan.json extraction_distribution.product_pool[].name"
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "COLLAPSE_WHITESPACE",
+          "CASE_FOLD",
+          "MAP_LANGUAGE_NAMES",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "No partial, abbreviated or fuzzy product-name matching.",
+          "MAP_LANGUAGE_NAMES maps an approved language_names surface to its canonical English product name."
+        ]
+      },
+      "reference_text": {
+        "default_form": "FULL_PRODUCT_NAME"
+      },
+      "spoken_forms": [
+        {
+          "id": "FULL_PRODUCT_NAME",
+          "usage": "DEFAULT",
+          "description": "The full canonical product name.",
+          "language": "en"
+        },
+        {
+          "id": "ZH_FULL_PRODUCT_NAME",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "The product's approved Chinese name from language_names; never translated by a model."
+        }
+      ],
+      "language_names": {
+        "Orion Global Income Fund": {
+          "zh": {
+            "surface": "猎户座环球收益基金",
+            "status": "APPROVED"
+          }
+        },
+        "Meridian Asia Equity Fund": {
+          "zh": {
+            "surface": "子午线亚洲股票基金",
+            "status": "APPROVED"
+          }
+        },
+        "Atlas USD Corporate Bond 2031": {
+          "zh": {
+            "surface": "阿特拉斯美元公司债券二〇三一",
+            "status": "APPROVED"
+          }
+        },
+        "Harbor SGD Bond Fund": {
+          "zh": {
+            "surface": "海港新元债券基金",
+            "status": "APPROVED"
+          }
+        },
+        "Summit Global Equity ETF": {
+          "zh": {
+            "surface": "顶峰环球股票交易所交易基金",
+            "status": "APPROVED"
+          }
+        },
+        "Nova Technology Equity Fund": {
+          "zh": {
+            "surface": "新星科技股票基金",
+            "status": "APPROVED"
+          }
+        },
+        "Pioneer Balanced Opportunities Fund": {
+          "zh": {
+            "surface": "开拓者平衡机遇基金",
+            "status": "APPROVED"
+          }
+        },
+        "Crest Emerging Markets Bond Fund": {
+          "zh": {
+            "surface": "冠峰新兴市场债券基金",
+            "status": "APPROVED"
+          }
+        }
+      }
+    },
+    "currency_iso_4217_alpha3": {
+      "value_type": "text",
+      "description": "Transaction currency used for T02.",
+      "canonical": {
+        "format": "Uppercase ISO 4217 alphabetic code.",
+        "allowed_values": [
+          "SGD",
+          "USD",
+          "EUR",
+          "CNY",
+          "JPY"
+        ]
+      },
+      "aliases": {
+        "SGD": [
+          "Singapore dollars",
+          "SGD",
+          "新币",
+          "新元",
+          "新加坡元"
+        ],
+        "USD": [
+          "US dollars",
+          "American dollars",
+          "USD",
+          "美元",
+          "美金"
+        ],
+        "EUR": [
+          "euros",
+          "euro",
+          "EUR",
+          "欧元"
+        ],
+        "CNY": [
+          "renminbi",
+          "Chinese yuan",
+          "yuan",
+          "RMB",
+          "CNY",
+          "人民币"
+        ],
+        "JPY": [
+          "Japanese yen",
+          "yen",
+          "JPY",
+          "日元"
+        ]
+      },
+      "rejected_surface_forms": [
+        {
+          "form": "dollars",
+          "language": "en",
+          "match": "STANDALONE",
+          "reason": "Ambiguous between SGD and USD."
+        },
+        {
+          "form": "dollar",
+          "language": "en",
+          "match": "STANDALONE",
+          "reason": "Ambiguous between SGD and USD."
+        },
+        {
+          "form": "元",
+          "language": "zh",
+          "match": "STANDALONE",
+          "reason": "Bare 元 does not identify a currency; 美元, 新元, 欧元 and 日元 are distinct approved surfaces and are not affected."
+        },
+        {
+          "form": "块",
+          "language": "zh",
+          "match": "STANDALONE",
+          "reason": "Colloquial money unit that does not identify a currency."
+        },
+        {
+          "form": "刀",
+          "language": "zh",
+          "match": "STANDALONE",
+          "reason": "Slang money unit that does not identify a currency."
+        }
+      ],
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "CASE_FOLD",
+          "MAP_ALIASES",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT"
+      },
+      "reference_text": {
+        "default_form": "NATURAL_NAME",
+        "notes": [
+          "This release prefers natural currency names in dialogue; the gold value is always the three-letter code.",
+          "Generated English speech uses 'Chinese yuan' and 'Japanese yen', never bare 'yuan' or 'yen'; the bare forms are accepted aliases for comparison only.",
+          "The spoken codes E-U-R, J-P-Y and C-N-Y are never generated; RMB is the spelled CNY abbreviation."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_NAME",
+          "usage": "DEFAULT",
+          "language": "en",
+          "description": "A natural English name from generation_surfaces."
+        },
+        {
+          "id": "SPELLED_CODE",
+          "usage": "PERMITTED",
+          "language": "en",
+          "description": "A spelled abbreviation from generation_surfaces (SGD, USD, RMB); only currencies that list one may use it."
+        },
+        {
+          "id": "ZH_NATURAL_NAME",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "A Mandarin currency name from generation_surfaces."
+        }
+      ],
+      "generation_surfaces": {
+        "SGD": {
+          "NATURAL_NAME": [
+            "Singapore dollars"
+          ],
+          "SPELLED_CODE": [
+            "SGD"
+          ],
+          "ZH_NATURAL_NAME": [
+            "新币",
+            "新元",
+            "新加坡元"
+          ]
+        },
+        "USD": {
+          "NATURAL_NAME": [
+            "US dollars",
+            "American dollars"
+          ],
+          "SPELLED_CODE": [
+            "USD"
+          ],
+          "ZH_NATURAL_NAME": [
+            "美元",
+            "美金"
+          ]
+        },
+        "EUR": {
+          "NATURAL_NAME": [
+            "euros",
+            "euro"
+          ],
+          "ZH_NATURAL_NAME": [
+            "欧元"
+          ]
+        },
+        "CNY": {
+          "NATURAL_NAME": [
+            "renminbi",
+            "Chinese yuan"
+          ],
+          "SPELLED_CODE": [
+            "RMB"
+          ],
+          "ZH_NATURAL_NAME": [
+            "人民币"
+          ]
+        },
+        "JPY": {
+          "NATURAL_NAME": [
+            "Japanese yen"
+          ],
+          "ZH_NATURAL_NAME": [
+            "日元"
+          ]
+        }
+      }
+    },
+    "monetary_amount": {
+      "value_type": "number",
+      "description": "Transaction monetary amount used for T03, in major currency units.",
+      "canonical": {
+        "format": "Finite positive number without currency marker or thousands separators.",
+        "exclusive_minimum": 0
+      },
+      "magnitude_words": {
+        "k": 1000,
+        "thousand": 1000,
+        "m": 1000000,
+        "mn": 1000000,
+        "million": 1000000
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "STRIP_CURRENCY_MARKERS",
+          "REMOVE_THOUSANDS_SEPARATORS",
+          "EXPAND_MAGNITUDE_WORDS",
+          "PARSE_NUMBER_WORDS",
+          "NUMERIC_EQUAL"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT"
+      },
+      "reference_text": {
+        "default_form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+        "notes": [
+          "Default reference text uses Arabic digits with comma grouping, for example '50,000'."
+        ]
+      },
+      "spoken_forms": [
+        {
+          "id": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "usage": "DEFAULT",
+          "description": "Digits with comma grouping.",
+          "language": "en"
+        },
+        {
+          "id": "FINANCIAL_SHORTHAND",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Shorthand magnitude suffix, for example '50k'.",
+          "enabled_by_edge_case": "EC_FINANCIAL_SHORTHAND",
+          "applies_to": "WHOLE_VALUE",
+          "language": "en"
+        },
+        {
+          "id": "MAGNITUDE_EXPRESSION",
+          "usage": "EDGE_CASE_ONLY",
+          "description": "Magnitude word, optionally with a decimal, for example '1.2 million'.",
+          "enabled_by_edge_case": "EC_LARGE_NUMBER_EXPRESSION",
+          "applies_to": "WHOLE_VALUE",
+          "language": "en"
+        },
+        {
+          "id": "ZH_CARDINAL",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "Han-numeral cardinal under language_rules.zh.cardinal (五万, 一百二十万)."
+        }
+      ]
+    },
+    "integer_quantity": {
+      "value_type": "integer",
+      "description": "Transaction quantity used for T04.",
+      "canonical": {
+        "format": "Positive integer number of units.",
+        "minimum": 1
+      },
+      "unit_words": [
+        "unit",
+        "units",
+        "share",
+        "shares",
+        "份",
+        "股",
+        "单位",
+        "个单位"
+      ],
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "STRIP_UNIT_WORDS",
+          "REMOVE_THOUSANDS_SEPARATORS",
+          "PARSE_NUMBER_WORDS",
+          "NUMERIC_EQUAL"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "Fractional quantities are rejected."
+        ]
+      },
+      "reference_text": {
+        "default_form": "DIGITS_WITH_THOUSANDS_SEPARATORS"
+      },
+      "spoken_forms": [
+        {
+          "id": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "usage": "DEFAULT",
+          "description": "Digits with comma grouping.",
+          "language": "en"
+        },
+        {
+          "id": "ZH_CARDINAL",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "Han-numeral cardinal under language_rules.zh.cardinal (七百, 两千)."
+        }
+      ]
+    },
+    "transaction_direction": {
+      "value_type": "text",
+      "description": "Transaction direction used for T05.",
+      "canonical": {
+        "format": "Uppercase direction keyword.",
+        "allowed_values": [
+          "BUY",
+          "SELL"
+        ]
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "MAP_ALIASES",
+          "UPPERCASE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "A negated instruction never maps to an affirmative direction; negation is semantic, not lexical."
+        ]
+      },
+      "reference_text": {
+        "default_form": "NATURAL_VERB"
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_VERB",
+          "usage": "DEFAULT",
+          "description": "The client says buy or sell in natural speech.",
+          "language": "en"
+        },
+        {
+          "id": "ZH_NATURAL_VERB",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "买入/买 or 卖出/卖 in natural Mandarin speech."
+        }
+      ],
+      "aliases": {
+        "BUY": [
+          "buy",
+          "买入",
+          "买"
+        ],
+        "SELL": [
+          "sell",
+          "卖出",
+          "卖"
+        ]
+      },
+      "generation_surfaces": {
+        "BUY": {
+          "NATURAL_VERB": [
+            "buy"
+          ],
+          "ZH_NATURAL_VERB": [
+            "买入",
+            "买"
+          ]
+        },
+        "SELL": {
+          "NATURAL_VERB": [
+            "sell"
+          ],
+          "ZH_NATURAL_VERB": [
+            "卖出",
+            "卖"
+          ]
+        }
+      }
+    },
+    "order_type": {
+      "value_type": "text",
+      "description": "Order type used for T06.",
+      "canonical": {
+        "format": "Uppercase order-type keyword.",
+        "allowed_values": [
+          "MARKET",
+          "LIMIT"
+        ]
+      },
+      "comparison": {
+        "steps": [
+          "TRIM",
+          "MAP_ALIASES",
+          "UPPERCASE",
+          "EXACT_MATCH"
+        ],
+        "on_ambiguous_or_unparseable": "REJECT",
+        "notes": [
+          "MAP_ALIASES maps the English and Mandarin order-type phrases to MARKET or LIMIT."
+        ]
+      },
+      "reference_text": {
+        "default_form": "NATURAL_PHRASE"
+      },
+      "spoken_forms": [
+        {
+          "id": "NATURAL_PHRASE",
+          "usage": "DEFAULT",
+          "description": "Natural phrase such as 'at market' or 'a limit order'.",
+          "language": "en"
+        },
+        {
+          "id": "ZH_NATURAL_PHRASE",
+          "usage": "DEFAULT",
+          "language": "zh",
+          "description": "市价单 or 限价单."
+        }
+      ],
+      "aliases": {
+        "MARKET": [
+          "market",
+          "market order",
+          "a market order",
+          "市价单",
+          "市价"
+        ],
+        "LIMIT": [
+          "limit",
+          "limit order",
+          "a limit order",
+          "限价单",
+          "限价"
+        ]
+      },
+      "generation_surfaces": {
+        "MARKET": {
+          "NATURAL_PHRASE": [
+            "a market order"
+          ],
+          "ZH_NATURAL_PHRASE": [
+            "市价单"
+          ]
+        },
+        "LIMIT": {
+          "NATURAL_PHRASE": [
+            "a limit order"
+          ],
+          "ZH_NATURAL_PHRASE": [
+            "限价单"
+          ]
+        }
+      }
+    }
+  },
+  "languages": [
+    "en",
+    "zh"
+  ],
+  "language_rules": {
+    "zh": {
+      "script": "SIMPLIFIED_HAN",
+      "cardinal": "Han numerals with 万/亿 grouping (五万 = 50000, 一百二十万 = 1200000, 一亿 = 100000000); 零 marks an internal gap (一万零五十). 两 is used only for a leading digit 2 immediately before 百, 千, 万 or 亿 (两百, 两千, 两万五千); 二 everywhere else (二十, 十二, 一百二十, 两千二百). Decoders accept 两 or 二 in cardinal positions only.",
+      "year": "Digit by digit with 〇 for zero (一九九八, 二〇〇一); 二 always.",
+      "date": "YYYY年M月D日: year digit by digit, month and day as cardinals without a leading zero; decodes to the canonical DD Month YYYY.",
+      "identifier": "NRIC/FIN prefix and suffix letters stay uppercase Latin; each digit is 零一二三四五六七八九 (二 always, never 两 or 幺).",
+      "decimal": "点 separates the decimal part, read digit by digit (百分之一点五, 十二点五).",
+      "percentage": "百分之 followed by the cardinal.",
+      "decoding": "Decoders never consult the expected value; ambiguous or unparseable surfaces are rejected.",
+      "deferred": [
+        "Shortened colloquial numbers such as 一千二 or 两万五 are not generated in this release.",
+        "幺 for the digit one is not generated in this release.",
+        "Compact Mandarin repeated-digit expressions are not generated in this release."
+      ]
+    }
+  }
+}

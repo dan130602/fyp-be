@@ -17,13 +17,15 @@ from jsonschema import Draft202012Validator
 
 from fyp_evaluation.authoring.coverage import load_matrix
 from fyp_evaluation.validation.schemas import load_json
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, STAGE0_FILES, load_stage0
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual, load_stage0, stage0_files
 
 from .allocate import build_plan
 from .validate import typed_gold, validate_plan
 
 GENERATOR_VERSION = "1.1.0"
+MULTILINGUAL_GENERATOR_VERSION = "2.0.0"
 RECORD_SCHEMA_VERSION = "1.0"
+MULTILINGUAL_RECORD_SCHEMA_VERSION = "2.0"
 MANIFEST = "authoring/call_manifest.csv"
 MATRIX = "authoring/coverage_matrix.csv"
 ASSIGNMENTS = "authoring/edge_case_assignments.csv"
@@ -35,6 +37,14 @@ MANIFEST_HEADER = [
 ]
 ASSIGNMENT_HEADER = [
     "assignment_id", "call_id", "edge_case_id", "family", "target_question_ids", "parameters_json",
+]
+# Multilingual (generation plan 2.0) releases add the frozen language profile, mixing style and edge-case language variant.
+MANIFEST_HEADER_V2 = [
+    "call_id", "call_intents", "language_profile", "mixing_style", "duration_profile",
+    "target_duration_min_seconds", "target_duration_max_seconds",
+]
+ASSIGNMENT_HEADER_V2 = [
+    "assignment_id", "call_id", "edge_case_id", "family", "target_question_ids", "language_variant", "parameters_json",
 ]
 RNG_DESCRIPTION = (
     "Python random.Random (MT19937) per named decision stream; stream seed = first 8 bytes "
@@ -64,6 +74,8 @@ def _cell(value):
 
 def serialize_plan(documents, result):
     """Return {relative path: text} for the three tabular outputs."""
+    if is_multilingual(documents):
+        return _serialize_multilingual(documents, result)
     checklist = documents["checklist"]
     calls = [c["call_id"] for c in result["calls"]]
     return {
@@ -81,6 +93,30 @@ def serialize_plan(documents, result):
             for a in result["assignments"]
         ]),
     }
+
+
+def _serialize_multilingual(documents, result):
+    checklist = documents["checklist"]
+    calls = [c["call_id"] for c in result["calls"]]
+    return {
+        MANIFEST: _csv_text(MANIFEST_HEADER_V2, [
+            [c["call_id"], "|".join(c["call_intents"]), c["language_profile"], c["mixing_style"], c["duration_profile"],
+             c["target_duration_min_seconds"], c["target_duration_max_seconds"]]
+            for c in result["calls"]
+        ]),
+        MATRIX: _csv_text(["question_id", *calls], [
+            [item["id"], *(_cell(result["gold"][c][item["id"]]) for c in calls)] for item in checklist
+        ]),
+        ASSIGNMENTS: _csv_text(ASSIGNMENT_HEADER_V2, [
+            [a["assignment_id"], a["call_id"], a["edge_case_id"], a["family"], "|".join(a["target_question_ids"]),
+             a["language_variant"], canonical_json(a["parameters"])]
+            for a in result["assignments"]
+        ]),
+    }
+
+
+def _header(text):
+    return next(csv.reader(io.StringIO(text.replace("\r\n", "\n"), newline="")), [])
 
 
 def _rows(text, header, label):
@@ -105,6 +141,9 @@ def _integer(text, label):
 
 
 def parse_manifest(text):
+    """Parse call_manifest.csv; the header selects the 1.0 layout or the multilingual 2.0 layout."""
+    if _header(text) == MANIFEST_HEADER_V2:
+        return _parse_manifest_v2(text)
     rows = []
     for row in _rows(text, MANIFEST_HEADER, "call_manifest"):
         call_id, intents, language, profile, low, high = row
@@ -119,6 +158,21 @@ def parse_manifest(text):
     return rows
 
 
+def _parse_manifest_v2(text):
+    rows = []
+    for row in _rows(text, MANIFEST_HEADER_V2, "call_manifest"):
+        call_id, intents, language_profile, mixing_style, profile, low, high = row
+        if not re.fullmatch(r"[A-Z][A-Z0-9_]*(\|[A-Z][A-Z0-9_]*)*", intents):
+            raise ValueError(f"call_manifest: {call_id}: call_intents must be pipe-delimited symbols")
+        rows.append({
+            "call_id": call_id, "call_intents": intents.split("|"), "language_profile": language_profile,
+            "mixing_style": mixing_style, "duration_profile": profile,
+            "target_duration_min_seconds": _integer(low, f"call_manifest: {call_id}"),
+            "target_duration_max_seconds": _integer(high, f"call_manifest: {call_id}"),
+        })
+    return rows
+
+
 def _reject_duplicates(pairs):
     keys = [key for key, _ in pairs]
     if len(keys) != len(set(keys)):
@@ -127,19 +181,28 @@ def _reject_duplicates(pairs):
 
 
 def parse_assignments(text):
+    """Parse edge_case_assignments.csv; the header selects the 1.0 layout or the multilingual 2.0 layout."""
+    multilingual = _header(text) == ASSIGNMENT_HEADER_V2
     rows = []
-    for row in _rows(text, ASSIGNMENT_HEADER, "edge_case_assignments"):
-        assignment_id, call_id, case_id, family, targets, parameters = row
+    for row in _rows(text, ASSIGNMENT_HEADER_V2 if multilingual else ASSIGNMENT_HEADER, "edge_case_assignments"):
+        if multilingual:
+            assignment_id, call_id, case_id, family, targets, variant, parameters = row
+        else:
+            assignment_id, call_id, case_id, family, targets, parameters = row
         try:
             params = json.loads(parameters, object_pairs_hook=_reject_duplicates)
         except ValueError as error:
             raise ValueError(f"edge_case_assignments: {assignment_id}: invalid parameters_json: {error}") from error
         if not isinstance(params, dict) or canonical_json(params) != parameters:
             raise ValueError(f"edge_case_assignments: {assignment_id}: parameters_json must be canonical JSON")
-        rows.append({
+        entry = {
             "assignment_id": assignment_id, "call_id": call_id, "edge_case_id": case_id, "family": family,
-            "target_question_ids": targets.split("|"), "parameters": params,
-        })
+            "target_question_ids": targets.split("|"),
+        }
+        if multilingual:
+            entry["language_variant"] = variant
+        entry["parameters"] = params
+        rows.append(entry)
     return rows
 
 
@@ -171,6 +234,8 @@ def parse_matrix(text):
 
 def summarize(documents, manifest, gold, assignments):
     """Deterministic review counts recorded in planning_record.json."""
+    if is_multilingual(documents):
+        return summarize_multilingual(documents, manifest, gold, assignments)
     checklist = documents["checklist"]
     calls = [r["call_id"] for r in manifest]
     compliance = [i["id"] for i in checklist if i["type"] == "COMPLIANCE"]
@@ -216,17 +281,97 @@ def summarize(documents, manifest, gold, assignments):
     }
 
 
+def _profile_summary(documents, p, rows, gold, assignments):
+    """Review counts for one language profile of a multilingual release (keys in configuration order)."""
+    checklist = documents["checklist"]
+    extraction = documents["generation_plan"]["extraction_distribution"]
+    calls = [r["call_id"] for r in rows]
+    compliance = [i["id"] for i in checklist if i["type"] == "COMPLIANCE"]
+    field = {i["field"]: i["id"] for i in checklist if i["type"] != "COMPLIANCE"}
+    catalog = documents["edge_case_catalog"]["edge_cases"]
+    case_ids = [c["id"] for c in catalog]
+    families = list(dict.fromkeys(c["family"] for c in catalog))
+    per_call = Counter(a["call_id"] for a in assignments)
+    fails = {c: sum(gold[c][q] == "FAIL" for q in compliance) for c in calls}
+    duration = {r["call_id"]: r["duration_profile"] for r in rows}
+    composition = Counter(
+        ("all_pass" if not fails[c] else "some_fail") + ("_with_edge_cases" if per_call[c] else "_without_edge_cases")
+        for c in calls
+    )
+
+    def ordered(counter, keys):
+        return {key: counter[key] for key in keys}
+
+    targets = Counter(q for a in assignments for q in a["target_question_ids"])
+    loads = {}
+    for c in calls:
+        loads.setdefault(duration[c], Counter())[fails[c] + per_call[c]] += 1
+    variants = {}
+    for a in assignments:
+        if a["language_variant"] != "NONE":
+            variants.setdefault(a["edge_case_id"], Counter())[a["language_variant"]] += 1
+    pair = Counter((gold[c]["C02"], gold[c]["C03"]) for c in calls) if {"C02", "C03"} <= set(compliance) else Counter()
+    return {
+        "calls": len(calls),
+        "duration_profiles": ordered(Counter(duration.values()), list(p["duration_counts"])),
+        "call_composition": ordered(composition, list(p["call_composition_counts"])),
+        "compliance_verdicts": {
+            q: {"PASS": sum(gold[c][q] == "PASS" for c in calls), "FAIL": sum(gold[c][q] == "FAIL" for c in calls)}
+            for q in compliance
+        },
+        "c02_c03_outcomes": {f"{a}/{b}": pair[(a, b)] for a, b in (("PASS", "PASS"), ("PASS", "FAIL"), ("FAIL", "FAIL"), ("FAIL", "PASS"))},
+        "fails_per_call": {str(n): count for n, count in sorted(Counter(fails.values()).items())},
+        "total_compliance_fail_pairs": sum(fails.values()),
+        "total_edge_case_assignments": len(assignments),
+        "transaction_direction": ordered(Counter(gold[c][field["transaction_direction"]] for c in calls), extraction["transaction_directions"]),
+        "order_type": ordered(Counter(gold[c][field["order_type"]] for c in calls), extraction["order_types"]),
+        "transaction_currency": ordered(Counter(gold[c][field["transaction_currency"]] for c in calls), extraction["transaction_currencies"]),
+        "transaction_instrument": ordered(Counter(gold[c][field["transaction_instrument"]] for c in calls),
+                                          [product["name"] for product in extraction["product_pool"]]),
+        "edge_case_families": ordered(Counter(a["family"] for a in assignments), families),
+        "edge_case_ids": ordered(Counter(a["edge_case_id"] for a in assignments), case_ids),
+        "edge_case_target_questions": {i["id"]: targets[i["id"]] for i in checklist if targets[i["id"]]},
+        "edge_cases_per_call": {str(n): count for n, count in sorted(Counter(per_call[c] for c in calls).items())},
+        "language_variants": {case_id: dict(sorted(variants[case_id].items())) for case_id in case_ids if case_id in variants},
+        "mixing_styles": dict(sorted(Counter(r["mixing_style"] for r in rows).items())),
+        "target_exposure_calls": {q: len({a["call_id"] for a in assignments if q in a["target_question_ids"]})
+                                  for q in p["target_exposure_caps"]},
+        "fails_plus_edge_cases_by_duration": {d: {str(n): loads[d][n] for n in sorted(loads[d])} for d in p["duration_counts"] if d in loads},
+    }
+
+
+def summarize_multilingual(documents, manifest, gold, assignments):
+    by_profile = {}
+    for p in documents["generation_plan"]["language_profile_plans"]:
+        name = p["language_profile"]
+        rows = [r for r in manifest if r["language_profile"] == name]
+        members = {r["call_id"] for r in rows}
+        by_profile[name] = _profile_summary(documents, p, rows, gold, [a for a in assignments if a["call_id"] in members])
+    compliance = [i["id"] for i in documents["checklist"] if i["type"] == "COMPLIANCE"]
+    return {
+        "calls": len(manifest),
+        "language_profiles": {name: block["calls"] for name, block in by_profile.items()},
+        "total_compliance_fail_pairs": sum(block["total_compliance_fail_pairs"] for block in by_profile.values()),
+        "total_edge_case_assignments": len(assignments),
+        "total_language_variants": sum(a["language_variant"] != "NONE" for a in assignments),
+        "compliance_fail_counts": {q: sum(block["compliance_verdicts"][q]["FAIL"] for block in by_profile.values()) for q in compliance},
+        "by_language_profile": by_profile,
+    }
+
+
 def build_record(documents, dataset_root, texts, result, summary):
     root = Path(dataset_root)
+    multilingual = is_multilingual(documents)
     return {
-        "schema_version": RECORD_SCHEMA_VERSION,
+        "schema_version": MULTILINGUAL_RECORD_SCHEMA_VERSION if multilingual else RECORD_SCHEMA_VERSION,
         "stage": "G1",
         "dataset_id": documents["normalization"]["dataset_id"],
-        "generator": {"package": "fyp_evaluation.planning", "version": GENERATOR_VERSION, "rng": RNG_DESCRIPTION},
+        "generator": {"package": "fyp_evaluation.planning",
+                      "version": MULTILINGUAL_GENERATOR_VERSION if multilingual else GENERATOR_VERSION, "rng": RNG_DESCRIPTION},
         "random_seed": documents["generation_plan"]["random_seed"],
         "attempts": {"accepted_attempt": result["attempt"], "rejected_attempts": result["rejected_attempts"]},
         "hashing": "SHA-256 over UTF-8 bytes with CRLF normalised to LF",
-        "inputs": {relative: sha256((root / relative).read_bytes()) for relative in STAGE0_FILES.values()},
+        "inputs": {relative: sha256((root / relative).read_bytes()) for relative in stage0_files(documents).values()},
         "outputs": {relative: sha256(texts[relative].encode("utf-8")) for relative in (MANIFEST, MATRIX, ASSIGNMENTS)},
         "summary": summary,
     }
@@ -305,7 +450,9 @@ def validate_written(dataset_root, schema_dir=DEFAULT_SCHEMA_DIR):
     errors += validate_record_shape(record, schema_dir)
     if errors:
         return errors
-    for relative in STAGE0_FILES.values():
+    if set(record["inputs"]) != set(stage0_files(documents).values()):
+        errors.append("planning_record: inputs must hash exactly the release's G0 files")
+    for relative in stage0_files(documents).values():
         if record["inputs"].get(relative) != sha256((root / relative).read_bytes()):
             errors.append(f"planning_record: input hash differs for {relative}")
     for relative in (MANIFEST, MATRIX, ASSIGNMENTS):

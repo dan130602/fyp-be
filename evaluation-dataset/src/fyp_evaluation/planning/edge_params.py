@@ -79,6 +79,10 @@ class BuildContext:
         self.domain, self.gold, self.verdicts, self.rng = domain, gold, verdicts, rng
         self.balancer, self.excluded, self.k01_variant, self.catalog = balancer, excluded, k01_variant, catalog
         self.local = Counter()
+        # The catalog language variant of the assignment being built (multilingual releases set it per assignment), and the
+        # magnitude factor a variant-free monetary distractor must avoid where the profile plans that contrast deliberately.
+        self.language_variant = None
+        self.avoided_magnitude_factor = None
 
     def pick(self, name, options):
         option = self.balancer.choose(name, options, self.local)
@@ -128,13 +132,33 @@ def _multiple_currencies(ctx, case, targets):
     }
 
 
+def magnitude_contrast(variant):
+    """The DISTRACTOR_MAGNITUDE_FACTOR constraint of a catalog language variant, or None."""
+    constraint = (variant or {}).get("constraint")
+    return constraint if constraint and constraint["kind"] == "DISTRACTOR_MAGNITUDE_FACTOR" else None
+
+
 def _multiple_monetary_values(ctx, case, targets):
     final, currency = ctx.gold[ctx.domain.t03], ctx.gold[ctx.domain.t02]
-    distractors, used = [], set()
-    for _ in range(2):
+    distractors, used, partners = [], set(), []
+    contrast = magnitude_contrast(ctx.language_variant)
+    if contrast:
+        # Exactly one distractor is the final amount x or / the factor; the other distractor is never such a partner.
+        partners = ctx.domain.magnitude_partners(currency, final, contrast["factor"])
+        if not partners:
+            raise Infeasible(f"no x{contrast['factor']} partner of {final} {currency}")
+        amount = ctx.pick(f"magnitude_partner:{currency}", partners)
+        roles = [role for role in MONETARY_DISTRACTOR_ROLES if ctx.domain.balance_distractor_ok(role, amount, final)
+                 and (amount > final or role in contrast["divided_distractor_roles"])]
+        role = ctx.pick("monetary_distractor_role", roles)
+        used.add(amount)
+        distractors.append({"amount": amount, "currency": currency, "role": role})
+    elif ctx.avoided_magnitude_factor:
+        partners = ctx.domain.magnitude_partners(currency, final, ctx.avoided_magnitude_factor)
+    for _ in range(2 - len(distractors)):
         options = {
             role: [a for a in ctx.domain.amounts[currency]
-                   if a not in used and ctx.domain.balance_distractor_ok(role, a, final)]
+                   if a not in used and a not in partners and ctx.domain.balance_distractor_ok(role, a, final)]
             for role in MONETARY_DISTRACTOR_ROLES if role not in {d["role"] for d in distractors}
         }
         role = ctx.pick("monetary_distractor_role", [r for r, values in options.items() if values])

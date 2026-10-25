@@ -1,0 +1,674 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage0/generation_plan.v2.schema.json",
+  "title": "Release Generation Plan (multilingual, 2.0)",
+  "description": "G1 planning inputs for a multilingual release. Every allocation is an exact integer count within one language profile; floating-point fractions are not accepted.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "description",
+    "num_calls",
+    "random_seed",
+    "duration_profiles",
+    "call_intent_vocabulary",
+    "question_scope",
+    "language_profile_plans",
+    "extraction_distribution",
+    "planning_rules"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "description": {
+      "$ref": "#/$defs/text"
+    },
+    "num_calls": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "random_seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duration_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "profile",
+          "min_seconds",
+          "max_seconds"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "$ref": "#/$defs/symbol"
+          },
+          "min_seconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "max_seconds": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "call_intent_vocabulary": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/symbol"
+      }
+    },
+    "question_scope": {
+      "type": "object",
+      "required": [
+        "strategy"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "const": "ALL_CHECKLIST_QUESTIONS"
+        }
+      }
+    },
+    "language_profile_plans": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/profile_plan"
+      }
+    },
+    "extraction_distribution": {
+      "type": "object",
+      "required": [
+        "transaction_currencies",
+        "transaction_directions",
+        "order_types",
+        "product_pool",
+        "transaction_amount_values_by_currency",
+        "transaction_quantity_values",
+        "amount_quantity_coherence",
+        "synthetic_kyc"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "transaction_currencies": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/currency_code"
+          }
+        },
+        "transaction_directions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/symbol"
+          }
+        },
+        "order_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/symbol"
+          }
+        },
+        "product_pool": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "category",
+              "allowed_currencies"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "$ref": "#/$defs/text"
+              },
+              "category": {
+                "$ref": "#/$defs/symbol"
+              },
+              "allowed_currencies": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/currency_code"
+                }
+              }
+            }
+          }
+        },
+        "transaction_amount_values_by_currency": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/currency_code"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "transaction_quantity_values": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "amount_quantity_coherence": {
+          "type": "object",
+          "required": [
+            "strategy",
+            "ranges",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "const": "IMPLIED_UNIT_PRICE_RANGE_BY_CURRENCY"
+            },
+            "ranges": {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "$ref": "#/$defs/currency_code"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "min",
+                  "max"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "min": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "max": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            },
+            "note": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "synthetic_kyc": {
+          "type": "object",
+          "required": [
+            "nric_fin",
+            "dob"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "nric_fin": {
+              "type": "object",
+              "required": [
+                "synthetic_only",
+                "prefixes",
+                "digit_count",
+                "suffix_letters",
+                "require_checksum_invalid",
+                "unique_within_dataset"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "synthetic_only": {
+                  "const": true
+                },
+                "prefixes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Z]$"
+                  }
+                },
+                "digit_count": {
+                  "const": 7
+                },
+                "suffix_letters": {
+                  "type": "string",
+                  "pattern": "^[A-Z]+$"
+                },
+                "require_checksum_invalid": {
+                  "const": true
+                },
+                "unique_within_dataset": {
+                  "const": true
+                }
+              }
+            },
+            "dob": {
+              "type": "object",
+              "required": [
+                "min_date",
+                "max_date",
+                "unique_within_dataset"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "min_date": {
+                  "$ref": "#/$defs/iso_date"
+                },
+                "max_date": {
+                  "$ref": "#/$defs/iso_date"
+                },
+                "unique_within_dataset": {
+                  "const": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "planning_rules": {
+      "type": "object",
+      "required": [
+        "g1_must_be_deterministic",
+        "g1_must_not_use_llm",
+        "coverage_matrix_is_source_of_truth_for_check_answers",
+        "call_manifest_is_source_of_truth_for_call_level_attributes",
+        "edge_case_assignments_are_source_of_truth_for_challenge_placement",
+        "allocate_edge_cases_and_compliance_verdicts_jointly",
+        "edge_case_forced_verdicts_count_toward_failure_budget",
+        "gold_values_must_satisfy_edge_case_prerequisites_when_assigned",
+        "complete_order_replacement_excludes_other_transaction_correction_edge_cases_in_same_call",
+        "max_edge_cases_per_target_question_per_call",
+        "per_question_limit_exempt_edge_cases",
+        "superseded_and_distractor_values_must_satisfy_domain_and_realism_constraints",
+        "complete_order_replacement_initial_order_must_be_plausible",
+        "no_fee_distractor_when_c04_fail",
+        "unspecified_choices_strategy",
+        "call_intents_are_multilabel",
+        "call_intents_are_descriptive_only",
+        "call_intent_vocabulary_order_is_canonical",
+        "call_intents_csv_encoding",
+        "call_intents_json_encoding",
+        "language_profile_is_frozen_per_call",
+        "allocations_are_exact_per_language_profile",
+        "fail_counts_per_check_are_exact",
+        "edge_case_counts_are_exact",
+        "language_variants_never_add_assignments",
+        "prohibition_question_ids",
+        "max_prohibition_fails_per_call",
+        "load_cap",
+        "dependent_fail_rules",
+        "call_id_assignment"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "g1_must_be_deterministic": {
+          "const": true
+        },
+        "g1_must_not_use_llm": {
+          "const": true
+        },
+        "coverage_matrix_is_source_of_truth_for_check_answers": {
+          "const": true
+        },
+        "call_manifest_is_source_of_truth_for_call_level_attributes": {
+          "const": true
+        },
+        "edge_case_assignments_are_source_of_truth_for_challenge_placement": {
+          "const": true
+        },
+        "allocate_edge_cases_and_compliance_verdicts_jointly": {
+          "const": true
+        },
+        "edge_case_forced_verdicts_count_toward_failure_budget": {
+          "const": true
+        },
+        "gold_values_must_satisfy_edge_case_prerequisites_when_assigned": {
+          "const": true
+        },
+        "complete_order_replacement_excludes_other_transaction_correction_edge_cases_in_same_call": {
+          "const": true
+        },
+        "max_edge_cases_per_target_question_per_call": {
+          "const": 1
+        },
+        "per_question_limit_exempt_edge_cases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^EC_[A-Z0-9_]+$"
+          }
+        },
+        "superseded_and_distractor_values_must_satisfy_domain_and_realism_constraints": {
+          "const": true
+        },
+        "complete_order_replacement_initial_order_must_be_plausible": {
+          "const": true
+        },
+        "no_fee_distractor_when_c04_fail": {
+          "const": true
+        },
+        "unspecified_choices_strategy": {
+          "const": "SEEDED_BALANCED_STABLE_TIE_BREAK"
+        },
+        "call_intents_are_multilabel": {
+          "const": true
+        },
+        "call_intents_are_descriptive_only": {
+          "const": true
+        },
+        "call_intent_vocabulary_order_is_canonical": {
+          "const": true
+        },
+        "call_intents_csv_encoding": {
+          "const": "PIPE_DELIMITED"
+        },
+        "call_intents_json_encoding": {
+          "const": "ARRAY"
+        },
+        "language_profile_is_frozen_per_call": {
+          "const": true
+        },
+        "allocations_are_exact_per_language_profile": {
+          "const": true
+        },
+        "fail_counts_per_check_are_exact": {
+          "const": true
+        },
+        "edge_case_counts_are_exact": {
+          "const": true
+        },
+        "language_variants_never_add_assignments": {
+          "const": true
+        },
+        "prohibition_question_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/question_id"
+          }
+        },
+        "max_prohibition_fails_per_call": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "load_cap": {
+          "type": "object",
+          "required": [
+            "duration_profile",
+            "max_fails_plus_edge_cases"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "duration_profile": {
+              "$ref": "#/$defs/symbol"
+            },
+            "max_fails_plus_edge_cases": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "dependent_fail_rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "question_id",
+              "fails_only_with",
+              "note"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "question_id": {
+                "$ref": "#/$defs/question_id"
+              },
+              "fails_only_with": {
+                "type": "object",
+                "required": [
+                  "failed_question_id",
+                  "or_edge_case_id"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "failed_question_id": {
+                    "$ref": "#/$defs/question_id"
+                  },
+                  "or_edge_case_id": {
+                    "$ref": "#/$defs/edge_case_id"
+                  }
+                }
+              },
+              "note": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "call_id_assignment": {
+          "const": "SEEDED_INTERLEAVE_ACROSS_PROFILES"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "symbol": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "currency_code": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "iso_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "count_map": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/count"
+      }
+    },
+    "per_call_counts": {
+      "description": "Number of calls having exactly N items, keyed by the decimal string of N.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/count"
+      }
+    },
+    "question_id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*$"
+    },
+    "edge_case_id": {
+      "type": "string",
+      "pattern": "^EC_[A-Z0-9_]+$"
+    },
+    "profile_plan": {
+      "type": "object",
+      "required": [
+        "language_profile",
+        "num_calls",
+        "duration_counts",
+        "call_intent_set_counts",
+        "call_composition_counts",
+        "fail_count_per_call_counts",
+        "fail_counts_per_check",
+        "edge_cases_per_call_counts",
+        "edge_case_counts",
+        "language_variant_counts",
+        "transaction_direction_counts",
+        "order_type_counts",
+        "transaction_currency_counts",
+        "target_exposure_caps"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "language_profile": {
+          "$ref": "#/$defs/symbol"
+        },
+        "num_calls": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duration_counts": {
+          "$ref": "#/$defs/count_map"
+        },
+        "call_intent_set_counts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "call_intents",
+              "count"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "call_intents": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/symbol"
+                }
+              },
+              "count": {
+                "$ref": "#/$defs/count"
+              }
+            }
+          }
+        },
+        "call_composition_counts": {
+          "type": "object",
+          "required": [
+            "all_pass_without_edge_cases",
+            "all_pass_with_edge_cases",
+            "some_fail_without_edge_cases",
+            "some_fail_with_edge_cases"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "all_pass_without_edge_cases": {
+              "$ref": "#/$defs/count"
+            },
+            "all_pass_with_edge_cases": {
+              "$ref": "#/$defs/count"
+            },
+            "some_fail_without_edge_cases": {
+              "$ref": "#/$defs/count"
+            },
+            "some_fail_with_edge_cases": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "fail_count_per_call_counts": {
+          "$ref": "#/$defs/per_call_counts"
+        },
+        "fail_counts_per_check": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/question_id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        },
+        "edge_cases_per_call_counts": {
+          "$ref": "#/$defs/per_call_counts"
+        },
+        "edge_case_counts": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/edge_case_id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        },
+        "language_variant_counts": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/edge_case_id"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "$ref": "#/$defs/symbol"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "mixing_style_counts": {
+          "$ref": "#/$defs/count_map"
+        },
+        "transaction_direction_counts": {
+          "$ref": "#/$defs/count_map"
+        },
+        "order_type_counts": {
+          "$ref": "#/$defs/count_map"
+        },
+        "transaction_currency_counts": {
+          "$ref": "#/$defs/count_map"
+        },
+        "target_exposure_caps": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/question_id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        }
+      }
+    }
+  }
+}

@@ -68,6 +68,57 @@ def _cycle(edges, nodes):
     return any(node not in state and visit(node) for node in nodes)
 
 
+CROSS_LANGUAGE_ROLES = {
+    # case: (earlier-state events, later-state events), re-derived here independently of languages.py
+    "EC_CORRECTION_SAME_TURN": ("SUPERSEDED", "FINAL"), "EC_CORRECTION_CROSS_TURN": ("SUPERSEDED", "FINAL"),
+    "EC_MULTIPLE_CORRECTIONS": ("FIRST_SUPERSEDED", "FINAL"),
+    "EC_EMPLOYEE_READBACK_ERROR": ("VALUE_STATEMENT", "READBACK"), "EC_ONE_FIELD_READBACK_ERROR": ("VALUE_STATEMENT", "READBACK"),
+    "EC_COMPLETE_ORDER_REPLACEMENT": ("SUPERSEDED_ORDER", "FINAL_ORDER"),
+    "EC_PREVIOUS_CURRENCY_REFERENCE": ("ANTECEDENT_MENTION", "REFERENCE_SELECTION"),
+    "EC_PRODUCT_REFERENCE": ("ANTECEDENT_MENTION", "REFERENCE_SELECTION"),
+    "EC_PREVIOUS_QUANTITY_REFERENCE": ("ANTECEDENT_MENTION", "REFERENCE_SELECTION"),
+    "EC_MULTIPLE_CURRENCIES": ("DISTRACTOR_MENTION", "TARGET_FINAL"), "EC_MULTIPLE_MONETARY_VALUES": ("DISTRACTOR_MENTION", "TARGET_FINAL"),
+    "EC_FALSE_START": ("FALSE_START", "TARGET_FINAL"),
+}
+
+
+def _expected_pins(events, assignments, catalog, checks):
+    """{event_id: language} required by the assigned language variants, and any contradiction found."""
+    pins, errors = {}, []
+    for a in assignments.values():
+        variant = next((v for v in catalog[a["edge_case_id"]].get("language_variants", [])
+                        if v["variant_id"] == a.get("language_variant")), None)
+        languages = (variant or {}).get("event_languages", {})
+        if not languages:
+            continue
+        own = [e for e in events if a["assignment_id"] in e["assignment_ids"]]
+        if a["edge_case_id"] in CROSS_LANGUAGE_ROLES:
+            early, late = CROSS_LANGUAGE_ROLES[a["edge_case_id"]]
+
+            def pick(role):
+                if role == "FIRST_SUPERSEDED":
+                    return [e["event_id"] for e in own if e["status"] == "SUPERSEDED"][:1]
+                if role == "SUPERSEDED_ORDER":
+                    return [e["event_id"] for e in own if e["kind"] == "ORDER_STATEMENT" and e["status"] == "SUPERSEDED"]
+                if role == "FINAL_ORDER":
+                    return [e["event_id"] for e in own if e["kind"] == "ORDER_STATEMENT" and e["status"] == "FINAL"]
+                if role == "TARGET_FINAL":
+                    return [checks[q]["final_event_id"] for q in a["target_question_ids"]]
+                if role in {"SUPERSEDED", "FINAL"}:
+                    return [e["event_id"] for e in own if e["status"] == role]
+                return [e["event_id"] for e in own if e["kind"] == role]
+            wanted = [(event_id, languages["source"]) for event_id in pick(early)] + [(event_id, languages["target"]) for event_id in pick(late)]
+        else:
+            wanted = [(e["event_id"], languages["target"]) for e in events for q in a["target_question_ids"]
+                      if e.get("values", {}).get(q, {}).get("spoken_form", {}).get("requirement") == "REQUIRED"]
+        if not wanted:
+            errors.append(f"{a['assignment_id']}: variant {a['language_variant']} pins no events")
+        for event_id, language in wanted:
+            if pins.setdefault(event_id, language) != language:
+                errors.append(f"{event_id}: language variants require two different languages")
+    return pins, errors
+
+
 def _skeleton_errors(sk, call_id, inputs, validator):
     errors = [f"{e.json_path}: {e.message}" for e in validator.iter_errors(sk)]
     if errors:
@@ -82,6 +133,15 @@ def _skeleton_errors(sk, call_id, inputs, validator):
     expected = {g["question_id"]: g["expected"] for g in spec["gold"]}
     gold = {q: e.get("expected_verdict", e.get("expected_value")) for q, e in expected.items()}
     assignments = {a["assignment_id"]: a for a in spec["edge_cases"]}
+    requirements = spec.get("language_requirements")
+    multilingual = requirements is not None
+
+    def spoken(profile, form):
+        """A form this call may speak (monolingual releases: every form)."""
+        if not multilingual:
+            return True
+        key = "product_name_languages" if "language_names" in profile else "value_surface_languages"
+        return form.get("language") in requirements[key]
 
     if sk["call_id"] != call_id:
         add(f"call_id {sk['call_id']} does not match the file name")
@@ -91,6 +151,8 @@ def _skeleton_errors(sk, call_id, inputs, validator):
         add("call_spec_sha256 differs from the current call spec")
     if not _same(sk["source"], inputs.g0_hashes):
         add("source hashes differ from the current G0 files")
+    if sk["schema_version"] != spec["schema_version"]:
+        add(f"schema_version {sk['schema_version']} differs from the call spec's {spec['schema_version']}")
 
     events, checks_list = sk["planned_events"], sk["checks"]
     if [c["question_id"] for c in checks_list] != [i["id"] for i in checklist]:
@@ -107,6 +169,8 @@ def _skeleton_errors(sk, call_id, inputs, validator):
             add(f"{label}: {e['kind']} cannot have status {e['status']}")
         present = set(e) - BASE_FIELDS
         required, optional = REQUIRED_FIELDS[e["kind"]], OPTIONAL_FIELDS.get(e["kind"], set())
+        if multilingual:
+            optional = optional | {"required_language"}
         if present - required - optional or required - present:
             add(f"{label}: {e['kind']} fields {sorted(present)} must be {sorted(required)} (+ optional {sorted(optional)})")
             continue
@@ -191,7 +255,8 @@ def _skeleton_errors(sk, call_id, inputs, validator):
                 add(f"{q}: FINAL value {entry['value']!r} differs from gold {gold[q]!r}")
         if c["evidence_event_ids"] != [e["event_id"] for e in events if q in e["question_ids"]]:
             add(f"{q}: evidence_event_ids must list every event concerning the question, in order")
-        permitted = {"requirement": "ONE_OF", "forms": [f["id"] for f in profile["spoken_forms"] if f["usage"] in {"DEFAULT", "PERMITTED"}]}
+        permitted = {"requirement": "ONE_OF", "forms": [f["id"] for f in profile["spoken_forms"]
+                                                        if f["usage"] in {"DEFAULT", "PERMITTED"} and spoken(profile, f)]}
         if not _same(c["non_gold_spoken_form"], permitted):
             add(f"{q}: non_gold_spoken_form must be the default/permitted forms")
         assigned = {edge_forms[q][0]["id"]} if q in edge_forms else set()
@@ -241,6 +306,14 @@ def _skeleton_errors(sk, call_id, inputs, validator):
         if readback and (readback["wrong_question_id"] not in readback["must_include_question_ids"]
                          or readback["wrong_question_id"] not in e["question_ids"]):
             add(f"{e['event_id']}: the wrong field must be among the fields the readback must include")
+
+    # ---- language variants: exactly the pins their catalog definitions require ------------------------
+    if multilingual:
+        pins, pin_errors = _expected_pins(events, assignments, catalog, checks)
+        errors += pin_errors
+        actual = {e["event_id"]: e["required_language"] for e in events if "required_language" in e}
+        if actual != pins:
+            add(f"required_language pins {actual} differ from the language variants' pins {pins}")
 
     # ---- edge assignments: represented, parameters respected ---------------------------------------
     mentioned = {a for e in events for a in e["assignment_ids"]} | {a for c in checks_list for a in c["assignment_ids"]}

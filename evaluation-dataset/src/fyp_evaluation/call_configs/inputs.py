@@ -13,7 +13,7 @@ from fyp_evaluation.check_plan_skeletons.compile import RECORD as SKELETON_RECOR
 from fyp_evaluation.check_plan_skeletons.outputs import read_disk as read_g2b_disk
 from fyp_evaluation.check_plan_skeletons.validate import validate_skeleton_set as validate_g2b
 from fyp_evaluation.planning import outputs as g1
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual
 
 
 class G2BStateError(ValueError):
@@ -52,6 +52,10 @@ class ConfigInputs:
 def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
     """Refuse unless G0, G1, G2A and G2B all validate on disk."""
     upstream = g2b_inputs.load_inputs(root, schema_dir)  # raises for an invalid G0/G1/G2A
+    if is_multilingual(upstream.documents):
+        # The G3-G7 briefs, prompts and gates are English-only until their language-aware versions exist; refuse rather
+        # than author a multilingual call through them.
+        raise G2BStateError(f"{upstream.dataset_id} is a multilingual release; G3 has no language-aware brief yet and refuses to start")
     disk = read_g2b_disk(root)
     if errors := validate_g2b(upstream, disk, schema_dir):
         raise G2BStateError("G2B outputs are not valid; regenerate or fix G2B first:\n" + "\n".join(errors))

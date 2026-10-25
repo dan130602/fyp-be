@@ -39,7 +39,7 @@ BOTH = [CLIENT, EMPLOYEE]
 EVENT_FIELD_ORDER = (
     "event_id", "kind", "status", "allowed_speakers", "question_ids", "assignment_ids", "role", "condition_ref",
     "values", "corrects_event_id", "invalidates_event_id", "refers_to_event_id", "readback", "distractor_role",
-    "currency", "incomplete", "strength",
+    "currency", "incomplete", "strength", "required_language",
 )
 NOT_EXPLICIT = {"requirement": "NOT_EXPLICIT"}
 
@@ -67,11 +67,32 @@ class Context:
         self.order_ids = [i["id"] for i in self.checklist if i["type"] == "TRANSACTION"]
         self.assignments = spec["edge_cases"]
         self.profile_of = {q: self.semantics[q]["normalization_profile"] for q in self.extraction_ids}
+        # Multilingual call specs freeze the language requirements and a language variant on every edge case.
+        self.language_requirements = spec.get("language_requirements")
+        self.variants = {a["assignment_id"]: self._variant(a) for a in self.assignments}
         self._spoken_forms()
+
+    def _variant(self, assignment):
+        variant_id = assignment.get("language_variant", "NONE")
+        if variant_id == "NONE":
+            return None
+        for variant in self.catalog[assignment["edge_case_id"]].get("language_variants", []):
+            if variant["variant_id"] == variant_id:
+                return variant
+        raise ValueError(f"{assignment['assignment_id']}: {variant_id} is not a variant of {assignment['edge_case_id']}")
+
+    def form_languages(self, q):
+        """The languages q's values may be spoken in (None in a monolingual release: every form is available)."""
+        if self.language_requirements is None:
+            return None
+        key = "product_name_languages" if "language_names" in self.profiles[self.profile_of[q]] else "value_surface_languages"
+        return self.language_requirements[key]
 
     # ---- spoken forms: derived entirely from normalization.json and the assignments ------------
     def default_forms(self, q):
-        return [f["id"] for f in self.profiles[self.profile_of[q]]["spoken_forms"] if f["usage"] in {"DEFAULT", "PERMITTED"}]
+        languages = self.form_languages(q)
+        return [f["id"] for f in self.profiles[self.profile_of[q]]["spoken_forms"] if f["usage"] in {"DEFAULT", "PERMITTED"}
+                and (languages is None or f["language"] in languages)]
 
     def _spoken_forms(self):
         self.edge_form = {}
@@ -151,6 +172,15 @@ class Plan:
 
     def get(self, event_id):
         return self.events[int(event_id[3:]) - 1]
+
+    def pin(self, event_id, language, assignment):
+        """Fix one event's spoken language for a language variant; two different languages contradict."""
+        event = self.get(event_id)
+        current = event.get("required_language")
+        if current is not None and current != language:
+            raise ValueError(f"{assignment['assignment_id']} ({assignment['edge_case_id']}): {event_id} is pinned to "
+                             f"{current} and {language}; conflicting language variants")
+        event["required_language"] = language
 
     def attach(self, event_ids, assignment):
         for event_id in event_ids:

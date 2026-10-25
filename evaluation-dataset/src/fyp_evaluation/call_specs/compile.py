@@ -13,9 +13,18 @@ from fyp_evaluation.authoring.coverage import compile_expected
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.planning.adapter import legacy_normalization
 from fyp_evaluation.validation.schemas import load_json
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, load_stage0, validate_stage0_release
+from fyp_evaluation.validation.stage0 import (
+    DEFAULT_SCHEMA_DIR, LANGUAGE_PROFILES_FILE, is_multilingual, load_stage0, validate_stage0_release,
+)
 
 SCHEMA_VERSION = "1.0"
+# Multilingual releases freeze the language profile, its resolved requirements and the edge-case language variants.
+MULTILINGUAL_SCHEMA_VERSION = "2.0"
+MANIFEST_META_V1 = ("call_intents", "language", "duration_profile", "target_duration_min_seconds", "target_duration_max_seconds")
+MANIFEST_META_V2 = ("call_intents", "language_profile", "mixing_style", "duration_profile",
+                    "target_duration_min_seconds", "target_duration_max_seconds")
+EDGE_KEYS_V1 = ("assignment_id", "edge_case_id", "family", "target_question_ids", "parameters")
+EDGE_KEYS_V2 = ("assignment_id", "edge_case_id", "family", "target_question_ids", "language_variant", "parameters")
 STAGE = "G2A"
 SPEC_DIR = "authoring/call_specs"
 RECORD = "authoring/call_spec_record.json"
@@ -45,6 +54,10 @@ class G1Sources:
         self.call_ids = [row["call_id"] for row in manifest]
         self.normalization = legacy_normalization(
             documents["checklist"], documents["check_semantics"], documents["normalization"])
+        self.multilingual = is_multilingual(documents)
+        self.schema_version = MULTILINGUAL_SCHEMA_VERSION if self.multilingual else SCHEMA_VERSION
+        self.meta_keys = MANIFEST_META_V2 if self.multilingual else MANIFEST_META_V1
+        self.edge_keys = EDGE_KEYS_V2 if self.multilingual else EDGE_KEYS_V1
 
 
 def read_sources(root):
@@ -54,6 +67,8 @@ def read_sources(root):
     texts = {rel: (root / rel).read_text(encoding="utf-8") for rel in (g1.MANIFEST, g1.MATRIX, g1.ASSIGNMENTS)}
     hashes = {key: g1.sha256((root / rel).read_bytes()) for key, rel in G1_SOURCES.items()}
     hashes["checklist_sha256"] = g1.sha256((root / CHECKLIST).read_bytes())
+    if "language_profiles" in documents:
+        hashes["language_profiles_sha256"] = g1.sha256((root / LANGUAGE_PROFILES_FILE).read_bytes())
     return G1Sources(
         root, documents, g1.parse_manifest(texts[g1.MANIFEST]), g1.parse_matrix(texts[g1.MATRIX]),
         g1.parse_assignments(texts[g1.ASSIGNMENTS]), hashes, load_json(root / "dataset_manifest.json")["dataset_id"],
@@ -80,6 +95,15 @@ def gold_entries(src, call_id):
     return entries
 
 
+def language_requirements(src, profile, mixing_style):
+    """The frozen snapshot of one language profile's requirements (resolved from language_profiles.json)."""
+    definition = src.documents["language_profiles"]["profiles"][profile]
+    requirements = {key: definition[key] for key in ("value_surface_languages", "product_name_languages", "script_rules", "speakers")}
+    if "mixing_styles" in definition:
+        requirements["mixing_style_description"] = definition["mixing_styles"][mixing_style]
+    return requirements
+
+
 def build_specs(src):
     """One spec per manifest call, in manifest order; assignments keep their G1 file order."""
     by_call = {}
@@ -91,31 +115,19 @@ def build_specs(src):
     specs = []
     for row in src.manifest:
         call_id = row["call_id"]
-        specs.append({
-            "schema_version": SCHEMA_VERSION,
+        spec = {
+            "schema_version": src.schema_version,
             "stage": STAGE,
             "dataset_id": src.dataset_id,
             "call_id": call_id,
-            "metadata": {
-                "call_intents": list(row["call_intents"]),
-                "language": row["language"],
-                "duration_profile": row["duration_profile"],
-                "target_duration_min_seconds": row["target_duration_min_seconds"],
-                "target_duration_max_seconds": row["target_duration_max_seconds"],
-            },
-            "gold": gold_entries(src, call_id),
-            "edge_cases": [
-                {
-                    "assignment_id": a["assignment_id"],
-                    "edge_case_id": a["edge_case_id"],
-                    "family": a["family"],
-                    "target_question_ids": list(a["target_question_ids"]),
-                    "parameters": deepcopy(a["parameters"]),
-                }
-                for a in by_call.get(call_id, [])
-            ],
-            "source": dict(src.hashes),
-        })
+            "metadata": {key: deepcopy(row[key]) for key in src.meta_keys},
+        }
+        if src.multilingual:
+            spec["language_requirements"] = language_requirements(src, row["language_profile"], row["mixing_style"])
+        spec["gold"] = gold_entries(src, call_id)
+        spec["edge_cases"] = [{key: deepcopy(a[key]) for key in src.edge_keys} for a in by_call.get(call_id, [])]
+        spec["source"] = dict(src.hashes)
+        specs.append(spec)
     return specs
 
 
@@ -124,9 +136,7 @@ def project_to_g1_texts(specs, documents):
     calls, gold, assignments = [], {}, []
     for spec in specs:
         meta, call_id = spec["metadata"], spec["call_id"]
-        calls.append({"call_id": call_id, **{key: meta[key] for key in (
-            "call_intents", "language", "duration_profile",
-            "target_duration_min_seconds", "target_duration_max_seconds")}})
+        calls.append({"call_id": call_id, **meta})
         gold[call_id] = {}
         for entry in spec["gold"]:
             expected = entry["expected"]
@@ -168,8 +178,9 @@ def text_hash(text):
 
 def build_record(dataset_id, hashes, spec_texts, specs):
     """Provenance record: G1 input hashes and one hash per call spec (no timestamps)."""
-    return {
-        "schema_version": SCHEMA_VERSION,
+    multilingual = "language_profiles_sha256" in hashes
+    record = {
+        "schema_version": MULTILINGUAL_SCHEMA_VERSION if multilingual else SCHEMA_VERSION,
         "stage": STAGE,
         "dataset_id": dataset_id,
         "generator": {"package": "fyp_evaluation.call_specs", "version": GENERATOR_VERSION},
@@ -186,3 +197,12 @@ def build_record(dataset_id, hashes, spec_texts, specs):
                 if any(e["expected"].get("expected_verdict") == "FAIL" for e in spec["gold"])),
         },
     }
+    if multilingual:
+        profiles = {}
+        for spec in specs:
+            profile = spec["metadata"]["language_profile"]
+            profiles[profile] = profiles.get(profile, 0) + 1
+        record["summary"]["calls_by_language_profile"] = profiles
+        record["summary"]["edge_case_language_variants"] = sum(
+            1 for spec in specs for e in spec["edge_cases"] if e["language_variant"] != "NONE")
+    return record

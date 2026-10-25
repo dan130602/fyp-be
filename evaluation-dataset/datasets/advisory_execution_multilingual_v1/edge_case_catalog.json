@@ -1,0 +1,1147 @@
+{
+  "schema_version": "2.0",
+  "description": "Catalog of deliberate robustness challenges for v1. Documentation examples are non-binding. G1 must enforce the machine-readable targets, required parameters, verdict requirements, gold prerequisites, antecedent speakers and mutually_exclusive_with rules; prose gold_constraints are explanatory only. The only other overlap rule is the G1 allocator rule in authoring/generation_plan.json planning_rules for EC_COMPLETE_ORDER_REPLACEMENT. Release 2.0 adds per-case language-profile eligibility and controlled language variants. A variant changes how an existing mechanism is realised, never what is tested or which value is gold, and never counts as an extra assignment.",
+  "edge_cases": [
+    {
+      "id": "EC_CORRECTION_SAME_TURN",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "A client states a value and corrects it within the same turn.",
+      "allowed_target_question_ids": [
+        "K01",
+        "K02",
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "required_parameters": [
+        "initial_value",
+        "final_value"
+      ],
+      "gold_constraints": [
+        "final_value must equal the target question's gold value",
+        "initial_value must differ from final_value"
+      ],
+      "plan_template": {
+        "evidence_mode": "STATE_TRANSITION",
+        "same_turn": true,
+        "min_intervening_turns": 0
+      },
+      "documentation_examples": [
+        "Quantity correction within one client turn.",
+        "Direction correction such as SELL to BUY within one client turn.",
+        "Currency correction within one client turn.",
+        "KYC value immediately corrected before the turn ends."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The superseded value and its correction are in different languages within one client turn. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The superseded value and its correction are in different languages within one client turn. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_CORRECTION_CROSS_TURN",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "A client states a value and explicitly supersedes it in a later turn.",
+      "allowed_target_question_ids": [
+        "K01",
+        "K02",
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "required_parameters": [
+        "initial_value",
+        "final_value"
+      ],
+      "gold_constraints": [
+        "final_value must equal the target question's gold value",
+        "initial_value must differ from final_value"
+      ],
+      "plan_template": {
+        "evidence_mode": "STATE_TRANSITION",
+        "same_turn": false,
+        "min_intervening_turns": 2
+      },
+      "documentation_examples": [
+        "A value is stated, other turns occur, and the client explicitly changes the value later.",
+        "Can target KYC or transaction extraction fields."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The superseded value and its later correction are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The superseded value and its later correction are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_MULTIPLE_CORRECTIONS",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "An extractable field is revised more than once before reaching the final value.",
+      "allowed_target_question_ids": [
+        "K01",
+        "K02",
+        "T01",
+        "T02",
+        "T03",
+        "T04"
+      ],
+      "required_parameters": [
+        "superseded_values",
+        "final_value"
+      ],
+      "gold_constraints": [
+        "at least two superseded values",
+        "final_value must equal the target question's gold value",
+        "targets must have at least three distinct configured values so two superseded values can differ from each other and from the final value",
+        "superseded states must occur in order before the FINAL state; no turn numbers or gaps are prescribed"
+      ],
+      "plan_template": {
+        "evidence_mode": "STATE_TRANSITION",
+        "minimum_state_count": 3,
+        "superseded_states_before_final": true
+      },
+      "documentation_examples": [
+        "A field passes through two or more superseded values before the final value.",
+        "Can apply to product, currency, amount, quantity, direction, order type, or KYC fields."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The first superseded state and the final correction are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The first superseded state and the final correction are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_EMPLOYEE_READBACK_ERROR",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "The employee reads back one extractable value incorrectly and the client corrects it.",
+      "allowed_target_question_ids": [
+        "K01",
+        "K02",
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "required_parameters": [
+        "employee_wrong_value",
+        "final_value"
+      ],
+      "gold_constraints": [
+        "final_value must equal the target question's gold value",
+        "employee_wrong_value must differ from final_value"
+      ],
+      "plan_template": {
+        "evidence_mode": "STATE_TRANSITION",
+        "event_sequence": [
+          "CLIENT_INSTRUCTION",
+          "EMPLOYEE_INCORRECT_READBACK",
+          "CLIENT_CORRECTION"
+        ]
+      },
+      "documentation_examples": [
+        "The employee repeats a wrong value and the client corrects it.",
+        "Can apply to KYC or transaction fields."
+      ],
+      "examples_for_documentation_only": true,
+      "mutually_exclusive_with": [
+        "EC_ONE_FIELD_READBACK_ERROR"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The client's instruction and the employee's wrong readback are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The client's instruction and the employee's wrong readback are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_ONE_FIELD_READBACK_ERROR",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "The employee reads back the order correctly except for one target field, which the client corrects.",
+      "allowed_target_question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "required_parameters": [
+        "employee_wrong_value",
+        "final_value"
+      ],
+      "gold_constraints": [
+        "only the assigned target field should be wrong in the readback",
+        "final_value must equal the target question's gold value",
+        "the readback includes at least two transaction fields; exactly the assigned target is wrong and every other included field equals the final order"
+      ],
+      "plan_template": {
+        "evidence_mode": "STATE_TRANSITION",
+        "event_sequence": [
+          "EMPLOYEE_MULTI_FIELD_READBACK_WITH_ONE_ERROR",
+          "CLIENT_SINGLE_FIELD_CORRECTION"
+        ],
+        "min_readback_fields": 2,
+        "readback_wrong_fields": "TARGET_ONLY"
+      },
+      "documentation_examples": [
+        "A multi-field order readback is correct except for one field, which the client corrects."
+      ],
+      "examples_for_documentation_only": true,
+      "mutually_exclusive_with": [
+        "EC_EMPLOYEE_READBACK_ERROR"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The client's instruction and the employee's multi-field readback are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The client's instruction and the employee's multi-field readback are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_COMPLETE_ORDER_REPLACEMENT",
+      "family": "CORRECTION_SUPERSESSION",
+      "description": "The client supersedes an earlier order and replaces it with a new order.",
+      "allowed_target_question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "target_scope": "TRANSACTION_BUNDLE",
+      "required_parameters": [
+        "initial_order",
+        "final_order"
+      ],
+      "gold_constraints": [
+        "final_order fields must match the corresponding transaction gold values",
+        "at least two transaction fields should change"
+      ],
+      "plan_template": {
+        "evidence_mode": "ORDER_REPLACEMENT",
+        "event_sequence": [
+          "INITIAL_ORDER",
+          "ORDER_INVALIDATION",
+          "FINAL_ORDER"
+        ]
+      },
+      "documentation_examples": [
+        "The client explicitly invalidates an earlier order and replaces it with a materially different final order."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The invalidated initial order and the replacement order are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The invalidated initial order and the replacement order are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_MULTIPLE_CURRENCIES",
+      "family": "DISTRACTOR_COMPETING_VALUES",
+      "description": "Another currency is mentioned but is not the transaction currency.",
+      "allowed_target_question_ids": [
+        "T02"
+      ],
+      "required_parameters": [
+        "distractor_currency",
+        "distractor_role",
+        "final_currency"
+      ],
+      "gold_constraints": [
+        "final_currency must equal T02 gold",
+        "distractor_currency must differ from final_currency",
+        "distractor_role must be one of the configured currency distractor roles",
+        "a fee-currency distractor role is not allowed when C04 is FAIL"
+      ],
+      "plan_template": {
+        "evidence_mode": "DISTRACTOR_PLUS_TARGET"
+      },
+      "documentation_examples": [
+        "Another currency is discussed for an account, fee or comparison while the final transaction uses a different currency."
+      ],
+      "examples_for_documentation_only": true,
+      "allowed_distractor_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The distractor currency and the final transaction currency are mentioned in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The distractor currency and the final transaction currency are mentioned in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_MULTIPLE_MONETARY_VALUES",
+      "family": "DISTRACTOR_COMPETING_VALUES",
+      "description": "Several monetary values appear for different semantic roles.",
+      "allowed_target_question_ids": [
+        "T03"
+      ],
+      "required_parameters": [
+        "final_transaction_amount",
+        "distractor_values"
+      ],
+      "gold_constraints": [
+        "final_transaction_amount must equal T03 gold",
+        "distractors must have clearly different semantic roles"
+      ],
+      "plan_template": {
+        "evidence_mode": "DISTRACTOR_PLUS_TARGET"
+      },
+      "documentation_examples": [
+        "The call contains multiple monetary values with different roles, such as transaction amount, fee and limit price."
+      ],
+      "examples_for_documentation_only": true,
+      "allowed_distractor_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The distractor amounts and the final transaction amount are mentioned in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The distractor amounts and the final transaction amount are mentioned in different languages. The earlier state is Mandarin; the later state is English."
+        },
+        {
+          "variant_id": "ZH_MAGNITUDE_CONTRAST",
+          "profiles": [
+            "MANDARIN"
+          ],
+          "status": "READY_V1",
+          "constraint": {
+            "kind": "DISTRACTOR_MAGNITUDE_FACTOR",
+            "factor": 10,
+            "distractor_count": 1,
+            "divided_distractor_roles": [
+              "PREVIOUS_INVESTMENT_AMOUNT",
+              "ILLUSTRATIVE_AMOUNT"
+            ]
+          },
+          "purpose": "Exactly one monetary distractor is the final amount times or divided by ten in the same currency, so the two Mandarin cardinals share leading digits and differ only in magnitude (五万 vs 五十万). Both values come from the configured currency domain; a divided distractor never takes a balance role."
+        }
+      ]
+    },
+    {
+      "id": "EC_PREVIOUS_CURRENCY_REFERENCE",
+      "family": "REFERENCE_RESOLUTION",
+      "description": "The client refers back to a previously established transaction currency instead of restating it.",
+      "allowed_target_question_ids": [
+        "T02"
+      ],
+      "required_parameters": [
+        "final_currency",
+        "antecedent_speaker"
+      ],
+      "gold_constraints": [
+        "final_currency must equal T02 gold"
+      ],
+      "plan_template": {
+        "evidence_mode": "REFERENCE_RESOLUTION",
+        "requires_prior_explicit_antecedent": true
+      },
+      "documentation_examples": [
+        "The client refers to the earlier established transaction currency instead of restating it."
+      ],
+      "examples_for_documentation_only": true,
+      "allowed_antecedent_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The antecedent currency mention and the client's reference to it are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The antecedent currency mention and the client's reference to it are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_PRODUCT_REFERENCE",
+      "family": "REFERENCE_RESOLUTION",
+      "description": "The client selects a product by referring to its earlier position or description.",
+      "allowed_target_question_ids": [
+        "T01"
+      ],
+      "required_parameters": [
+        "candidate_products",
+        "selected_product",
+        "antecedent_speaker"
+      ],
+      "gold_constraints": [
+        "selected_product must equal T01 gold",
+        "candidate_products must contain at least two products"
+      ],
+      "plan_template": {
+        "evidence_mode": "REFERENCE_RESOLUTION",
+        "requires_prior_explicit_antecedent": true
+      },
+      "documentation_examples": [
+        "The client selects a previously discussed product by reference rather than repeating its full name."
+      ],
+      "examples_for_documentation_only": true,
+      "allowed_antecedent_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The candidate product mentions and the client's selection by reference are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The candidate product mentions and the client's selection by reference are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_PREVIOUS_QUANTITY_REFERENCE",
+      "family": "REFERENCE_RESOLUTION",
+      "description": "The client specifies quantity by referring back to a previously stated quantity.",
+      "allowed_target_question_ids": [
+        "T04"
+      ],
+      "required_parameters": [
+        "final_quantity",
+        "antecedent_speaker"
+      ],
+      "gold_constraints": [
+        "final_quantity must equal T04 gold"
+      ],
+      "plan_template": {
+        "evidence_mode": "REFERENCE_RESOLUTION",
+        "requires_prior_explicit_antecedent": true
+      },
+      "documentation_examples": [
+        "The client refers back to a previously stated quantity instead of repeating the number."
+      ],
+      "examples_for_documentation_only": true,
+      "allowed_antecedent_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The antecedent quantity mention and the client's reference to it are in different languages. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The antecedent quantity mention and the client's reference to it are in different languages. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_DOUBLE_TRIPLE_DIGITS",
+      "family": "SPOKEN_NUMERIC_NORMALISATION",
+      "description": "Repeated digits are spoken compactly using 'double' or 'triple'.",
+      "allowed_target_question_ids": [
+        "K01"
+      ],
+      "required_parameters": [
+        "canonical_value",
+        "variant"
+      ],
+      "gold_constraints": [
+        "canonical_value must equal K01 gold",
+        "variant must be DOUBLE or TRIPLE"
+      ],
+      "plan_template": {
+        "evidence_mode": "SPOKEN_FORM_NORMALISATION"
+      },
+      "documentation_examples": [
+        "Repeated digits in a synthetic NRIC or FIN are spoken using double or triple."
+      ],
+      "examples_for_documentation_only": true,
+      "gold_prerequisites": {
+        "kind": "REPEATED_DIGIT_RUN",
+        "minimum_run_length": 2
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "EN_SURFACE",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "target": "en"
+          },
+          "purpose": "The English spoken-form mechanism is kept; the value mentions carrying the assigned form are spoken in English."
+        }
+      ]
+    },
+    {
+      "id": "EC_OH_VS_ZERO",
+      "family": "SPOKEN_NUMERIC_NORMALISATION",
+      "description": "The speaker says 'oh' for the digit zero.",
+      "allowed_target_question_ids": [
+        "K01"
+      ],
+      "required_parameters": [
+        "canonical_value"
+      ],
+      "gold_constraints": [
+        "canonical_value must equal K01 gold"
+      ],
+      "plan_template": {
+        "evidence_mode": "SPOKEN_FORM_NORMALISATION"
+      },
+      "documentation_examples": [
+        "A zero in a synthetic NRIC or FIN is spoken as oh."
+      ],
+      "examples_for_documentation_only": true,
+      "gold_prerequisites": {
+        "kind": "CONTAINS_CHARACTER",
+        "character": "0"
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "EN_SURFACE",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "target": "en"
+          },
+          "purpose": "The English spoken-form mechanism is kept; the value mentions carrying the assigned form are spoken in English."
+        }
+      ]
+    },
+    {
+      "id": "EC_FINANCIAL_SHORTHAND",
+      "family": "SPOKEN_NUMERIC_NORMALISATION",
+      "description": "A monetary amount is expressed using financial shorthand.",
+      "allowed_target_question_ids": [
+        "T03"
+      ],
+      "required_parameters": [
+        "spoken_form",
+        "canonical_value"
+      ],
+      "gold_constraints": [
+        "canonical_value must equal T03 gold"
+      ],
+      "plan_template": {
+        "evidence_mode": "SPOKEN_FORM_NORMALISATION"
+      },
+      "documentation_examples": [
+        "A transaction amount is expressed using shorthand such as 50k."
+      ],
+      "examples_for_documentation_only": true,
+      "gold_prerequisites": {
+        "kind": "NUMERIC_MINIMUM_AND_MULTIPLE",
+        "minimum": 1000,
+        "multiple_of": 1000
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "EN_SURFACE",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "target": "en"
+          },
+          "purpose": "The English spoken-form mechanism is kept; the value mentions carrying the assigned form are spoken in English."
+        }
+      ]
+    },
+    {
+      "id": "EC_LARGE_NUMBER_EXPRESSION",
+      "family": "SPOKEN_NUMERIC_NORMALISATION",
+      "description": "A large monetary amount is expressed using words or a decimal magnitude.",
+      "allowed_target_question_ids": [
+        "T03"
+      ],
+      "required_parameters": [
+        "spoken_form",
+        "canonical_value"
+      ],
+      "gold_constraints": [
+        "canonical_value must equal T03 gold",
+        "the amount is at least 1,000,000 and not a whole multiple of 1,000,000, so its magnitude wording differs audibly from the default digits"
+      ],
+      "plan_template": {
+        "evidence_mode": "SPOKEN_FORM_NORMALISATION"
+      },
+      "documentation_examples": [
+        "A transaction amount is expressed using a magnitude phrase such as 1.2 million."
+      ],
+      "examples_for_documentation_only": true,
+      "gold_prerequisites": {
+        "kind": "NUMERIC_MINIMUM_NOT_MULTIPLE",
+        "minimum": 1000000,
+        "not_multiple_of": 1000000
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "EN_SURFACE",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "target": "en"
+          },
+          "purpose": "The English spoken-form mechanism is kept; the value mentions carrying the assigned form are spoken in English."
+        },
+        {
+          "variant_id": "ZH_BAIWAN_DECIMAL",
+          "profiles": [
+            "MANDARIN"
+          ],
+          "status": "EXCLUDED_V1",
+          "purpose": "A 百万-unit decimal such as 一点二百万. Excluded from V1: the ordinary Mandarin rendering 一百二十万 is not an edge case, and the spoken naturalness of the decimal form is unconfirmed. Reconsider only after native review."
+        }
+      ]
+    },
+    {
+      "id": "EC_FALSE_START",
+      "family": "DIALOGUE_STRUCTURE",
+      "description": "The client begins stating a value or instruction but restarts before giving the final committed value or instruction.",
+      "allowed_target_question_ids": [
+        "K01",
+        "K02",
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "required_parameters": [
+        "final_value"
+      ],
+      "gold_constraints": [
+        "final_value must equal the target question's gold value",
+        "the false start must not become the committed final instruction",
+        "the false-start fragment and the final committed value occur in the same turn, and the fragment states no complete value"
+      ],
+      "plan_template": {
+        "evidence_mode": "DISFLUENT_INSTRUCTION",
+        "same_turn": true,
+        "fragment_must_be_incomplete": true
+      },
+      "documentation_examples": [
+        "The speaker starts stating a value or instruction, abandons it, and then gives the committed value."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": [
+        {
+          "variant_id": "CROSS_LANGUAGE_EN_TO_ZH",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "en",
+            "target": "zh"
+          },
+          "purpose": "The abandoned fragment and the completed value in the same turn are in different languages; the fragment stays incomplete. The earlier state is English; the later state is Mandarin."
+        },
+        {
+          "variant_id": "CROSS_LANGUAGE_ZH_TO_EN",
+          "profiles": [
+            "EN_ZH_MIXED"
+          ],
+          "status": "READY_V1",
+          "event_languages": {
+            "source": "zh",
+            "target": "en"
+          },
+          "purpose": "The abandoned fragment and the completed value in the same turn are in different languages; the fragment stays incomplete. The earlier state is Mandarin; the later state is English."
+        }
+      ]
+    },
+    {
+      "id": "EC_LONG_DISTANCE_DEPENDENCY",
+      "family": "DIALOGUE_STRUCTURE",
+      "description": "Related transaction facts are deliberately separated by several turns.",
+      "allowed_target_question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "target_scope": "MULTI_QUESTION",
+      "required_parameters": [
+        "target_question_ids",
+        "min_turn_gap"
+      ],
+      "gold_constraints": [
+        "all target question values must remain unchanged"
+      ],
+      "plan_template": {
+        "evidence_mode": "DISTRIBUTED_EVIDENCE",
+        "default_min_turn_gap": 6
+      },
+      "documentation_examples": [
+        "Related transaction facts are separated by several dialogue turns."
+      ],
+      "examples_for_documentation_only": true,
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": []
+    },
+    {
+      "id": "EC_GUARANTEE_REQUEST_REFUSAL",
+      "family": "COMPLIANCE_SEMANTICS",
+      "description": "The client asks for a guarantee and the employee explicitly refuses to guarantee returns.",
+      "allowed_target_question_ids": [
+        "C12"
+      ],
+      "required_parameters": [],
+      "gold_constraints": [
+        "C12 must be PASS"
+      ],
+      "plan_template": {
+        "evidence_mode": "SEMANTIC_NEGATION",
+        "event_sequence": [
+          "CLIENT_GUARANTEE_REQUEST",
+          "EMPLOYEE_REFUSAL"
+        ]
+      },
+      "documentation_examples": [
+        "The client asks for a guarantee and the employee explicitly refuses to guarantee future returns."
+      ],
+      "examples_for_documentation_only": true,
+      "verdict_requirements": {
+        "C12": "PASS"
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": []
+    },
+    {
+      "id": "EC_PARAPHRASED_COMPLIANCE_STATEMENT",
+      "family": "COMPLIANCE_SEMANTICS",
+      "description": "A required employee statement or explanation is expressed semantically without copying checklist wording.",
+      "allowed_target_question_ids": [
+        "C01",
+        "C02",
+        "C04",
+        "C05",
+        "C06",
+        "C07"
+      ],
+      "required_parameters": [],
+      "gold_constraints": [
+        "target compliance check must be PASS",
+        "the target is satisfied semantically without reproducing the checklist sentence verbatim; a semantic verifier judges the realised wording"
+      ],
+      "plan_template": {
+        "evidence_mode": "PARAPHRASED_PRESENCE",
+        "wording_constraint": "NOT_VERBATIM_CHECKLIST"
+      },
+      "documentation_examples": [
+        "A required employee statement is expressed naturally without copying checklist wording."
+      ],
+      "examples_for_documentation_only": true,
+      "target_verdict_requirement": "PASS",
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": []
+    },
+    {
+      "id": "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED",
+      "family": "COMPLIANCE_SEMANTICS",
+      "description": "The employee explains at least one concrete product-specific risk but does not explicitly verify the client's understanding.",
+      "allowed_target_question_ids": [
+        "C03"
+      ],
+      "required_parameters": [],
+      "gold_constraints": [
+        "C02 must be PASS",
+        "C03 must be FAIL"
+      ],
+      "plan_template": {
+        "evidence_mode": "CROSS_CHECK_DISTINCTION",
+        "required_related_gold": {
+          "C02": "PASS",
+          "C03": "FAIL"
+        }
+      },
+      "documentation_examples": [
+        "C02 is satisfied by a concrete risk explanation, but C03 fails because understanding is never explicitly verified."
+      ],
+      "examples_for_documentation_only": true,
+      "verdict_requirements": {
+        "C02": "PASS",
+        "C03": "FAIL"
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": []
+    },
+    {
+      "id": "EC_WEAK_CONFIRMATION",
+      "family": "COMPLIANCE_SEMANTICS",
+      "description": "The client gives only a weak or ambiguous response when the employee seeks confirmation of the final transaction instruction.",
+      "allowed_target_question_ids": [
+        "C08"
+      ],
+      "required_parameters": [],
+      "gold_constraints": [
+        "C08 must be FAIL"
+      ],
+      "plan_template": {
+        "evidence_mode": "CONFIRMATION_STRENGTH",
+        "strength": "WEAK"
+      },
+      "documentation_examples": [
+        "Weak/ambiguous acknowledgement; normal C08 PASS calls provide the explicit-confirmation comparison."
+      ],
+      "examples_for_documentation_only": true,
+      "verdict_requirements": {
+        "C08": "FAIL"
+      },
+      "language_profiles": [
+        "ENGLISH",
+        "MANDARIN",
+        "EN_ZH_MIXED",
+        "SINGLISH"
+      ],
+      "language_variants": []
+    }
+  ],
+  "documentation_examples_are_non_binding": true
+}
