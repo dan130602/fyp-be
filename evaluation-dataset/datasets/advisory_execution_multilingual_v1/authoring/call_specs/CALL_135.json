@@ -8,57 +8,51 @@
       "ADVISORY",
       "EXECUTION"
     ],
-    "language_profile": "EN_ZH_MIXED",
-    "mixing_style": "EN_LED",
+    "language_profile": "MANDARIN",
+    "mixing_style": "NONE",
     "duration_profile": "SHORT",
     "target_duration_min_seconds": 180,
     "target_duration_max_seconds": 300
   },
   "language_requirements": {
     "value_surface_languages": [
-      "en",
       "zh"
     ],
     "product_name_languages": [
-      "en",
       "zh"
     ],
     "script_rules": {
       "han_characters": "ALLOWED",
-      "latin_letters": "ALLOWED",
-      "arabic_digits": "ALLOWED"
+      "latin_letters": "K01_IDENTIFIER_SPAN_ONLY",
+      "arabic_digits": "FORBIDDEN"
     },
     "speakers": {
       "CLIENT": {
         "spoken_languages": [
-          "en",
           "zh"
         ],
         "required_languages": [
-          "en",
           "zh"
         ],
-        "register": "NATURAL_BILINGUAL",
-        "within_turn_switching_required": true,
-        "distributed_switching_required": true,
+        "register": "CONVERSATIONAL_MANDARIN",
         "guidance": [
-          "Switch at natural clause, sentence or turn boundaries and for financial terms; never by arbitrary word replacement.",
-          "No exact word or character quota applies."
+          "Natural conversational Mandarin.",
+          "Every value, product name, currency and order term in Mandarin."
         ]
       },
       "EMPLOYEE": {
         "spoken_languages": [
-          "en",
           "zh"
         ],
-        "required_languages": [],
-        "register": "PROFESSIONAL_BILINGUAL",
+        "required_languages": [
+          "zh"
+        ],
+        "register": "PROFESSIONAL_MANDARIN",
         "guidance": [
-          "Professional; may answer in either language."
+          "Professional Mandarin suitable for a private-banking relationship manager."
         ]
       }
-    },
-    "mixing_style_description": "The client speaks mostly English with meaningful Mandarin phrases or clauses."
+    }
   },
   "gold": [
     {
@@ -100,7 +94,7 @@
       "question_id": "C06",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       }
     },
     {
@@ -114,14 +108,14 @@
       "question_id": "C08",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
       "question_id": "C09",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       }
     },
     {
@@ -142,7 +136,7 @@
       "question_id": "C12",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
@@ -150,7 +144,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "S6804443Q"
+        "expected_value": "G9177914R"
       }
     },
     {
@@ -158,7 +152,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "29 April 1983"
+        "expected_value": "21 July 1974"
       }
     },
     {
@@ -166,7 +160,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Pioneer Balanced Opportunities Fund"
+        "expected_value": "Crest Emerging Markets Bond Fund"
       }
     },
     {
@@ -182,7 +176,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 75000
+        "expected_value": 25000
       }
     },
     {
@@ -190,7 +184,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "integer",
-        "expected_value": 250
+        "expected_value": 700
       }
     },
     {
@@ -198,7 +192,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "SELL"
+        "expected_value": "BUY"
       }
     },
     {
@@ -212,76 +206,47 @@
   ],
   "edge_cases": [
     {
-      "assignment_id": "EA_311",
-      "edge_case_id": "EC_CORRECTION_SAME_TURN",
-      "family": "CORRECTION_SUPERSESSION",
+      "assignment_id": "EA_312",
+      "edge_case_id": "EC_MULTIPLE_MONETARY_VALUES",
+      "family": "DISTRACTOR_COMPETING_VALUES",
       "target_question_ids": [
-        "K02"
+        "T03"
       ],
       "language_variant": "NONE",
       "parameters": {
-        "final_value": "29 April 1983",
-        "initial_value": "30 April 1983"
-      }
-    },
-    {
-      "assignment_id": "EA_312",
-      "edge_case_id": "EC_COMPLETE_ORDER_REPLACEMENT",
-      "family": "CORRECTION_SUPERSESSION",
-      "target_question_ids": [
-        "T01",
-        "T02",
-        "T03"
-      ],
-      "language_variant": "CROSS_LANGUAGE_ZH_TO_EN",
-      "parameters": {
-        "final_order": {
-          "T01": "Pioneer Balanced Opportunities Fund",
-          "T02": "USD",
-          "T03": 75000,
-          "T04": 250,
-          "T05": "SELL",
-          "T06": "MARKET"
-        },
-        "initial_order": {
-          "T01": "Nova Technology Equity Fund",
-          "T02": "JPY",
-          "T03": 1000000,
-          "T04": 250,
-          "T05": "SELL",
-          "T06": "MARKET"
-        }
+        "distractor_values": [
+          {
+            "amount": 10000,
+            "currency": "USD",
+            "role": "PREVIOUS_INVESTMENT_AMOUNT"
+          },
+          {
+            "amount": 75000,
+            "currency": "USD",
+            "role": "PORTFOLIO_BALANCE"
+          }
+        ],
+        "final_transaction_amount": 25000
       }
     },
     {
       "assignment_id": "EA_313",
-      "edge_case_id": "EC_DOUBLE_TRIPLE_DIGITS",
-      "family": "SPOKEN_NUMERIC_NORMALISATION",
+      "edge_case_id": "EC_FALSE_START",
+      "family": "DIALOGUE_STRUCTURE",
       "target_question_ids": [
-        "K01"
-      ],
-      "language_variant": "EN_SURFACE",
-      "parameters": {
-        "canonical_value": "S6804443Q",
-        "variant": "TRIPLE"
-      }
-    },
-    {
-      "assignment_id": "EA_314",
-      "edge_case_id": "EC_GUARANTEE_REQUEST_REFUSAL",
-      "family": "COMPLIANCE_SEMANTICS",
-      "target_question_ids": [
-        "C12"
+        "T02"
       ],
       "language_variant": "NONE",
-      "parameters": {}
+      "parameters": {
+        "final_value": "USD"
+      }
     }
   ],
   "source": {
-    "planning_record_sha256": "9d38698a7da91ed864bfea3e2cefde18da9e2a80e07a6d8b15732d7f88de3f37",
-    "call_manifest_sha256": "3c7f72d310656e9ace56d884afbf82d508b3567c9758ee9dd500b154ee4ea83c",
-    "coverage_matrix_sha256": "209e306a7b8b2f88622d2c802ad4b8b80549d6e3b092ac7f6ff89559607835a8",
-    "edge_case_assignments_sha256": "7fa1da650d27e12b21af59f9a7493dc3fd0c5cc36983e30adec1b3d412e89f46",
+    "planning_record_sha256": "c26d2b4400179ad99558b2832a7c53295059483306b5f25616235100b41c5abf",
+    "call_manifest_sha256": "db1e7c2979ed0a3f073b3fa00c35a3cc7499fb437dc1886096e5f7f90c803a31",
+    "coverage_matrix_sha256": "093446e50a229ea98438797ec77bcaaa81b0a6751569c44fd3524ac0ac0d324f",
+    "edge_case_assignments_sha256": "87751b0714e08eadb778980c150a24b49bdd50c84848b4f8e1c01cbec4899389",
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
   }

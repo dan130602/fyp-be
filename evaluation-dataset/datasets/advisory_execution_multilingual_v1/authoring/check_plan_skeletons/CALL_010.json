@@ -3,7 +3,7 @@
   "stage": "G2B",
   "dataset_id": "advisory_execution_multilingual_v1",
   "call_id": "CALL_010",
-  "call_spec_sha256": "09efbdef7bfba481e131ce0add062308316653b83e585ba897a09bf968165124",
+  "call_spec_sha256": "afbe583d4d7e5c99b09c7b7948149df2420ca8280c49717ebea06284b4b349fc",
   "source": {
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
@@ -34,20 +34,6 @@
         "EMPLOYEE"
       ],
       "question_ids": [
-        "C04"
-      ],
-      "assignment_ids": [],
-      "role": "ACT",
-      "condition_ref": "C04.pass_condition"
-    },
-    {
-      "event_id": "EV_003",
-      "kind": "COMPLIANCE_ACT",
-      "status": "CONTEXT",
-      "allowed_speakers": [
-        "EMPLOYEE"
-      ],
-      "question_ids": [
         "C05"
       ],
       "assignment_ids": [],
@@ -55,7 +41,7 @@
       "condition_ref": "C05.pass_condition"
     },
     {
-      "event_id": "EV_004",
+      "event_id": "EV_003",
       "kind": "COMPLIANCE_ACT",
       "status": "CONTEXT",
       "allowed_speakers": [
@@ -69,7 +55,7 @@
       "condition_ref": "C06.pass_condition"
     },
     {
-      "event_id": "EV_005",
+      "event_id": "EV_004",
       "kind": "COMPLIANCE_ACT",
       "status": "CONTEXT",
       "allowed_speakers": [
@@ -81,6 +67,22 @@
       "assignment_ids": [],
       "role": "RESPONSE",
       "condition_ref": "C06.pass_condition"
+    },
+    {
+      "event_id": "EV_005",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C07"
+      ],
+      "assignment_ids": [
+        "EA_032"
+      ],
+      "role": "ACT",
+      "condition_ref": "C07.pass_condition"
     },
     {
       "event_id": "EV_006",
@@ -118,42 +120,14 @@
         "EMPLOYEE"
       ],
       "question_ids": [
-        "C11"
+        "C12"
       ],
       "assignment_ids": [],
       "role": "ACT",
-      "condition_ref": "C11.fail_condition"
+      "condition_ref": "C12.fail_condition"
     },
     {
       "event_id": "EV_009",
-      "kind": "GUARANTEE_REQUEST",
-      "status": "CONTEXT",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "C12"
-      ],
-      "assignment_ids": [
-        "EA_028"
-      ]
-    },
-    {
-      "event_id": "EV_010",
-      "kind": "GUARANTEE_REFUSAL",
-      "status": "CONTEXT",
-      "allowed_speakers": [
-        "EMPLOYEE"
-      ],
-      "question_ids": [
-        "C12"
-      ],
-      "assignment_ids": [
-        "EA_028"
-      ]
-    },
-    {
-      "event_id": "EV_011",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -165,12 +139,58 @@
       "assignment_ids": [],
       "values": {
         "K01": {
-          "value": "T3856597B",
+          "value": "S4149999G",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
-              "CHARACTER_BY_CHARACTER",
-              "ZH_CHARACTER_BY_CHARACTER"
+              "CHARACTER_BY_CHARACTER"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_010",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "01 December 1980",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_011",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T01": {
+          "value": "Pioneer Balanced Opportunities Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME"
             ]
           }
         }
@@ -184,18 +204,17 @@
         "CLIENT"
       ],
       "question_ids": [
-        "K02"
+        "T02"
       ],
       "assignment_ids": [],
       "values": {
-        "K02": {
-          "value": "07 April 1956",
+        "T02": {
+          "value": "USD",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
-              "DAY_MONTH_YEAR",
-              "ORDINAL_DAY",
-              "ZH_YEAR_MONTH_DAY"
+              "NATURAL_NAME",
+              "SPELLED_CODE"
             ]
           }
         }
@@ -209,18 +228,19 @@
         "CLIENT"
       ],
       "question_ids": [
-        "T01"
+        "T03"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_029"
+      ],
       "values": {
-        "T01": {
-          "value": "Summit Global Equity ETF",
+        "T03": {
+          "value": 10000,
           "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "FULL_PRODUCT_NAME",
-              "ZH_FULL_PRODUCT_NAME"
-            ]
+            "requirement": "REQUIRED",
+            "form": "FINANCIAL_SHORTHAND",
+            "applies_to": "WHOLE_VALUE",
+            "text": "10k"
           }
         }
       }
@@ -233,131 +253,23 @@
         "CLIENT"
       ],
       "question_ids": [
-        "T02"
+        "T04"
       ],
       "assignment_ids": [],
       "values": {
-        "T02": {
-          "value": "EUR",
+        "T04": {
+          "value": 2000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
-              "NATURAL_NAME",
-              "SPELLED_CODE",
-              "ZH_NATURAL_NAME"
-            ]
-          }
-        }
-      },
-      "required_language": "zh"
-    },
-    {
-      "event_id": "EV_015",
-      "kind": "DISTRACTOR_MENTION",
-      "status": "DISTRACTOR",
-      "allowed_speakers": [
-        "CLIENT",
-        "EMPLOYEE"
-      ],
-      "question_ids": [
-        "T02"
-      ],
-      "assignment_ids": [
-        "EA_025"
-      ],
-      "values": {
-        "T02": {
-          "value": "USD",
-          "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "NATURAL_NAME",
-              "SPELLED_CODE",
-              "ZH_NATURAL_NAME"
-            ]
-          }
-        }
-      },
-      "distractor_role": "FEE_CURRENCY",
-      "required_language": "en"
-    },
-    {
-      "event_id": "EV_016",
-      "kind": "VALUE_STATEMENT",
-      "status": "FINAL",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "T03"
-      ],
-      "assignment_ids": [],
-      "values": {
-        "T03": {
-          "value": 75000,
-          "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DIGITS_WITH_THOUSANDS_SEPARATORS",
-              "ZH_CARDINAL"
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
             ]
           }
         }
       }
     },
     {
-      "event_id": "EV_017",
-      "kind": "ANTECEDENT_MENTION",
-      "status": "ANTECEDENT",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "T04"
-      ],
-      "assignment_ids": [
-        "EA_026"
-      ],
-      "values": {
-        "T04": {
-          "value": 250,
-          "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DIGITS_WITH_THOUSANDS_SEPARATORS",
-              "ZH_CARDINAL"
-            ]
-          }
-        }
-      },
-      "required_language": "zh"
-    },
-    {
-      "event_id": "EV_018",
-      "kind": "REFERENCE_SELECTION",
-      "status": "FINAL",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "T04"
-      ],
-      "assignment_ids": [
-        "EA_026"
-      ],
-      "values": {
-        "T04": {
-          "value": 250,
-          "spoken_form": {
-            "requirement": "NOT_EXPLICIT"
-          }
-        }
-      },
-      "refers_to_event_id": "EV_017",
-      "required_language": "en"
-    },
-    {
-      "event_id": "EV_019",
+      "event_id": "EV_015",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -369,19 +281,18 @@
       "assignment_ids": [],
       "values": {
         "T05": {
-          "value": "BUY",
+          "value": "SELL",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
-              "NATURAL_VERB",
-              "ZH_NATURAL_VERB"
+              "NATURAL_VERB"
             ]
           }
         }
       }
     },
     {
-      "event_id": "EV_020",
+      "event_id": "EV_016",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -393,12 +304,11 @@
       "assignment_ids": [],
       "values": {
         "T06": {
-          "value": "LIMIT",
+          "value": "MARKET",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
-              "NATURAL_PHRASE",
-              "ZH_NATURAL_PHRASE"
+              "NATURAL_PHRASE"
             ]
           }
         }
@@ -458,14 +368,15 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       },
-      "evidence_mode": "PRESENCE",
+      "evidence_mode": "ABSENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "required_condition_ref": "C04.pass_condition",
-      "evidence_event_ids": [
-        "EV_002"
-      ],
+      "forbidden_condition_ref": "C04.pass_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
       "assignment_ids": []
     },
     {
@@ -479,7 +390,7 @@
       "presence_pattern": "EMPLOYEE_ONLY",
       "required_condition_ref": "C05.pass_condition",
       "evidence_event_ids": [
-        "EV_003"
+        "EV_002"
       ],
       "assignment_ids": []
     },
@@ -494,8 +405,8 @@
       "presence_pattern": "EXCHANGE",
       "required_condition_ref": "C06.pass_condition",
       "evidence_event_ids": [
-        "EV_004",
-        "EV_005"
+        "EV_003",
+        "EV_004"
       ],
       "assignment_ids": []
     },
@@ -504,16 +415,18 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       },
-      "evidence_mode": "ABSENCE",
+      "evidence_mode": "PRESENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "forbidden_condition_ref": "C07.pass_condition",
-      "absence": {
-        "scope": "ENTIRE_DIALOGUE"
-      },
-      "evidence_event_ids": [],
-      "assignment_ids": []
+      "required_condition_ref": "C07.pass_condition",
+      "evidence_event_ids": [
+        "EV_005"
+      ],
+      "wording_constraint": "NOT_VERBATIM_CHECKLIST",
+      "assignment_ids": [
+        "EA_032"
+      ]
     },
     {
       "question_id": "C08",
@@ -568,14 +481,15 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       },
-      "evidence_mode": "PRESENCE",
+      "evidence_mode": "ABSENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "required_condition_ref": "C11.fail_condition",
-      "evidence_event_ids": [
-        "EV_008"
-      ],
+      "forbidden_condition_ref": "C11.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
       "assignment_ids": []
     },
     {
@@ -583,18 +497,15 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       },
-      "evidence_mode": "ABSENCE",
+      "evidence_mode": "PRESENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "forbidden_condition_ref": "C12.fail_condition",
-      "absence": {
-        "scope": "ENTIRE_DIALOGUE"
-      },
-      "evidence_event_ids": [],
-      "assignment_ids": [
-        "EA_028"
-      ]
+      "required_condition_ref": "C12.fail_condition",
+      "evidence_event_ids": [
+        "EV_008"
+      ],
+      "assignment_ids": []
     },
     {
       "question_id": "K01",
@@ -602,29 +513,27 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "T3856597B"
+        "expected_value": "S4149999G"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K01.resolution_rule",
       "evidence_event_ids": [
-        "EV_011"
+        "EV_009"
       ],
-      "final_event_id": "EV_011",
+      "final_event_id": "EV_009",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
           "requirement": "ONE_OF",
           "forms": [
-            "CHARACTER_BY_CHARACTER",
-            "ZH_CHARACTER_BY_CHARACTER"
+            "CHARACTER_BY_CHARACTER"
           ]
         }
       },
       "non_gold_spoken_form": {
         "requirement": "ONE_OF",
         "forms": [
-          "CHARACTER_BY_CHARACTER",
-          "ZH_CHARACTER_BY_CHARACTER"
+          "CHARACTER_BY_CHARACTER"
         ]
       },
       "forbidden_spoken_forms": [
@@ -639,22 +548,21 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "07 April 1956"
+        "expected_value": "01 December 1980"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K02.resolution_rule",
       "evidence_event_ids": [
-        "EV_012"
+        "EV_010"
       ],
-      "final_event_id": "EV_012",
+      "final_event_id": "EV_010",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
           "requirement": "ONE_OF",
           "forms": [
             "DAY_MONTH_YEAR",
-            "ORDINAL_DAY",
-            "ZH_YEAR_MONTH_DAY"
+            "ORDINAL_DAY"
           ]
         }
       },
@@ -662,8 +570,7 @@
         "requirement": "ONE_OF",
         "forms": [
           "DAY_MONTH_YEAR",
-          "ORDINAL_DAY",
-          "ZH_YEAR_MONTH_DAY"
+          "ORDINAL_DAY"
         ]
       },
       "forbidden_spoken_forms": [],
@@ -675,34 +582,32 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Summit Global Equity ETF"
+        "expected_value": "Pioneer Balanced Opportunities Fund"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T01.resolution_rule",
       "evidence_event_ids": [
-        "EV_013"
+        "EV_011"
       ],
-      "final_event_id": "EV_013",
+      "final_event_id": "EV_011",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
           "requirement": "ONE_OF",
           "forms": [
-            "FULL_PRODUCT_NAME",
-            "ZH_FULL_PRODUCT_NAME"
+            "FULL_PRODUCT_NAME"
           ]
         }
       },
       "non_gold_spoken_form": {
         "requirement": "ONE_OF",
         "forms": [
-          "FULL_PRODUCT_NAME",
-          "ZH_FULL_PRODUCT_NAME"
+          "FULL_PRODUCT_NAME"
         ]
       },
       "forbidden_spoken_forms": [],
       "assignment_ids": [
-        "EA_027"
+        "EA_030"
       ]
     },
     {
@@ -711,23 +616,21 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "EUR"
+        "expected_value": "USD"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T02.resolution_rule",
       "evidence_event_ids": [
-        "EV_014",
-        "EV_015"
+        "EV_012"
       ],
-      "final_event_id": "EV_014",
+      "final_event_id": "EV_012",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
           "requirement": "ONE_OF",
           "forms": [
             "NATURAL_NAME",
-            "SPELLED_CODE",
-            "ZH_NATURAL_NAME"
+            "SPELLED_CODE"
           ]
         }
       },
@@ -735,13 +638,12 @@
         "requirement": "ONE_OF",
         "forms": [
           "NATURAL_NAME",
-          "SPELLED_CODE",
-          "ZH_NATURAL_NAME"
+          "SPELLED_CODE"
         ]
       },
       "forbidden_spoken_forms": [],
       "assignment_ids": [
-        "EA_025"
+        "EA_031"
       ]
     },
     {
@@ -750,10 +652,113 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 75000
+        "expected_value": 10000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T03.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013"
+      ],
+      "final_event_id": "EV_013",
+      "gold_restatement": {
+        "policy": "ASSIGNED_FORM_ONLY",
+        "spoken_form": {
+          "requirement": "REQUIRED",
+          "form": "FINANCIAL_SHORTHAND",
+          "applies_to": "WHOLE_VALUE",
+          "text": "10k"
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "MAGNITUDE_EXPRESSION"
+      ],
+      "assignment_ids": [
+        "EA_029",
+        "EA_031"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 2000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T04.resolution_rule",
+      "evidence_event_ids": [
+        "EV_014"
+      ],
+      "final_event_id": "EV_014",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T05.resolution_rule",
+      "evidence_event_ids": [
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_VERB"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_VERB"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_030"
+      ]
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T06.resolution_rule",
       "evidence_event_ids": [
         "EV_016"
       ],
@@ -763,137 +768,25 @@
         "spoken_form": {
           "requirement": "ONE_OF",
           "forms": [
-            "DIGITS_WITH_THOUSANDS_SEPARATORS",
-            "ZH_CARDINAL"
+            "NATURAL_PHRASE"
           ]
         }
       },
       "non_gold_spoken_form": {
         "requirement": "ONE_OF",
         "forms": [
-          "DIGITS_WITH_THOUSANDS_SEPARATORS",
-          "ZH_CARDINAL"
-        ]
-      },
-      "forbidden_spoken_forms": [
-        "FINANCIAL_SHORTHAND",
-        "MAGNITUDE_EXPRESSION"
-      ],
-      "assignment_ids": []
-    },
-    {
-      "question_id": "T04",
-      "kind": "EXTRACTION",
-      "expected": {
-        "kind": "extraction",
-        "value_type": "integer",
-        "expected_value": 250
-      },
-      "evidence_mode": "PRESENCE",
-      "resolution_ref": "T04.resolution_rule",
-      "evidence_event_ids": [
-        "EV_017",
-        "EV_018"
-      ],
-      "final_event_id": "EV_018",
-      "gold_restatement": {
-        "policy": "ANY_PERMITTED_FORM",
-        "spoken_form": {
-          "requirement": "ONE_OF",
-          "forms": [
-            "DIGITS_WITH_THOUSANDS_SEPARATORS",
-            "ZH_CARDINAL"
-          ]
-        }
-      },
-      "non_gold_spoken_form": {
-        "requirement": "ONE_OF",
-        "forms": [
-          "DIGITS_WITH_THOUSANDS_SEPARATORS",
-          "ZH_CARDINAL"
-        ]
-      },
-      "forbidden_spoken_forms": [],
-      "assignment_ids": [
-        "EA_026"
-      ]
-    },
-    {
-      "question_id": "T05",
-      "kind": "EXTRACTION",
-      "expected": {
-        "kind": "extraction",
-        "value_type": "text",
-        "expected_value": "BUY"
-      },
-      "evidence_mode": "PRESENCE",
-      "resolution_ref": "T05.resolution_rule",
-      "evidence_event_ids": [
-        "EV_019"
-      ],
-      "final_event_id": "EV_019",
-      "gold_restatement": {
-        "policy": "ANY_PERMITTED_FORM",
-        "spoken_form": {
-          "requirement": "ONE_OF",
-          "forms": [
-            "NATURAL_VERB",
-            "ZH_NATURAL_VERB"
-          ]
-        }
-      },
-      "non_gold_spoken_form": {
-        "requirement": "ONE_OF",
-        "forms": [
-          "NATURAL_VERB",
-          "ZH_NATURAL_VERB"
+          "NATURAL_PHRASE"
         ]
       },
       "forbidden_spoken_forms": [],
       "assignment_ids": []
-    },
-    {
-      "question_id": "T06",
-      "kind": "EXTRACTION",
-      "expected": {
-        "kind": "extraction",
-        "value_type": "text",
-        "expected_value": "LIMIT"
-      },
-      "evidence_mode": "PRESENCE",
-      "resolution_ref": "T06.resolution_rule",
-      "evidence_event_ids": [
-        "EV_020"
-      ],
-      "final_event_id": "EV_020",
-      "gold_restatement": {
-        "policy": "ANY_PERMITTED_FORM",
-        "spoken_form": {
-          "requirement": "ONE_OF",
-          "forms": [
-            "NATURAL_PHRASE",
-            "ZH_NATURAL_PHRASE"
-          ]
-        }
-      },
-      "non_gold_spoken_form": {
-        "requirement": "ONE_OF",
-        "forms": [
-          "NATURAL_PHRASE",
-          "ZH_NATURAL_PHRASE"
-        ]
-      },
-      "forbidden_spoken_forms": [],
-      "assignment_ids": [
-        "EA_027"
-      ]
     }
   ],
   "constraints": [
     {
       "type": "ORDER",
-      "before": "EV_004",
-      "after": "EV_005",
+      "before": "EV_003",
+      "after": "EV_004",
       "source": {
         "type": "PRESENCE_PATTERN",
         "question_id": "C06"
@@ -909,33 +802,45 @@
       }
     },
     {
-      "type": "ORDER",
-      "before": "EV_009",
-      "after": "EV_010",
+      "type": "MIN_INTERVENING_TURNS",
+      "events": [
+        "EV_011",
+        "EV_015"
+      ],
+      "turns": 6,
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_028"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_017",
-      "after": "EV_018",
-      "source": {
-        "type": "EDGE_ASSIGNMENT",
-        "id": "EA_026"
+        "id": "EA_030"
       }
     },
     {
       "type": "MIN_INTERVENING_TURNS",
       "events": [
-        "EV_013",
-        "EV_020"
+        "EV_012",
+        "EV_013"
       ],
       "turns": 6,
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_027"
+        "id": "EA_031"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_011",
+      "after": "EV_006",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_012",
+      "after": "EV_006",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
       }
     },
     {
@@ -958,34 +863,16 @@
     },
     {
       "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_006",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
       "before": "EV_016",
-      "after": "EV_006",
-      "source": {
-        "type": "ORDERING_RULE",
-        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_018",
-      "after": "EV_006",
-      "source": {
-        "type": "ORDERING_RULE",
-        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_019",
-      "after": "EV_006",
-      "source": {
-        "type": "ORDERING_RULE",
-        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_020",
       "after": "EV_006",
       "source": {
         "type": "ORDERING_RULE",

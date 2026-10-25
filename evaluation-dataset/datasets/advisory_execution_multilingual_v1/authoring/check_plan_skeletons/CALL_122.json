@@ -3,7 +3,7 @@
   "stage": "G2B",
   "dataset_id": "advisory_execution_multilingual_v1",
   "call_id": "CALL_122",
-  "call_spec_sha256": "0f88bc64d034b0712920a055650434590f582d48c72ff6f04b6967e78d17900c",
+  "call_spec_sha256": "8dcfbf91b23b8b07f7d913c47c6d83f38762e50c64781cb202e1c058e242018d",
   "source": {
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
@@ -146,14 +146,31 @@
         "EMPLOYEE"
       ],
       "question_ids": [
-        "C12"
+        "C08"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_284"
+      ],
       "role": "ACT",
-      "condition_ref": "C12.fail_condition"
+      "condition_ref": "C08.pass_condition"
     },
     {
       "event_id": "EV_011",
+      "kind": "WEAK_ACKNOWLEDGEMENT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [
+        "EA_284"
+      ],
+      "strength": "WEAK"
+    },
+    {
+      "event_id": "EV_012",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -165,35 +182,11 @@
       "assignment_ids": [],
       "values": {
         "K01": {
-          "value": "S5599486Q",
+          "value": "F5947454X",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
               "CHARACTER_BY_CHARACTER"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "event_id": "EV_012",
-      "kind": "VALUE_STATEMENT",
-      "status": "FINAL",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "K02"
-      ],
-      "assignment_ids": [],
-      "values": {
-        "K02": {
-          "value": "07 May 1954",
-          "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DAY_MONTH_YEAR",
-              "ORDINAL_DAY"
             ]
           }
         }
@@ -207,12 +200,38 @@
         "CLIENT"
       ],
       "question_ids": [
-        "T01"
+        "K02"
       ],
       "assignment_ids": [],
       "values": {
+        "K02": {
+          "value": "23 November 1995",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_014",
+      "kind": "VALUE_STATEMENT",
+      "status": "STATED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_282"
+      ],
+      "values": {
         "T01": {
-          "value": "Pioneer Balanced Opportunities Fund",
+          "value": "Crest Emerging Markets Bond Fund",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -223,7 +242,63 @@
       }
     },
     {
-      "event_id": "EV_014",
+      "event_id": "EV_015",
+      "kind": "READBACK",
+      "status": "REJECTED",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_282"
+      ],
+      "readback": {
+        "must_include_question_ids": [
+          "T01"
+        ],
+        "min_field_count": 2,
+        "wrong_question_id": "T01",
+        "wrong_value": "Summit Global Equity ETF",
+        "wrong_value_spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "FULL_PRODUCT_NAME"
+          ]
+        },
+        "other_included_fields_must_match_final": true,
+        "other_included_fields_must_follow_their_final_events": true
+      }
+    },
+    {
+      "event_id": "EV_016",
+      "kind": "VALUE_CORRECTION",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_282"
+      ],
+      "values": {
+        "T01": {
+          "value": "Crest Emerging Markets Bond Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME"
+            ]
+          }
+        }
+      },
+      "corrects_event_id": "EV_015"
+    },
+    {
+      "event_id": "EV_017",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -247,7 +322,7 @@
       }
     },
     {
-      "event_id": "EV_015",
+      "event_id": "EV_018",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -259,7 +334,7 @@
       "assignment_ids": [],
       "values": {
         "T03": {
-          "value": 5000000,
+          "value": 2000000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -270,8 +345,33 @@
       }
     },
     {
-      "event_id": "EV_016",
-      "kind": "VALUE_STATEMENT",
+      "event_id": "EV_019",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [
+        "EA_283"
+      ],
+      "values": {
+        "T04": {
+          "value": 2000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_020",
+      "kind": "REFERENCE_SELECTION",
       "status": "FINAL",
       "allowed_speakers": [
         "CLIENT"
@@ -279,21 +379,21 @@
       "question_ids": [
         "T04"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_283"
+      ],
       "values": {
         "T04": {
-          "value": 10000,
+          "value": 2000,
           "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DIGITS_WITH_THOUSANDS_SEPARATORS"
-            ]
+            "requirement": "NOT_EXPLICIT"
           }
         }
-      }
+      },
+      "refers_to_event_id": "EV_019"
     },
     {
-      "event_id": "EV_017",
+      "event_id": "EV_021",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -305,7 +405,7 @@
       "assignment_ids": [],
       "values": {
         "T05": {
-          "value": "SELL",
+          "value": "BUY",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -316,7 +416,7 @@
       }
     },
     {
-      "event_id": "EV_018",
+      "event_id": "EV_022",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -328,7 +428,7 @@
       "assignment_ids": [],
       "values": {
         "T06": {
-          "value": "LIMIT",
+          "value": "MARKET",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -461,7 +561,9 @@
         "scope": "ENTIRE_DIALOGUE"
       },
       "evidence_event_ids": [],
-      "assignment_ids": []
+      "assignment_ids": [
+        "EA_284"
+      ]
     },
     {
       "question_id": "C09",
@@ -516,14 +618,15 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       },
-      "evidence_mode": "PRESENCE",
+      "evidence_mode": "ABSENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "required_condition_ref": "C12.fail_condition",
-      "evidence_event_ids": [
-        "EV_010"
-      ],
+      "forbidden_condition_ref": "C12.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
       "assignment_ids": []
     },
     {
@@ -532,14 +635,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "S5599486Q"
+        "expected_value": "F5947454X"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K01.resolution_rule",
       "evidence_event_ids": [
-        "EV_011"
+        "EV_012"
       ],
-      "final_event_id": "EV_011",
+      "final_event_id": "EV_012",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -567,14 +670,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "07 May 1954"
+        "expected_value": "23 November 1995"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K02.resolution_rule",
       "evidence_event_ids": [
-        "EV_012"
+        "EV_013"
       ],
-      "final_event_id": "EV_012",
+      "final_event_id": "EV_013",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -601,14 +704,16 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Pioneer Balanced Opportunities Fund"
+        "expected_value": "Crest Emerging Markets Bond Fund"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T01.resolution_rule",
       "evidence_event_ids": [
-        "EV_013"
+        "EV_014",
+        "EV_015",
+        "EV_016"
       ],
-      "final_event_id": "EV_013",
+      "final_event_id": "EV_016",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -625,7 +730,9 @@
         ]
       },
       "forbidden_spoken_forms": [],
-      "assignment_ids": []
+      "assignment_ids": [
+        "EA_282"
+      ]
     },
     {
       "question_id": "T02",
@@ -638,9 +745,9 @@
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T02.resolution_rule",
       "evidence_event_ids": [
-        "EV_014"
+        "EV_017"
       ],
-      "final_event_id": "EV_014",
+      "final_event_id": "EV_017",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -667,14 +774,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 5000000
+        "expected_value": 2000000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T03.resolution_rule",
       "evidence_event_ids": [
-        "EV_015"
+        "EV_018"
       ],
-      "final_event_id": "EV_015",
+      "final_event_id": "EV_018",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -702,14 +809,15 @@
       "expected": {
         "kind": "extraction",
         "value_type": "integer",
-        "expected_value": 10000
+        "expected_value": 2000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T04.resolution_rule",
       "evidence_event_ids": [
-        "EV_016"
+        "EV_019",
+        "EV_020"
       ],
-      "final_event_id": "EV_016",
+      "final_event_id": "EV_020",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -726,7 +834,9 @@
         ]
       },
       "forbidden_spoken_forms": [],
-      "assignment_ids": []
+      "assignment_ids": [
+        "EA_283"
+      ]
     },
     {
       "question_id": "T05",
@@ -734,14 +844,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "SELL"
+        "expected_value": "BUY"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T05.resolution_rule",
       "evidence_event_ids": [
-        "EV_017"
+        "EV_021"
       ],
-      "final_event_id": "EV_017",
+      "final_event_id": "EV_021",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -766,14 +876,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "LIMIT"
+        "expected_value": "MARKET"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T06.resolution_rule",
       "evidence_event_ids": [
-        "EV_018"
+        "EV_022"
       ],
-      "final_event_id": "EV_018",
+      "final_event_id": "EV_022",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -814,11 +924,101 @@
     },
     {
       "type": "ORDER",
+      "before": "EV_010",
+      "after": "EV_011",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_284"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_014",
+      "after": "EV_015",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_282"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_016",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_282"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_019",
+      "after": "EV_020",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_283"
+      }
+    },
+    {
+      "type": "ORDER",
       "before": "EV_002",
       "after": "EV_003",
       "source": {
         "type": "ORDERING_RULE",
         "id": "C03_AFTER_C02_DISCLOSURE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_016",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_017",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_018",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_020",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_021",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_022",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
       }
     }
   ]

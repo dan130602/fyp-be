@@ -1,0 +1,471 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "description": "Inputs of the quota resolver (fyp_evaluation.planning.quotas, scripts/resolve_multilingual_quotas.py). `reference` is the approved 500-call Option D plan (commit 82e892e) kept verbatim as the design weights; `target` is the resized release (250 calls). The resolver scales each reference quota exactly and rounds jointly, so every profile total and global total stays consistent, then stores the integer result in generation_plan.json. Edit this file only to change the design; never edit the resolved quotas by hand.",
+  "seed": 42,
+  "reference": {
+    "label": "Approved Option D, 500 calls (commit 82e892e)",
+    "num_calls": 500,
+    "language_profile_plans": [
+      {
+        "language_profile": "ENGLISH",
+        "num_calls": 150,
+        "duration_counts": {
+          "SHORT": 135,
+          "LONG": 15
+        },
+        "call_intent_set_counts": [
+          {
+            "call_intents": [
+              "ADVISORY",
+              "EXECUTION"
+            ],
+            "count": 150
+          }
+        ],
+        "call_composition_counts": {
+          "all_pass_without_edge_cases": 6,
+          "all_pass_with_edge_cases": 9,
+          "some_fail_without_edge_cases": 9,
+          "some_fail_with_edge_cases": 126
+        },
+        "fail_count_per_call_counts": {
+          "0": 15,
+          "1": 24,
+          "2": 45,
+          "3": 42,
+          "4": 24
+        },
+        "fail_counts_per_check": {
+          "C01": 27,
+          "C02": 24,
+          "C03": 39,
+          "C04": 27,
+          "C05": 27,
+          "C06": 27,
+          "C07": 27,
+          "C08": 30,
+          "C09": 27,
+          "C10": 27,
+          "C11": 27,
+          "C12": 27
+        },
+        "edge_cases_per_call_counts": {
+          "0": 15,
+          "1": 24,
+          "2": 45,
+          "3": 42,
+          "4": 24
+        },
+        "edge_case_counts": {
+          "EC_CORRECTION_SAME_TURN": 14,
+          "EC_CORRECTION_CROSS_TURN": 14,
+          "EC_MULTIPLE_CORRECTIONS": 14,
+          "EC_EMPLOYEE_READBACK_ERROR": 14,
+          "EC_ONE_FIELD_READBACK_ERROR": 14,
+          "EC_COMPLETE_ORDER_REPLACEMENT": 14,
+          "EC_MULTIPLE_CURRENCIES": 21,
+          "EC_MULTIPLE_MONETARY_VALUES": 21,
+          "EC_PREVIOUS_CURRENCY_REFERENCE": 18,
+          "EC_PRODUCT_REFERENCE": 18,
+          "EC_PREVIOUS_QUANTITY_REFERENCE": 18,
+          "EC_DOUBLE_TRIPLE_DIGITS": 8,
+          "EC_OH_VS_ZERO": 8,
+          "EC_FINANCIAL_SHORTHAND": 8,
+          "EC_LARGE_NUMBER_EXPRESSION": 8,
+          "EC_FALSE_START": 32,
+          "EC_LONG_DISTANCE_DEPENDENCY": 32,
+          "EC_GUARANTEE_REQUEST_REFUSAL": 15,
+          "EC_PARAPHRASED_COMPLIANCE_STATEMENT": 15,
+          "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED": 15,
+          "EC_WEAK_CONFIRMATION": 15
+        },
+        "language_variant_counts": {},
+        "transaction_direction_counts": {
+          "BUY": 75,
+          "SELL": 75
+        },
+        "order_type_counts": {
+          "MARKET": 75,
+          "LIMIT": 75
+        },
+        "transaction_currency_counts": {
+          "SGD": 30,
+          "USD": 30,
+          "EUR": 30,
+          "CNY": 30,
+          "JPY": 30
+        },
+        "target_exposure_caps": {
+          "T03": 52
+        }
+      },
+      {
+        "language_profile": "MANDARIN",
+        "num_calls": 150,
+        "duration_counts": {
+          "SHORT": 135,
+          "LONG": 15
+        },
+        "call_intent_set_counts": [
+          {
+            "call_intents": [
+              "ADVISORY",
+              "EXECUTION"
+            ],
+            "count": 150
+          }
+        ],
+        "call_composition_counts": {
+          "all_pass_without_edge_cases": 6,
+          "all_pass_with_edge_cases": 9,
+          "some_fail_without_edge_cases": 9,
+          "some_fail_with_edge_cases": 126
+        },
+        "fail_count_per_call_counts": {
+          "0": 15,
+          "1": 24,
+          "2": 45,
+          "3": 42,
+          "4": 24
+        },
+        "fail_counts_per_check": {
+          "C01": 27,
+          "C02": 24,
+          "C03": 39,
+          "C04": 27,
+          "C05": 27,
+          "C06": 27,
+          "C07": 27,
+          "C08": 30,
+          "C09": 27,
+          "C10": 27,
+          "C11": 27,
+          "C12": 27
+        },
+        "edge_cases_per_call_counts": {
+          "0": 15,
+          "1": 24,
+          "2": 45,
+          "3": 42,
+          "4": 24
+        },
+        "edge_case_counts": {
+          "EC_CORRECTION_SAME_TURN": 15,
+          "EC_CORRECTION_CROSS_TURN": 15,
+          "EC_MULTIPLE_CORRECTIONS": 15,
+          "EC_EMPLOYEE_READBACK_ERROR": 15,
+          "EC_ONE_FIELD_READBACK_ERROR": 15,
+          "EC_COMPLETE_ORDER_REPLACEMENT": 15,
+          "EC_MULTIPLE_CURRENCIES": 21,
+          "EC_MULTIPLE_MONETARY_VALUES": 33,
+          "EC_PREVIOUS_CURRENCY_REFERENCE": 20,
+          "EC_PRODUCT_REFERENCE": 20,
+          "EC_PREVIOUS_QUANTITY_REFERENCE": 20,
+          "EC_DOUBLE_TRIPLE_DIGITS": 0,
+          "EC_OH_VS_ZERO": 0,
+          "EC_FINANCIAL_SHORTHAND": 0,
+          "EC_LARGE_NUMBER_EXPRESSION": 0,
+          "EC_FALSE_START": 36,
+          "EC_LONG_DISTANCE_DEPENDENCY": 36,
+          "EC_GUARANTEE_REQUEST_REFUSAL": 15,
+          "EC_PARAPHRASED_COMPLIANCE_STATEMENT": 15,
+          "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED": 15,
+          "EC_WEAK_CONFIRMATION": 15
+        },
+        "language_variant_counts": {
+          "EC_MULTIPLE_MONETARY_VALUES": {
+            "ZH_MAGNITUDE_CONTRAST": 12
+          }
+        },
+        "transaction_direction_counts": {
+          "BUY": 75,
+          "SELL": 75
+        },
+        "order_type_counts": {
+          "MARKET": 75,
+          "LIMIT": 75
+        },
+        "transaction_currency_counts": {
+          "SGD": 30,
+          "USD": 30,
+          "EUR": 30,
+          "CNY": 30,
+          "JPY": 30
+        },
+        "target_exposure_caps": {
+          "T03": 52
+        }
+      },
+      {
+        "language_profile": "EN_ZH_MIXED",
+        "num_calls": 100,
+        "duration_counts": {
+          "SHORT": 90,
+          "LONG": 10
+        },
+        "call_intent_set_counts": [
+          {
+            "call_intents": [
+              "ADVISORY",
+              "EXECUTION"
+            ],
+            "count": 100
+          }
+        ],
+        "call_composition_counts": {
+          "all_pass_without_edge_cases": 4,
+          "all_pass_with_edge_cases": 6,
+          "some_fail_without_edge_cases": 6,
+          "some_fail_with_edge_cases": 84
+        },
+        "fail_count_per_call_counts": {
+          "0": 10,
+          "1": 16,
+          "2": 30,
+          "3": 28,
+          "4": 16
+        },
+        "fail_counts_per_check": {
+          "C01": 18,
+          "C02": 16,
+          "C03": 26,
+          "C04": 18,
+          "C05": 18,
+          "C06": 18,
+          "C07": 18,
+          "C08": 20,
+          "C09": 18,
+          "C10": 18,
+          "C11": 18,
+          "C12": 18
+        },
+        "edge_cases_per_call_counts": {
+          "0": 10,
+          "1": 16,
+          "2": 30,
+          "3": 28,
+          "4": 16
+        },
+        "edge_case_counts": {
+          "EC_CORRECTION_SAME_TURN": 10,
+          "EC_CORRECTION_CROSS_TURN": 10,
+          "EC_MULTIPLE_CORRECTIONS": 9,
+          "EC_EMPLOYEE_READBACK_ERROR": 9,
+          "EC_ONE_FIELD_READBACK_ERROR": 9,
+          "EC_COMPLETE_ORDER_REPLACEMENT": 9,
+          "EC_MULTIPLE_CURRENCIES": 14,
+          "EC_MULTIPLE_MONETARY_VALUES": 14,
+          "EC_PREVIOUS_CURRENCY_REFERENCE": 12,
+          "EC_PRODUCT_REFERENCE": 12,
+          "EC_PREVIOUS_QUANTITY_REFERENCE": 12,
+          "EC_DOUBLE_TRIPLE_DIGITS": 6,
+          "EC_OH_VS_ZERO": 6,
+          "EC_FINANCIAL_SHORTHAND": 6,
+          "EC_LARGE_NUMBER_EXPRESSION": 6,
+          "EC_FALSE_START": 20,
+          "EC_LONG_DISTANCE_DEPENDENCY": 20,
+          "EC_GUARANTEE_REQUEST_REFUSAL": 10,
+          "EC_PARAPHRASED_COMPLIANCE_STATEMENT": 10,
+          "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED": 10,
+          "EC_WEAK_CONFIRMATION": 10
+        },
+        "language_variant_counts": {
+          "EC_CORRECTION_SAME_TURN": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 3,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_CORRECTION_CROSS_TURN": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 3,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_MULTIPLE_CORRECTIONS": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 2,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_EMPLOYEE_READBACK_ERROR": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 2,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_ONE_FIELD_READBACK_ERROR": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 2,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_COMPLETE_ORDER_REPLACEMENT": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 2,
+            "CROSS_LANGUAGE_ZH_TO_EN": 2
+          },
+          "EC_MULTIPLE_CURRENCIES": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 4,
+            "CROSS_LANGUAGE_ZH_TO_EN": 3
+          },
+          "EC_MULTIPLE_MONETARY_VALUES": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 4,
+            "CROSS_LANGUAGE_ZH_TO_EN": 3
+          },
+          "EC_PREVIOUS_CURRENCY_REFERENCE": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 3,
+            "CROSS_LANGUAGE_ZH_TO_EN": 3
+          },
+          "EC_PRODUCT_REFERENCE": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 3,
+            "CROSS_LANGUAGE_ZH_TO_EN": 3
+          },
+          "EC_PREVIOUS_QUANTITY_REFERENCE": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 3,
+            "CROSS_LANGUAGE_ZH_TO_EN": 3
+          },
+          "EC_FALSE_START": {
+            "CROSS_LANGUAGE_EN_TO_ZH": 5,
+            "CROSS_LANGUAGE_ZH_TO_EN": 5
+          },
+          "EC_DOUBLE_TRIPLE_DIGITS": {
+            "EN_SURFACE": 6
+          },
+          "EC_OH_VS_ZERO": {
+            "EN_SURFACE": 6
+          },
+          "EC_FINANCIAL_SHORTHAND": {
+            "EN_SURFACE": 6
+          },
+          "EC_LARGE_NUMBER_EXPRESSION": {
+            "EN_SURFACE": 6
+          }
+        },
+        "transaction_direction_counts": {
+          "BUY": 50,
+          "SELL": 50
+        },
+        "order_type_counts": {
+          "MARKET": 50,
+          "LIMIT": 50
+        },
+        "transaction_currency_counts": {
+          "SGD": 20,
+          "USD": 20,
+          "EUR": 20,
+          "CNY": 20,
+          "JPY": 20
+        },
+        "target_exposure_caps": {
+          "T03": 35
+        },
+        "mixing_style_counts": {
+          "EN_LED": 35,
+          "ZH_LED": 35,
+          "BALANCED": 30
+        }
+      },
+      {
+        "language_profile": "SINGLISH",
+        "num_calls": 100,
+        "duration_counts": {
+          "SHORT": 90,
+          "LONG": 10
+        },
+        "call_intent_set_counts": [
+          {
+            "call_intents": [
+              "ADVISORY",
+              "EXECUTION"
+            ],
+            "count": 100
+          }
+        ],
+        "call_composition_counts": {
+          "all_pass_without_edge_cases": 4,
+          "all_pass_with_edge_cases": 6,
+          "some_fail_without_edge_cases": 6,
+          "some_fail_with_edge_cases": 84
+        },
+        "fail_count_per_call_counts": {
+          "0": 10,
+          "1": 16,
+          "2": 30,
+          "3": 28,
+          "4": 16
+        },
+        "fail_counts_per_check": {
+          "C01": 18,
+          "C02": 16,
+          "C03": 26,
+          "C04": 18,
+          "C05": 18,
+          "C06": 18,
+          "C07": 18,
+          "C08": 20,
+          "C09": 18,
+          "C10": 18,
+          "C11": 18,
+          "C12": 18
+        },
+        "edge_cases_per_call_counts": {
+          "0": 10,
+          "1": 16,
+          "2": 30,
+          "3": 28,
+          "4": 16
+        },
+        "edge_case_counts": {
+          "EC_CORRECTION_SAME_TURN": 10,
+          "EC_CORRECTION_CROSS_TURN": 10,
+          "EC_MULTIPLE_CORRECTIONS": 9,
+          "EC_EMPLOYEE_READBACK_ERROR": 9,
+          "EC_ONE_FIELD_READBACK_ERROR": 9,
+          "EC_COMPLETE_ORDER_REPLACEMENT": 9,
+          "EC_MULTIPLE_CURRENCIES": 14,
+          "EC_MULTIPLE_MONETARY_VALUES": 14,
+          "EC_PREVIOUS_CURRENCY_REFERENCE": 12,
+          "EC_PRODUCT_REFERENCE": 12,
+          "EC_PREVIOUS_QUANTITY_REFERENCE": 12,
+          "EC_DOUBLE_TRIPLE_DIGITS": 6,
+          "EC_OH_VS_ZERO": 6,
+          "EC_FINANCIAL_SHORTHAND": 6,
+          "EC_LARGE_NUMBER_EXPRESSION": 6,
+          "EC_FALSE_START": 20,
+          "EC_LONG_DISTANCE_DEPENDENCY": 20,
+          "EC_GUARANTEE_REQUEST_REFUSAL": 10,
+          "EC_PARAPHRASED_COMPLIANCE_STATEMENT": 10,
+          "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED": 10,
+          "EC_WEAK_CONFIRMATION": 10
+        },
+        "language_variant_counts": {},
+        "transaction_direction_counts": {
+          "BUY": 50,
+          "SELL": 50
+        },
+        "order_type_counts": {
+          "MARKET": 50,
+          "LIMIT": 50
+        },
+        "transaction_currency_counts": {
+          "SGD": 20,
+          "USD": 20,
+          "EUR": 20,
+          "CNY": 20,
+          "JPY": 20
+        },
+        "target_exposure_caps": {
+          "T03": 35
+        }
+      }
+    ]
+  },
+  "target": {
+    "num_calls": 250,
+    "profile_calls": {
+      "ENGLISH": 75,
+      "MANDARIN": 75,
+      "EN_ZH_MIXED": 50,
+      "SINGLISH": 50
+    },
+    "exposure_cap_percent": {
+      "T03": 35
+    },
+    "future_split": {
+      "development_percent": 70,
+      "held_out_percent": 30,
+      "note": "Used only by the coverage assessment report; no split is implemented or assigned."
+    }
+  }
+}

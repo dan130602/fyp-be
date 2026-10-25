@@ -1,6 +1,6 @@
 """Multilingual release (advisory_execution_multilingual_v1): G0 contracts, G1 planning, G2A specs and G2B skeletons.
 
-The approved 500-call configuration is planned in memory and compared with the committed artifacts; negative cases
+The approved 250-call configuration is planned in memory and compared with the committed artifacts; negative cases
 mutate in-memory copies of the documents or outputs. No LLM, network or AWS service is used.
 """
 
@@ -111,7 +111,7 @@ def test_dependent_fail_counts_and_variant_eligibility_are_checked(docs):
     off = deepcopy(docs)
     plan_of(off, "ENGLISH")["fail_counts_per_check"]["C03"] -= 1
     plan_of(off, "ENGLISH")["fail_counts_per_check"]["C04"] += 1
-    assert any("C03 FAILs (38) must equal C02 FAILs (24) plus" in e for e in validate_stage0(off, SCHEMAS))
+    assert any("C03 FAILs (19) must equal C02 FAILs (12) plus" in e for e in validate_stage0(off, SCHEMAS))
     ineligible = deepcopy(docs)
     counts = plan_of(ineligible, "MANDARIN")["edge_case_counts"]
     counts["EC_OH_VS_ZERO"] += 1
@@ -167,8 +167,8 @@ def test_seed_changes_the_plan(docs):
 
 def test_profile_counts_are_exact(docs, generated):
     _, summary = generated
-    assert summary["language_profiles"] == {"ENGLISH": 150, "MANDARIN": 150, "EN_ZH_MIXED": 100, "SINGLISH": 100}
-    assert summary["total_compliance_fail_pairs"] == 1120 and summary["total_edge_case_assignments"] == 1120
+    assert summary["language_profiles"] == {"ENGLISH": 75, "MANDARIN": 75, "EN_ZH_MIXED": 50, "SINGLISH": 50}
+    assert summary["total_compliance_fail_pairs"] == 560 and summary["total_edge_case_assignments"] == 560
     for p in docs["generation_plan"]["language_profile_plans"]:
         block = summary["by_language_profile"][p["language_profile"]]
         assert block["duration_profiles"] == p["duration_counts"]
@@ -220,7 +220,7 @@ def test_mandarin_magnitude_contrasts_are_exact_and_labelled(docs, plan_view):
                 assert hits[0]["amount"] > final or hits[0]["role"] in {"PREVIOUS_INVESTMENT_AMOUNT", "ILLUSTRATIVE_AMOUNT"}
             else:
                 assert hits == []
-    assert labelled == 12
+    assert labelled == 6
 
 
 def test_spoken_numeric_cases_never_reach_mandarin_and_carry_en_surface_in_mixed(plan_view):
@@ -325,5 +325,5 @@ def test_reports_are_derived_from_the_maintained_contracts(docs):
         assert f"| {case['id']} |" in compatibility
     assert "ZH_BAIWAN_DECIMAL (MANDARIN; EXCLUDED_V1)" in compatibility
     composition = composition_report(RELEASE)
-    assert "| C03 | 39 | 39 | 26 | 26 | 130 |" in composition
-    assert "| EC_MULTIPLE_MONETARY_VALUES | ZH_MAGNITUDE_CONTRAST | 0 | 12 | 0 | 0 | 12 |" in composition
+    assert "| C03 | 20 | 19 | 13 | 13 | 65 |" in composition
+    assert "| EC_MULTIPLE_MONETARY_VALUES | ZH_MAGNITUDE_CONTRAST | 0 | 6 | 0 | 0 | 6 |" in composition

@@ -255,7 +255,7 @@ def _assign_variants(p, calls, states, cases, order_fields, rng):
     return chosen
 
 
-def _max_flow(capacity, source, sink):
+def max_flow(capacity, source, sink):
     """Edmonds-Karp on an adjacency dict {u: {v: cap}} (mutated into the residual graph); returns the flow value."""
     flow = 0
     while True:
@@ -343,7 +343,7 @@ def _verdicts(p, calls, states, compliance_ids, rules, plan_rules, rng):
                 else:
                     graph[node][("Q", q)] = 1
     original = {u: dict(edges) for u, edges in graph.items()}
-    if _max_flow(graph, source, sink) != sum(budget.values()):
+    if max_flow(graph, source, sink) != sum(budget.values()):
         raise Infeasible(f"{p['language_profile']}: no exact FAIL fill satisfies the per-call budgets and per-question targets")
     for call in calls:
         node, group = ("CALL", call), ("GROUP", call)

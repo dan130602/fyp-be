@@ -4,7 +4,7 @@ A multilingual release keeps the gold-first G0 -> G9 pipeline and adds language 
 language-independent: the coverage matrix stores `T04 = 700`, never `七百`. A profile only constrains how values and
 dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unchanged and still reproduces byte-for-byte.
 
-Implemented so far: G0, G1, G2A and G2B (Phase 1). G3 refuses to start on a multilingual release
+Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH). G3 refuses to start on a multilingual release
 (`call_configs/inputs.py`) until its language-aware briefs exist; G4 Mandarin rendering, G5-G7 language assessments,
 TTS, STT, scoring, the 400/100 split and CI are later work.
 
@@ -64,6 +64,30 @@ realised, never what is tested or which value is gold, and never counts as an ex
 prints the edge-case x profile matrix generated from the catalog; `--composition` prints the planned composition from
 the validated planning record.
 
+## Sizing and quota resolution
+
+The release has 250 calls (the earlier 500-call plan was superseded; the release name is unchanged). The approved 500-call Option D
+quotas are kept verbatim as the design weights in `authoring/quota_design.json`; `fyp_evaluation.planning.quotas` scales each one
+exactly (x 1/2) and rounds jointly, so profile totals and global targets stay consistent, then stores the integer result in
+`generation_plan.json` (with the design hash in `quota_resolution`). Never edit those quotas by hand: change the design and rerun
+
+```
+python scripts/resolve_multilingual_quotas.py --dataset-root datasets/advisory_execution_multilingual_v1 --check   # stored == recomputed
+python scripts/resolve_multilingual_quotas.py --dataset-root datasets/advisory_execution_multilingual_v1 --write   # replace the quotas
+```
+
+and then regenerate G1, G2A and G2B with their own tools. Totals: 560 compliance FAIL labels and 560 edge-case assignments;
+25 all-PASS, 25 edge-free and 10 pure-control calls; 225 SHORT / 25 LONG; per-question FAIL targets C02 40, C03 65, C08 50 and 45 for
+each other check; integer T03 exposure caps 26/26/17/17 (35% rounded down). The resolver refuses a request that has no exact integer
+solution (for example a profile size that makes a scaled total fractional) instead of relaxing a rule.
+
+`python scripts/report_multilingual_plan.py --dataset-root datasets/advisory_execution_multilingual_v1 --coverage` prints the
+per-profile mechanism and variant counts (SINGLETON / VERY SMALL groups flagged) and a future 70/30 development / held-out
+assessment: which groups a proportional split would leave with one example in a subset or unable to appear in both. It assigns
+nothing; the deterministic stratified split, CI and the registry of inspected or pilot-exposed calls (to be assigned to development)
+are later work, and the planning artifacts already carry the metadata a split needs (language profile, mixing style, duration,
+verdicts, edge-case IDs, families, variants and transaction attributes).
+
 ## G1 rules (2.0)
 
 Each profile is planned exactly: duration, intent, composition, FAIL histogram, per-question FAIL counts, edge-case
@@ -85,8 +109,9 @@ all re-checked independently by `planning/validate.py`:
 ## Commands
 
 ```
+python scripts/resolve_multilingual_quotas.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
-python -m pytest -q tests/test_multilingual_planning.py
+python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py
 ```

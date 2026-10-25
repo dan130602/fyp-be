@@ -8,11 +8,11 @@
       "ADVISORY",
       "EXECUTION"
     ],
-    "language_profile": "ENGLISH",
+    "language_profile": "SINGLISH",
     "mixing_style": "NONE",
-    "duration_profile": "SHORT",
-    "target_duration_min_seconds": 180,
-    "target_duration_max_seconds": 300
+    "duration_profile": "LONG",
+    "target_duration_min_seconds": 1801,
+    "target_duration_max_seconds": 3600
   },
   "language_requirements": {
     "value_surface_languages": [
@@ -34,9 +34,11 @@
         "required_languages": [
           "en"
         ],
-        "register": "STANDARD_CONVERSATIONAL_ENGLISH",
+        "register": "COLLOQUIAL_SINGAPORE_ENGLISH",
         "guidance": [
-          "Natural, standard conversational English."
+          "Singaporean colloquial grammar and romanised discourse particles (lah, lor, leh, ah) may appear where they fit naturally; never inserted mechanically or to a quota.",
+          "Still sounds like a private-banking client, not a caricature.",
+          "Financial instructions, dates, quantities and compliance meaning are preserved exactly."
         ]
       },
       "EMPLOYEE": {
@@ -48,7 +50,7 @@
         ],
         "register": "PROFESSIONAL_ENGLISH",
         "guidance": [
-          "Professional English suitable for a private-banking relationship manager."
+          "Professional English without added Singlish phrasing."
         ]
       }
     }
@@ -72,28 +74,28 @@
       "question_id": "C03",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
       "question_id": "C04",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
       "question_id": "C05",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
       "question_id": "C06",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       }
     },
     {
@@ -107,7 +109,7 @@
       "question_id": "C08",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       }
     },
     {
@@ -128,7 +130,7 @@
       "question_id": "C11",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "FAIL"
+        "expected_verdict": "PASS"
       }
     },
     {
@@ -143,7 +145,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "S7096413R"
+        "expected_value": "F9656601N"
       }
     },
     {
@@ -151,7 +153,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "06 June 1974"
+        "expected_value": "28 July 1984"
       }
     },
     {
@@ -159,7 +161,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Atlas USD Corporate Bond 2031"
+        "expected_value": "Nova Technology Equity Fund"
       }
     },
     {
@@ -167,7 +169,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "USD"
+        "expected_value": "CNY"
       }
     },
     {
@@ -175,7 +177,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 1200000
+        "expected_value": 500000
       }
     },
     {
@@ -183,7 +185,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "integer",
-        "expected_value": 10000
+        "expected_value": 1500
       }
     },
     {
@@ -199,7 +201,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "LIMIT"
+        "expected_value": "MARKET"
       }
     }
   ],
@@ -209,28 +211,32 @@
       "edge_case_id": "EC_MULTIPLE_CORRECTIONS",
       "family": "CORRECTION_SUPERSESSION",
       "target_question_ids": [
-        "K01"
+        "T02"
       ],
       "language_variant": "NONE",
       "parameters": {
-        "final_value": "S7096413R",
+        "final_value": "CNY",
         "superseded_values": [
-          "S7056413R",
-          "S2096413R"
+          "EUR",
+          "SGD"
         ]
       }
     },
     {
       "assignment_id": "EA_009",
-      "edge_case_id": "EC_PREVIOUS_CURRENCY_REFERENCE",
+      "edge_case_id": "EC_PRODUCT_REFERENCE",
       "family": "REFERENCE_RESOLUTION",
       "target_question_ids": [
-        "T02"
+        "T01"
       ],
       "language_variant": "NONE",
       "parameters": {
         "antecedent_speaker": "EMPLOYEE",
-        "final_currency": "USD"
+        "candidate_products": [
+          "Nova Technology Equity Fund",
+          "Crest Emerging Markets Bond Fund"
+        ],
+        "selected_product": "Nova Technology Equity Fund"
       }
     },
     {
@@ -238,34 +244,34 @@
       "edge_case_id": "EC_LONG_DISTANCE_DEPENDENCY",
       "family": "DIALOGUE_STRUCTURE",
       "target_question_ids": [
-        "T04",
-        "T06"
+        "T01",
+        "T05"
       ],
       "language_variant": "NONE",
       "parameters": {
         "min_turn_gap": 6,
         "target_question_ids": [
-          "T04",
-          "T06"
+          "T01",
+          "T05"
         ]
       }
     },
     {
       "assignment_id": "EA_011",
-      "edge_case_id": "EC_WEAK_CONFIRMATION",
+      "edge_case_id": "EC_RISK_EXPLAINED_UNDERSTANDING_NOT_VERIFIED",
       "family": "COMPLIANCE_SEMANTICS",
       "target_question_ids": [
-        "C08"
+        "C03"
       ],
       "language_variant": "NONE",
       "parameters": {}
     }
   ],
   "source": {
-    "planning_record_sha256": "9d38698a7da91ed864bfea3e2cefde18da9e2a80e07a6d8b15732d7f88de3f37",
-    "call_manifest_sha256": "3c7f72d310656e9ace56d884afbf82d508b3567c9758ee9dd500b154ee4ea83c",
-    "coverage_matrix_sha256": "209e306a7b8b2f88622d2c802ad4b8b80549d6e3b092ac7f6ff89559607835a8",
-    "edge_case_assignments_sha256": "7fa1da650d27e12b21af59f9a7493dc3fd0c5cc36983e30adec1b3d412e89f46",
+    "planning_record_sha256": "c26d2b4400179ad99558b2832a7c53295059483306b5f25616235100b41c5abf",
+    "call_manifest_sha256": "db1e7c2979ed0a3f073b3fa00c35a3cc7499fb437dc1886096e5f7f90c803a31",
+    "coverage_matrix_sha256": "093446e50a229ea98438797ec77bcaaa81b0a6751569c44fd3524ac0ac0d324f",
+    "edge_case_assignments_sha256": "87751b0714e08eadb778980c150a24b49bdd50c84848b4f8e1c01cbec4899389",
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
   }

@@ -3,7 +3,7 @@
   "stage": "G2B",
   "dataset_id": "advisory_execution_multilingual_v1",
   "call_id": "CALL_223",
-  "call_spec_sha256": "b727921006118885e1deb127576fbefe7ef8429c82ab74c884af97d9cd6961a6",
+  "call_spec_sha256": "5a838898edaeefdcfc8f10372fcf15dcc70905351e877cff100e8387a1424757",
   "source": {
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
@@ -168,6 +168,20 @@
     },
     {
       "event_id": "EV_012",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C11"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C11.fail_condition"
+    },
+    {
+      "event_id": "EV_013",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -179,35 +193,11 @@
       "assignment_ids": [],
       "values": {
         "K01": {
-          "value": "G0057588T",
+          "value": "F4606459E",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
               "CHARACTER_BY_CHARACTER"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "event_id": "EV_013",
-      "kind": "VALUE_STATEMENT",
-      "status": "FINAL",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "K02"
-      ],
-      "assignment_ids": [],
-      "values": {
-        "K02": {
-          "value": "17 September 1954",
-          "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DAY_MONTH_YEAR",
-              "ORDINAL_DAY"
             ]
           }
         }
@@ -221,12 +211,36 @@
         "CLIENT"
       ],
       "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "21 September 1963",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_015",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
         "T01"
       ],
       "assignment_ids": [],
       "values": {
         "T01": {
-          "value": "Crest Emerging Markets Bond Fund",
+          "value": "Meridian Asia Equity Fund",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -237,7 +251,7 @@
       }
     },
     {
-      "event_id": "EV_015",
+      "event_id": "EV_016",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -261,7 +275,7 @@
       }
     },
     {
-      "event_id": "EV_016",
+      "event_id": "EV_017",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -270,10 +284,37 @@
       "question_ids": [
         "T03"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_505"
+      ],
       "values": {
         "T03": {
-          "value": 500000,
+          "value": 2500000,
+          "spoken_form": {
+            "requirement": "REQUIRED",
+            "form": "MAGNITUDE_EXPRESSION",
+            "applies_to": "WHOLE_VALUE",
+            "text": "2.5 million"
+          }
+        }
+      }
+    },
+    {
+      "event_id": "EV_018",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [
+        "EA_504"
+      ],
+      "values": {
+        "T04": {
+          "value": 10000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -284,8 +325,8 @@
       }
     },
     {
-      "event_id": "EV_017",
-      "kind": "VALUE_STATEMENT",
+      "event_id": "EV_019",
+      "kind": "REFERENCE_SELECTION",
       "status": "FINAL",
       "allowed_speakers": [
         "CLIENT"
@@ -293,21 +334,21 @@
       "question_ids": [
         "T04"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_504"
+      ],
       "values": {
         "T04": {
-          "value": 700,
+          "value": 10000,
           "spoken_form": {
-            "requirement": "ONE_OF",
-            "forms": [
-              "DIGITS_WITH_THOUSANDS_SEPARATORS"
-            ]
+            "requirement": "NOT_EXPLICIT"
           }
         }
-      }
+      },
+      "refers_to_event_id": "EV_018"
     },
     {
-      "event_id": "EV_018",
+      "event_id": "EV_020",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -319,7 +360,7 @@
       "assignment_ids": [],
       "values": {
         "T05": {
-          "value": "BUY",
+          "value": "SELL",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -330,7 +371,7 @@
       }
     },
     {
-      "event_id": "EV_019",
+      "event_id": "EV_021",
       "kind": "VALUE_STATEMENT",
       "status": "FINAL",
       "allowed_speakers": [
@@ -342,7 +383,7 @@
       "assignment_ids": [],
       "values": {
         "T06": {
-          "value": "LIMIT",
+          "value": "MARKET",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -514,15 +555,14 @@
       "kind": "COMPLIANCE",
       "expected": {
         "kind": "compliance",
-        "expected_verdict": "PASS"
+        "expected_verdict": "FAIL"
       },
-      "evidence_mode": "ABSENCE",
+      "evidence_mode": "PRESENCE",
       "presence_pattern": "EMPLOYEE_ONLY",
-      "forbidden_condition_ref": "C11.fail_condition",
-      "absence": {
-        "scope": "ENTIRE_DIALOGUE"
-      },
-      "evidence_event_ids": [],
+      "required_condition_ref": "C11.fail_condition",
+      "evidence_event_ids": [
+        "EV_012"
+      ],
       "assignment_ids": []
     },
     {
@@ -547,14 +587,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "G0057588T"
+        "expected_value": "F4606459E"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K01.resolution_rule",
       "evidence_event_ids": [
-        "EV_012"
+        "EV_013"
       ],
-      "final_event_id": "EV_012",
+      "final_event_id": "EV_013",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -582,14 +622,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "17 September 1954"
+        "expected_value": "21 September 1963"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K02.resolution_rule",
       "evidence_event_ids": [
-        "EV_013"
+        "EV_014"
       ],
-      "final_event_id": "EV_013",
+      "final_event_id": "EV_014",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -616,14 +656,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Crest Emerging Markets Bond Fund"
+        "expected_value": "Meridian Asia Equity Fund"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T01.resolution_rule",
       "evidence_event_ids": [
-        "EV_014"
+        "EV_015"
       ],
-      "final_event_id": "EV_014",
+      "final_event_id": "EV_015",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -653,9 +693,9 @@
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T02.resolution_rule",
       "evidence_event_ids": [
-        "EV_015"
+        "EV_016"
       ],
-      "final_event_id": "EV_015",
+      "final_event_id": "EV_016",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -682,21 +722,21 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 500000
+        "expected_value": 2500000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T03.resolution_rule",
       "evidence_event_ids": [
-        "EV_016"
+        "EV_017"
       ],
-      "final_event_id": "EV_016",
+      "final_event_id": "EV_017",
       "gold_restatement": {
-        "policy": "ANY_PERMITTED_FORM",
+        "policy": "ASSIGNED_FORM_ONLY",
         "spoken_form": {
-          "requirement": "ONE_OF",
-          "forms": [
-            "DIGITS_WITH_THOUSANDS_SEPARATORS"
-          ]
+          "requirement": "REQUIRED",
+          "form": "MAGNITUDE_EXPRESSION",
+          "applies_to": "WHOLE_VALUE",
+          "text": "2.5 million"
         }
       },
       "non_gold_spoken_form": {
@@ -706,10 +746,11 @@
         ]
       },
       "forbidden_spoken_forms": [
-        "FINANCIAL_SHORTHAND",
-        "MAGNITUDE_EXPRESSION"
+        "FINANCIAL_SHORTHAND"
       ],
-      "assignment_ids": []
+      "assignment_ids": [
+        "EA_505"
+      ]
     },
     {
       "question_id": "T04",
@@ -717,14 +758,15 @@
       "expected": {
         "kind": "extraction",
         "value_type": "integer",
-        "expected_value": 700
+        "expected_value": 10000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T04.resolution_rule",
       "evidence_event_ids": [
-        "EV_017"
+        "EV_018",
+        "EV_019"
       ],
-      "final_event_id": "EV_017",
+      "final_event_id": "EV_019",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -741,7 +783,9 @@
         ]
       },
       "forbidden_spoken_forms": [],
-      "assignment_ids": []
+      "assignment_ids": [
+        "EA_504"
+      ]
     },
     {
       "question_id": "T05",
@@ -749,14 +793,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "BUY"
+        "expected_value": "SELL"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T05.resolution_rule",
       "evidence_event_ids": [
-        "EV_018"
+        "EV_020"
       ],
-      "final_event_id": "EV_018",
+      "final_event_id": "EV_020",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -781,14 +825,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "LIMIT"
+        "expected_value": "MARKET"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T06.resolution_rule",
       "evidence_event_ids": [
-        "EV_019"
+        "EV_021"
       ],
-      "final_event_id": "EV_019",
+      "final_event_id": "EV_021",
       "gold_restatement": {
         "policy": "ANY_PERMITTED_FORM",
         "spoken_form": {
@@ -838,20 +882,20 @@
     },
     {
       "type": "ORDER",
+      "before": "EV_018",
+      "after": "EV_019",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_504"
+      }
+    },
+    {
+      "type": "ORDER",
       "before": "EV_002",
       "after": "EV_003",
       "source": {
         "type": "ORDERING_RULE",
         "id": "C03_AFTER_C02_DISCLOSURE"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_014",
-      "after": "EV_010",
-      "source": {
-        "type": "ORDERING_RULE",
-        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
       }
     },
     {
@@ -883,7 +927,7 @@
     },
     {
       "type": "ORDER",
-      "before": "EV_018",
+      "before": "EV_019",
       "after": "EV_010",
       "source": {
         "type": "ORDERING_RULE",
@@ -892,7 +936,16 @@
     },
     {
       "type": "ORDER",
-      "before": "EV_019",
+      "before": "EV_020",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_021",
       "after": "EV_010",
       "source": {
         "type": "ORDERING_RULE",

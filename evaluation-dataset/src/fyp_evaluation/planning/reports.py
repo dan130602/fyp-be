@@ -118,3 +118,111 @@ def composition_report(dataset_root):
     lines += _table("Mixing styles", header, per_profile("mixing_styles"))
     lines += _table("Products", header, per_profile("transaction_instrument"))
     return "\n".join(lines)
+
+
+# ---- coverage of every mechanism, and what a future development / held-out split would leave -------------------------------
+def small_group_flag(count):
+    """Flag for a group too small to treat as well represented."""
+    if count == 1:
+        return "SINGLETON"
+    return "VERY SMALL" if count <= 3 else ""
+
+
+def proportional_split(count, held_out_percent):
+    """(development, held_out) examples of a group under a proportional split that keeps both sides non-empty when possible."""
+    if count < 2:
+        return count, 0
+    held = min(count - 1, max(1, (count * held_out_percent + 50) // 100))
+    return count - held, held
+
+
+def split_flag(count, development, held_out):
+    if count < 2:
+        return "CANNOT APPEAR IN BOTH"
+    return "ONE EXAMPLE IN A SUBSET" if min(development, held_out) == 1 else ""
+
+
+def coverage_groups(documents):
+    """[(scope, mechanism, count)] for every case and variant, per language profile and across profiles (count > 0 only)."""
+    plans = documents["generation_plan"]["language_profile_plans"]
+    cases = [c["id"] for c in documents["edge_case_catalog"]["edge_cases"]]
+    groups, totals = [], {}
+    for p in plans:
+        name = p["language_profile"]
+        for case_id in cases:
+            if p["edge_case_counts"][case_id]:
+                groups.append((name, case_id, p["edge_case_counts"][case_id]))
+                totals[case_id] = totals.get(case_id, 0) + p["edge_case_counts"][case_id]
+        for case_id, by in p["language_variant_counts"].items():
+            for variant_id, count in by.items():
+                key = f"{case_id} / {variant_id}"
+                groups.append((name, key, count))
+                totals[key] = totals.get(key, 0) + count
+    in_profiles = {}
+    for scope, mechanism, _ in groups:
+        in_profiles[mechanism] = in_profiles.get(mechanism, 0) + 1
+    groups += [("ALL PROFILES", mechanism, count) for mechanism, count in totals.items() if in_profiles[mechanism] > 1]
+    return groups
+
+
+def _count_cell(count, eligible=True):
+    if not eligible or not count:
+        return "-"
+    flag = small_group_flag(count)
+    return f"{count} ({flag})" if flag else str(count)
+
+
+def coverage_report(dataset_root):
+    root = Path(dataset_root)
+    documents = load_stage0(root)
+    plans = documents["generation_plan"]["language_profile_plans"]
+    names = [p["language_profile"] for p in plans]
+    catalog = documents["edge_case_catalog"]["edge_cases"]
+    held_percent = 30
+    design = root / "authoring/quota_design.json"
+    if design.is_file():
+        held_percent = load_json(design)["target"].get("future_split", {}).get("held_out_percent", held_percent)
+    lines = [
+        "# Mechanism coverage and future-split assessment",
+        "",
+        f"Counts come from the resolved `generation_plan.json` of `{documents['normalization']['dataset_id']}`. The split numbers are "
+        f"an assessment only (a proportional {100 - held_percent}/{held_percent} development/held-out split of each group, keeping both "
+        "sides non-empty when the group allows it); no split is implemented or assigned.",
+        "",
+    ]
+    missing = [(p["language_profile"], c["id"]) for p in plans for c in catalog
+               if p["language_profile"] in c["language_profiles"] and not p["edge_case_counts"][c["id"]]]
+    lines.append("Eligible mechanisms with no examples: " + (", ".join(f"{n}/{c}" for n, c in missing) or "none") + ".")
+    lines += ["", "### Edge-case counts per language profile (SINGLETON = 1, VERY SMALL = 2-3)", "",
+              "| Edge case | " + " | ".join(names) + " | Total |", "|---|" + "---|" * (len(names) + 1)]
+    for c in catalog:
+        counts = [p["edge_case_counts"][c["id"]] for p in plans]
+        cells = [_count_cell(n, p["language_profile"] in c["language_profiles"]) for n, p in zip(counts, plans)]
+        lines.append(f"| {c['id']} | " + " | ".join(cells) + f" | {sum(counts)} |")
+    lines += ["", "### Language variants (both switch directions must appear wherever a cross-language case has examples)", "",
+              "| Edge case | Variant | " + " | ".join(names) + " | Total |", "|---|---|" + "---|" * (len(names) + 1)]
+    for c in catalog:
+        for variant in c["language_variants"]:
+            if variant["status"] != "READY_V1":
+                continue
+            counts = [p["language_variant_counts"].get(c["id"], {}).get(variant["variant_id"], 0) for p in plans]
+            lines.append(f"| {c['id']} | {variant['variant_id']} | " + " | ".join(_count_cell(n) for n in counts) + f" | {sum(counts)} |")
+    one_direction = [f"{p['language_profile']}/{c}" for p in plans for c, by in p["language_variant_counts"].items()
+                     if any(v.startswith("CROSS_LANGUAGE_") for v in by) and any(n < 1 for n in by.values())]
+    lines += ["", "Cross-language cases missing a switch direction: " + (", ".join(one_direction) or "none") + ".", ""]
+
+    groups = coverage_groups(documents)
+    rows = []
+    for scope, mechanism, count in groups:
+        development, held_out = proportional_split(count, held_percent)
+        flag = split_flag(count, development, held_out)
+        if flag:
+            rows.append((scope, mechanism, count, development, held_out, flag))
+    lines += [f"### Groups a {100 - held_percent}/{held_percent} split would leave thin ({len(rows)} of {len(groups)} groups)", "",
+              "| Scope | Mechanism | Examples | Development | Held-out | Flag |", "|---|---|---|---|---|---|"]
+    lines += [f"| {scope} | {mechanism} | {n} | {d} | {h} | {flag} |" for scope, mechanism, n, d, h, flag in rows]
+    never_both = [r for r in rows if r[5] == "CANNOT APPEAR IN BOTH"]
+    lines += ["", "Groups that cannot appear in both subsets: " + (", ".join(f"{r[0]} {r[1]}" for r in never_both) or "none") + ".",
+              "A group is flagged ONE EXAMPLE IN A SUBSET when a proportional split leaves a single example in development or "
+              "held-out. Per-profile groups are the strictest view; the ALL PROFILES rows count the same mechanism across profiles.", ""]
+    return "\n".join(lines)

@@ -474,6 +474,33 @@
           "const": "SEEDED_INTERLEAVE_ACROSS_PROFILES"
         }
       }
+    },
+    "quota_resolution": {
+      "type": "object",
+      "required": [
+        "design_file",
+        "design_sha256",
+        "helper",
+        "helper_version"
+      ],
+      "additionalProperties": false,
+      "description": "Provenance of the resolved quotas: the design file they were derived from and the resolver version.",
+      "properties": {
+        "design_file": {
+          "const": "authoring/quota_design.json"
+        },
+        "design_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "helper": {
+          "const": "fyp_evaluation.planning.quotas"
+        },
+        "helper_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
     }
   },
   "$defs": {

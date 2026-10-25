@@ -3,7 +3,7 @@
   "stage": "G2B",
   "dataset_id": "advisory_execution_multilingual_v1",
   "call_id": "CALL_096",
-  "call_spec_sha256": "438b3e4e376e509e227e383319d3f32a646648b58447498546ffd9c63c57cd22",
+  "call_spec_sha256": "bceda6058068622b23dcfe3292c6a9014fd5069ee30a025a29c34c6d28c31c0a",
   "source": {
     "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
     "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
@@ -92,7 +92,9 @@
       "question_ids": [
         "C05"
       ],
-      "assignment_ids": [],
+      "assignment_ids": [
+        "EA_226"
+      ],
       "role": "ACT",
       "condition_ref": "C05.pass_condition"
     },
@@ -149,7 +151,7 @@
         "C08"
       ],
       "assignment_ids": [
-        "EA_230"
+        "EA_227"
       ],
       "role": "ACT",
       "condition_ref": "C08.pass_condition"
@@ -165,7 +167,7 @@
         "C08"
       ],
       "assignment_ids": [
-        "EA_230"
+        "EA_227"
       ],
       "strength": "WEAK"
     },
@@ -195,7 +197,7 @@
         "C12"
       ],
       "assignment_ids": [
-        "EA_229"
+        "EA_225"
       ]
     },
     {
@@ -209,7 +211,7 @@
         "C12"
       ],
       "assignment_ids": [
-        "EA_229"
+        "EA_225"
       ]
     },
     {
@@ -228,11 +230,11 @@
         "T06"
       ],
       "assignment_ids": [
-        "EA_227"
+        "EA_224"
       ],
       "values": {
         "T01": {
-          "value": "Crest Emerging Markets Bond Fund",
+          "value": "Meridian Asia Equity Fund",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -241,7 +243,7 @@
           }
         },
         "T02": {
-          "value": "USD",
+          "value": "JPY",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -250,7 +252,7 @@
           }
         },
         "T03": {
-          "value": 500000,
+          "value": 2500000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -259,7 +261,7 @@
           }
         },
         "T04": {
-          "value": 1500,
+          "value": 2000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -303,7 +305,7 @@
         "T06"
       ],
       "assignment_ids": [
-        "EA_227"
+        "EA_224"
       ],
       "invalidates_event_id": "EV_015"
     },
@@ -323,11 +325,11 @@
         "T06"
       ],
       "assignment_ids": [
-        "EA_227"
+        "EA_224"
       ],
       "values": {
         "T01": {
-          "value": "Atlas USD Corporate Bond 2031",
+          "value": "Meridian Asia Equity Fund",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -336,7 +338,7 @@
           }
         },
         "T02": {
-          "value": "USD",
+          "value": "JPY",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -345,7 +347,7 @@
           }
         },
         "T03": {
-          "value": 100000,
+          "value": 2500000,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -354,7 +356,7 @@
           }
         },
         "T04": {
-          "value": 1500,
+          "value": 700,
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -395,7 +397,7 @@
       "assignment_ids": [],
       "values": {
         "K01": {
-          "value": "F8822990W",
+          "value": "F4855239B",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -418,7 +420,7 @@
       "assignment_ids": [],
       "values": {
         "K02": {
-          "value": "25 September 1962",
+          "value": "09 November 1988",
           "spoken_form": {
             "requirement": "ONE_OF",
             "forms": [
@@ -427,21 +429,6 @@
           }
         }
       }
-    },
-    {
-      "event_id": "EV_020",
-      "kind": "FALSE_START",
-      "status": "ABANDONED",
-      "allowed_speakers": [
-        "CLIENT"
-      ],
-      "question_ids": [
-        "T04"
-      ],
-      "assignment_ids": [
-        "EA_228"
-      ],
-      "incomplete": true
     }
   ],
   "checks": [
@@ -519,7 +506,10 @@
       "evidence_event_ids": [
         "EV_006"
       ],
-      "assignment_ids": []
+      "wording_constraint": "NOT_VERBATIM_CHECKLIST",
+      "assignment_ids": [
+        "EA_226"
+      ]
     },
     {
       "question_id": "C06",
@@ -567,7 +557,7 @@
       },
       "evidence_event_ids": [],
       "assignment_ids": [
-        "EA_230"
+        "EA_227"
       ]
     },
     {
@@ -632,7 +622,7 @@
       },
       "evidence_event_ids": [],
       "assignment_ids": [
-        "EA_229"
+        "EA_225"
       ]
     },
     {
@@ -641,7 +631,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "F8822990W"
+        "expected_value": "F4855239B"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K01.resolution_rule",
@@ -676,7 +666,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "dob_dd_month_yyyy",
-        "expected_value": "25 September 1962"
+        "expected_value": "09 November 1988"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "K02.resolution_rule",
@@ -708,7 +698,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "Atlas USD Corporate Bond 2031"
+        "expected_value": "Meridian Asia Equity Fund"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T01.resolution_rule",
@@ -734,9 +724,7 @@
         ]
       },
       "forbidden_spoken_forms": [],
-      "assignment_ids": [
-        "EA_227"
-      ]
+      "assignment_ids": []
     },
     {
       "question_id": "T02",
@@ -744,7 +732,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "text",
-        "expected_value": "USD"
+        "expected_value": "JPY"
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T02.resolution_rule",
@@ -778,7 +766,7 @@
       "expected": {
         "kind": "extraction",
         "value_type": "number",
-        "expected_value": 100000
+        "expected_value": 2500000
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T03.resolution_rule",
@@ -807,9 +795,7 @@
         "FINANCIAL_SHORTHAND",
         "MAGNITUDE_EXPRESSION"
       ],
-      "assignment_ids": [
-        "EA_227"
-      ]
+      "assignment_ids": []
     },
     {
       "question_id": "T04",
@@ -817,15 +803,14 @@
       "expected": {
         "kind": "extraction",
         "value_type": "integer",
-        "expected_value": 1500
+        "expected_value": 700
       },
       "evidence_mode": "PRESENCE",
       "resolution_ref": "T04.resolution_rule",
       "evidence_event_ids": [
         "EV_015",
         "EV_016",
-        "EV_017",
-        "EV_020"
+        "EV_017"
       ],
       "final_event_id": "EV_017",
       "gold_restatement": {
@@ -845,7 +830,7 @@
       },
       "forbidden_spoken_forms": [],
       "assignment_ids": [
-        "EA_228"
+        "EA_224"
       ]
     },
     {
@@ -881,7 +866,7 @@
       },
       "forbidden_spoken_forms": [],
       "assignment_ids": [
-        "EA_227"
+        "EA_224"
       ]
     },
     {
@@ -944,7 +929,7 @@
       "after": "EV_011",
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_230"
+        "id": "EA_227"
       }
     },
     {
@@ -953,7 +938,7 @@
       "after": "EV_014",
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_229"
+        "id": "EA_225"
       }
     },
     {
@@ -962,7 +947,7 @@
       "after": "EV_016",
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_227"
+        "id": "EA_224"
       }
     },
     {
@@ -971,27 +956,7 @@
       "after": "EV_017",
       "source": {
         "type": "EDGE_ASSIGNMENT",
-        "id": "EA_227"
-      }
-    },
-    {
-      "type": "ORDER",
-      "before": "EV_020",
-      "after": "EV_017",
-      "source": {
-        "type": "EDGE_ASSIGNMENT",
-        "id": "EA_228"
-      }
-    },
-    {
-      "type": "SAME_TURN",
-      "events": [
-        "EV_017",
-        "EV_020"
-      ],
-      "source": {
-        "type": "EDGE_ASSIGNMENT",
-        "id": "EA_228"
+        "id": "EA_224"
       }
     },
     {
