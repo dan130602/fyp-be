@@ -15,7 +15,9 @@ from pathlib import Path
 from fyp_evaluation.call_specs.compile import parse_json_text
 
 ALLOWLIST = "authoring/live_allowlist.json"
-CODE_PATHS = ("src", "prompts", "schemas", "scripts")  # relative to the evaluation-dataset project root
+# Relative to the evaluation-dataset project root. `scripts` counts only the top-level pipeline command-line scripts, never the
+# subdirectories (for example the unrelated GPU TTS tooling), so unrelated work never blocks a run.
+CODE_PATHS = ("src", "prompts", "schemas", ":(glob)scripts/*.py")
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 FAKE_MODULES = ("fake_transport", "fake_gemini_transport")
 

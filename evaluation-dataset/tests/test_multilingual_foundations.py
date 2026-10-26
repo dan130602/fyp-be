@@ -189,7 +189,7 @@ def test_a_live_run_refuses_uncommitted_code_but_ignores_unrelated_changes(tmp_p
     monkeypatch.setattr(live_guard, "code_state", lambda *a, **k: {"code_commit": None, "code_dirty_paths": []})
     with pytest.raises(RunError, match="code commit"):
         runner.run_sync("CALL_001")
-    assert live_guard.CODE_PATHS == ("src", "prompts", "schemas", "scripts"), "only code directories matter; data and runtime files never block"
+    assert live_guard.CODE_PATHS == ("src", "prompts", "schemas", ":(glob)scripts/*.py"), "only pipeline code matters; data, runtime files and other tooling never block"
 
 
 def test_the_guard_never_touches_fake_transports_or_the_historical_release(tmp_path, monkeypatch):
