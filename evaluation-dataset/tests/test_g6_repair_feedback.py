@@ -120,7 +120,7 @@ def test_the_cli_accepts_feedback_only_with_dry_run_or_submit_and_a_dataset_root
     assert main(["--repair-feedback", str(path), "--collect"]) == 2
     assert "--dataset-root" in capsys.readouterr().err
     assert main(["--dataset-root", str(root), "--repair-feedback", str(path), "--status"]) == 2
-    assert "--submit or --dry-run" in capsys.readouterr().err
+    assert "--submit, --sync or --dry-run" in capsys.readouterr().err
     path.write_text("{}", encoding="utf-8")
     assert main(["--dataset-root", str(root), "--repair-feedback", str(path), "--dry-run"]) == 2
     assert "repair feedback" in capsys.readouterr().err

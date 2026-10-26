@@ -13,6 +13,10 @@ SCHEMA_VERSION = "1.0"
 GENERATOR_VERSION = "1.0.0"
 HASHING = "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
 
+# Synchronous G6 generation only: a long reasoning request may take many minutes, so the HTTP timeout is generous, and the SDK never
+# retries it (a retry would silently pay for a second dialogue). A timeout is recorded as an ambiguous, possibly billed attempt.
+SYNC_TIMEOUT_SECONDS = 1800.0
+
 # One cap for both duration profiles (reasoning tokens included); a truncated dialogue is REJECTED, never repaired.
 MAX_OUTPUT_TOKENS = 32768
 RESPONSE_FORMAT_NAME = "g6_dialogue_v1"

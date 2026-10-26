@@ -143,7 +143,7 @@ historical release keeps the originals byte for byte (request hashes are pinned 
 
 ## G6, G7 and G9 (schema 2.0)
 
-* **G6 (dialogues).** `dialogue.v2.md` / `dialogue.v2`, `g6_dialogue_v2`. The brief carries the language block, each speaker's spoken names,
+* **G6 (dialogues).** Batch or synchronous (`--sync`, one call at a time, no SDK retries); both send the same request. `dialogue.v2.md` / `dialogue.v2`, `g6_dialogue_v2`. The brief carries the language block, each speaker's spoken names,
   the length unit and (SINGLISH) the register guide; the advisory recommendation gets `product_names` per allowed language (the Chinese
   name is the approved controlled alias). A marker may sit beside Han characters or CJK punctuation but never beside Latin letters, digits
   or another marker. Deterministic checks on the model's own words (`dialogues/language_checks.py`): the frozen script rules, and no

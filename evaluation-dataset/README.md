@@ -321,8 +321,12 @@ an omission leak, a contradictory final instruction) through G4's own acceptance
 
 G6 turns each call's accepted G3 scenario and G4 evidence plan into one EMPLOYEE/CLIENT dialogue
 (`fyp_evaluation.dialogues`, `scripts/generate_dialogues.py`). It uses `gpt-6.1-sol` (medium reasoning, Responses Structured
-Outputs) and is **Batch-only**: `--sync` is refused (the OpenAI SDK retries sync generation silently). G6 acceptance means the
-dialogue is structurally valid and ready for G7; it is never semantic verification.
+Outputs). Bulk generation uses **Batch** (`--submit`, `--collect`); pilots may use one synchronous request per call (`--sync --call-id X`).
+Both send the byte-identical model-facing request and go through the same validation and acceptance; only the transport envelope,
+attempt record (`transport` is `batch` or `sync`) and price (sync is billed at the standard rate) differ. Synchronous G6 requests turn the
+SDK's automatic retries off and use a 30-minute timeout: an unknown outcome (timeout, lost connection) is recorded as a possibly billed,
+ambiguous attempt and the call is blocked until `--sync --acknowledge-duplicate-risk --call-id X`; nothing is ever re-sent automatically.
+G6 acceptance means the dialogue is structurally valid and ready for G7; it is never semantic verification.
 
 - **Evidence is inserted by Python.** The model writes whole-token markers such as `[[EV_013]]`; Python substitutes each event's
   exact G4 `planned_text`, assigns zero-based contiguous `turn_id` values and derives every span (`text[start:end]` of the turn

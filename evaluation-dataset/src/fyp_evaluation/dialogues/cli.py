@@ -1,6 +1,8 @@
 """G6 command line: the shared stage CLI bound to `DialogueRunner`.
 
-Identical modes, modifiers, guards and exit codes to G3/G4. G6 is Batch-only: `--sync` exits 2 without sending anything.
+Identical modes, modifiers, guards and exit codes to G3/G4. G6 supports Batch (bulk generation: `--submit`, `--collect`) and, for pilots,
+one synchronous request per call (`--sync --call-id X`); both use the same request builder, validation and acceptance. A synchronous
+request whose outcome is unknown (timeout) is recorded as possibly billed and blocks the call until `--sync --acknowledge-duplicate-risk`.
 Offline modes never need credentials.
 
 One G6-only option: `--repair-feedback FILE` (with `--dry-run` or `--submit`) adds call-specific repair guidance, derived from the
@@ -27,8 +29,8 @@ def main(argv=None, **kwargs):
         if known.dataset_root is None:
             print("--repair-feedback needs --dataset-root", file=sys.stderr)
             return 2
-        if not any(mode in rest for mode in ("--submit", "--dry-run")):
-            print("--repair-feedback applies to --submit or --dry-run", file=sys.stderr)
+        if not any(mode in rest for mode in ("--submit", "--sync", "--dry-run")):
+            print("--repair-feedback applies to --submit, --sync or --dry-run", file=sys.stderr)
             return 2
         try:
             feedback = load_repair_feedback(known.repair_feedback, known.dataset_root)

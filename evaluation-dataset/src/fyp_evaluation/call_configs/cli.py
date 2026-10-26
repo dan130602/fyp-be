@@ -57,8 +57,9 @@ def _usage_errors(parser, args, mode):
         parser.error("--reopen applies to --sync, --submit or --dry-run")
     if mode == "sync" and not (args.call_ids and len(args.call_ids) == 1):
         parser.error("--sync takes exactly one --call-id")
-    if args.acknowledge_duplicate_risk and mode != "mark_not_submitted":
-        parser.error("--acknowledge-duplicate-risk is only used with --mark-not-submitted")
+    if args.acknowledge_duplicate_risk and mode not in ("mark_not_submitted", "sync"):
+        parser.error("--acknowledge-duplicate-risk is only used with --mark-not-submitted (or --sync, for a stage whose synchronous "
+                     "outcome can be unknown)")
     if args.print_request and mode != "dry_run":
         parser.error("--print-request is only used with --dry-run")
     if args.require_complete and mode != "validate":
@@ -86,7 +87,13 @@ def _run(runner, args, mode):
         _say("estimate: " + json.dumps(report["estimate"], sort_keys=True))
         return 1 if feasibility["infeasible"] else 0
     if mode == "sync":
-        attempt = runner.run_sync(args.call_ids[0], retry_rejected=args.retry_rejected, reopen_reason=reason)
+        extra = {}
+        if args.acknowledge_duplicate_risk:
+            if not getattr(runner, "sync_acknowledgement", False):
+                print("--acknowledge-duplicate-risk with --sync is not supported by this stage", file=sys.stderr)
+                return 2
+            extra["acknowledge_possible_duplicate"] = True
+        attempt = runner.run_sync(args.call_ids[0], retry_rejected=args.retry_rejected, reopen_reason=reason, **extra)
         _say(f"{attempt['call_id']} {attempt['attempt_id']} {attempt['state']}"
              + (f": {attempt['rejection_reason']}" if attempt["rejection_reason"] else "")
              + (f" cost~${attempt['estimated_cost_usd']}" if attempt.get("estimated_cost_usd") is not None else ""))

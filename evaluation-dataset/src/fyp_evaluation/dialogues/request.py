@@ -1,4 +1,4 @@
-"""G6 dialogue context, the per-call brief and the canonical Responses API request body (Batch only).
+"""G6 dialogue context, the per-call brief and the canonical Responses API request body (the same body is sent by Batch and by `--sync`).
 
 The brief is deliberately narrow: harmless scenario background, the planned events as markers with their exact text, the
 placement constraints and the absence conditions. Ready-to-speak compliance material from G3 (concrete risks, product

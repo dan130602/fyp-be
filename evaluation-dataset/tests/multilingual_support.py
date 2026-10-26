@@ -57,9 +57,16 @@ def verification_inputs(call_ids):
     return VerificationInputs(plan_inputs(), plan_texts(call_ids), {}, "0" * 64)
 
 
+# Generated G3-G9 outputs, run records, exposure ledger and allowlist: a scratch release starts from the frozen G0-G2B state only, even
+# after a real (live) run has written outputs into the committed release.
+GENERATED = tuple(f"authoring/{name}" for name in (
+    "call_config", "check_plan_provenance", "check_plan_record", "check_plans", "plan_verification", "dialogue", "ground_truth",
+    "live_allowlist", "exposure_log"))
+
+
 def scratch_release(destination):
-    """A scratch copy of the multilingual release (G0-G2B only; no audio exists in it)."""
-    return copy_tree(RELEASE, destination)
+    """A scratch copy of the multilingual release: the frozen G0-G2B state only (no generated outputs, no audio)."""
+    return copy_tree(RELEASE, destination, skip_prefixes=GENERATED)
 
 
 def first_call(profile, index=0):

@@ -1,4 +1,5 @@
-"""G6 library API: `DialogueRunner` is the G6 specialisation of the shared `StageRunner` lifecycle (Batch only).
+"""G6 library API: `DialogueRunner` is the G6 specialisation of the shared `StageRunner` lifecycle (Batch for bulk generation,
+plus optional one-call synchronous requests for pilots).
 
 G6-specific behaviour:
 - per-call G5 gate: only a current, intact, VALID G5 report makes a call eligible (one call is blocked, never the run);
@@ -16,6 +17,8 @@ from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
 from fyp_evaluation.llm import pricing
 from fyp_evaluation.llm.canonical import response_hash
+from fyp_evaluation.llm.errors import AmbiguousError
+from fyp_evaluation.llm.gemini_runner import GeminiFlexMixin
 from fyp_evaluation.llm.stage_runner import RunError, StageRunner, StageSpec, describe_error
 from fyp_evaluation.plan_verifications.run import PlanVerificationRunner
 from fyp_evaluation.planning import outputs as g1
@@ -25,7 +28,8 @@ from .compile import build_record, compile_artifact
 from .config import LENGTH_POLICY  # noqa: F401  (the historical policy; patched by recalibration tests)
 from .config import (
     ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR,
-    REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, TRANSPORT_BUDGET, length_policy_for, prompt_template, response_schema_name, schema_names,
+    REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, SYNC_TIMEOUT_SECONDS, TRANSPORT_BUDGET, length_policy_for, prompt_template,
+    response_schema_name, schema_names,
 )
 from .feasibility import preflight_errors, synthesize_dialogue
 from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs, read_dialogue
@@ -63,6 +67,13 @@ class DialogueRunner(StageRunner):
     def _schema_names(self):
         artifact, record = schema_names(self.inputs.documents)
         return artifact, record, self.spec.provenance_schema
+
+    def _default_transport_factory(self):
+        """The real OpenAI transport. Synchronous generation never gets an SDK retry and reports an unknown outcome as ambiguous;
+        Batch operations and every other stage keep the shared transport settings."""
+        from fyp_evaluation.llm.openai_transport import OpenAITransport
+
+        return lambda: OpenAITransport.from_env(response_max_retries=0, response_timeout=SYNC_TIMEOUT_SECONDS, ambiguous_sync=True)
 
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir, self.repair_feedback)
@@ -129,8 +140,25 @@ class DialogueRunner(StageRunner):
                            "length_policy": deepcopy(policy)},
                 "price_table_version": pricing.PRICE_TABLE_VERSION}
 
-    def run_sync(self, call_id, *, retry_rejected=False, reopen_reason=None):  # noqa: ARG002
-        raise RunError("G6 is Batch-only: use --submit and then --collect")
+    # ---- synchronous generation (optional; pilots) -----------------------------------------------------
+    sync_acknowledgement = True  # the CLI may pass --acknowledge-duplicate-risk with --sync
+    _awaiting_acknowledgement = staticmethod(GeminiFlexMixin._awaiting_acknowledgement)  # the Gemini stages' ambiguity handling, reused
+    _acknowledge = GeminiFlexMixin._acknowledge
+
+    def run_sync(self, call_id, *, retry_rejected=False, reopen_reason=None, acknowledge_possible_duplicate=False):
+        """One paid synchronous request for one call, through the same request builder, validation and acceptance as Batch.
+
+        An unknown outcome (a timeout or lost connection) is recorded as a possibly billed, ambiguous attempt and the call then
+        waits for an explicit acknowledgement; nothing is ever re-sent automatically."""
+        if acknowledge_possible_duplicate:
+            with self.store.lock():
+                self._acknowledge(call_id)
+        return super().run_sync(call_id, retry_rejected=retry_rejected, reopen_reason=reopen_reason)
+
+    def _fail_transport(self, attempt, error, *, possibly_billed=False):
+        if isinstance(error, AmbiguousError):
+            attempt["ambiguous"] = True
+        super()._fail_transport(attempt, error, possibly_billed=possibly_billed)
 
     def dry_run(self, call_ids=None, **kwargs):
         report = super().dry_run(call_ids, **kwargs)
@@ -141,6 +169,7 @@ class DialogueRunner(StageRunner):
         report["estimate"] = {"eligible_calls": len(eligible), "approx_input_tokens": usage["input_tokens"],
                               "assumed_output_tokens_by_profile": dict(ESTIMATED_OUTPUT_TOKENS),
                               "batch_cost_usd": pricing.estimate_cost(MODEL, usage, "batch"),
+                              "sync_cost_usd": pricing.estimate_cost(MODEL, usage, "standard"),
                               "price_table_version": pricing.PRICE_TABLE_VERSION, "note": "rough planning estimate only"}
         return report
 
@@ -164,6 +193,10 @@ class DialogueRunner(StageRunner):
     def eligibility(self, call_id, *, retry_rejected=False, reopen=False, blocked=None):
         if call_id not in self.inputs.plans:
             return False, "no accepted G4 check plan"
+        latest = self.call_state(call_id)["latest"]
+        if self._awaiting_acknowledgement(latest):
+            return False, (f"AWAITING_ACKNOWLEDGEMENT: the outcome of {latest['attempt_id']} is unknown and it may have been billed; "
+                           f"rerun with --sync --acknowledge-duplicate-risk --call-id {call_id}")
         gate = self._g5_gate(call_id)
         if gate:
             return False, gate
