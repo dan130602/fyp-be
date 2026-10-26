@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage6/dialogue_record.v2.schema.json",
+  "title": "G6 dialogue record (schema 2.0, multilingual releases)",
+  "description": "Deterministic summary over the accepted G6 dialogues (no timestamps).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "generator",
+    "hashing",
+    "upstream",
+    "calls",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "stage": {
+      "const": "G6"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package",
+        "version"
+      ],
+      "properties": {
+        "package": {
+          "const": "fyp_evaluation.dialogues"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "hashing": {
+      "type": "string",
+      "minLength": 1
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_verification_record_sha256",
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256",
+        "generation_plan_sha256",
+        "language_profiles_sha256"
+      ],
+      "properties": {
+        "plan_verification_record_sha256": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/sha256"
+            }
+          ]
+        },
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generation_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "calls": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^CALL_[0-9]{3,}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_sha256",
+          "accepted_attempt_id",
+          "turns",
+          "words",
+          "estimated_seconds",
+          "review_notes",
+          "call_config_sha256",
+          "check_plan_sha256",
+          "plan_verification_sha256",
+          "previous_artifact_sha256",
+          "unit"
+        ],
+        "properties": {
+          "artifact_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "accepted_attempt_id": {
+            "type": "string",
+            "pattern": "^A[0-9]{3,}$"
+          },
+          "turns": {
+            "type": "integer",
+            "minimum": 2
+          },
+          "words": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "estimated_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "review_notes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "call_config_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "check_plan_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "plan_verification_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "previous_artifact_sha256": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "unit": {
+            "enum": [
+              "words",
+              "han_chars",
+              "han_chars_plus_words"
+            ]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_calls",
+        "total_calls",
+        "reopened_calls",
+        "length_by_profile",
+        "review_notes"
+      ],
+      "properties": {
+        "accepted_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reopened_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "review_notes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length_by_profile": {
+          "type": "object",
+          "description": "Keyed '<language profile>/<duration profile>'; each entry states its counting unit, so counts are never mixed across units.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "unit",
+              "min",
+              "max",
+              "mean"
+            ],
+            "properties": {
+              "unit": {
+                "enum": [
+                  "words",
+                  "han_chars",
+                  "han_chars_plus_words"
+                ]
+              },
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": "integer"
+              },
+              "mean": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

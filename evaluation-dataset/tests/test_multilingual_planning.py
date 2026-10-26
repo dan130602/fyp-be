@@ -313,18 +313,18 @@ def test_skeleton_validator_rejects_a_moved_pin(skeleton_inputs):
     assert any("required_language pins" in e for e in validate_skeleton_set(skeleton_inputs, disk, SCHEMAS))
 
 
-def test_g3_loads_the_multilingual_release_and_later_stages_refuse_until_their_versions_exist(monkeypatch):
-    from types import SimpleNamespace
+def test_g3_loads_the_multilingual_release_and_later_stages_wait_for_their_upstream():
+    from fyp_evaluation.check_plans.inputs import G3StateError
+    from fyp_evaluation.dialogue_verifications.inputs import load_inputs as load_g7
+    from fyp_evaluation.dialogues.inputs import load_inputs as load_g6
 
-    from fyp_evaluation.dialogues import inputs as g6_inputs
-
-    upstream = load_g3_inputs(RELEASE, SCHEMAS)  # G3 now has a language-aware brief, prompt and schema
+    upstream = load_g3_inputs(RELEASE, SCHEMAS)  # G3 has a language-aware brief, prompt and schema
     assert upstream.source_hashes()["language_profiles_sha256"]
-    # G6, G7 and G9 (which load through G6) still have no multilingual version: they refuse explicitly, never crash or proceed
-    stub = SimpleNamespace(documents=upstream.documents, dataset_id=upstream.dataset_id, call_ids=upstream.call_ids)
-    monkeypatch.setattr(g6_inputs, "load_g5_inputs", lambda root, schema_dir: stub)
-    with pytest.raises(g6_inputs.MultilingualNotSupported, match="G6, G7 and G9"):
-        g6_inputs.load_inputs(RELEASE, SCHEMAS)
+    # G6 and G7 now have multilingual versions: with no accepted G3 configs they wait for their upstream like any other release
+    # (the historical blanket refusal of G6, G7 and G9 is gone)
+    for loader in (load_g6, load_g7):
+        with pytest.raises(G3StateError, match="not complete"):
+            loader(RELEASE, SCHEMAS)
 
 
 # ---------------------------------------------------------------------------------------------- reports

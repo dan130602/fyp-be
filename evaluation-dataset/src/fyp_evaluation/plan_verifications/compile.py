@@ -63,7 +63,7 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
         "check_plan_skeleton_sha256": inputs.skeleton_hashes[call_id],
         "call_config_sha256": inputs.config_hashes[call_id],
         "check_plan_sha256": inputs.plan_hashes[call_id],
-        "source": {**inputs.source_hashes(), **register_guide.extra_hashes(ctx.spec)},  # the guide only for SINGLISH calls
+        "source": {**inputs.source_hashes(), **register_guide.recorded(generation)},  # the guide only for SINGLISH calls
         "generation": generation_block(generation, parsed, response_schema),
         "verdict": verdict,
         "recommended_repair": derive_repair(verdict, issues),

@@ -41,6 +41,15 @@ def extra_hashes(spec, directory=None):
     return {HASH_KEY: guide_sha256(directory=directory)} if applies(spec) else {}
 
 
+def recorded(generation):
+    """{"register_guide_sha256": hash} when the accepted generation metadata records the guide a call was built under, else {}.
+
+    Artifacts take the guide hash from here, never from the current file, so an accepted artifact still rebuilds byte for byte
+    (and validates) after the current guide version has changed; only its staleness changes.
+    """
+    return {HASH_KEY: generation[HASH_KEY]} if generation.get(HASH_KEY) else {}
+
+
 def fresh_hashes(root, call_id, directory=None):
     """The same, for a call identified by its spec file under `root` (used where only the dataset root is known)."""
     path = Path(root) / "authoring" / "call_specs" / f"{call_id}.json"

@@ -21,8 +21,12 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+from fyp_evaluation.answer_support import mentions_value as _mentions_value  # noqa: F401  (kept importable from here)
+from fyp_evaluation.answer_support import required_extraction_events as _required_extraction_events
+from fyp_evaluation.answer_support import value_history as _value_history
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json, text_hash
 from fyp_evaluation.transcripts.converter import transcript_artifacts_from_dialogue
+from fyp_evaluation.validation.stage0 import is_multilingual
 
 STAGE, SCHEMA_VERSION, GENERATOR_VERSION = "G9", "1.0", "1.0.0"
 HASHING = "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
@@ -32,8 +36,11 @@ DIALOGUE_DIR, REPORT_DIR = "authoring/dialogues", "authoring/plan_verifications"
 CALL_FILES = ("ground_truth.json", "transcript.json", "speaker_roles.json")
 
 
-def schema_path(schema_dir):
-    return Path(schema_dir) / "stage9" / "ground_truth.schema.json"
+def schema_path(schema_dir, documents=None):
+    """The ground-truth schema: `ground_truth.v2` for a multilingual release (its source block also carries the language-profile
+    hash and, for SINGLISH calls, the register-guide hash), the historical one otherwise."""
+    name = "ground_truth.v2" if documents is not None and is_multilingual(documents) else "ground_truth"
+    return Path(schema_dir) / "stage9" / f"{name}.schema.json"
 
 
 def challenge_tag(edge_case_id):
@@ -49,59 +56,6 @@ def _span(event, alignment, turns):
         raise ValueError(f"{event['event_id']}: spoken by {turn['speaker']}, planned for {event['authoring']['speaker']}")
     return {"event_id": event["event_id"], "turn_id": turn["turn_id"], "speaker": turn["speaker"], "start": alignment["start"],
             "end": alignment["end"], "text": text}
-
-
-def _value_history(question_id, events, spans):
-    """Every event that states a value for the question (readback errors included), in dialogue order."""
-    history = []
-    for event in events:
-        if "values" in event and question_id in event["values"]:
-            value = event["values"][question_id]["value"]
-        elif (event.get("readback") or {}).get("wrong_question_id") == question_id:
-            value = event["readback"]["wrong_value"]
-        else:
-            continue
-        span = spans[event["event_id"]]
-        history.append({"turn_id": span["turn_id"], "event_id": event["event_id"], "speaker": span["speaker"], "kind": event["kind"],
-                        "status": event["status"], "value": value, "_order": (span["turn_id"], span["start"])})
-    history.sort(key=lambda entry: entry["_order"])
-    return [{key: value for key, value in entry.items() if key != "_order"} for entry in history]
-
-
-# Final-event kinds whose own turn explicitly states the value (a reference needs its antecedent as well).
-EXPLICIT_FINAL_KINDS = frozenset({"VALUE_STATEMENT", "VALUE_CORRECTION", "ORDER_STATEMENT"})
-
-
-def _mentions_value(event, question_id, value):
-    return any(m["question_id"] == question_id and m["value"] == value for m in event["authoring"].get("value_mentions", []))
-
-
-def _required_extraction_events(call_id, question_id, check, events_by_id, expected_value):
-    """The planned events a model must cite to answer the extraction question: the final event and, for a reference, its antecedent.
-
-    Deterministic: nothing is guessed. Anything the rule cannot verify raises instead of falling back to the whole planned set.
-    """
-    where = f"{call_id}/{question_id}"
-    final_id = check.get("final_event_id")
-    if not final_id:
-        raise ValueError(f"{where}: an extraction check needs a final event to derive its required evidence")
-    final = events_by_id[final_id]
-    if final["status"] != "FINAL" or final["values"][question_id]["value"] != expected_value:
-        raise ValueError(f"{where}: final event {final_id} is not the final answer {expected_value!r}")
-    if final["kind"] in EXPLICIT_FINAL_KINDS:
-        if not _mentions_value(final, question_id, expected_value):
-            raise ValueError(f"{where}: final event {final_id} does not explicitly mention the expected value")
-        required = [final_id]
-    elif final["kind"] == "REFERENCE_SELECTION":
-        antecedent = events_by_id[final["refers_to_event_id"]]
-        if antecedent["kind"] != "ANTECEDENT_MENTION" or not _mentions_value(antecedent, question_id, expected_value):
-            raise ValueError(f"{where}: reference {final_id} does not point to an explicit mention of the expected value")
-        required = [antecedent["event_id"], final_id]
-    else:
-        raise ValueError(f"{where}: unsupported final event kind {final['kind']}")
-    if not set(required) <= set(check["evidence_event_ids"]):
-        raise ValueError(f"{where}: required evidence {required} is not part of the planned evidence")
-    return required
 
 
 def compile_ground_truth(inputs, call_id, dialogue_text, report_text, timing=None):
@@ -150,9 +104,12 @@ def compile_ground_truth(inputs, call_id, dialogue_text, report_text, timing=Non
             "value_history": history, "challenge_tags": tags,
         })
     source = inputs.upstream.source_hashes()
+    multilingual = is_multilingual(inputs.documents)
+    if multilingual and dialogue["source"].get("register_guide_sha256"):  # the guide version the SINGLISH dialogue was written under
+        source = {**source, "register_guide_sha256": dialogue["source"]["register_guide_sha256"]}
     final = timing is not None
     ground_truth = {
-        "schema_version": SCHEMA_VERSION, "stage": STAGE, "dataset_id": inputs.dataset_id, "call_id": call_id,
+        "schema_version": "2.0" if multilingual else SCHEMA_VERSION, "stage": STAGE, "dataset_id": inputs.dataset_id, "call_id": call_id,
         "status": {"g7_dialogue_verification": "VERIFIED", "timings": "AUDIO_DERIVED"} if final
         else {"g7_dialogue_verification": "PENDING", "timings": "PLACEHOLDER_ZERO"},
         "source": {"call_spec_sha256": inputs.spec_hashes[call_id], "check_plan_skeleton_sha256": inputs.skeleton_hashes[call_id],
@@ -170,7 +127,7 @@ def compile_ground_truth(inputs, call_id, dialogue_text, report_text, timing=Non
 def build_call_files(inputs, call_id, dialogue_text, report_text, schema_dir, timing=None):
     """{file name: canonical text} for one call, every document schema-validated. `timing` makes it the FINAL compile."""
     ground_truth = compile_ground_truth(inputs, call_id, dialogue_text, report_text, timing)
-    validator = Draft202012Validator(json.loads(schema_path(schema_dir).read_text(encoding="utf-8")))
+    validator = Draft202012Validator(json.loads(schema_path(schema_dir, inputs.documents).read_text(encoding="utf-8")))
     if errors := [f"{e.json_path}: {e.message}" for e in validator.iter_errors(ground_truth)]:
         raise ValueError(f"{call_id}: ground truth fails its schema: {errors[:5]}")
     transcript, speaker_roles = transcript_artifacts_from_dialogue(call_id, ground_truth["dialogue"], schema_dir=schema_dir,

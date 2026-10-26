@@ -5,10 +5,10 @@ language-independent: the coverage matrix stores `T04 = 700`, never `七百`. A 
 dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unchanged and still reproduces byte-for-byte.
 
 Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH), the
-deterministic G4 layer for schema 2.0 (Phase 2; see "G4 (schema 2.0)" below) and, offline, the multilingual G3, G4 and G5 generations
-(Phase 3A; see "G3-G5 (schema 2.0)"). G6, G7 and G9 still refuse a multilingual release (`dialogues/inputs.py`) until their versions exist
-(Phase 3B). No paid call has been made: every multilingual G3-G5 test runs on fake transports, and a live run is refused unless it is
-covered by a committed allowlist batch. TTS, STT, scoring, the deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
+deterministic G4 layer for schema 2.0 (Phase 2; see "G4 (schema 2.0)" below) and, offline, the multilingual G3-G7 generations and the G9
+source schema (Phase 3; see "G3-G5 (schema 2.0)" and "G6, G7 and G9 (schema 2.0)"). No paid call has been made: every multilingual
+G3-G7 test runs on fake transports, and a live run is refused unless it is covered by a committed allowlist batch. TTS, STT, scoring, the
+deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
 
 ## Release shape
 
@@ -141,6 +141,28 @@ historical release keeps the originals byte for byte (request hashes are pinned 
   The attempt records an `exposure` block (`run_kind`, `code_commit`, `code_dirty_paths`, `allowlist_batch`) in its PREPARED state, before
   anything is sent. `scripts/report_exposure.py` derives `authoring/exposure_log.json` from the audit store and provenance (live attempts only).
 
+## G6, G7 and G9 (schema 2.0)
+
+* **G6 (dialogues).** `dialogue.v2.md` / `dialogue.v2`, `g6_dialogue_v2`. The brief carries the language block, each speaker's spoken names,
+  the length unit and (SINGLISH) the register guide; the advisory recommendation gets `product_names` per allowed language (the Chinese
+  name is the approved controlled alias). A marker may sit beside Han characters or CJK punctuation but never beside Latin letters, digits
+  or another marker. Deterministic checks on the model's own words (`dialogues/language_checks.py`): the frozen script rules, and no
+  numeral or value word glued to a planned number (a planned `七百` can never become `七百五十`). Everything else about filler (a confirmation,
+  a fee, market commentary) is judged by G7, never by G6. Length is counted per language profile: ENGLISH and SINGLISH keep the historical
+  word policy; MANDARIN counts Han characters and EN_ZH_MIXED counts Han characters plus English words. **These units, rates and bands are
+  PROVISIONAL** (see `LENGTH_POLICY_V2`) until the pilot's audio calibrates them. Each attempt records its call's own policy; the policy
+  version names the unit (`g6-length-v2-han-chars`, `g6-length-v2-han-chars-plus-words`).
+* **G7 (verification).** `dialogue_verification.v2.md`. Python derives `language_rows` per call from the frozen profile (EN_ZH_MIXED: client
+  substantive in both languages, a within-turn switch, bilingual speech distributed; SINGLISH: client register realised, every employee turn
+  professional English; plus one row per edge case with a language variant). Rows are blocking like checklist rows (`LANGUAGE_REQUIREMENT_NOT_MET`);
+  a MATCH must cite real speech of the right kind (mechanical rules in `dialogue_verifications/language_rows.py`, which prove the citation,
+  not the requirement). `LANGUAGE_NATURALNESS` is an advisory quality finding and never changes the verdict. Controls: `MULTILINGUAL_CONTROLS`.
+* **G9.** Only the source schema grows (`ground_truth.v2`: `language_profiles_sha256`, and the SINGLISH dialogue's `register_guide_sha256`);
+  the answer-support rule (`answer_support.py`, extracted unchanged from the G9 compiler) is shared, and the pilot's G9 output reproduces
+  byte for byte.
+* **Register guide.** A SINGLISH call records the guide version it was built under in its accepted generation metadata, so an accepted
+  artifact still rebuilds and validates after the guide changes (only its dependency status becomes stale).
+
 ## G1 rules (2.0)
 
 Each profile is planned exactly: duration, intent, composition, FAIL histogram, per-question FAIL counts, edge-case
@@ -168,6 +190,6 @@ python scripts/resolve_multilingual_quotas.py --dataset-root datasets/advisory_e
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
-python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py tests/test_multilingual_foundations.py tests/test_multilingual_g5_chain.py
+python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py tests/test_multilingual_foundations.py tests/test_multilingual_g5_chain.py tests/test_multilingual_g6.py tests/test_multilingual_g7.py tests/test_multilingual_g9.py
 python scripts/report_exposure.py --dataset-root datasets/advisory_execution_multilingual_v1 --check   # once a live batch exists
 ```

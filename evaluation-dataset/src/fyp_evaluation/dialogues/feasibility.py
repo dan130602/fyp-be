@@ -8,12 +8,22 @@ filler pairs pad the dialogue into the length band. The model chooses its own pl
 import heapq
 
 from .advisory import advisory_conflicts
-from .render import render, word_count
+from .render import length_count, render
 
 FILLER = {
     "EMPLOYEE": "Thank you, I have noted that on my side.",
     "CLIENT": "Alright, thank you for walking me through the call today.",
 }
+# Schema-2.0 fillers per language profile: each satisfies the profile's script rules and says nothing about the call's content.
+FILLER_BY_PROFILE = {
+    "SINGLISH": {"EMPLOYEE": FILLER["EMPLOYEE"], "CLIENT": "Okay lah, thank you for walking me through the call today."},
+    "MANDARIN": {"EMPLOYEE": "谢谢您，我这边已经记录好了。", "CLIENT": "好的，谢谢您今天的说明。"},
+    "EN_ZH_MIXED": {"EMPLOYEE": "Thank you，我这边已经记录好了。", "CLIENT": "好的，thank you for walking me through the call，谢谢您。"},
+}
+
+
+def _fillers(ctx):
+    return FILLER_BY_PROFILE.get(ctx.metadata.get("language_profile"), FILLER) if ctx.multilingual else FILLER
 OTHER = {"EMPLOYEE": "CLIENT", "CLIENT": "EMPLOYEE"}
 
 
@@ -98,7 +108,7 @@ def synthesize_dialogue(ctx):
             first, second = c["events"]
             gaps.setdefault(first, []).append((second, c["turns"]))
             gaps.setdefault(second, []).append((first, c["turns"]))
-    turns, placed = [], {}
+    filler, turns, placed = _fillers(ctx), [], {}
     for root in order:
         events = inner[root]
         speaker = ctx.speakers[events[0]]
@@ -109,13 +119,13 @@ def synthesize_dialogue(ctx):
                     required = max(required, placed[other] + n + 1)
         while len(turns) < required or (turns and turns[-1]["speaker"] == speaker):
             filler_speaker = OTHER[turns[-1]["speaker"]] if turns else OTHER[speaker]
-            turns.append({"speaker": filler_speaker, "text": FILLER[filler_speaker]})
+            turns.append({"speaker": filler_speaker, "text": filler[filler_speaker]})
         for event_id in events:
             placed[event_id] = len(turns)
         turns.append({"speaker": speaker, "text": " ".join(f"[[{event_id}]]" for event_id in events)})
-    words = word_count(render(ctx, {"turns": turns})[0])
+    words = length_count(render(ctx, {"turns": turns})[0], ctx.unit)
     while words < ctx.bounds["target_words"][0]:
         speaker = OTHER[turns[-1]["speaker"]]
-        turns.append({"speaker": speaker, "text": FILLER[speaker]})
-        words += len(FILLER[speaker].split())
+        turns.append({"speaker": speaker, "text": filler[speaker]})
+        words += length_count([{"text": filler[speaker]}], ctx.unit)
     return {"turns": turns}

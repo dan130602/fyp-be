@@ -23,7 +23,9 @@ from .config import (
     ASSESSMENTS, MAX_EVIDENCE, MAX_EXPLANATION, MAX_ISSUES, MAX_QUALITY, MAX_QUOTE, MAX_RATIONALE, UNGROUNDED_MISMATCH_CODE,
 )
 from .grounding import locate
+from .language_rows import SINGLISH_EMPLOYEE, mechanical_errors
 
+LANGUAGE_CODE = "LANGUAGE_REQUIREMENT_NOT_MET"
 ISSUE_ID = re.compile(r"^I[1-9][0-9]*$")
 QUALITY_ID = re.compile(r"^Q[1-9][0-9]*$")
 SEVERITY = {"MATCH": 0, "UNCLEAR": 1, "MISMATCH": 2}
@@ -100,16 +102,29 @@ def _expand_rows(ctx, rows, key, link_field, label, issue_by_id, errors):
 
 def expand(parsed, ctx):
     """(checks, edge_cases, issues, quality_findings, errors): the expanded report parts, or the list of rule violations."""
+    checks, edges, issues, quality, _, errors = expand_all(parsed, ctx)
+    return checks, edges, issues, quality, errors
+
+
+def expand_all(parsed, ctx):
+    """`expand` plus the expanded language rows: (checks, edge_cases, issues, quality_findings, language_checks, errors)."""
     errors = []
     checks, edges, issues, quality = parsed["checks"], parsed["edge_cases"], parsed["issues"], parsed["quality_findings"]
+    language = parsed.get("language_checks", []) if ctx.multilingual else []
     ids = [check["question_id"] for check in checks]
     if ids != ctx.order:
         errors.append(f"checks must list exactly the 20 checklist questions in checklist order; got {ids}")
     edge_ids = [edge["assignment_id"] for edge in edges]
     if edge_ids != ctx.assignment_ids:
         errors.append(f"edge_cases must list exactly the call's edge-case assignments in the given order {ctx.assignment_ids}; got {edge_ids}")
+    if ctx.multilingual:
+        language_ids = [row["row_id"] for row in language]
+        if language_ids != ctx.language_row_ids:
+            errors.append(f"language_checks must list exactly the call's language rows in the given order {ctx.language_row_ids}; got {language_ids}")
+    elif parsed.get("language_checks"):
+        errors.append("language_checks is only valid for a multilingual release")
     if errors:
-        return None, None, None, None, errors
+        return None, None, None, None, None, errors
     if len(issues) > MAX_ISSUES:  # not in the provider-facing schema (nested bounds are rejected by Gemini): enforced here
         errors.append(f"more than {MAX_ISSUES} issues")
     if len(quality) > MAX_QUALITY:
@@ -136,9 +151,19 @@ def expand(parsed, ctx):
         if unknown := [a for a in issue["assignment_ids"] if a not in assignments]:
             errors.append(f"{where}: assignment_ids {unknown} are not assignments of this call")
         evidence = _expand_list(ctx, issue["evidence"], where, errors)
-        if issue["assessment"] == "MISMATCH" and issue["code"] != UNGROUNDED_MISMATCH_CODE and not issue["evidence"]:
+        rows = issue.get("language_row_ids", [])
+        if len(set(rows)) != len(rows):
+            errors.append(f"{where}: language_row_ids repeat")
+        if unknown := [r for r in rows if r not in ctx.language_row_ids]:
+            errors.append(f"{where}: language_row_ids {unknown} are not language rows of this call")
+        if issue["code"] == LANGUAGE_CODE and not rows:
+            errors.append(f"{where}: a {LANGUAGE_CODE} issue must name the language row it concerns")
+        if issue["assessment"] == "MISMATCH" and SINGLISH_EMPLOYEE in rows and not any(item["speaker"] == "EMPLOYEE" for item in evidence):
+            errors.append(f"{where}: a failed {SINGLISH_EMPLOYEE} row must cite the employee speech it rests on")
+        absent = issue["code"] == UNGROUNDED_MISMATCH_CODE or (issue["code"] == LANGUAGE_CODE and SINGLISH_EMPLOYEE not in rows)
+        if issue["assessment"] == "MISMATCH" and not absent and not issue["evidence"]:
             errors.append(f"{where}: a MISMATCH issue coded {issue['code']} must cite the dialogue speech it rests on "
-                          f"(only {UNGROUNDED_MISMATCH_CODE} may have no citation)")
+                          f"(only {UNGROUNDED_MISMATCH_CODE} and an absent language requirement may have no citation)")
         expanded_issues.append({**issue, "evidence": evidence})
 
     expanded_checks = []
@@ -161,6 +186,14 @@ def expand(parsed, ctx):
                                "assessment": row["assessment"], "rationale": row["rationale"], "evidence": evidence,
                                "issue_ids": list(row["issue_ids"])})
 
+    expanded_language = []
+    for row, evidence in _expand_rows(ctx, language, "row_id", "language_row_ids", "language row", issue_by_id, errors):
+        if row["assessment"] == "MATCH":
+            errors += mechanical_errors(ctx, row["row_id"], evidence)
+        requirement = next(r["requirement"] for r in ctx.language_rows if r["row_id"] == row["row_id"]) if row["row_id"] in ctx.language_row_ids else ""
+        expanded_language.append({"row_id": row["row_id"], "requirement": requirement, "assessment": row["assessment"],
+                                  "rationale": row["rationale"], "evidence": evidence, "issue_ids": list(row["issue_ids"])})
+    by_row = {r["row_id"]: r for r in language}
     by_question = {c["question_id"]: c for c in checks}
     by_assignment = {e["assignment_id"]: e for e in edges}
     for issue in issues:  # linkage in the other direction: an issue naming a row must be referenced by that row
@@ -172,6 +205,9 @@ def expand(parsed, ctx):
         for aid in issue["assignment_ids"]:
             if aid in by_assignment and issue["issue_id"] not in by_assignment[aid]["issue_ids"]:
                 errors.append(f"issue {issue['issue_id']}: names {aid} but edge case {aid} does not reference it")
+        for rid in issue.get("language_row_ids", []):
+            if rid in by_row and issue["issue_id"] not in by_row[rid]["issue_ids"]:
+                errors.append(f"issue {issue['issue_id']}: names {rid} but language row {rid} does not reference it")
 
     expanded_quality = []
     for finding in quality:
@@ -181,8 +217,8 @@ def expand(parsed, ctx):
             errors.append(f"{where}: a quality finding must cite the turn it concerns")
         expanded_quality.append({**finding, "evidence": _expand_list(ctx, finding["evidence"], where, errors)})
     if errors:
-        return None, None, None, None, errors
-    return expanded_checks, expanded_edges, expanded_issues, expanded_quality, []
+        return None, None, None, None, None, errors
+    return expanded_checks, expanded_edges, expanded_issues, expanded_quality, expanded_language, []
 
 
 class DialogueVerificationValidator:

@@ -10,7 +10,8 @@ from jsonschema import Draft202012Validator
 
 from fyp_evaluation.validation.dialogue import validate_speaker_alternation
 
-from .render import occurrences_outside, render, spans_by_turn, word_count
+from .language_checks import language_errors
+from .render import length_count, occurrences_outside, render, spans_by_turn
 
 
 def _schema_errors(validator, parsed):
@@ -82,8 +83,10 @@ class DialogueValidator:
             for question_id, surface in ctx.identity_surfaces:
                 if occurrences_outside(turn["text"], surface, inside):
                     errors.append(f"turn {turn['turn_id']}: unplanned {question_id} value {surface!r} outside the planned events")
+        errors += language_errors(ctx, turns, alignment, spans)
         low, high = ctx.bounds["accepted_words"]
-        words = word_count(turns)
+        words = length_count(turns, ctx.unit)
         if not low <= words <= high:
-            errors.append(f"length: {words} words; the {ctx.profile} band of {ctx.length_policy['version']} is {low}-{high}")
+            unit = "words" if ctx.unit == "words" else ctx.unit.replace("_", " ")
+            errors.append(f"length: {words} {unit}; the {ctx.profile} band of {ctx.length_policy['version']} is {low}-{high}")
         return errors

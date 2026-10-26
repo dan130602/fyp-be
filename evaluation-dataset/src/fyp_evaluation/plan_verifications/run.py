@@ -64,6 +64,7 @@ def synthesize_response(ctx):
 
 class PlanVerificationRunner(GeminiFlexMixin, StageRunner):
     spec = G5_SPEC
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were built under
     flex = G5_FLEX
     ARTIFACT_HASH_KEYS = {**StageRunner.ARTIFACT_HASH_KEYS, "check_plan": "check_plan_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)

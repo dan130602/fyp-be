@@ -12,6 +12,7 @@ The Gemini Flex send/recovery loop is the one G5 proved (`llm.gemini_runner.Gemi
   advisory: a SERIOUS finding never changes the verdict or the eligibility.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
 from fyp_evaluation.dialogues.config import DIALOGUE_UNREADABLE, G5_UNREADABLE
@@ -26,8 +27,8 @@ from fyp_evaluation.planning import outputs as g1
 from .compile import build_record, compile_artifact
 from .config import (
     API_KEY_VARIABLE, ARTIFACT_DIR, CAPACITY_BACKOFF_SECONDS, CAPACITY_JITTER, CAPACITY_SENDS, ESTIMATED_OUTPUT_TOKENS,
-    MAX_OUTPUT_TOKENS, MODEL, PRICE_TABLE_VERSION, PRICES, PROMPT_DIR, PROMPT_TEMPLATE, PROVENANCE_DIR, RECORD, RESPONSE_SCHEMA,
-    SEMANTIC_BUDGET, SERVICE_TIER, STAGE, THINKING_LEVEL, TIMEOUT_MS, TRANSPORT_BUDGET,
+    MAX_OUTPUT_TOKENS, MODEL, PRICE_TABLE_VERSION, PRICES, PROMPT_DIR, PROVENANCE_DIR, RECORD, SEMANTIC_BUDGET, SERVICE_TIER, STAGE,
+    THINKING_LEVEL, TIMEOUT_MS, TRANSPORT_BUDGET, prompt_template, response_schema_name, schema_names,
 )
 from .inputs import fresh_upstream_hashes, inputs_with_versions, load_inputs
 from .request import DialogueVerificationContext, RequestBuilder, schema_path
@@ -62,7 +63,39 @@ def synthesize_response(ctx):
         evidence = [{"turn_id": ctx.turn_of_event[carriers[0]], "quote": ctx.planned_text(carriers[0])[:60]}] if carriers else []
         edge_cases.append({"assignment_id": assignment_id, "evidence": evidence,
                            "rationale": "The dialogue realises the assigned edge case.", "assessment": "MATCH", "issue_ids": []})
-    return {"checks": checks, "edge_cases": edge_cases, "issues": [], "quality_findings": []}
+    report = {"checks": checks, "edge_cases": edge_cases, "issues": [], "quality_findings": []}
+    if ctx.multilingual:  # one all-MATCH row per language row, each citing real speech of the kind its mechanical rule needs
+        report["language_checks"] = [{"row_id": row_id, "evidence": _language_evidence(ctx, row_id),
+                                      "rationale": "The dialogue realises the language requirement.", "assessment": "MATCH", "issue_ids": []}
+                                     for row_id in ctx.language_row_ids]
+    return report
+
+
+def _language_evidence(ctx, row_id):
+    """Real quotes that satisfy a MATCH row's mechanical citation rule on ANY dialogue that really meets the requirement (fixture only)."""
+    from fyp_evaluation.validation.stage0 import HAN, LATIN
+
+    from .language_rows import MIXED_BOTH, MIXED_SPREAD, MIXED_SWITCH, SINGLISH_EMPLOYEE, VARIANT_PREFIX
+
+    def quote(turn):
+        return {"turn_id": turn["turn_id"], "quote": turn["text"][:300]}
+
+    client = [t for t in ctx.turns if t["speaker"] == "CLIENT"]
+    if row_id == SINGLISH_EMPLOYEE:
+        return [quote(next(t for t in ctx.turns if t["speaker"] == "EMPLOYEE"))]
+    if row_id == MIXED_BOTH:
+        han = next((t for t in client if HAN.search(t["text"])), client[0])
+        latin = next((t for t in client if LATIN.search(t["text"])), client[0])
+        return [quote(han), quote(latin)]
+    if row_id == MIXED_SWITCH:
+        both = min((t for t in client if HAN.search(t["text"]) and LATIN.search(t["text"])), key=lambda t: len(t["text"]), default=client[0])
+        return [quote(both)]
+    if row_id == MIXED_SPREAD:
+        return [quote(client[0]), quote(client[-1])]
+    if row_id.startswith(VARIANT_PREFIX):
+        carriers = ctx.events_of_assignment.get(row_id[len(VARIANT_PREFIX):], [])
+        return [{"turn_id": ctx.turn_of_event[carriers[0]], "quote": ctx.planned_text(carriers[0])[:60]}] if carriers else []
+    return [quote(client[0])]
 
 
 class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
@@ -71,6 +104,11 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
     ARTIFACT_HASH_KEYS = {**StageRunner.ARTIFACT_HASH_KEYS, "check_plan": "check_plan_sha256",
                           "plan_verification": "plan_verification_sha256", "dialogue": "dialogue_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were verified under
+
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
 
     def _runnable(self, call_id):
         return call_id in self.inputs.plans
@@ -101,7 +139,7 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
                 "call_config": inputs.config_hashes[call_id], "check_plan": inputs.plan_hashes[call_id],
                 "plan_verification": inputs.report_hashes.get(call_id), "dialogue": inputs.dialogue_hashes.get(call_id),
-                **inputs.source_hashes()}
+                **inputs.source_hashes(), **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         return fresh_upstream_hashes(self.inputs.root, call_id)
@@ -147,8 +185,8 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
         from the configured files NOW (the builder's cached hashes cannot see a change made while this process is alive).
         Raises OSError when either file cannot be read."""
         current = {"params": self._attempt_metadata()["params"],
-                   "prompt_template_sha256": g1.sha256((self.prompt_dir / PROMPT_TEMPLATE).read_bytes()),
-                   "response_schema_sha256": g1.sha256(schema_path(RESPONSE_SCHEMA, self.schema_dir).read_bytes())}
+                   "prompt_template_sha256": g1.sha256((self.prompt_dir / prompt_template(self.inputs.documents)).read_bytes()),
+                   "response_schema_sha256": g1.sha256(schema_path(response_schema_name(self.inputs.documents), self.schema_dir).read_bytes())}
         return sorted(key for key, value in current.items() if attempt.get(key) != value)
 
     def _judge_locked(self, attempt, parsed):

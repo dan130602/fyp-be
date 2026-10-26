@@ -8,15 +8,17 @@ verified G3/G4/G5 versions and the verified G6 dialogue, accepted parsed respons
 rebuilds every report without any provider envelope.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
-from .config import GENERATOR_VERSION, HASHING, QUALITY_REVIEWS, SCHEMA_VERSION, STAGE, VERDICTS
-from .validate_response import expand
+from .config import GENERATOR_VERSION, HASHING, QUALITY_REVIEWS, STAGE, VERDICTS, schema_version
+from .validate_response import expand_all
 
 
-def derive_verdict(checks, edge_cases, issues):
-    assessments = [r["assessment"] for r in checks] + [r["assessment"] for r in edge_cases] + [i["assessment"] for i in issues]
+def derive_verdict(checks, edge_cases, issues, language_checks=()):
+    assessments = ([r["assessment"] for r in checks] + [r["assessment"] for r in edge_cases] + [r["assessment"] for r in language_checks]
+                   + [i["assessment"] for i in issues])
     if "MISMATCH" in assessments:
         return "INVALID"
     if "UNCLEAR" in assessments:
@@ -56,16 +58,17 @@ def _counts(rows):
 
 
 def compile_artifact(inputs, ctx, parsed, generation, response_schema):
-    checks, edge_cases, issues, quality, errors = expand(parsed, ctx)
+    checks, edge_cases, issues, quality, language, errors = expand_all(parsed, ctx)
     if errors:
         raise ValueError("cannot compile the dialogue verification: " + "; ".join(errors[:5]))
-    verdict = derive_verdict(checks, edge_cases, issues)
+    multilingual = ctx.multilingual
+    verdict = derive_verdict(checks, edge_cases, issues, language)
     by_code = {}
     for issue in issues:
         by_code[issue["code"]] = by_code.get(issue["code"], 0) + 1
     call_id = ctx.call_id
-    return {
-        "schema_version": SCHEMA_VERSION,
+    artifact = {
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "call_id": call_id,
@@ -75,7 +78,7 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
         "check_plan_sha256": inputs.plan_hashes[call_id],
         "plan_verification_sha256": inputs.report_hashes[call_id],
         "dialogue_sha256": inputs.dialogue_hashes[call_id],
-        "source": inputs.source_hashes(),
+        "source": {**inputs.source_hashes(), **(register_guide.recorded(generation) if multilingual else {})},
         "generation": generation_block(generation, parsed, response_schema),
         "verdict": verdict,
         "recommended_repair": derive_repair(verdict, issues),
@@ -88,6 +91,10 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
         "issues": issues,
         "quality_findings": quality,
     }
+    if multilingual:
+        artifact["summary"]["language_checks"] = _counts(language)
+        artifact["language_checks"] = language
+    return artifact
 
 
 def build_record(inputs, artifact_texts, provenance_by_call):
@@ -120,7 +127,7 @@ def build_record(inputs, artifact_texts, provenance_by_call):
             "previous_artifact_sha256": [entry["artifact_sha256"] for entry in provenance["accepted_history"]],
         }
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "generator": {"package": "fyp_evaluation.dialogue_verifications", "version": GENERATOR_VERSION},

@@ -30,7 +30,17 @@ RATIONALE_CUES = ("because", "since", "given", "as you", "as your", "so that", "
 CONFIRMATION_REACTIONS = ("understand", "agree", "confirm", "proceed", "go ahead", "please do", "yes please", "let's do", "lets do", "sounds good")
 
 
-def advisory_recommendation(spec, config, events, constraints=None):
+def product_names(spec, canonical, documents):
+    """{language: the product's name in that language} for the languages this call's profile allows (schema-2.0 calls only)."""
+    languages = spec["language_requirements"]["product_name_languages"]
+    entry = documents["normalization"]["profiles"]["synthetic_product_name"].get("language_names", {}).get(canonical, {})
+    names = {"en": canonical}
+    if entry.get("zh", {}).get("status") == "APPROVED":
+        names["zh"] = entry["zh"]["surface"]
+    return {language: names[language] for language in languages if language in names}
+
+
+def advisory_recommendation(spec, config, events, constraints=None, documents=None):
     """The brief data for the unplanned recommendation, or None when no unplanned recommendation is required.
 
     None when ADVISORY is not an intent or the plan already carries the recommendation in planned events.
@@ -40,6 +50,8 @@ def advisory_recommendation(spec, config, events, constraints=None):
         return None
     final = next(product for product in config["products"] if "FINAL" in product["roles"])
     data = {"product_name": final["name"]}
+    if documents is not None and "language_requirements" in spec:  # schema 2.0: the name the speakers say, per language
+        data["product_names"] = product_names(spec, final["name"], documents)
     if "EXECUTION" in intents:
         gold = {entry["question_id"]: entry["expected"] for entry in spec["gold"]}
         direction = gold.get(DIRECTION_QUESTION, {}).get("expected_value")

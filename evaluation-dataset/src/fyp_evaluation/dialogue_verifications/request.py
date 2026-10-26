@@ -15,7 +15,8 @@ from fyp_evaluation.plan_verifications.request import build_brief as build_plan_
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
-from .config import MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, RESPONSE_SCHEMA, SERVICE_TIER, THINKING_LEVEL
+from .config import MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, SERVICE_TIER, THINKING_LEVEL, prompt_template, response_schema_name, schema_names
+from .language_rows import rows_for
 
 
 def schema_path(name, schema_dir=DEFAULT_SCHEMA_DIR):
@@ -36,6 +37,8 @@ class DialogueVerificationContext(VerificationContext):
         self.turn_of_event = {span["event_id"]: span["turn_id"] for span in self.alignment}
         self.edge_cases = {edge["assignment_id"]: edge for edge in self.spec["edge_cases"]}
         self.events_of_assignment = {a: [e["event_id"] for e in self.events if a in e["assignment_ids"]] for a in self.assignment_ids}
+        self.language_rows = rows_for(self.spec) if self.multilingual else []
+        self.language_row_ids = [row["row_id"] for row in self.language_rows]
 
 
 def build_brief(inputs, ctx):
@@ -44,6 +47,8 @@ def build_brief(inputs, ctx):
     for entry in brief["events"]:
         entry["turn_id"] = ctx.turn_of_event[entry["event_id"]]
     brief["dialogue"] = [{"turn_id": t["turn_id"], "speaker": t["speaker"], "text": t["text"]} for t in ctx.turns]
+    if ctx.multilingual:
+        brief["language_rows"] = ctx.language_rows
     expectation = advisory_expectation(ctx)
     if expectation is not None:  # only the calls whose plan has no planned recommendation; every other brief is unchanged
         brief["advisory_expectation"] = expectation
@@ -52,7 +57,7 @@ def build_brief(inputs, ctx):
 
 def advisory_expectation(ctx):
     """The G6 `advisory_recommendation` data of this call (the same derivation the author was given) plus the turn of every named event."""
-    data = advisory_recommendation(ctx.spec, ctx.config, ctx.events)
+    data = advisory_recommendation(ctx.spec, ctx.config, ctx.events, None, ctx.inputs.documents)
     if data is None:
         return None
     turns = ctx.turn_of_event
@@ -74,12 +79,12 @@ class RequestBuilder:
 
     def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
         self.inputs = inputs
-        template_path = prompt_dir / PROMPT_TEMPLATE
+        template_path = prompt_dir / prompt_template(inputs.documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
-        response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
+        response_path = schema_path(response_schema_name(inputs.documents), schema_dir)
         self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
         self.response_schema = parse_json_text(response_path.read_text(encoding="utf-8"))
-        self.artifact_schema = parse_json_text(schema_path("dialogue_verification", schema_dir).read_text(encoding="utf-8"))
+        self.artifact_schema = parse_json_text(schema_path(schema_names(inputs.documents)[0], schema_dir).read_text(encoding="utf-8"))
         self.system_instruction = system_prefix(template_path.read_text(encoding="utf-8").replace("\r\n", "\n"), inputs.documents)
         self._contexts = {}
 

@@ -6,7 +6,17 @@ inclusive, end exclusive, relative to the rendered turn text) and the order of e
 
 import re
 
+from fyp_evaluation.validation.stage0 import HAN
+
 MARKER = re.compile(r"\[\[(EV_[0-9]{3})\]\]")
+# Multilingual calls: a marker may also sit directly beside Han characters or CJK punctuation (Chinese is not written with
+# spaces); it must still never touch a Latin letter, a digit or another marker.
+CJK_PUNCTUATION = "，。！？；：、…—「」『』（）《》〈〉“”‘’"
+ENGLISH_WORD = re.compile(r"[A-Za-z0-9][A-Za-z0-9'’.%-]*")
+
+
+def _boundary_ok(character, multilingual):
+    return character.isspace() or (multilingual and (bool(HAN.match(character)) or character in CJK_PUNCTUATION))
 
 
 def render(ctx, parsed):
@@ -21,8 +31,10 @@ def render(ctx, parsed):
         pieces, last, rendered_length = [], 0, 0
         for match in MARKER.finditer(text):
             start, end, event_id = match.start(), match.end(), match.group(1)
-            if (start > 0 and not text[start - 1].isspace()) or (end < len(text) and not text[end].isspace()):
-                errors.append(f"turn {turn_id}: marker {match.group(0)} must be a separate token (whitespace on both sides)")
+            multilingual = getattr(ctx, "multilingual", False)
+            if (start > 0 and not _boundary_ok(text[start - 1], multilingual)) or (end < len(text) and not _boundary_ok(text[end], multilingual)):
+                errors.append(f"turn {turn_id}: marker {match.group(0)} must be a separate token (whitespace on both sides"
+                              + (", or Chinese characters or punctuation)" if multilingual else ")"))
             if event_id not in ctx.texts:
                 errors.append(f"turn {turn_id}: unknown event marker {match.group(0)}")
                 continue
@@ -45,6 +57,25 @@ def render(ctx, parsed):
 def word_count(turns):
     """The length policy's word count: whitespace-separated tokens over the rendered turn texts."""
     return sum(len(turn["text"].split()) for turn in turns)
+
+
+def length_count(turns, unit="words"):
+    """The policy's length count of the rendered turns: words, Han characters, or Han characters plus English words."""
+    if unit == "words":
+        return word_count(turns)
+    han = sum(len(HAN.findall(turn["text"])) for turn in turns)
+    if unit == "han_chars":
+        return han
+    return han + sum(len(ENGLISH_WORD.findall(HAN.sub(" ", turn["text"]))) for turn in turns)
+
+
+def outside_text(text, spans):
+    """`text` with every event span blanked (same length), i.e. only the speech the model itself wrote."""
+    chars = list(text)
+    for start, end in spans:
+        for index in range(start, end):
+            chars[index] = " "
+    return "".join(chars)
 
 
 def spans_by_turn(alignment):

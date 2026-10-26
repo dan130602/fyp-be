@@ -11,6 +11,7 @@ G6-specific behaviour:
 
 from copy import deepcopy
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
 from fyp_evaluation.llm import pricing
@@ -18,11 +19,13 @@ from fyp_evaluation.llm.canonical import response_hash
 from fyp_evaluation.llm.stage_runner import RunError, StageRunner, StageSpec, describe_error
 from fyp_evaluation.plan_verifications.run import PlanVerificationRunner
 from fyp_evaluation.planning import outputs as g1
+from fyp_evaluation.validation.stage0 import is_multilingual
 
 from .compile import build_record, compile_artifact
+from .config import LENGTH_POLICY  # noqa: F401  (the historical policy; patched by recalibration tests)
 from .config import (
-    ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, LENGTH_POLICY, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE,
-    PROVENANCE_DIR, REASONING_EFFORT, RECORD, RESPONSE_SCHEMA, SEMANTIC_BUDGET, STAGE, TRANSPORT_BUDGET,
+    ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR,
+    REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, TRANSPORT_BUDGET, length_policy_for, prompt_template, response_schema_name, schema_names,
 )
 from .feasibility import preflight_errors, synthesize_dialogue
 from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs, read_dialogue
@@ -41,6 +44,7 @@ class DialogueRunner(StageRunner):
     ARTIFACT_HASH_KEYS = {**StageRunner.ARTIFACT_HASH_KEYS, "check_plan": "check_plan_sha256",
                           "plan_verification": "plan_verification_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were written under
 
     def __init__(self, root, *, repair_feedback=None, **kwargs):
         """`repair_feedback` (optional, see `request.load_repair_feedback`): call-specific guidance derived from a G7 report, added
@@ -52,11 +56,17 @@ class DialogueRunner(StageRunner):
     def _load_inputs(self):
         return load_inputs(self.root, self.schema_dir)
 
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
+
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir, self.repair_feedback)
 
     def _new_attempt(self, call_id, transport, **kwargs):
         attempt, body = super()._new_attempt(call_id, transport, **kwargs)
+        attempt["params"] = self._attempt_metadata(call_id)["params"]  # the call's own length policy (per language profile)
+        self._save(attempt)
         feedback = self.repair_feedback.get(call_id)
         if feedback:  # the source G7 report and the guidance go into the attempt record, next to the stored request
             attempt["repair_feedback"] = {key: deepcopy(feedback[key]) for key in ("source_g7_report_sha256", "source_g7_attempt_id", "round", "guidance")}
@@ -86,7 +96,8 @@ class DialogueRunner(StageRunner):
         inputs = self.inputs
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
                 "call_config": inputs.config_hashes[call_id], "check_plan": inputs.plan_hashes.get(call_id),
-                "plan_verification": inputs.report_hashes.get(call_id), **inputs.source_hashes()}
+                "plan_verification": inputs.report_hashes.get(call_id), **inputs.source_hashes(),
+                **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         return fresh_upstream_hashes(self.inputs.root, call_id)
@@ -103,9 +114,15 @@ class DialogueRunner(StageRunner):
         self.__dict__.pop("_verified_g5", None)
 
     # ---- provider hooks ------------------------------------------------------------------------------
-    def _attempt_metadata(self):
+    def _attempt_metadata(self, call_id=None):
+        if is_multilingual(self.inputs.documents):
+            policy = length_policy_for(self.inputs.specs[call_id], self.inputs.documents) if call_id else None
+        else:
+            policy = LENGTH_POLICY  # the historical policy (a module-level name so a recalibration can be exercised)
+        if policy is None:
+            policy = LENGTH_POLICY
         return {"params": {"reasoning_effort": REASONING_EFFORT, "max_output_tokens": MAX_OUTPUT_TOKENS,
-                           "length_policy": deepcopy(LENGTH_POLICY)},
+                           "length_policy": deepcopy(policy)},
                 "price_table_version": pricing.PRICE_TABLE_VERSION}
 
     def run_sync(self, call_id, *, retry_rejected=False, reopen_reason=None):  # noqa: ARG002
@@ -152,9 +169,10 @@ class DialogueRunner(StageRunner):
         """Keys whose current value differs from what the attempt was built with. The prompt and response schema are
         re-hashed from the configured files NOW (the builder's cached hashes cannot see a change made while this process
         is alive). Raises OSError when either file cannot be read."""
-        current = {"params": self._attempt_metadata()["params"],
-                   "prompt_template_sha256": g1.sha256((self.prompt_dir / PROMPT_TEMPLATE).read_bytes()),
-                   "response_schema_sha256": g1.sha256(schema_path(RESPONSE_SCHEMA, self.schema_dir).read_bytes())}
+        documents = self.inputs.documents
+        current = {"params": self._attempt_metadata(attempt["call_id"])["params"],
+                   "prompt_template_sha256": g1.sha256((self.prompt_dir / prompt_template(documents)).read_bytes()),
+                   "response_schema_sha256": g1.sha256(schema_path(response_schema_name(documents), self.schema_dir).read_bytes())}
         return sorted(key for key, value in current.items() if attempt.get(key) != value)
 
     def _judge_locked(self, attempt, parsed):

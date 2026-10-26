@@ -5,6 +5,7 @@ G7 uses the same model, tier, capacity policy and price table as G5; only the th
 
 from pathlib import Path
 
+from fyp_evaluation import release_versions as versions
 from fyp_evaluation.plan_verifications.config import (  # noqa: F401  (shared with G5: same approved verifier and Flex tier)
     API_KEY_VARIABLE, ASSESSMENTS, CAPACITY_BACKOFF_SECONDS, CAPACITY_JITTER, CAPACITY_SENDS, MAX_EXPLANATION, MAX_QUOTE,
     MAX_RATIONALE, MODEL, PRICE_TABLE_VERSION, PRICES, QUESTION_IDS, SERVICE_TIER, TIMEOUT_MS, VERDICTS,
@@ -47,3 +48,25 @@ QUALITY_REVIEWS = ("CLEAR", "REVIEW_REQUIRED")
 MAX_EVIDENCE = 6
 MAX_ISSUES = 20
 MAX_QUALITY = 10
+
+# The multilingual (schema 2.0) generation adds language rows (blocking), one issue code and one advisory quality code.
+LANGUAGE_ISSUE_CODE = "LANGUAGE_REQUIREMENT_NOT_MET"
+ISSUE_CODES_V2 = ISSUE_CODES + (LANGUAGE_ISSUE_CODE,)
+QUALITY_CODES_V2 = QUALITY_CODES + ("LANGUAGE_NATURALNESS",)
+
+
+def schema_version(documents):
+    return versions.generation(documents)
+
+
+def schema_names(documents):
+    """(artifact schema, record schema) file stems; the provenance schema is shared by both generations."""
+    return versions.versioned("dialogue_verification", documents), versions.versioned("dialogue_verification_record", documents)
+
+
+def response_schema_name(documents):
+    return versions.versioned(RESPONSE_SCHEMA, documents)
+
+
+def prompt_template(documents):
+    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)

@@ -149,6 +149,22 @@ class StageRunner:
     # ---- provider hooks (defaults: the OpenAI Responses/Batch behaviour G3 and G4 use) ------------------------
     # accepted/historical provenance entries carry these attempt fields into the artifact's generation block
     GENERATION_KEYS = ("attempt_id", "model", "prompt_template_sha256", "response_schema_sha256")
+    # Stages that read the SINGLISH register guide record the hash of the guide version a SINGLISH call was built under in its
+    # accepted generation metadata, so the artifact is always rebuilt under that version, never the current file.
+    USES_REGISTER_GUIDE = False
+    GUIDE_KEY = "register_guide_sha256"
+
+    def _generation(self, attempt):
+        generation = {key: attempt[key] for key in self.GENERATION_KEYS}
+        if self.USES_REGISTER_GUIDE and (guide := (attempt.get("upstream_sha256") or {}).get(self.GUIDE_KEY)):
+            generation[self.GUIDE_KEY] = guide
+        return generation
+
+    def _entry_generation(self, entry):
+        generation = {key: entry[key] for key in self.GENERATION_KEYS}
+        if self.USES_REGISTER_GUIDE and entry.get(self.GUIDE_KEY):
+            generation[self.GUIDE_KEY] = entry[self.GUIDE_KEY]
+        return generation
 
     def _default_transport_factory(self):
         from fyp_evaluation.llm.openai_transport import OpenAITransport
@@ -521,7 +537,7 @@ class StageRunner:
                 if entry["attempt_id"] == previous["attempt_id"]:
                     entry["state"] = "SUPERSEDED"
             self._mark_audit_superseded(call_id, previous["attempt_id"])
-        generation = {key: attempt[key] for key in self.GENERATION_KEYS}
+        generation = self._generation(attempt)
         artifact_text = serialize_json(self._compile_artifact(ctx, parsed, generation))
         scenario = canonical_response(parsed, schema)
         record["accepted"] = {**generation, "parsed_response": scenario, "parsed_response_sha256": response_hash(parsed, schema),
@@ -1045,7 +1061,7 @@ class StageRunner:
     # ---- validate / check ----------------------------------------------------------------------------
     def _rebuild_text(self, call_id, entry):
         """Artifact text compiled from an accepted (or historical) provenance entry and the current frozen inputs."""
-        generation = {key: entry[key] for key in self.GENERATION_KEYS}
+        generation = self._entry_generation(entry)
         compile_for_entry, ctx = self._entry_context(call_id, entry)
         return serialize_json(compile_for_entry(ctx, entry["parsed_response"], generation))
 

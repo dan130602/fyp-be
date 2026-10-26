@@ -98,3 +98,8 @@ def template_errors(ctx, lexicon, event, entry, outside):
     if event["kind"] == "WEAK_ACKNOWLEDGEMENT" and bare_affirmative(entry["text"]):
         errors.append("text: a planned weak acknowledgement must not be a bare unqualified affirmative (for example 可以 or Can lah)")
     return errors
+
+
+# Public names for the G6 adjacency check (the same numeral and value-marker sets).
+NUMERALS = _NUMERALS
+VALUE_MARKERS = _VALUE_MARKERS

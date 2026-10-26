@@ -312,7 +312,7 @@ def g4_scratch(tmp_path, call_id):
     from fyp_evaluation.check_plans.feasibility import synthesize_response as synth
     ctx = runner.builder.context(call_id)
     generation = {"attempt_id": "A001", "model": "fixture", "prompt_template_sha256": "0" * 64,
-                  "response_schema_sha256": runner.builder.response_schema_sha256}
+                  "response_schema_sha256": runner.builder.response_schema_sha256, **register_guide.extra_hashes(inputs.specs[call_id])}
     plan = compile_artifact(inputs, ctx, synth(ctx), generation, runner.builder.response_schema)
     (root / "authoring/check_plans").mkdir(parents=True, exist_ok=True)
     (root / "authoring/check_plans" / f"{call_id}.json").write_bytes(M.serialize_json(plan).encode("utf-8"))
@@ -387,3 +387,20 @@ def test_g4_and_g5_live_runs_are_refused_without_an_allowlisted_batch_before_any
     M.write_allowlist(chain.root, {"B7": {"stages": ["G4", "G5"], "call_ids": [call_id]}})
     g5._paid_guard([call_id], g5.transport())  # an allowlisted batch for this stage and call passes the guard
     assert g5._allowlist_batch == "B7"
+
+
+def test_an_accepted_singlish_artifact_still_validates_and_rebuilds_after_a_guide_change_but_is_reported_stale(tmp_path, changed_guide):
+    call_id = M.first_call("SINGLISH")
+    chain = M.chain(tmp_path, [call_id])
+    chain.run_g3(), chain.run_g4(), chain.run_g5()
+    recorded = register_guide.guide_sha256()
+    for runner in (chain.g4, chain.g5):
+        assert runner.validate() == []
+    (changed_guide / "register_singlish.v1.md").write_text(register_guide.guide_text() + "\nA wording change.\n", encoding="utf-8")
+    for runner in (chain.g4, chain.g5):
+        assert runner.dependency_status([call_id])[call_id]["changed"] == ["register_guide_sha256"]
+        assert runner.validate() == [], "validation rebuilds under the recorded guide version, never the current file"
+    plan = json.loads((chain.root / "authoring/check_plans" / f"{call_id}.json").read_text(encoding="utf-8"))
+    assert plan["source"]["register_guide_sha256"] == recorded != register_guide.guide_sha256()
+    provenance = json.loads((chain.root / "authoring/check_plan_provenance" / f"{call_id}.json").read_text(encoding="utf-8"))
+    assert provenance["accepted"]["register_guide_sha256"] == recorded

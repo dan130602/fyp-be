@@ -10,9 +10,16 @@ from pathlib import Path
 import g3_support
 import g4_support
 import g5_support
+import g6_support
+import g7_support
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_configs.run import ConfigRunner
 from fyp_evaluation.check_plans.inputs import load_inputs as load_g4_inputs
 from fyp_evaluation.check_plans.run import CheckPlanRunner
+from fyp_evaluation.dialogue_verifications.inputs import load_inputs as load_g7_inputs
+from fyp_evaluation.dialogue_verifications.run import DialogueVerificationRunner
+from fyp_evaluation.dialogues.inputs import load_inputs as load_g6_inputs
+from fyp_evaluation.dialogues.run import DialogueRunner
 from fyp_evaluation.llm.fake_gemini_transport import FakeGeminiTransport
 from fyp_evaluation.llm.fake_transport import FakeTransport
 from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5_inputs
@@ -39,7 +46,7 @@ def plan_texts(call_ids):
         key = ("plan_text", call_id)
         if key not in _CACHE:
             ctx = builder.context(call_id)
-            generation = {**_GENERATION, "response_schema_sha256": builder.response_schema_sha256}
+            generation = {**_GENERATION, "response_schema_sha256": builder.response_schema_sha256, **register_guide.extra_hashes(inputs.specs[call_id])}
             _CACHE[key] = serialize_json(compile_plan(inputs, ctx, synthesize_plan(ctx), generation, builder.response_schema))
         texts[call_id] = _CACHE[key]
     return texts
@@ -71,7 +78,7 @@ class Chain:
 
     def __init__(self, root, audit_root, call_ids):
         self.root, self.audit_root, self.call_ids = Path(root), Path(audit_root), list(call_ids)
-        self.g3 = self.g4 = self.g5 = None
+        self.g3 = self.g4 = self.g5 = self.g6 = self.g7 = None
 
     def run_g3(self):
         holder = {}
@@ -99,6 +106,46 @@ class Chain:
         holder["respond"] = g5_support.good_responder(runner, overrides)
         self.g5 = runner
         return {call_id: runner.run_sync(call_id)["state"] for call_id in self.call_ids}
+
+
+    def open_g6(self, overrides=None):
+        """A G6 runner over this root's current G0-G5 state (no request is sent)."""
+        holder = {}
+        runner = DialogueRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g6_support.Clock(),
+                                transport=FakeTransport(lambda body: holder["respond"](body)), inputs=load_g6_inputs(self.root, SCHEMAS))
+        holder["respond"] = g6_support.good_responder(runner, overrides)
+        self.g6 = runner
+        return runner
+
+    def run_g6(self, overrides=None, call_ids=None):
+        """G6 is Batch-only: submit, finish the fake batch, collect. Needs a complete G3-G5 (G6 has no selected-call mode)."""
+        runner = self.open_g6(overrides)
+        chosen = list(call_ids or self.call_ids)
+        report = runner.submit(chosen)
+        assert report["state"] == "SUBMITTED", report
+        runner.transport().finish_batch(report["batch_id"])
+        runner.collect()
+        return {call_id: runner.store.read_attempt(call_id, "A001")["state"] for call_id in chosen}
+
+    def open_g7(self, overrides=None):
+        holder = {}
+        runner = DialogueVerificationRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g7_support.Clock(),
+                                            transport=FakeGeminiTransport(lambda body: holder["respond"](body)),
+                                            inputs=load_g7_inputs(self.root, SCHEMAS))
+        runner.sleep = lambda seconds: None
+        holder["respond"] = g7_support.good_responder(runner, overrides)
+        self.g7 = runner
+        return runner
+
+    def run_g7(self, overrides=None, call_ids=None):
+        runner = self.open_g7(overrides)
+        return {call_id: runner.run_sync(call_id)["state"] for call_id in (call_ids or self.call_ids)}
+
+
+def copy_chain(source_root, destination, audit_root=None):
+    """A writable copy of an accepted G3-G5 chain root (authoring files only; the release has no audio) and a Chain over it."""
+    root = copy_tree(source_root, destination)
+    return Chain(root, Path(destination).parent / "audit_copy", list(upstream_inputs().call_ids))
 
 
 def chain(tmp_path, call_ids):

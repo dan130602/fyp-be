@@ -87,3 +87,58 @@ def apply_mutation(destination, name, *, schema_dir=DEFAULT_SCHEMA_DIR, audit_ro
     if attempt["state"] != "ACCEPTED":
         raise ValueError(f"{name}: G6 did not accept the mutated dialogue: {attempt['rejection_reason']} {attempt['validation_errors'][:3]}")
     return destination
+
+
+# ---- multilingual controls (schema 2.0 releases) ----------------------------------------------------------------------------------
+# Wording added to a marker-free model turn that G6's structural gate accepts but a faithful verifier must not. They are located by
+# what a turn is (its speaker, and that it holds no event marker), never by index, because multilingual dialogues differ per call.
+# They are semantic fixtures: G6 judges structure only, so these reach G7 by design. A truncated or extended number and a script
+# violation are NOT controls: G6 rejects them (see `dialogues/language_checks.py`).
+CONFIRMATION = {"ENGLISH": "Shall I go ahead and process it exactly as you said?", "SINGLISH": "Shall I go ahead and process it exactly as you said?",
+                "MANDARIN": "那我现在就按您说的完全照办，可以吗？", "EN_ZH_MIXED": "那我现在就按您说的完全照办，可以吗？"}
+FEE = {"ENGLISH": "By the way, the fee on this trade is a quarter of a percent.", "SINGLISH": "By the way, the fee on this trade is a quarter of a percent.",
+       "MANDARIN": "顺便说一下，这笔交易的手续费是百分之零点二五。", "EN_ZH_MIXED": "顺便说一下，这笔交易的手续费是百分之零点二五。"}
+MARKET = {"ENGLISH": "Markets have been very strong lately, so this fund should keep doing well.",
+          "SINGLISH": "Markets have been very strong lately, so this fund should keep doing well.",
+          "MANDARIN": "最近市场非常强劲，所以这只基金应该会继续表现良好。", "EN_ZH_MIXED": "最近市场非常强劲，所以这只基金应该会继续表现良好。"}
+SINGLISH_EMPLOYEE = " Can lah, no problem, we settle it for you."
+MULTILINGUAL_MUTATIONS = {
+    "M_filler_confirmation": ("EMPLOYEE", lambda text, profile: text.rstrip() + " " + CONFIRMATION[profile], ("ENGLISH", "MANDARIN", "EN_ZH_MIXED", "SINGLISH")),
+    "M_filler_fee": ("EMPLOYEE", lambda text, profile: text.rstrip() + " " + FEE[profile], ("ENGLISH", "MANDARIN", "EN_ZH_MIXED", "SINGLISH")),
+    "M_filler_market": ("EMPLOYEE", lambda text, profile: text.rstrip() + " " + MARKET[profile], ("ENGLISH", "MANDARIN", "EN_ZH_MIXED", "SINGLISH")),
+    "S_employee_singlish": ("EMPLOYEE", lambda text, profile: text.rstrip() + SINGLISH_EMPLOYEE, ("SINGLISH",)),
+}
+MULTILINGUAL_CONTROLS = tuple(MULTILINGUAL_MUTATIONS)
+
+
+def build_multilingual_control(source, destination, name, call_id, profile, *, schema_dir=DEFAULT_SCHEMA_DIR, audit_root=None):
+    """Like `build_control` for a multilingual release: mutates the first marker-free turn of the named speaker in `call_id`'s
+    accepted G6 response and re-accepts it through G6 (`--submit` with a reopen reason, then `--collect`)."""
+    from fyp_evaluation.dialogues.inputs import load_inputs
+    from fyp_evaluation.dialogues.run import DialogueRunner
+    from fyp_evaluation.llm.fake_transport import FakeTransport, response_body
+
+    if name not in MULTILINGUAL_MUTATIONS:
+        raise ValueError(f"unknown multilingual control {name!r}; choose one of {sorted(MULTILINGUAL_MUTATIONS)}")
+    speaker, change, profiles = MULTILINGUAL_MUTATIONS[name]
+    if profile not in profiles:
+        raise ValueError(f"{name} does not apply to {profile} calls")
+    destination = copy_release(source, destination)
+    g6 = DialogueRunner(destination, schema_dir=schema_dir, audit_root=audit_root or destination.parent / f"{destination.name}_g6_audit",
+                        inputs=load_inputs(destination, schema_dir))
+    prov, problem = g6._prov_state(call_id)
+    if problem or not prov["accepted"]:
+        raise ValueError(f"{call_id}: no usable accepted G6 response to mutate ({problem})")
+    response = json.loads(json.dumps(prov["accepted"]["parsed_response"]))
+    turn = next((t for t in response["turns"] if t["speaker"] == speaker and "[[" not in t["text"]), None)
+    if turn is None:
+        raise ValueError(f"{name}: {call_id} has no marker-free {speaker} turn to change")
+    turn["text"] = change(turn["text"], profile)
+    g6._transport = FakeTransport(lambda body: response_body(json.dumps(response), response_id=f"resp_control_{name}"))
+    submission = g6.submit([call_id], reopen_reason=f"G7 semantic control {name} (isolated copy)")
+    g6.transport().finish_batch(submission["batch_id"])
+    g6.collect()
+    attempt = g6.call_state(call_id)["latest"]
+    if attempt["state"] != "ACCEPTED":
+        raise ValueError(f"{name}: G6 did not accept the mutated dialogue: {attempt['rejection_reason']} {attempt['validation_errors'][:3]}")
+    return destination

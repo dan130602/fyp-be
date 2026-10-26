@@ -1,0 +1,397 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage9/ground_truth.v2.schema.json",
+  "title": "G9 canonical ground_truth (advisory_execution_pilot_v1)",
+  "description": "Canonical per-call gold compiled deterministically by Python from the frozen gold (call spec), the accepted G4 check plan and the accepted G6 dialogue. Evidence is ACTUAL dialogue evidence (turn IDs, exact spans) derived from the G6 event alignment, never planned text. `status` records what has not happened yet: G7 dialogue verification and audio-derived timings.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "stage": {
+      "const": "G9"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "g7_dialogue_verification": {
+          "enum": [
+            "PENDING",
+            "VERIFIED"
+          ]
+        },
+        "timings": {
+          "enum": [
+            "PLACEHOLDER_ZERO",
+            "AUDIO_DERIVED"
+          ]
+        }
+      },
+      "required": [
+        "g7_dialogue_verification",
+        "timings"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "call_spec_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_plan_skeleton_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "call_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "plan_verification_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dialogue_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generation_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "register_guide_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "call_spec_sha256",
+        "check_plan_skeleton_sha256",
+        "call_config_sha256",
+        "check_plan_sha256",
+        "plan_verification_sha256",
+        "dialogue_sha256",
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256",
+        "generation_plan_sha256",
+        "language_profiles_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "timing": {
+      "type": "object",
+      "description": "Where the audio-derived transcript times came from (the FINAL compile only): the G8 render, its timings file, its manifest, its audio and the G7 report it was verified against. The times themselves live in transcript.json.",
+      "properties": {
+        "render_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "timings_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "render_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "audio_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "g7_report_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "render_id",
+        "timings_sha256",
+        "render_manifest_sha256",
+        "audio_sha256",
+        "g7_report_sha256",
+        "duration_seconds"
+      ],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "COMPLIANCE",
+              "EXTRACTION"
+            ]
+          },
+          "expected": {
+            "type": "object"
+          },
+          "evidence_mode": {
+            "enum": [
+              "PRESENCE",
+              "ABSENCE"
+            ]
+          },
+          "presence_pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "absence_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gold_evidence_turns": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "gold_evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/span"
+            }
+          },
+          "gold_evidence_text": {
+            "type": "string"
+          },
+          "final_turn_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "value_history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/value_entry"
+            }
+          },
+          "challenge_tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            }
+          }
+        },
+        "required": [
+          "question_id",
+          "kind",
+          "expected",
+          "evidence_mode",
+          "presence_pattern",
+          "absence_scope",
+          "gold_evidence_turns",
+          "gold_evidence",
+          "gold_evidence_text",
+          "final_turn_id",
+          "value_history",
+          "challenge_tags"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "dialogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "turn_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speaker": {
+            "enum": [
+              "EMPLOYEE",
+              "CLIENT"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "turn_id",
+          "speaker",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "status",
+    "source",
+    "metadata",
+    "checks",
+    "dialogue"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "properties": {
+              "timings": {
+                "const": "AUDIO_DERIVED"
+              }
+            },
+            "required": [
+              "timings"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "timing"
+        ],
+        "properties": {
+          "status": {
+            "properties": {
+              "g7_dialogue_verification": {
+                "const": "VERIFIED"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "timing"
+          ]
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "span": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "pattern": "^EV_[0-9]{3}$"
+        },
+        "turn_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "speaker": {
+          "enum": [
+            "EMPLOYEE",
+            "CLIENT"
+          ]
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "event_id",
+        "turn_id",
+        "speaker",
+        "start",
+        "end",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "value_entry": {
+      "type": "object",
+      "properties": {
+        "turn_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^EV_[0-9]{3}$"
+        },
+        "speaker": {
+          "enum": [
+            "EMPLOYEE",
+            "CLIENT"
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "turn_id",
+        "event_id",
+        "speaker",
+        "kind",
+        "status",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

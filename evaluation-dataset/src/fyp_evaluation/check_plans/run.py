@@ -30,6 +30,7 @@ G4_SPEC = StageSpec(
 
 class CheckPlanRunner(StageRunner):
     spec = G4_SPEC
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were built under
     supports_selection = True  # the shared CLI passes --call-id so only the selected calls need an accepted G3 config
 
     def __init__(self, root, *, selected_call_ids=None, **kwargs):
