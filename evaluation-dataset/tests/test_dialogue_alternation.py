@@ -9,7 +9,8 @@ from compilation_fixtures import SCHEMAS, compilation_inputs
 from fyp_evaluation.authoring.compile import compile_ground_truth
 from fyp_evaluation.validation import validate_speaker_alternation
 
-DIALOGUES = Path(__file__).resolve().parents[1] / "authoring" / "dialogues"
+# The authored dialogues moved with the per-release dataset layout (commit 2f8a102); this guard checks the legacy pilot ones.
+DIALOGUES = Path(__file__).resolve().parents[1] / "datasets" / "legacy_pilot_v1" / "authoring" / "dialogues"
 
 
 def _dialogue(*speakers):
@@ -43,6 +44,11 @@ def test_compiler_rejects_consecutive_same_speaker_turns_and_writes_nothing():
     dialogue["turns"].insert(1, {**dialogue["turns"][0], "text": "ARTIFICIAL continuation."})
     with pytest.raises(ValueError, match="consecutive EMPLOYEE turns"):
         compile_ground_truth(config, plan, dialogue, *rest, schema_dir=SCHEMAS)
+
+
+def test_the_authored_dialogue_collection_is_not_empty():
+    """An empty parameter set silently skips the per-dialogue guard below; make that a failure instead."""
+    assert len(sorted(DIALOGUES.glob("CALL_*.json"))) >= 1, f"no authored dialogues found under {DIALOGUES}"
 
 
 @pytest.mark.parametrize("path", sorted(DIALOGUES.glob("CALL_*.json")), ids=lambda path: path.stem)
