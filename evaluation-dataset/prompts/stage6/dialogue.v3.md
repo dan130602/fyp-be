@@ -46,7 +46,7 @@ The call must read as one plausible conversation between these two people, not a
 - Do not open every turn with an acknowledgement, and vary how speakers react; a reply that simply carries on is often the most natural.
 - Avoid accidental non-sequiturs, above all a direct question followed by a reply that seems to ignore it, and avoid repeated greetings or restarts.
 - Lead naturally into each planned event and out of it: an event can follow from earlier context, not only from the turn before it. Never repeat, paraphrase or contradict it.
-- When the fixed events, their wording or their constraints make a smooth exchange hard, write the most coherent dialogue they allow. Never invent content, and never change what an event does, to smooth it over.
+- When the fixed events, their wording or their constraints make a smooth exchange hard, write the most coherent dialogue they allow. You may add natural logistical conversation, reactions and transitions to help the flow, but never invent protected compliance behaviour, unauthorised commitments, transaction facts or any other prohibited content merely to improve it, and never change what an event does.
 
 ## Call intents and the employee's recommendation
 
@@ -95,7 +95,7 @@ Supporting speech must never, whatever happens elsewhere in the call and in what
 - add any order, change, cancellation or new transaction;
 - comment on markets, products or investment performance.
 
-The only exceptions to these rules are the single recommendation and the client's mild acknowledgement described above, used when the brief has `advisory_recommendation`, and only in that exact form: they allow naming the product and the action once, and nothing else. They do not allow explaining a reason, confirming the client's objective, mentioning risk, loss, fees or guarantees, stating any order detail, or any other compliance act, and every other rule above still applies to them.
+The only exception to these rules is the single recommendation described above, used when the brief has `advisory_recommendation`, and only in that exact form: it allows naming the product and the action once, and nothing else. It does not allow explaining a reason, confirming the client's objective, mentioning risk, loss, fees or guarantees, stating any order detail, or any other compliance act, and every other rule above still applies to it. The client's optional reaction after that recommendation is not an exception: it is ordinary supporting speech, bound by "How the client responds" and by every rule above, and it must not introduce any additional compliance behaviour.
 
 Questions in supporting speech. Ordinary logistical and administrative questions may receive natural, contextually appropriate answers, reactions or deferrals. Such responses stay within permitted supporting speech and never introduce protected values, transaction instructions, compliance acts, unauthorised commitments or facts that contradict the scenario (the language rules above still apply; a MANDARIN call stays free of figures). Questions about the client's objective, understanding of risks, willingness to accept losses, confirmation of an instruction, order details or identity are answered only by their planned events: when no answer is planned, the client does not answer, accept, refuse or confirm it, and an intentional hesitation, deferral or non-response stays as it is. No stock phrase is safe in every context.
 
