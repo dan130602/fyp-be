@@ -162,6 +162,14 @@ historical release keeps the originals byte for byte (request hashes are pinned 
   byte for byte.
 * **Register guide.** A SINGLISH call records the guide version it was built under in its accepted generation metadata, so an accepted
   artifact still rebuilds and validates after the guide changes (only its dependency status becomes stale).
+* **Watch item: G7 advisory rule (d).** G7 v2 checks that the client's turn after a G6-authored recommendation is not an instruction,
+  commitment, confirmation or statement of understanding. It does not distinguish G6's own words from a planned G4 event in that turn.
+  G6 prompt v3 lets that turn start directly with a planned event, so a legitimate planned instruction could be flagged. Never assume
+  such a finding is a false positive. Examine the cited speech first, and classify it as a G7 false positive only after confirming both:
+  (1) the flagged instruction or commitment is the exact text of a planned G4 event that the plan authorised there; (2) G6's own words
+  in that turn add no further commitment, confirmation, agreement or understanding. Otherwise it is a genuine G6 issue (stop and report).
+  Only a confirmed false positive justifies versioning rule (d) to cover G6-authored speech only, as a change separate from any G6
+  prompt change.
 
 ## G1 rules (2.0)
 
