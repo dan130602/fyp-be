@@ -108,11 +108,16 @@ class Chain:
         return {call_id: runner.run_sync(call_id)["state"] for call_id in self.call_ids}
 
 
+    def _selection(self):
+        """The calls to run G6/G7 for when the chain covers only some of the release (selected-call mode), else None (complete mode)."""
+        return self.call_ids if len(self.call_ids) < len(upstream_inputs(self.root).call_ids) else None
+
     def open_g6(self, overrides=None):
         """A G6 runner over this root's current G0-G5 state (no request is sent)."""
         holder = {}
-        runner = DialogueRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g6_support.Clock(),
-                                transport=FakeTransport(lambda body: holder["respond"](body)), inputs=load_g6_inputs(self.root, SCHEMAS))
+        selected = self._selection()
+        runner = DialogueRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g6_support.Clock(), selected_call_ids=selected,
+                                transport=FakeTransport(lambda body: holder["respond"](body)), inputs=load_g6_inputs(self.root, SCHEMAS, selected))
         holder["respond"] = g6_support.good_responder(runner, overrides)
         self.g6 = runner
         return runner
@@ -129,9 +134,10 @@ class Chain:
 
     def open_g7(self, overrides=None):
         holder = {}
+        selected = self._selection()
         runner = DialogueVerificationRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g7_support.Clock(),
-                                            transport=FakeGeminiTransport(lambda body: holder["respond"](body)),
-                                            inputs=load_g7_inputs(self.root, SCHEMAS))
+                                            transport=FakeGeminiTransport(lambda body: holder["respond"](body)), selected_call_ids=selected,
+                                            inputs=load_g7_inputs(self.root, SCHEMAS, selected))
         runner.sleep = lambda seconds: None
         holder["respond"] = g7_support.good_responder(runner, overrides)
         self.g7 = runner

@@ -29,6 +29,7 @@ class DialogueVerificationInputs:
         self.configs, self.config_hashes = upstream.configs, upstream.config_hashes
         self.plans, self.plan_hashes = upstream.plans, upstream.plan_hashes
         self.report_hashes = upstream.report_hashes
+        self.ready_call_ids = list(upstream.ready_call_ids)
         self.dialogue_hashes = dialogue_hashes  # {call_id: sha256 | None (absent) | DIALOGUE_UNREADABLE}
         self.dialogue_texts = dialogue_texts  # {call_id: text} for every readable dialogue
         self.dialogues = {}
@@ -43,9 +44,11 @@ class DialogueVerificationInputs:
         return self.upstream.source_hashes()
 
 
-def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
-    """Refuse unless G0-G4 pass G5's gate (as G6 applies it); dialogues are read per call and never refuse the stage."""
-    upstream = load_g6_inputs(root, schema_dir)
+def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR, call_ids=None):
+    """Refuse unless G0-G4 pass G5's gate (as G6 applies it); dialogues are read per call and never refuse the stage.
+
+    With `call_ids` (selected-call mode) only the selected calls need an accepted upstream (see G6's `load_inputs`)."""
+    upstream = load_g6_inputs(root, schema_dir, call_ids) if call_ids else load_g6_inputs(root, schema_dir)
     hashes, texts = {}, {}
     for call_id in upstream.call_ids:
         hashes[call_id], text = read_dialogue(root, call_id)

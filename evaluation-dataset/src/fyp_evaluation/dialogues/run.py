@@ -45,15 +45,19 @@ class DialogueRunner(StageRunner):
                           "plan_verification": "plan_verification_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
     USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were written under
+    supports_selection = True  # --call-id: only the selected calls need an accepted G3 config, G4 plan and G5 report
 
-    def __init__(self, root, *, repair_feedback=None, **kwargs):
+    def __init__(self, root, *, repair_feedback=None, selected_call_ids=None, **kwargs):
         """`repair_feedback` (optional, see `request.load_repair_feedback`): call-specific guidance derived from a G7 report, added
         to that call's request brief and recorded on its attempts. It changes no acceptance rule."""
         super().__init__(root, **kwargs)
         self.repair_feedback = repair_feedback or {}
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     # ---- stage hooks ---------------------------------------------------------------------------------
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
 
     def _schema_names(self):

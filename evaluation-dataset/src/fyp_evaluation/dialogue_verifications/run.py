@@ -105,6 +105,11 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
                           "plan_verification": "plan_verification_sha256", "dialogue": "dialogue_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
     USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were verified under
+    supports_selection = True  # --call-id: only the selected calls need an accepted G3 config, G4 plan, G5 report and G6 dialogue
+
+    def __init__(self, root, *, selected_call_ids=None, **kwargs):
+        super().__init__(root, **kwargs)
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     def _schema_names(self):
         artifact, record = schema_names(self.inputs.documents)
@@ -115,6 +120,8 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
 
     # ---- stage hooks ---------------------------------------------------------------------------------
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
 
     def _make_builder(self):
