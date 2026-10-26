@@ -17,6 +17,7 @@ from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual
 
 from .advisory import advisory_recommendation
+from .language_order import language_order_constraints
 from .config import (
     EVENT_RELATIONS, IDENTITY_QUESTIONS, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, REASONING_EFFORT, STAGE, length_policy_for,
     prompt_template, response_format_name, response_schema_name, schema_names, unit_of,
@@ -53,6 +54,8 @@ class DialogueContext:
         self.speakers = {event["event_id"]: event["authoring"]["speaker"] for event in self.events}
         self.texts = {event["event_id"]: event["authoring"]["planned_text"] for event in self.events}
         self.constraints = self.plan["constraints"] + self.plan["derived_constraints"]
+        if self.multilingual:  # the temporal meaning of a cross-language variant (see language_order.py); nothing upstream changes
+            self.constraints = self.constraints + language_order_constraints(self.spec, self.plan)
         # the planned events that already carry the employee's recommendation (the C07 plan structure; no keywords, no model).
         # Empty when the plan has none (C07 FAIL is an absence check): the brief then carries `advisory_recommendation`, the frozen product and
         # action, the derived placement window and the evidence to keep apart (see advisory.py), and asks for ONE clear rationale-free
