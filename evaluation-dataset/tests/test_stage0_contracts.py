@@ -7,7 +7,6 @@ choose no gold answers and implement no spoken-form normalization.
 from copy import deepcopy
 import json
 import re
-import shutil
 from pathlib import Path
 
 import pytest
@@ -15,6 +14,7 @@ import pytest
 from fyp_evaluation.validation.stage0 import (
     STAGE0_FILES, check_stage0_schemas, load_stage0, validate_stage0, validate_stage0_release,
 )
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -437,7 +437,7 @@ def test_stage0_contradictions_fail_loudly(release_documents, label):
 
 def test_release_dataset_id_must_match_manifest(tmp_path):
     release = tmp_path / "advisory_execution_pilot_v1"
-    shutil.copytree(RELEASE, release)
+    copy_tree(RELEASE, release)  # no rendered audio (release_copy)
     manifest = json.loads((release / "dataset_manifest.json").read_text(encoding="utf-8"))
     manifest["dataset_id"] = "other_release"
     (release / "dataset_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")

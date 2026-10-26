@@ -5,13 +5,13 @@ establishes a compliance behaviour (that is G5's semantic verification); it only
 """
 
 from collections import Counter
+from decimal import Decimal
 
 from . import render as R
-from .config import ALL_PLACEHOLDERS, QUESTION_PLACEHOLDERS
+from .config import ALL_PLACEHOLDERS, QUESTION_PLACEHOLDERS, SCENARIO_PLACEHOLDERS
 from .context import forms_of
-from .template import (
-    FALSE_START_END, GUARANTEE_WORD, INSIDER_WORDS, LAUNDERING_WORDS, WEAK_ACK_BANNED, parse_template, shared_word_run,
-)
+from .guards import template_errors
+from .template import FALSE_START_END, parse_template, shared_word_run
 
 ROLE_TO_SOURCE = {"EVENT_VALUE": "EVENT_VALUE", "GOLD_RESTATEMENT": "GOLD_RESTATEMENT", "READBACK_WRONG": "READBACK_WRONG",
                   "READBACK_FINAL": "GOLD_RESTATEMENT"}
@@ -20,6 +20,8 @@ ROLE_TO_SOURCE = {"EVENT_VALUE": "EVENT_VALUE", "GOLD_RESTATEMENT": "GOLD_RESTAT
 # ---- surfaces -----------------------------------------------------------------------------------------
 def question_surface(ctx, question, value, form, spoken_form):
     detail = spoken_form if spoken_form["requirement"] == "REQUIRED" else None
+    if ctx.multilingual:  # schema 2.0: forms, languages and approved surfaces come from the release's normalization
+        return ctx.catalog.render_question(ctx.call_id, question, value, form, detail)
     if question == "K01":
         return R.render_nric(value, form, detail)
     if question == "K02":
@@ -59,8 +61,28 @@ def _same(left, right):
     return left == right or (isinstance(left, (int, float)) and isinstance(right, (int, float)) and float(left) == float(right))
 
 
-def scenario_surface(ctx, event, name):
-    """(surface, value, form, source) for FEE / LIMIT_PRICE / CURRENCY."""
+def _decimal(value):
+    return Decimal(str(value))
+
+
+def scenario_surface(ctx, event, name, form=None):
+    """(surface, value, form, source) for FEE / LIMIT_PRICE / CURRENCY.
+
+    Schema 2.0 renders in the language of `form` (the model's choice where several are valid, else the only valid one)."""
+    if ctx.multilingual:
+        form = form or ctx.scenario_forms(event, name)[0]
+        language = ctx.catalog.form_language(name, form)
+        if name == "FEE":
+            if ctx.fee["basis"] == "RATE":
+                surface = ctx.catalog.render_rate(ctx.fee["value"], language)
+            else:
+                surface = ctx.catalog.render_money(ctx.call_id, ctx.fee["value"], ctx.fee["currency"], language)
+            return surface, ctx.fee, form, "SCENARIO_FEE"
+        if name == "CURRENCY":
+            return ctx.catalog.render_question(ctx.call_id, "CURRENCY", event["currency"], form), event["currency"], form, "DISTRACTOR_CURRENCY"
+        slot = ctx.limit_slot(event) or "final"
+        price = ctx.limit_prices[slot]
+        return (ctx.catalog.render_money(ctx.call_id, price, ctx.limit_currency[slot], language), price, form, "SCENARIO_LIMIT_PRICE")
     if name == "FEE":
         return R.render_fee(ctx.fee, ctx.aliases), ctx.fee, ctx.fee["basis"], "SCENARIO_FEE"
     if name == "CURRENCY":
@@ -69,6 +91,25 @@ def scenario_surface(ctx, event, name):
     slot = ctx.limit_slot(event) or "final"
     price = ctx.limit_prices[slot]
     return R.render_limit_price(price, ctx.limit_currency[slot], ctx.aliases), price, "NUMBER_WITH_CURRENCY", "SCENARIO_LIMIT_PRICE"
+
+
+def _round_trip(ctx, event, name, surface, value):
+    """(decoded, matches) for a schema-2.0 surface: decoded independently from the surface alone, then compared with the value.
+
+    Composite surfaces (fee, limit price) are compared on amount, currency and basis, not only on the number."""
+    catalog = ctx.catalog
+    if name == "FEE":
+        if ctx.fee["basis"] == "RATE":
+            decoded = catalog.decode_rate(surface)
+            return ("RATE", decoded), decoded == _decimal(ctx.fee["value"])
+        amount, code = catalog.decode_money(surface)
+        return ("AMOUNT", amount, code), amount == _decimal(ctx.fee["value"]) and code == ctx.fee["currency"]
+    if name == "LIMIT_PRICE":
+        slot = ctx.limit_slot(event) or "final"
+        amount, code = catalog.decode_money(surface)
+        return (amount, code), amount == _decimal(value) and code == ctx.limit_currency[slot]
+    decoded = catalog.decode_question(name, surface)
+    return decoded, _same(decoded, value)
 
 
 def _render(ctx, event, text, placeholders, chosen_forms):
@@ -80,22 +121,28 @@ def _render(ctx, event, text, placeholders, chosen_forms):
         try:
             if name in QUESTION_PLACEHOLDERS:
                 role, spoken_form, value = ctx.binding(event, name)
-                form = chosen_forms.get(name) or forms_of(spoken_form)[0]
+                form = chosen_forms.get(name) or ctx.form_choices(event, name)[0]
                 surface = question_surface(ctx, name, value, form, spoken_form)
                 source, kind = ROLE_TO_SOURCE[role], None
             else:
-                surface, value, form, source = scenario_surface(ctx, event, name)
+                surface, value, form, source = scenario_surface(ctx, event, name, chosen_forms.get(name))
                 kind = ctx.fee["basis"] if name == "FEE" else None
-            decoded = _decode(ctx, name, surface, kind)
-            expected = ctx.fee["value"] if name == "FEE" else value
-            if not _same(decoded, expected):
+            if ctx.multilingual:
+                decoded, matches = _round_trip(ctx, event, name, surface, value)
+            else:
+                decoded = _decode(ctx, name, surface, kind)
+                matches = _same(decoded, ctx.fee["value"] if name == "FEE" else value)
+            if not matches:
                 errors.append(f"{event['event_id']}: internal rendering mismatch for [[{name}]] ({surface!r} decodes to {decoded!r})")
-        except (R.RenderError, KeyError, TypeError) as error:
+        except (R.RenderError, KeyError, TypeError, ValueError) as error:
             errors.append(f"{event['event_id']}: cannot render [[{name}]]: {error}")
             return None, [], errors
         out.append(surface)
-        mentions.append({"placeholder": name, "question_id": name if name in QUESTION_PLACEHOLDERS else None, "value": value,
-                         "form": form, "surface": surface, "start": written, "end": written + len(surface), "source": source})
+        mention = {"placeholder": name, "question_id": name if name in QUESTION_PLACEHOLDERS else None, "value": value, "form": form}
+        if ctx.multilingual:
+            mention["language"] = ctx.catalog.form_language(name, form)
+        mention.update({"surface": surface, "start": written, "end": written + len(surface), "source": source})
+        mentions.append(mention)
         written += len(surface)
         cursor = end
     out.append(text[cursor:])
@@ -124,7 +171,7 @@ def _analyze_event(ctx, lexicon, event, entry):
         if resolved is None:
             err(f"speaker must be one of {allowed}")
 
-    placeholders, outside, parse_errors = parse_template(entry["text"])
+    placeholders, outside, parse_errors = parse_template(entry["text"], ctx.multilingual)
     errors += [f"{event_id}: {e}" for e in parse_errors]
     names = [name for name, _, _ in placeholders if name in ALL_PLACEHOLDERS]
     counts = Counter(names)
@@ -144,10 +191,10 @@ def _analyze_event(ctx, lexicon, event, entry):
                 err(f"readback must include {missing}")
             if len(set(readback_ids)) < readback["min_field_count"]:
                 err(f"readback must include at least {readback['min_field_count']} fields")
-            bad = [q for q in readback_ids if q not in ctx.readback_candidates()]
+            bad = [q for q in readback_ids if q not in ctx.readback_candidates(event)]
             if bad:
                 err(f"readback fields {bad} have no FINAL value to read back")
-            required = tuple(q for q in readback_ids if q in ctx.readback_candidates())
+            required = tuple(q for q in readback_ids if q in ctx.readback_candidates(event))
     else:
         required, optional = rules.required, rules.optional
         if readback_ids is not None:
@@ -172,6 +219,10 @@ def _analyze_event(ctx, lexicon, event, entry):
                 err(f"[[{name}]] must not be spoken explicitly here")
             elif len(forms) > 1:
                 needed[name] = forms
+        elif ctx.multilingual and name in SCENARIO_PLACEHOLDERS and name in set(required) | set(optional):
+            forms = ctx.scenario_forms(event, name)  # the model chooses only where more than one language is valid
+            if len(forms) > 1:
+                needed[name] = forms
     given = Counter(item["placeholder"] for item in entry["value_forms"])
     for name, count in given.items():
         if count > 1:
@@ -188,7 +239,7 @@ def _analyze_event(ctx, lexicon, event, entry):
         if name not in given:
             err(f"value_forms must choose a form for {name} from {needed[name]}")
     for name, form in chosen.items():
-        if form in ctx.checks[name].get("forbidden_spoken_forms", []):
+        if name in ctx.checks and form in ctx.checks[name].get("forbidden_spoken_forms", []):
             err(f"form {form} is forbidden for {name}")
 
     # lexical protections on the model-authored wording
@@ -196,7 +247,7 @@ def _analyze_event(ctx, lexicon, event, entry):
     kind = event["kind"]
     if kind == "FALSE_START" and not FALSE_START_END.search(entry["text"]):
         err("a false start must trail off (end with a dash or an ellipsis)")
-    if kind == "WEAK_ACKNOWLEDGEMENT" and WEAK_ACK_BANNED.search(outside):
+    if kind == "WEAK_ACKNOWLEDGEMENT" and lexicon.weak_ack.search(outside):
         err("a weak acknowledgement must not contain confirming words (yes, confirm, correct, right, agree, go ahead...)")
     for question in event["question_ids"]:
         if ctx.checks[question].get("wording_constraint") == "NOT_VERBATIM_CHECKLIST":
@@ -205,12 +256,14 @@ def _analyze_event(ctx, lexicon, event, entry):
             run = shared_word_run(outside, reference)
             if run:
                 err(f"wording repeats the checklist verbatim ({run!r}); paraphrase it")
-    if "EMPLOYEE" in allowed and "C12" not in event["question_ids"] and GUARANTEE_WORD.search(outside):
+    if "EMPLOYEE" in allowed and "C12" not in event["question_ids"] and lexicon.guarantee.search(outside):
         err("employee wording must not mention guarantees outside the C12 events")
-    if ctx.verdict("C09") == "PASS" and "C09" not in event["question_ids"] and LAUNDERING_WORDS.search(outside):
+    if ctx.verdict("C09") == "PASS" and "C09" not in event["question_ids"] and lexicon.laundering.search(outside):
         err("wording suggests money laundering, but C09 is PASS (absence)")
-    if ctx.verdict("C10") == "PASS" and "C10" not in event["question_ids"] and INSIDER_WORDS.search(outside):
+    if ctx.verdict("C10") == "PASS" and "C10" not in event["question_ids"] and lexicon.insider.search(outside):
         err("wording suggests inside information, but C10 is PASS (absence)")
+    if ctx.multilingual:  # schema-2.0 mechanical guards (script rules, pins, Han numeric expressions, bare affirmatives)
+        errors += [f"{event_id}: {e}" for e in template_errors(ctx, lexicon, event, entry, outside)]
 
     if errors:
         return None, errors

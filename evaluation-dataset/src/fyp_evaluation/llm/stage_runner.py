@@ -221,6 +221,10 @@ class StageRunner:
                 self.schema_dir / self.spec.schema_subdir / f"{self.spec.provenance_schema}.schema.json"))
         return self._prov_validator
 
+    def _schema_names(self):
+        """(artifact, record, provenance) schema file stems. A stage overrides this when its schemas depend on the release."""
+        return self.spec.artifact_schema, self.spec.record_schema, self.spec.provenance_schema
+
     def _schema_validators(self):
         """The artifact/record/provenance schema validators `validate()` uses, built once per runner (read-only integrity gates
         of later stages call `_validate_call` with these)."""
@@ -229,9 +233,9 @@ class StageRunner:
 
             from fyp_evaluation.validation.schemas import load_json
 
+            artifact, record, prov = self._schema_names()
             self._stage_schemas = {role: Draft202012Validator(load_json(self.schema_dir / self.spec.schema_subdir / f"{name}.schema.json"))
-                                   for role, name in (("artifact", self.spec.artifact_schema), ("record", self.spec.record_schema),
-                                                      ("provenance", self.spec.provenance_schema))}
+                                   for role, name in (("artifact", artifact), ("record", record), ("provenance", prov))}
         return self._stage_schemas
 
     def _prov_state(self, call_id):
@@ -1075,9 +1079,9 @@ class StageRunner:
         from fyp_evaluation.validation.schemas import load_json
 
         errors = []
+        artifact_name, record_name, provenance_name = self._schema_names()
         schemas = {role: Draft202012Validator(load_json(self.schema_dir / self.spec.schema_subdir / f"{name}.schema.json"))
-                   for role, name in (("artifact", self.spec.artifact_schema), ("record", self.spec.record_schema),
-                                      ("provenance", self.spec.provenance_schema))}
+                   for role, name in (("artifact", artifact_name), ("record", record_name), ("provenance", provenance_name))}
         inputs = self.inputs
         directory = self.root / self.spec.provenance_dir
         known = {f"{c}.json" for c in inputs.call_ids}

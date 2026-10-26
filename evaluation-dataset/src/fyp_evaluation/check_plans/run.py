@@ -14,7 +14,7 @@ from .compile import build_record, compile_artifact
 from .context import PlanContext
 from .config import (
     ARTIFACT_DIR, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR, REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE,
-    TRANSPORT_BUDGET,
+    TRANSPORT_BUDGET, schema_names,
 )
 from .feasibility import feasibility_report, make_validator
 from .inputs import HistoricalContextError, inputs_with_config, load_inputs
@@ -29,9 +29,25 @@ G4_SPEC = StageSpec(
 
 class CheckPlanRunner(StageRunner):
     spec = G4_SPEC
+    supports_selection = True  # the shared CLI passes --call-id so only the selected calls need an accepted G3 config
+
+    def __init__(self, root, *, selected_call_ids=None, **kwargs):
+        super().__init__(root, **kwargs)
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
+
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
+
+    def eligibility(self, call_id, **kwargs):
+        if call_id not in self.inputs.configs:  # selected-call mode: no accepted G3 config was required for this call
+            return False, "no accepted G3 call config for this call"
+        return super().eligibility(call_id, **kwargs)
 
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)

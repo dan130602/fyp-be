@@ -7,6 +7,7 @@ from fyp_evaluation.call_configs.feasibility import synthesize_response
 from fyp_evaluation.call_configs.inputs import load_inputs
 from fyp_evaluation.call_configs.run import ConfigRunner
 from fyp_evaluation.llm.fake_transport import FakeTransport, response_body
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -62,22 +63,10 @@ def make_runner(tmp_path, *, overrides=None, responder=None, transport=None):
     return runner, fake
 
 
-def copy_release(destination):
-    """Copy file contents only (shutil.copytree would copy a OneDrive ReadOnly directory attribute)."""
-    import shutil
-
-    destination.mkdir(parents=True, exist_ok=True)
-    for path in sorted(RELEASE.rglob("*")):
-        relative = path.relative_to(RELEASE).as_posix()
-        if relative.startswith(GENERATED_MODEL_OUTPUTS):  # accepted G3/G4 outputs are not part of the frozen G0-G2B inputs
-            continue
-        target = destination / path.relative_to(RELEASE)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-    return destination
+def copy_release(destination, *, keep_renders=False):
+    """Copy file contents only; accepted G3/G4 outputs are not part of the frozen G0-G2B inputs. Rendered audio is left out
+    unless `keep_renders` (see release_copy)."""
+    return copy_tree(RELEASE, destination, skip_prefixes=GENERATED_MODEL_OUTPUTS, keep_renders=keep_renders)
 
 
 def snapshot(*directories):

@@ -12,7 +12,7 @@ from fyp_evaluation.call_specs.compile import serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
 from .analysis import analyze
-from .config import GENERATOR_VERSION, HASHING, SCHEMA_VERSION, STAGE
+from .config import GENERATOR_VERSION, HASHING, STAGE, schema_version
 from .template import Lexicon
 
 FROZEN_BODY_KEYS = ("planned_events", "checks", "constraints")
@@ -29,7 +29,7 @@ def assemble(ctx, authoring, derived, generation):
     """The complete check plan. Key order is fixed: identity, upstream hashes, generation, frozen copy, G4 additions."""
     inputs, skeleton = ctx.inputs, ctx.skeleton
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "call_id": ctx.call_id,
@@ -104,7 +104,7 @@ def build_record(inputs, artifact_texts, provenance_by_call):
             "previous_artifact_sha256": [entry["artifact_sha256"] for entry in history],
         }
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "generator": {"package": "fyp_evaluation.check_plans", "version": GENERATOR_VERSION},

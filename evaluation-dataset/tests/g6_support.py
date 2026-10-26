@@ -1,13 +1,13 @@
 """Shared helpers for the G6 tests. No network, no credentials; production files are never written."""
 
 import json
-import shutil
 from pathlib import Path
 
 from fyp_evaluation.dialogues.feasibility import synthesize_dialogue
 from fyp_evaluation.dialogues.inputs import load_inputs
 from fyp_evaluation.dialogues.run import DialogueRunner
 from fyp_evaluation.llm.fake_transport import FakeTransport, response_body
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -36,20 +36,9 @@ class Clock:
         return f"2026-10-14T00:{self.tick // 60 % 60:02d}:{self.tick % 60:02d}Z"
 
 
-def copy_release(destination):
-    """Copy file contents only (keeps the accepted G0-G5 outputs, never any G6 output)."""
-    destination.mkdir(parents=True, exist_ok=True)
-    for path in sorted(RELEASE.rglob("*")):
-        relative = path.relative_to(RELEASE).as_posix()
-        if relative.startswith(G6_OUTPUTS) or relative.endswith(".stage_write.lock"):
-            continue
-        target = destination / path.relative_to(RELEASE)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-    return destination
+def copy_release(destination, *, keep_renders=False):
+    """Copy file contents only (keeps the accepted G0-G5 outputs, never any G6 output; no rendered audio unless `keep_renders`)."""
+    return copy_tree(RELEASE, destination, skip_prefixes=G6_OUTPUTS, skip_suffixes=(".stage_write.lock",), keep_renders=keep_renders)
 
 
 def good_responder(runner, overrides=None):

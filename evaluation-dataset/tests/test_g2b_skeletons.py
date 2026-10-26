@@ -25,6 +25,7 @@ from fyp_evaluation.check_plan_skeletons.inputs import G2AStateError, g0_hashes,
 from fyp_evaluation.check_plan_skeletons.outputs import check_outputs, generate, read_disk, write_skeletons
 from fyp_evaluation.check_plan_skeletons.validate import check_skeleton_schemas, validate_skeleton_set
 from fyp_evaluation.validation.stage0 import load_stage0
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -69,14 +70,8 @@ def disk():
 
 
 def _copy_release(source, destination):
-    """Copy file contents only: shutil.copytree also copies a OneDrive ReadOnly directory attribute."""
-    for path in sorted(source.rglob("*")):
-        target = destination / path.relative_to(source)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
+    """Copy file contents only (shutil.copytree also copies a OneDrive ReadOnly directory attribute), without rendered audio."""
+    copy_tree(source, destination)
 
 
 def _remove_tree(path):

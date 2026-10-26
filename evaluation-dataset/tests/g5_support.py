@@ -1,12 +1,12 @@
 """Shared helpers for the G5 tests. No network, no credentials; production files are never written."""
 
 import json
-import shutil
 from pathlib import Path
 
 from fyp_evaluation.llm.fake_gemini_transport import FakeGeminiTransport, call_id_of, interaction_body
 from fyp_evaluation.plan_verifications.inputs import load_inputs
 from fyp_evaluation.plan_verifications.run import PlanVerificationRunner, synthesize_response
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -96,17 +96,6 @@ def snapshot(*directories):
     return result
 
 
-def copy_release(destination):
-    """Copy file contents only (keeps the accepted G3/G4 outputs, never any G5 output)."""
-    destination.mkdir(parents=True, exist_ok=True)
-    for path in sorted(RELEASE.rglob("*")):
-        relative = path.relative_to(RELEASE).as_posix()
-        if relative.startswith(G5_OUTPUTS) or relative.endswith(".stage_write.lock"):
-            continue
-        target = destination / path.relative_to(RELEASE)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-    return destination
+def copy_release(destination, *, keep_renders=False):
+    """Copy file contents only (keeps the accepted G3/G4 outputs, never any G5 output; no rendered audio unless `keep_renders`)."""
+    return copy_tree(RELEASE, destination, skip_prefixes=G5_OUTPUTS, skip_suffixes=(".stage_write.lock",), keep_renders=keep_renders)

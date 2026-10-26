@@ -7,6 +7,7 @@ from fyp_evaluation.check_plans.feasibility import synthesize_response
 from fyp_evaluation.check_plans.inputs import load_inputs
 from fyp_evaluation.check_plans.run import CheckPlanRunner
 from fyp_evaluation.llm.fake_transport import FakeTransport, response_body
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -83,24 +84,11 @@ G4_OUTPUTS = ("authoring/check_plans", "authoring/check_plan_provenance", "autho
 LATER_STAGE_OUTPUTS = ("authoring/plan_verification", "authoring/dialogue")
 
 
-def copy_release(destination, *, keep_g3=True):
-    """Copy file contents only (shutil.copytree would copy a OneDrive ReadOnly directory attribute); never any G4 output
-    (nor any G5/G6 output, which would otherwise show the isolated copy as already verified)."""
-    import shutil
-
+def copy_release(destination, *, keep_g3=True, keep_renders=False):
+    """Copy file contents only; never any G4 output (nor any G5/G6 output, which would otherwise show the isolated copy as
+    already verified) and no rendered audio unless `keep_renders`."""
     skip = G4_OUTPUTS + LATER_STAGE_OUTPUTS + (() if keep_g3 else ("authoring/call_config",))
-    destination.mkdir(parents=True, exist_ok=True)
-    for path in sorted(RELEASE.rglob("*")):
-        relative = path.relative_to(RELEASE).as_posix()
-        if relative.startswith(skip):
-            continue
-        target = destination / path.relative_to(RELEASE)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-    return destination
+    return copy_tree(RELEASE, destination, skip_prefixes=skip, keep_renders=keep_renders)
 
 
 def g3_digest():

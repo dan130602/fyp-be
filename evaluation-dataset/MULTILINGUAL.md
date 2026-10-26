@@ -4,8 +4,11 @@ A multilingual release keeps the gold-first G0 -> G9 pipeline and adds language 
 language-independent: the coverage matrix stores `T04 = 700`, never `七百`. A profile only constrains how values and
 dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unchanged and still reproduces byte-for-byte.
 
-Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH). G3 refuses to start on a multilingual release
-(`call_configs/inputs.py`) until its language-aware briefs exist; G4 Mandarin rendering, G5-G7 language assessments,
+Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH), and the
+deterministic G4 layer for schema 2.0 (Phase 2: renderers, independent decoders, shared form choices, guards, schema-2.0 provenance and
+selected-call readiness; see "G4 (schema 2.0)" below). G3 still refuses to start on a multilingual release
+(`call_configs/inputs.py`) until its language-aware briefs exist, so G4 only runs offline here (artificial G3 configs and fake
+transports in the tests); the multilingual G3-G7 prompts and briefs, G5-G7 language assessments,
 TTS, STT, scoring, the deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
 
 ## Release shape
@@ -90,6 +93,32 @@ split satisfies every group at once. The report assigns
 nothing; the deterministic stratified split, CI and the registry of inspected or pilot-exposed calls (to be assigned to development)
 are later work, and the planning artifacts already carry the metadata a split needs (language profile, mixing style, duration,
 verdicts, edge-case IDs, families, variants and transaction attributes).
+
+## G4 (schema 2.0)
+
+`check_plans` keeps the schema-1.0 behaviour for the pilot byte for byte and switches to language-aware behaviour when the release is
+multilingual (`validation.stage0.is_multilingual`). The model still writes only templates and chooses among explicitly permitted forms;
+Python validates each choice, renders every surface from frozen inputs and computes spans as Python character offsets.
+
+* **One source of choices.** `PlanContext.choices(event, placeholder)` returns `FormChoice(form, language, surface)` for question
+  placeholders and for `FEE` / `LIMIT_PRICE` / `CURRENCY`; request previews, response validation and rendering all read it.
+  Choices are the skeleton's forms narrowed to the event's allowed languages (`required_language`, else the allowed speakers'
+  `spoken_languages`) and to the forms that can express the particular value (EUR and JPY have no `SPELLED_CODE`). A field with no valid form is
+  not offered for readback; a REQUIRED form that cannot be spoken in the event is a contract error. A missing choice is a validation error.
+* **Surfaces.** `surfaces.SurfaceCatalog` reads `spoken_forms`, `generation_surfaces`, `aliases`, `language_names` and implements
+  `language_rules.zh` through `zh_numbers` (algorithmic cardinals with 万/亿, 零 gaps and the 两 rule; decimals; years with 〇; dates;
+  identifiers with Han digits). When a form lists several approved surfaces, one is picked deterministically from the call, question, value and form.
+* **Decoders** parse the surface alone (never the expected value) and reject shortened or ambiguous forms. Accepted equivalents:
+  两 or 二 before 百/千/万/亿, 〇 or 零 in a year, spaces inside a Mandarin identifier. Fee and limit-price surfaces are checked on amount,
+  currency and basis with `Decimal`; more decimal places than the declared rule is an error, never a rounding.
+* **Guards** (`guards.py`, plus the CJK-safe patterns in `template.py`) are mechanical and narrow: frozen script rules, event language pins,
+  numeric expressions in Chinese wording outside the slots (a bounded rule set, not a number parser), standalone 元/块/刀, approved Chinese product
+  names outside `[[T01]]`, and bare unqualified affirmatives in planned weak acknowledgements. Mandarin compliance wording is NOT checked in G4; G5/G7 judge it.
+* **Provenance.** Plans and records are schema 2.0 (`check_plan.v2` / `check_plan_record.v2`): mentions carry `language` and `source` / `upstream`
+  carry `language_profiles_sha256`.
+* **Selected-call readiness.** With `--call-id`, G3 must be intact release-wide but only the selected calls need an accepted, current G3 config.
+
+The Mandarin golden examples and word lists in the tests and `guards.py` are provisional until a native speaker has reviewed them.
 
 ## G1 rules (2.0)
 

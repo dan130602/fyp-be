@@ -25,6 +25,7 @@ from fyp_evaluation.call_specs.compile import (
 from fyp_evaluation.call_specs.outputs import check_outputs, generate, read_disk, write_specs
 from fyp_evaluation.call_specs.validate import check_call_spec_schemas, validate_spec_set
 from fyp_evaluation.planning import outputs as g1
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -44,18 +45,12 @@ def disk_specs():
 
 
 def _copy_release(source, destination):
-    """Copy file contents into plain new directories.
+    """Copy file contents into plain new directories, without the rendered audio (release_copy.copy_tree).
 
     shutil.copytree also copies directory attributes; on a OneDrive-synced Windows tree those include
     ReadOnly, which then makes later rmtree calls fail. Contents are all the tests need.
     """
-    for path in sorted(source.rglob("*")):
-        target = destination / path.relative_to(source)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
+    copy_tree(source, destination)
 
 
 def _remove_tree(path):

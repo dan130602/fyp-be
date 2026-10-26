@@ -10,7 +10,7 @@ from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
 from .analysis import question_surface, scenario_surface
 from .config import (
-    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, REASONING_EFFORT, RESPONSE_FORMAT_NAME, RESPONSE_SCHEMA, STAGE,
+    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, REASONING_EFFORT, RESPONSE_FORMAT_NAME, RESPONSE_SCHEMA, STAGE, schema_names,
 )
 from .context import PlanContext, forms_of
 
@@ -24,7 +24,12 @@ def request_hash(body):
 
 
 def _surfaces(ctx, event, placeholder):
-    """{form: rendered surface} a question placeholder can take in this event (previews for the model)."""
+    """{form: rendered surface} a question placeholder can take in this event (previews for the model).
+
+    Schema 2.0 reads the same `ctx.choices` the validator and the renderer use, and labels each form with its language."""
+    if ctx.multilingual:
+        choices = ctx.choices(event, placeholder)
+        return {choice.form: {"language": choice.language, "surface": choice.surface} for choice in choices} if choices else None
     binding = ctx.binding(event, placeholder)
     forms = forms_of(binding[1]) if binding else None
     if not forms:
@@ -44,6 +49,10 @@ def _event_brief(ctx, event):
                 "refers_to_event_id"):
         if key in event:
             entry[key] = event[key]
+    if ctx.multilingual:
+        if "required_language" in event:
+            entry["required_language"] = event["required_language"]
+        entry["spoken_languages"] = sorted(ctx.allowed_languages(event))
     if event["kind"] == "COMPLIANCE_ACT":
         question = event["question_ids"][0]
         ref = event.get("condition_ref", "")
@@ -54,7 +63,7 @@ def _event_brief(ctx, event):
     if rules.readback:
         readback = event["readback"]
         wrong = readback["wrong_question_id"]
-        selectable = {q: _surfaces(ctx, event, q) for q in ctx.readback_candidates()}
+        selectable = {q: _surfaces(ctx, event, q) for q in ctx.readback_candidates(event)}
         entry["readback"] = {
             "must_include": readback["must_include_question_ids"], "min_field_count": readback["min_field_count"],
             "wrong_question_id": wrong, "wrong_value_preview": _surfaces(ctx, event, wrong),
@@ -70,7 +79,7 @@ def _event_brief(ctx, event):
     entry["placeholders"] = placeholders
     previews, choices = {}, {}
     for name in rules.required + rules.optional:
-        if name in ctx.checks:
+        if name in ctx.checks or ctx.multilingual:
             surfaces = _surfaces(ctx, event, name)
             if surfaces:
                 previews[name] = surfaces
@@ -82,6 +91,26 @@ def _event_brief(ctx, event):
         entry["rendered_surfaces"] = previews
     if choices:
         entry["form_choices"] = choices
+    return entry
+
+
+def _language_brief(ctx):
+    """Schema 2.0: the frozen language requirements the deterministic layer enforces (prompt wording about them is Phase 3)."""
+    requirements = ctx.language_requirements
+    return {
+        "language_profile": ctx.spec["metadata"]["language_profile"], "mixing_style": ctx.spec["metadata"]["mixing_style"],
+        "script_rules": requirements["script_rules"],
+        "speakers": {speaker: {"spoken_languages": rule["spoken_languages"], "required_languages": rule["required_languages"]}
+                     for speaker, rule in requirements["speakers"].items()},
+    }
+
+
+def _product_brief(ctx, product):
+    entry = {"product_ref": product["product_ref"], "name": product["name"], "roles": product["roles"]}
+    if ctx.multilingual:
+        names = (ctx.inputs.documents["normalization"]["profiles"]["synthetic_product_name"].get("language_names") or {}).get(product["name"], {})
+        if names.get("zh", {}).get("status") == "APPROVED":
+            entry["approved_chinese_name"] = names["zh"]["surface"]
     return entry
 
 
@@ -103,9 +132,10 @@ def build_brief(inputs, ctx):
         checks.append(row)
     return {
         "call_id": ctx.call_id,
+        **({"language": _language_brief(ctx)} if ctx.multilingual else {}),
         "scenario": {key: scenario[key] for key in ("client", "employee", "setting", "final_product", "other_products",
                                                     "holding_context", "red_flags")},
-        "products": [{"product_ref": p["product_ref"], "name": p["name"], "roles": p["roles"]} for p in inputs.configs[ctx.call_id]["products"]],
+        "products": [_product_brief(ctx, p) for p in inputs.configs[ctx.call_id]["products"]],
         "edge_assignments": [{"assignment_id": e["assignment_id"], "edge_case_id": e["edge_case_id"],
                               "description": catalog[e["edge_case_id"]]["description"], "motivation": motivations.get(e["assignment_id"])}
                              for e in ctx.spec["edge_cases"]],
@@ -125,7 +155,7 @@ class RequestBuilder:
         response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
         self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
         self.response_schema = parse_json_text(response_path.read_text(encoding="utf-8"))
-        self.artifact_schema = parse_json_text(schema_path("check_plan", schema_dir).read_text(encoding="utf-8"))
+        self.artifact_schema = parse_json_text(schema_path(schema_names(inputs.documents)[0], schema_dir).read_text(encoding="utf-8"))
         template = template_path.read_text(encoding="utf-8").replace("\r\n", "\n")
         self.developer_message = (template.replace("{{CHECKLIST}}", _checklist_text(inputs.documents))
                                   .replace("{{RULES}}", _rules_text(inputs.documents)))
