@@ -23,7 +23,7 @@ route this release through `configs/normalization.json`. The normalization file
 is declarative: do not implement its steps until authorized. All 20 questions
 apply to every call; call intents are multi-label and descriptive only; the
 only hard compliance dependency is C03 PASS => C02 PASS. G1 rules: at most one
-edge case per question per call (EC_LONG_DISTANCE_DEPENDENCY exempt); superseded,
+edge case per question per call (EC_LONG_DISTANCE_DEPENDENCY exempt, but never twice on the same target set in one call); superseded,
 distractor and initial-order values stay inside the configured domains and realism
 constraints; no fee amount/rate distractor when C04 is FAIL; every other choice is
 seeded, balanced and stably tie-broken. No applicability,

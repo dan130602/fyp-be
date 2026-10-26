@@ -6,7 +6,7 @@ dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unc
 
 Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH). G3 refuses to start on a multilingual release
 (`call_configs/inputs.py`) until its language-aware briefs exist; G4 Mandarin rendering, G5-G7 language assessments,
-TTS, STT, scoring, the 400/100 split and CI are later work.
+TTS, STT, scoring, the deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
 
 ## Release shape
 
@@ -82,8 +82,11 @@ each other check; integer T03 exposure caps 26/26/17/17 (35% rounded down). The 
 solution (for example a profile size that makes a scaled total fractional) instead of relaxing a rule.
 
 `python scripts/report_multilingual_plan.py --dataset-root datasets/advisory_execution_multilingual_v1 --coverage` prints the
-per-profile mechanism and variant counts (SINGLETON / VERY SMALL groups flagged) and a future 70/30 development / held-out
-assessment: which groups a proportional split would leave with one example in a subset or unable to appear in both. It assigns
+per-profile mechanism and variant counts as `assignments / distinct calls` (SINGLETON / VERY SMALL groups flagged by distinct calls)
+and a future 70/30 development / held-out assessment (175 / 75 calls) over whole calls: which groups a proportional split would leave
+with one call in a subset or unable to appear in both. Distinct calls come from the G1 outputs; with only the quotas they are shown
+as `unknown` and no split assessment is produced. The group estimates are independent, so they are indicators, not proof that one
+split satisfies every group at once. The report assigns
 nothing; the deterministic stratified split, CI and the registry of inspected or pilot-exposed calls (to be assigned to development)
 are later work, and the planning artifacts already carry the metadata a split needs (language profile, mixing style, duration,
 verdicts, edge-case IDs, families, variants and transaction attributes).
@@ -102,6 +105,8 @@ all re-checked independently by `planning/validate.py`:
 * Calls targeting T03 stay within the per-profile exposure cap.
 * An order replacement supplies every transaction FINAL, so no correction or reference case may target a transaction
   field in the same call, and no long-distance dependency may share the call.
+* No call carries two assignments with the same case and target set (one behavioural requirement would be counted twice).
+  Long-distance dependencies on different question pairs in one call stay legitimate; the allocator draws an unused pair.
 * K01/K02 are unique release-wide; superseded and distractor values stay inside the configured domains.
 * G0 rejects a planned (profile, case, currency) combination with no coherent eligible value (the EUR/CNY
   large-number gap).

@@ -327,3 +327,47 @@ def test_reports_are_derived_from_the_maintained_contracts(docs):
     composition = composition_report(RELEASE)
     assert "| C03 | 20 | 19 | 13 | 13 | 65 |" in composition
     assert "| EC_MULTIPLE_MONETARY_VALUES | ZH_MAGNITUDE_CONTRAST | 0 | 6 | 0 | 0 | 6 |" in composition
+
+
+# ---------------------------------------------------------------------------------------------- repeated assignments
+def test_no_call_repeats_a_case_on_the_same_targets(plan_view):
+    """One behavioural requirement may not be counted twice: (case, target set) is unique within every call."""
+    _, by_call, _, _ = plan_view
+    for call, rows in by_call.items():
+        keys = Counter((a["edge_case_id"], tuple(a["target_question_ids"])) for a in rows)
+        assert max(keys.values(), default=1) == 1, call
+
+
+def test_long_distance_dependencies_on_different_pairs_stay_legitimate(docs, parsed, plan_view):
+    _, by_call, _, _ = plan_view
+    multiple = {c: [a["target_question_ids"] for a in rows if a["edge_case_id"] == "EC_LONG_DISTANCE_DEPENDENCY"] for c, rows in by_call.items()}
+    multiple = {c: pairs for c, pairs in multiple.items() if len(pairs) > 1}
+    assert len(multiple) == 7, "the planned quotas still need calls with several long-distance requirements"
+    assert all(len({tuple(p) for p in pairs}) == len(pairs) for pairs in multiple.values())
+    assert not validate_plan(docs, *parsed, SCHEMAS)
+
+
+def test_validator_rejects_a_repeated_case_on_the_same_targets(docs, parsed):
+    manifest, matrix, assignments = deepcopy(parsed)
+    original = next(a for a in assignments if a["edge_case_id"] == "EC_LONG_DISTANCE_DEPENDENCY")
+    assignments.append({**deepcopy(original), "assignment_id": "EA_999"})
+    errors = validate_plan(docs, manifest, matrix, assignments, SCHEMAS)
+    assert any(f"{original['call_id']}: 2 identical EC_LONG_DISTANCE_DEPENDENCY assignments target" in error for error in errors), errors
+
+
+def test_a_repeated_pair_is_never_chosen_when_another_pair_exists():
+    from fyp_evaluation.planning.multilingual import unused_pairs
+
+    class State:
+        cases = [("EC_LONG_DISTANCE_DEPENDENCY", ["T04", "T06"]), ("EC_FALSE_START", ["T01"])]
+
+    allowed = ["T03", "T04", "T06"]
+    assert unused_pairs(State, "EC_LONG_DISTANCE_DEPENDENCY", allowed) == [("T03", "T04"), ("T03", "T06")]
+    assert unused_pairs(State, "EC_LONG_DISTANCE_DEPENDENCY", ["T04", "T06"]) == []
+    assert unused_pairs(State, "EC_FALSE_START", ["T04", "T06"]) == [("T04", "T06")]
+
+
+def test_the_pilot_release_has_no_repeated_assignment():
+    rows = outputs.parse_assignments((PILOT / outputs.ASSIGNMENTS).read_text(encoding="utf-8"))
+    keys = Counter((r["call_id"], r["edge_case_id"], tuple(r["target_question_ids"])) for r in rows)
+    assert max(keys.values()) == 1

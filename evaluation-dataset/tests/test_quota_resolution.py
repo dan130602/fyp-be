@@ -4,6 +4,7 @@ The resolver is pure Python over the committed design and catalog; nothing here 
 """
 
 import json
+import shutil
 from copy import deepcopy
 from fractions import Fraction
 from pathlib import Path
@@ -12,7 +13,9 @@ import pytest
 
 from fyp_evaluation.planning.quotas import QuotaError, largest_remainder, resolve_histogram, resolve_quotas, round_matrix, round_table
 from fyp_evaluation.planning.quotas_cli import DESIGN, PLAN, resolved_plan
-from fyp_evaluation.planning.reports import coverage_report, coverage_groups, proportional_split, small_group_flag, split_flag
+from fyp_evaluation.planning.reports import (
+    coverage_groups, coverage_report, planned_call_support, proportional_split, small_group_flag, split_flag,
+)
 from fyp_evaluation.validation.stage0 import load_stage0, validate_stage0
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -204,14 +207,57 @@ def test_split_assessment_helpers():
     assert split_flag(1, 1, 0) == "CANNOT APPEAR IN BOTH" and split_flag(4, 3, 1) == "ONE EXAMPLE IN A SUBSET" and split_flag(10, 7, 3) == ""
 
 
-def test_coverage_report_flags_what_a_split_would_leave_thin(docs):
-    groups = coverage_groups(docs)
-    assert ("EN_ZH_MIXED", "EC_MULTIPLE_CORRECTIONS / CROSS_LANGUAGE_EN_TO_ZH", 1) in groups
+def test_coverage_groups_report_assignments_and_distinct_calls_separately(docs):
+    support = planned_call_support(RELEASE, docs)
+    assert support is not None
+    groups = coverage_groups(docs, support)
+    assert ("ENGLISH", "EC_LONG_DISTANCE_DEPENDENCY", 16, 14) in groups and ("SINGLISH", "EC_LONG_DISTANCE_DEPENDENCY", 10, 9) in groups
+    assert ("ALL PROFILES", "EC_LONG_DISTANCE_DEPENDENCY", 54, 47) in groups
+    assert ("EN_ZH_MIXED", "EC_MULTIPLE_CORRECTIONS / CROSS_LANGUAGE_EN_TO_ZH", 1, 1) in groups
     assert not [g for g in groups if g[0] == "ALL PROFILES" and "CROSS_LANGUAGE" in g[1]], "single-profile mechanisms are not repeated"
+    assert [g for g in groups if g[3] != g[2]] == [g for g in groups if "LONG_DISTANCE" in g[1]], "only long-distance repeats a case in a call"
+
+
+def test_distinct_calls_are_unknown_not_assumed_when_only_quotas_exist(docs):
+    groups = coverage_groups(docs)
+    assert groups and all(calls is None for _, _, _, calls in groups)
+    assert ("ENGLISH", "EC_LONG_DISTANCE_DEPENDENCY", 16, None) in groups
+
+
+def test_coverage_report_flags_what_a_split_would_leave_thin(docs):
     report = coverage_report(RELEASE)
     assert "Eligible mechanisms with no examples: none." in report
     assert "Cross-language cases missing a switch direction: none." in report
-    assert "EN_ZH_MIXED | EC_MULTIPLE_CORRECTIONS / CROSS_LANGUAGE_EN_TO_ZH | 1 | 1 | 0 | CANNOT APPEAR IN BOTH" in report
+    assert "| EC_LONG_DISTANCE_DEPENDENCY | 16 / 14 | 18 / 16 | 10 / 8 | 10 / 9 | 54 / 47 |" in report
+    assert "EN_ZH_MIXED | EC_MULTIPLE_CORRECTIONS / CROSS_LANGUAGE_EN_TO_ZH | 1 | 1 | 1 | 0 | CANNOT APPEAR IN BOTH" in report
+    assert "Not a feasibility proof" in report and "Distinct calls come from the G1 outputs" in report
+
+
+def _quota_only_copy(tmp_path):
+    """The release's G0 files and quotas without any G1 output."""
+    target = tmp_path / "release"
+    (target / "authoring").mkdir(parents=True)
+    for path in RELEASE.glob("*.json"):
+        shutil.copy2(path, target / path.name)
+    for name in ("generation_plan.json", "quota_design.json"):
+        shutil.copy2(RELEASE / "authoring" / name, target / "authoring" / name)
+    return target
+
+
+def test_report_labels_distinct_calls_unknown_without_matching_g1_outputs(tmp_path):
+    target = _quota_only_copy(tmp_path)
+    report = coverage_report(target)
+    assert "Distinct calls are unknown" in report and "16 / unknown" in report
+    assert "Not produced: distinct-call coverage is unknown" in report and "CANNOT APPEAR" not in report and "would leave thin" not in report
+
+    for name in ("call_manifest.csv", "edge_case_assignments.csv"):
+        shutil.copy2(RELEASE / "authoring" / name, target / "authoring" / name)
+    assert "Distinct calls come from the G1 outputs" in coverage_report(target)
+
+    lines = (target / "authoring/edge_case_assignments.csv").read_text(encoding="utf-8").splitlines(keepends=True)
+    (target / "authoring/edge_case_assignments.csv").write_text("".join(lines[:-1]), encoding="utf-8", newline="")
+    stale = coverage_report(target)
+    assert "Distinct calls are unknown" in stale and "do not match the stored quotas" in stale
 
 
 # ---------------------------------------------------------------------------------------- generated artifacts

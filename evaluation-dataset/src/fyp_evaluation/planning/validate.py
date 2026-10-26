@@ -334,11 +334,17 @@ def _long_distance_errors(case, targets, params, row, domain):
 
 
 def _call_rules(c, rows, cases, domain, exempt, rules):
-    """Per-call edge-case rules shared with the 1.0 release: one case per target, mutual exclusion, bundle exclusion."""
+    """Per-call edge-case rules shared with the 1.0 release: one case per target, no repeated (case, targets) assignment,
+    mutual exclusion, bundle exclusion."""
     errors = []
     targeted = Counter(q for a in rows if a["edge_case_id"] not in exempt for q in a["target_question_ids"])
     if over := sorted(q for q, n in targeted.items() if n > rules["max_edge_cases_per_target_question_per_call"]):
         errors.append(f"edge_case_assignments: {c}: more than one edge case targets {over}")
+    repeated = Counter((a["edge_case_id"], tuple(a["target_question_ids"])) for a in rows)
+    for (case_id, targets), n in sorted(repeated.items()):
+        if n > 1:
+            errors.append(f"edge_case_assignments: {c}: {n} identical {case_id} assignments target {'|'.join(targets)}; "
+                          "one behavioural requirement may not be counted twice")
     present = {a["edge_case_id"] for a in rows}
     for case_id in present:
         if set(cases.get(case_id, {}).get("mutually_exclusive_with", [])) & present:

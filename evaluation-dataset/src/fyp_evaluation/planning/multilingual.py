@@ -113,6 +113,13 @@ def _instances(p, cases, case_index, exempt, order_fields):
     return sorted(expand(p["edge_case_counts"].items()), key=priority)
 
 
+def unused_pairs(state, case_id, allowed):
+    """Question pairs among `allowed` that a multi-question case without a per-question limit does not already use in this
+    call (two identical assignments would be one behavioural requirement counted twice; different pairs stay legitimate)."""
+    used = {frozenset(targets) for case, targets in state.cases if case == case_id}
+    return [(a, b) for i, a in enumerate(allowed) for b in allowed[i + 1:] if frozenset((a, b)) not in used]
+
+
 def _place(p, calls, states, cases, case_index, exempt, order_fields, rng, balancer, question_index):
     """Place every instance of the profile's exact per-case counts into the call states (cases, locks, exposure)."""
     caps = p["target_exposure_caps"]
@@ -143,7 +150,7 @@ def _place(p, calls, states, cases, case_index, exempt, order_fields, rng, balan
         if has_bundle and separates_order_finals(case, order_fields):
             return None
         if case_id in exempt:
-            return allowed if len(allowed) >= 2 else None
+            return allowed if unused_pairs(state, case_id, allowed) else None
         targets = []
         for question_id in allowed:
             if question_id in state.occupied:
@@ -181,6 +188,11 @@ def _place(p, calls, states, cases, case_index, exempt, order_fields, rng, balan
             picks = []
             for _ in range(2):
                 picks.append(balancer.choose(f"target:{case_id}", [q for q in options if q not in picks]))
+            if frozenset(picks) in {frozenset(t) for c, t in state.cases if c == case_id}:
+                # the least-used pair repeats an assignment this call already carries: take the least-used unused pair
+                fresh = unused_pairs(state, case_id, options)
+                first = balancer.choose(f"target:{case_id}", sorted({q for pair in fresh for q in pair}))
+                picks = [first, balancer.choose(f"target:{case_id}", [q for pair in fresh if first in pair for q in pair if q != first])]
         else:
             picks = [balancer.choose(f"target:{case_id}", options)]
         for pick in picks:

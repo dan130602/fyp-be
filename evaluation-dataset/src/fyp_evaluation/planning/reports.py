@@ -5,12 +5,13 @@ only source of truth; nothing here is maintained by hand). `composition_report` 
 from the validated planning_record.json summary. Neither writes files or changes any contract.
 """
 
+from collections import Counter
 from pathlib import Path
 
 from fyp_evaluation.validation.schemas import load_json
 from fyp_evaluation.validation.stage0 import load_stage0
 
-from .outputs import RECORD
+from .outputs import ASSIGNMENTS, MANIFEST, RECORD, parse_assignments, parse_manifest
 
 VARIANT_HANDLING = {
     "event_languages": "G2B pins the variant's earlier/later events (required_language)",
@@ -142,34 +143,79 @@ def split_flag(count, development, held_out):
     return "ONE EXAMPLE IN A SUBSET" if min(development, held_out) == 1 else ""
 
 
-def coverage_groups(documents):
-    """[(scope, mechanism, count)] for every case and variant, per language profile and across profiles (count > 0 only)."""
+def planned_call_support(root, documents):
+    """{(language profile, mechanism): set of call IDs} from the G1 outputs, or None when they are missing or do not match the
+    stored quotas (then distinct-call coverage is unknown). A mechanism is an edge-case ID or "<edge-case ID> / <variant ID>"."""
+    root = Path(root)
+    manifest_path, assignments_path = root / MANIFEST, root / ASSIGNMENTS
+    if not (manifest_path.is_file() and assignments_path.is_file()):
+        return None
+    try:
+        profile_of = {r["call_id"]: r["language_profile"] for r in parse_manifest(manifest_path.read_text(encoding="utf-8"))}
+        assignments = parse_assignments(assignments_path.read_text(encoding="utf-8"))
+        support = {}
+        assigned = Counter()
+        for a in assignments:
+            profile = profile_of[a["call_id"]]
+            keys = [a["edge_case_id"]] + ([f"{a['edge_case_id']} / {a['language_variant']}"] if a["language_variant"] != "NONE" else [])
+            for key in keys:
+                support.setdefault((profile, key), set()).add(a["call_id"])
+                assigned[(profile, key)] += 1
+    except (KeyError, ValueError, OSError):
+        return None
+    planned = Counter()
+    for plan in documents["generation_plan"]["language_profile_plans"]:
+        name = plan["language_profile"]
+        planned.update({(name, case_id): n for case_id, n in plan["edge_case_counts"].items() if n})
+        planned.update({(name, f"{case_id} / {variant}"): n for case_id, by in plan["language_variant_counts"].items()
+                        for variant, n in by.items() if n})
+    return support if assigned == planned else None
+
+
+def coverage_groups(documents, support=None):
+    """[(scope, mechanism, assignments, distinct calls or None)] for every case and variant, per language profile and across
+    profiles (assignments > 0 only). `support` is planned_call_support(); without it the distinct calls are unknown (None),
+    never assumed equal to the assignment count."""
     plans = documents["generation_plan"]["language_profile_plans"]
     cases = [c["id"] for c in documents["edge_case_catalog"]["edge_cases"]]
-    groups, totals = [], {}
+    groups = []
+
+    def calls_of(profile, mechanism):
+        return None if support is None else len(support.get((profile, mechanism), ()))
+
     for p in plans:
         name = p["language_profile"]
         for case_id in cases:
             if p["edge_case_counts"][case_id]:
-                groups.append((name, case_id, p["edge_case_counts"][case_id]))
-                totals[case_id] = totals.get(case_id, 0) + p["edge_case_counts"][case_id]
+                groups.append((name, case_id, p["edge_case_counts"][case_id], calls_of(name, case_id)))
         for case_id, by in p["language_variant_counts"].items():
             for variant_id, count in by.items():
-                key = f"{case_id} / {variant_id}"
-                groups.append((name, key, count))
-                totals[key] = totals.get(key, 0) + count
-    in_profiles = {}
-    for scope, mechanism, _ in groups:
-        in_profiles[mechanism] = in_profiles.get(mechanism, 0) + 1
-    groups += [("ALL PROFILES", mechanism, count) for mechanism, count in totals.items() if in_profiles[mechanism] > 1]
+                groups.append((name, f"{case_id} / {variant_id}", count, calls_of(name, f"{case_id} / {variant_id}")))
+    by_mechanism = {}
+    for _, mechanism, assignments, calls in groups:
+        by_mechanism.setdefault(mechanism, []).append((assignments, calls))
+    for mechanism, parts in by_mechanism.items():
+        if len(parts) > 1:  # every call belongs to exactly one profile, so distinct calls add up across profiles
+            known = all(calls is not None for _, calls in parts)
+            groups.append(("ALL PROFILES", mechanism, sum(a for a, _ in parts), sum(c for _, c in parts) if known else None))
     return groups
 
 
-def _count_cell(count, eligible=True):
-    if not eligible or not count:
+def _count_cell(assignments, calls, eligible=True):
+    """'assignments / distinct calls' with a size flag taken from the distinct calls (unknown when only quotas are available)."""
+    if not eligible or not assignments:
         return "-"
-    flag = small_group_flag(count)
-    return f"{count} ({flag})" if flag else str(count)
+    if calls is None:
+        return f"{assignments} / unknown"
+    flag = small_group_flag(calls)
+    return f"{assignments} / {calls}" + (f" ({flag})" if flag else "")
+
+
+def _total_cell(cell, mechanism):
+    """The across-profile cell of a mechanism: the ALL PROFILES row, or the single profile that has it."""
+    if ("ALL PROFILES", mechanism) in cell:
+        return cell[("ALL PROFILES", mechanism)]
+    return next((value for (scope, key), value in cell.items() if key == mechanism), (0, 0))
 
 
 def coverage_report(dataset_root):
@@ -182,47 +228,63 @@ def coverage_report(dataset_root):
     design = root / "authoring/quota_design.json"
     if design.is_file():
         held_percent = load_json(design)["target"].get("future_split", {}).get("held_out_percent", held_percent)
+    support = planned_call_support(root, documents)
+    groups = coverage_groups(documents, support)
+    cell = {(scope, mechanism): (assignments, calls) for scope, mechanism, assignments, calls in groups}
     lines = [
         "# Mechanism coverage and future-split assessment",
         "",
-        f"Counts come from the resolved `generation_plan.json` of `{documents['normalization']['dataset_id']}`. The split numbers are "
-        f"an assessment only (a proportional {100 - held_percent}/{held_percent} development/held-out split of each group, keeping both "
-        "sides non-empty when the group allows it); no split is implemented or assigned.",
+        f"Counts come from the resolved `generation_plan.json` of `{documents['normalization']['dataset_id']}`. Each cell reads "
+        "`assignments / distinct calls`: an assignment is one planned challenge, but a split moves whole calls, and one call can "
+        "carry several assignments of the same case (for example long-distance dependencies on different question pairs). "
+        + ("Distinct calls come from the G1 outputs, which match the stored quotas."
+           if support is not None else
+           "**Distinct calls are unknown**: the G1 outputs are missing or do not match the stored quotas, so no call-level "
+           "coverage or split assessment is produced and assignments are never used as a stand-in."),
         "",
     ]
     missing = [(p["language_profile"], c["id"]) for p in plans for c in catalog
                if p["language_profile"] in c["language_profiles"] and not p["edge_case_counts"][c["id"]]]
     lines.append("Eligible mechanisms with no examples: " + (", ".join(f"{n}/{c}" for n, c in missing) or "none") + ".")
-    lines += ["", "### Edge-case counts per language profile (SINGLETON = 1, VERY SMALL = 2-3)", "",
+    lines += ["", "### Edge cases per language profile (SINGLETON = 1 call, VERY SMALL = 2-3 calls)", "",
               "| Edge case | " + " | ".join(names) + " | Total |", "|---|" + "---|" * (len(names) + 1)]
     for c in catalog:
-        counts = [p["edge_case_counts"][c["id"]] for p in plans]
-        cells = [_count_cell(n, p["language_profile"] in c["language_profiles"]) for n, p in zip(counts, plans)]
-        lines.append(f"| {c['id']} | " + " | ".join(cells) + f" | {sum(counts)} |")
+        cells = [_count_cell(*cell.get((p["language_profile"], c["id"]), (0, 0)), p["language_profile"] in c["language_profiles"])
+                 for p in plans]
+        lines.append(f"| {c['id']} | " + " | ".join(cells) + f" | {_count_cell(*_total_cell(cell, c['id']))} |")
     lines += ["", "### Language variants (both switch directions must appear wherever a cross-language case has examples)", "",
               "| Edge case | Variant | " + " | ".join(names) + " | Total |", "|---|---|" + "---|" * (len(names) + 1)]
     for c in catalog:
         for variant in c["language_variants"]:
             if variant["status"] != "READY_V1":
                 continue
-            counts = [p["language_variant_counts"].get(c["id"], {}).get(variant["variant_id"], 0) for p in plans]
-            lines.append(f"| {c['id']} | {variant['variant_id']} | " + " | ".join(_count_cell(n) for n in counts) + f" | {sum(counts)} |")
+            key = f"{c['id']} / {variant['variant_id']}"
+            cells = [_count_cell(*cell.get((p["language_profile"], key), (0, 0))) for p in plans]
+            lines.append(f"| {c['id']} | {variant['variant_id']} | " + " | ".join(cells) + f" | {_count_cell(*_total_cell(cell, key))} |")
     one_direction = [f"{p['language_profile']}/{c}" for p in plans for c, by in p["language_variant_counts"].items()
                      if any(v.startswith("CROSS_LANGUAGE_") for v in by) and any(n < 1 for n in by.values())]
     lines += ["", "Cross-language cases missing a switch direction: " + (", ".join(one_direction) or "none") + ".", ""]
 
-    groups = coverage_groups(documents)
+    if support is None:
+        lines += ["### Future-split assessment", "",
+                  "Not produced: distinct-call coverage is unknown without matching G1 outputs (run `plan_dataset.py` for the release).", ""]
+        return "\n".join(lines)
     rows = []
-    for scope, mechanism, count in groups:
-        development, held_out = proportional_split(count, held_percent)
-        flag = split_flag(count, development, held_out)
+    for scope, mechanism, assignments, calls in groups:
+        development, held_out = proportional_split(calls, held_percent)
+        flag = split_flag(calls, development, held_out)
         if flag:
-            rows.append((scope, mechanism, count, development, held_out, flag))
-    lines += [f"### Groups a {100 - held_percent}/{held_percent} split would leave thin ({len(rows)} of {len(groups)} groups)", "",
-              "| Scope | Mechanism | Examples | Development | Held-out | Flag |", "|---|---|---|---|---|---|"]
-    lines += [f"| {scope} | {mechanism} | {n} | {d} | {h} | {flag} |" for scope, mechanism, n, d, h, flag in rows]
-    never_both = [r for r in rows if r[5] == "CANNOT APPEAR IN BOTH"]
+            rows.append((scope, mechanism, assignments, calls, development, held_out, flag))
+    lines += [f"### Groups a {100 - held_percent}/{held_percent} split of whole calls would leave thin ({len(rows)} of {len(groups)} groups)", "",
+              "| Scope | Mechanism | Assignments | Distinct calls | Development | Held-out | Flag |", "|---|---|---|---|---|---|---|"]
+    lines += [f"| {scope} | {mechanism} | {a} | {n} | {d} | {h} | {flag} |" for scope, mechanism, a, n, d, h, flag in rows]
+    never_both = [r for r in rows if r[6] == "CANNOT APPEAR IN BOTH"]
     lines += ["", "Groups that cannot appear in both subsets: " + (", ".join(f"{r[0]} {r[1]}" for r in never_both) or "none") + ".",
-              "A group is flagged ONE EXAMPLE IN A SUBSET when a proportional split leaves a single example in development or "
-              "held-out. Per-profile groups are the strictest view; the ALL PROFILES rows count the same mechanism across profiles.", ""]
+              "A group is flagged ONE EXAMPLE IN A SUBSET when a proportional split of its distinct calls leaves a single call in "
+              "development or held-out. Per-profile groups are the strictest view; the ALL PROFILES rows count the same mechanism "
+              "across profiles.", "",
+              "**Not a feasibility proof.** Each group is estimated on its own. A call carries several assignments (about 2.2 on "
+              "average) and belongs to one profile, so the groups overlap: calls placed in one subset for one mechanism also decide "
+              "the others. The estimates are therefore only indicators; whether one split can satisfy every group at once is a "
+              "joint problem that stays deferred with the splitter.", ""]
     return "\n".join(lines)
