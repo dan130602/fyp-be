@@ -97,3 +97,33 @@ def test_the_rule_reads_only_the_frozen_spec_and_the_accepted_plan(inputs):
     for edge in english_edges["edge_cases"]:
         edge["language_variant"] = "NONE"
     assert language_order_constraints(english_edges, plan) == []
+
+
+def test_history_stays_valid_under_the_rules_it_was_accepted_under_after_a_rule_is_added(tmp_path, monkeypatch):
+    """A dialogue accepted before the order rule existed is kept as history and still validates; the reopened one obeys the rule."""
+    from fyp_evaluation.dialogues import request, run
+
+    call_id = "CALL_030"
+    chain = M.chain(tmp_path, [call_id])
+    assert chain.run_g3() == chain.run_g4() == chain.run_g5() == {call_id: "ACCEPTED"}
+    with monkeypatch.context() as old:  # the rules as they were before: no derived order, and the attempt records an older rule set
+        old.setattr(request, "language_order_constraints", lambda spec, plan: [])
+        old.setattr(run, "PLACEMENT_RULES", "g6-placement-v1")
+        runner = chain.open_g6()
+        assert runner.run_sync(call_id)["state"] == "ACCEPTED"
+    dialogue = json.loads((chain.root / "authoring/dialogues" / f"{call_id}.json").read_text(encoding="utf-8"))
+    derived = language_order_constraints(SPECS[call_id], chain.open_g6().inputs.plans[call_id])
+    turns = {a["event_id"]: a["turn_id"] for a in dialogue["event_alignment"]}
+    starts = {a["event_id"]: (a["turn_id"], a["start"]) for a in dialogue["event_alignment"]}
+    assert any(starts[c["before"]] > starts[c["after"]] for c in derived), "the old dialogue really has the reversed order"
+    assert dialogue["generation"]["params"]["placement_rules"] == "g6-placement-v1"
+    runner = chain.open_g6()  # today's rules
+    assert runner.validate() == [], "the accepted old dialogue still validates under the rules it was accepted under"
+    attempt = runner.run_sync(call_id, reopen_reason="the order rule was added")
+    assert attempt["state"] == "ACCEPTED" and attempt["params"]["placement_rules"] == run.PLACEMENT_RULES
+    again = json.loads((chain.root / "authoring/dialogues" / f"{call_id}.json").read_text(encoding="utf-8"))
+    new_starts = {a["event_id"]: (a["turn_id"], a["start"]) for a in again["event_alignment"]}
+    assert all(new_starts[c["before"]] < new_starts[c["after"]] for c in derived)
+    assert runner.validate() == [], "the superseded history entry and the new dialogue both validate"
+    history = json.loads((chain.root / "authoring/dialogue_provenance" / f"{call_id}.json").read_text(encoding="utf-8"))["accepted_history"]
+    assert len(history) == 1 and history[0]["params"]["placement_rules"] == "g6-placement-v1" and turns

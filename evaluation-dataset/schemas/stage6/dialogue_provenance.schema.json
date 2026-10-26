@@ -136,7 +136,10 @@
           ]
         },
         "transport": {
-          "enum": ["batch", "sync"]
+          "enum": [
+            "batch",
+            "sync"
+          ]
         },
         "submission_id": {
           "type": [
@@ -232,12 +235,33 @@
           "type": "object",
           "description": "Optional. Present only on an attempt whose request carried call-specific repair guidance derived from the call's INVALID G7 report: that report's hash and attempt, the repair round and the guidance text.",
           "properties": {
-            "source_g7_report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-            "source_g7_attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
-            "round": {"type": "integer", "minimum": 2},
-            "guidance": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+            "source_g7_report_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "source_g7_attempt_id": {
+              "type": "string",
+              "pattern": "^A[0-9]{3,}$"
+            },
+            "round": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "guidance": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           },
-          "required": ["source_g7_report_sha256", "source_g7_attempt_id", "round", "guidance"],
+          "required": [
+            "source_g7_report_sha256",
+            "source_g7_attempt_id",
+            "round",
+            "guidance"
+          ],
           "additionalProperties": false
         },
         "created_at": {
@@ -281,6 +305,10 @@
         },
         "length_policy": {
           "$ref": "#/$defs/length_policy"
+        },
+        "placement_rules": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },

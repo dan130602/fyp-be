@@ -67,6 +67,12 @@ LENGTH_POLICY_V2 = {
 }
 
 
+# Multilingual attempts record the placement-rule set they were written and validated under (`params.placement_rules`). Entries that
+# predate a rule (no key) are re-validated without it, so history stays valid under the rules in force when it was accepted.
+# g6-placement-v2: adds the derived order of cross-language distractor variants (language_order.py).
+PLACEMENT_RULES = "g6-placement-v2"
+
+
 def schema_version(documents):
     return versions.generation(documents)
 

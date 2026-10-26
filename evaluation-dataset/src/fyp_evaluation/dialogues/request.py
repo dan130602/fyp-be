@@ -35,7 +35,7 @@ def marker(event_id):
 class DialogueContext:
     """Everything one call's validation and compilation need, bound to ONE version of its G3/G4 inputs and length policy."""
 
-    def __init__(self, inputs, call_id, length_policy=None):
+    def __init__(self, inputs, call_id, length_policy=None, *, language_order=True):
         self.inputs, self.call_id = inputs, call_id
         self.spec = inputs.specs[call_id]
         self.multilingual = is_multilingual(inputs.documents)
@@ -54,7 +54,7 @@ class DialogueContext:
         self.speakers = {event["event_id"]: event["authoring"]["speaker"] for event in self.events}
         self.texts = {event["event_id"]: event["authoring"]["planned_text"] for event in self.events}
         self.constraints = self.plan["constraints"] + self.plan["derived_constraints"]
-        if self.multilingual:  # the temporal meaning of a cross-language variant (see language_order.py); nothing upstream changes
+        if self.multilingual and language_order:  # the temporal meaning of a cross-language variant (see language_order.py)
             self.constraints = self.constraints + language_order_constraints(self.spec, self.plan)
         # the planned events that already carry the employee's recommendation (the C07 plan structure; no keywords, no model).
         # Empty when the plan has none (C07 FAIL is an absence check): the brief then carries `advisory_recommendation`, the frozen product and

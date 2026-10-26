@@ -28,7 +28,7 @@ from .compile import build_record, compile_artifact
 from .config import LENGTH_POLICY  # noqa: F401  (the historical policy; patched by recalibration tests)
 from .config import (
     ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR,
-    REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, SYNC_TIMEOUT_SECONDS, TRANSPORT_BUDGET, length_policy_for, prompt_template,
+    PLACEMENT_RULES, REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, SYNC_TIMEOUT_SECONDS, TRANSPORT_BUDGET, length_policy_for, prompt_template,
     response_schema_name, schema_names,
 )
 from .feasibility import preflight_errors, synthesize_dialogue
@@ -136,8 +136,10 @@ class DialogueRunner(StageRunner):
             policy = LENGTH_POLICY  # the historical policy (a module-level name so a recalibration can be exercised)
         if policy is None:
             policy = LENGTH_POLICY
-        return {"params": {"reasoning_effort": REASONING_EFFORT, "max_output_tokens": MAX_OUTPUT_TOKENS,
-                           "length_policy": deepcopy(policy)},
+        params = {"reasoning_effort": REASONING_EFFORT, "max_output_tokens": MAX_OUTPUT_TOKENS, "length_policy": deepcopy(policy)}
+        if is_multilingual(self.inputs.documents):
+            params["placement_rules"] = PLACEMENT_RULES
+        return {"params": params,
                 "price_table_version": pricing.PRICE_TABLE_VERSION}
 
     # ---- synchronous generation (optional; pilots) -----------------------------------------------------
@@ -355,7 +357,9 @@ class DialogueRunner(StageRunner):
         inputs = self.inputs
         if upstream is not inputs.upstream or inputs.report_hashes.get(call_id) != g5_hash:
             inputs = inputs_with_versions(inputs, call_id, upstream, g5_hash)
-        ctx = DialogueContext(inputs, call_id, entry["params"]["length_policy"])
+        # an entry is re-validated under the placement rules it was written under (an entry from before a rule has no record of it)
+        ctx = DialogueContext(inputs, call_id, entry["params"]["length_policy"],
+                              language_order=entry["params"].get("placement_rules") == PLACEMENT_RULES)
 
         def compile_for_entry(entry_ctx, parsed, generation):
             return compile_artifact(inputs, entry_ctx, parsed, generation, self.builder.response_schema)
