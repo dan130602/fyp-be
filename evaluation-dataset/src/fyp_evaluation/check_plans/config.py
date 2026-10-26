@@ -17,6 +17,19 @@ RESPONSE_FORMAT_NAME = "g4_check_plan_v1"
 PROMPT_TEMPLATE = "check_plan.v1.md"
 RESPONSE_SCHEMA = "check_plan_response"
 
+def prompt_template(documents):
+    """`check_plan.v1.md` for the historical release; the multilingual `check_plan.v2.md` otherwise."""
+    from fyp_evaluation import release_versions
+
+    return release_versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+
+
+def response_format_name(documents):
+    from fyp_evaluation import release_versions
+
+    return release_versions.versioned_format(RESPONSE_FORMAT_NAME, documents)
+
+
 def schema_version(documents):
     """The artifact/record schema_version for a release: "2.0" for a multilingual release, else the historical "1.0"."""
     from fyp_evaluation.validation.stage0 import is_multilingual

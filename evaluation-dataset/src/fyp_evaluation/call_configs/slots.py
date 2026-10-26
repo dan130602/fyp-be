@@ -4,6 +4,8 @@
 synthetic-fixture generator all read it, so they cannot disagree about which slots a call needs.
 """
 
+from fyp_evaluation.validation.stage0 import is_multilingual
+
 from .products import derive_products
 
 COMPLIANCE_FAIL = "FAIL"
@@ -33,6 +35,14 @@ class CallContext:
     def __init__(self, inputs, call_id):
         spec = inputs.specs[call_id]
         self.call_id, self.spec = call_id, spec
+        self.multilingual = is_multilingual(inputs.documents)
+        if self.multilingual:  # spoken names are required in every language each speaker speaks (frozen call spec)
+            requirements = spec["language_requirements"]
+            self.language_requirements = requirements
+            self.name_languages = {speaker.lower(): list(requirements["speakers"][speaker]["spoken_languages"])
+                                   for speaker in ("CLIENT", "EMPLOYEE")}
+            names = inputs.documents["normalization"]["profiles"]["synthetic_product_name"].get("language_names") or {}
+            self.zh_product_names = sorted(entry["zh"]["surface"] for entry in names.values() if entry.get("zh"))
         self.gold = {entry["question_id"]: entry["expected"] for entry in spec["gold"]}
         self.edges = spec["edge_cases"]
         self.products = derive_products(spec, inputs.product_category)

@@ -10,7 +10,11 @@ from decimal import Decimal
 
 from jsonschema import Draft202012Validator
 
+from fyp_evaluation.validation.stage0 import HAN
+
 NRIC_LIKE = re.compile(r"\b[STFGM]\d{7}[A-Z]\b")
+LATIN_NAME = re.compile(r"[A-Za-z][A-Za-z .'\-]{0,38}[A-Za-z]")
+ZH_NAME = re.compile(r"[\u4e00-\u9fff]{2,4}")
 CURRENCY_SYMBOLS = r"S\$|US\$|[$€¥£]"
 INTEGER_SCAN_THRESHOLD = 1000  # smaller integers collide with ordinary prose, so only larger ones are scanned
 
@@ -74,9 +78,48 @@ class ResponseValidator:
         errors += self._references(response, ctx)
         errors += self._structured(response, ctx)
         errors += self._lexical(response, ctx)
+        if ctx.multilingual:  # schema 2.0: language-specific spoken names; planning prose stays English
+            errors += self._spoken_names(response, ctx)
+            errors += self._prose_language(response, ctx)
         return errors
 
     # ---- rules -----------------------------------------------------------------------------------------
+    @staticmethod
+    def _spoken_names(response, ctx):
+        """Each speaker needs a spoken name in every language they speak in this call, and in no other: a Han name of 2-4
+        characters for zh, the planning name itself for en. The planning `name` is written in English letters."""
+        errors = []
+        for speaker in ("client", "employee"):
+            person, required = response[speaker], set(ctx.name_languages[speaker])
+            if not LATIN_NAME.fullmatch(person["name"] or ""):
+                errors.append(f"{speaker}.name: the planning name must be written in English letters")
+            for language in ("en", "zh"):
+                value, where = person["spoken_names"][language], f"{speaker}.spoken_names.{language}"
+                if language not in required:
+                    if value is not None:
+                        errors.append(f"{where}: must be null (the {speaker} does not speak {language} in this call)")
+                    continue
+                if value is None or not value.strip():
+                    errors.append(f"{where}: required (the {speaker} speaks {language} in this call)")
+                elif language == "en" and value != person["name"]:
+                    errors.append(f"{where}: must equal {speaker}.name")
+                elif language == "zh" and not ZH_NAME.fullmatch(value):
+                    errors.append(f"{where}: must be a Chinese name of 2-4 Han characters (no Latin letters, digits or spaces)")
+        return errors
+
+    @staticmethod
+    def _prose_language(response, ctx):
+        """The scenario is English planning prose: no Han characters and no approved Chinese product name in it (spoken
+        names are the only place Chinese appears)."""
+        errors = []
+        for path, text in collect_texts(response):
+            if HAN.search(text):
+                errors.append(f"{path}: planning prose must be written in English (Chinese appears only in spoken_names.zh)")
+            for name in ctx.zh_product_names:
+                if name in text:
+                    errors.append(f"{path}: mentions the Chinese product name {name!r}; products are spoken only through the plan")
+        return errors
+
     @staticmethod
     def _nonempty(response):
         return [f"{path}: must not be empty" for path, text in collect_texts(response) if not text.strip()] + (

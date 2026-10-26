@@ -43,11 +43,8 @@ class PlanInputs:
         self.currency_profile = upstream.currency_profile
 
     def source_hashes(self):
-        """The G0 hashes G4 records. A multilingual release also records `language_profiles_sha256`: the fresh upstream hashes
-        include it, so leaving it out would make every multilingual plan look stale."""
-        hashes = self.upstream.source_hashes()
-        language_profiles = self.upstream.upstream.g0_hashes.get("language_profiles_sha256")
-        return {**hashes, "language_profiles_sha256": language_profiles} if language_profiles else hashes
+        """The G0 hashes G4 records (a multilingual release also records `language_profiles_sha256`, via G3's inputs)."""
+        return self.upstream.source_hashes()  # ConfigInputs already includes language_profiles_sha256 for a multilingual release
 
 
 def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR, call_ids=None):

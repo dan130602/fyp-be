@@ -551,10 +551,11 @@ def test_a_multilingual_artifact_is_current_until_language_profiles_change(tmp_p
     assert status["status"] == "stale" and "language_profiles_sha256" in status["changed"]
 
 
-def test_the_g3_gate_still_refuses_the_multilingual_release():
-    from fyp_evaluation.call_configs.inputs import G2BStateError, load_inputs as load_g3
-    from fyp_evaluation.check_plans.inputs import load_inputs as load_g4
+def test_g4_and_g5_wait_for_accepted_g3_configs_on_the_multilingual_release():
+    """No G3 config has been generated for the multilingual release, so G4 (and G5, which loads through it) cannot start."""
+    from fyp_evaluation.check_plans.inputs import G3StateError, load_inputs as load_g4
+    from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5
 
-    for loader in (load_g3, load_g4):
-        with pytest.raises(G2BStateError, match="multilingual release"):
+    for loader in (load_g4, load_g5):
+        with pytest.raises(G3StateError, match="not complete"):
             loader(RELEASE, SCHEMAS)

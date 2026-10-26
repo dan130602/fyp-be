@@ -9,10 +9,14 @@ body contains no attempt ID, so a dry-run hash equals the hash of the request th
 import json
 
 from fyp_evaluation.call_specs.compile import parse_json_text
+from fyp_evaluation import register_guide
+from fyp_evaluation.language_brief import language_brief
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
-from .config import MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, RESPONSE_SCHEMA, SERVICE_TIER, THINKING_LEVEL
+from .config import (
+    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, SERVICE_TIER, THINKING_LEVEL, prompt_template, response_schema_name, schema_names,
+)
 
 EVENT_RELATIONS = ("corrects_event_id", "refers_to_event_id", "invalidates_event_id")
 EVENT_ATTRIBUTES = ("distractor_role", "currency", "incomplete", "strength")
@@ -43,6 +47,7 @@ class VerificationContext:
         self.gold = {entry["question_id"]: entry["expected"] for entry in self.spec["gold"]}
         self.assignment_ids = [edge["assignment_id"] for edge in self.spec["edge_cases"]]
         self.g3 = {"products": self.config["products"], "scenario": self.config["scenario"]}
+        self.multilingual = "language_requirements" in self.spec  # schema-2.0 call specs carry the frozen language requirements
         self.semantics = {entry["question_id"]: entry for entry in inputs.documents["check_semantics"]["checks"]}
 
     def planned_text(self, event_id):
@@ -74,13 +79,14 @@ def _check_brief(ctx, question_id):
     return row
 
 
-def _event_brief(event):
+def _event_brief(event, multilingual=False):
     authoring = event["authoring"]
     entry = {"event_id": event["event_id"], "kind": event["kind"], "status": event["status"], "role": event.get("role"),
              "condition_ref": event.get("condition_ref"), "question_ids": event["question_ids"],
              "assignment_ids": event["assignment_ids"], "speaker": authoring["speaker"], "planned_text": authoring["planned_text"],
              "values": {q: v["value"] for q, v in event["values"].items()} if "values" in event else None,
-             "value_mentions": [{"question_id": m["question_id"], "value": m["value"], "surface": m["surface"], "source": m["source"]}
+             "value_mentions": [{"question_id": m["question_id"], "value": m["value"], "surface": m["surface"], "source": m["source"],
+                                 **({"language": m["language"]} if multilingual else {})}
                                 for m in authoring["value_mentions"]]}
     for key in EVENT_RELATIONS + EVENT_ATTRIBUTES:
         entry[key] = event.get(key)
@@ -95,16 +101,20 @@ def build_brief(inputs, ctx):
     """The per-call input (a plain dict; serialised canonically by the caller)."""
     catalog = {entry["id"]: entry for entry in inputs.documents["edge_case_catalog"]["edge_cases"]}
     meta = ctx.spec["metadata"]
+    call = {"call_id": ctx.call_id, "call_intents": meta["call_intents"], "duration_profile": meta["duration_profile"]}
+    call.update({"language": language_brief(ctx.spec)} if ctx.multilingual else {"language": meta["language"]})
+    guide = register_guide.brief_block(ctx.spec) if ctx.multilingual else None
     return {
-        "call": {"call_id": ctx.call_id, "call_intents": meta["call_intents"], "duration_profile": meta["duration_profile"],
-                 "language": meta["language"]},
+        "call": call,
+        **({"register_guide": guide} if guide else {}),
         "checks": [_check_brief(ctx, q) for q in ctx.order],
         "g3": ctx.g3,
         "edge_cases": [{"assignment_id": e["assignment_id"], "edge_case_id": e["edge_case_id"],
                         "target_question_ids": e["target_question_ids"], "parameters": e["parameters"],
+                        **({"language_variant": e["language_variant"]} if ctx.multilingual else {}),
                         "catalog": {key: catalog[e["edge_case_id"]][key] for key in ("description", "gold_constraints", "plan_template")}}
                        for e in ctx.spec["edge_cases"]],
-        "events": [_event_brief(event) for event in ctx.events],
+        "events": [_event_brief(event, ctx.multilingual) for event in ctx.events],
         "constraints": ([{**c, "derived": False} for c in ctx.plan["constraints"]]
                         + [{**c, "derived": True} for c in ctx.plan["derived_constraints"]]),
     }
@@ -122,12 +132,12 @@ class RequestBuilder:
 
     def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
         self.inputs = inputs
-        template_path = prompt_dir / PROMPT_TEMPLATE
+        template_path = prompt_dir / prompt_template(inputs.documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
-        response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
+        response_path = schema_path(response_schema_name(inputs.documents), schema_dir)
         self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
         self.response_schema = parse_json_text(response_path.read_text(encoding="utf-8"))
-        self.artifact_schema = parse_json_text(schema_path("plan_verification", schema_dir).read_text(encoding="utf-8"))
+        self.artifact_schema = parse_json_text(schema_path(schema_names(inputs.documents)[0], schema_dir).read_text(encoding="utf-8"))
         self.system_instruction = system_prefix(template_path.read_text(encoding="utf-8").replace("\r\n", "\n"), inputs.documents)
         self._contexts = {}
 

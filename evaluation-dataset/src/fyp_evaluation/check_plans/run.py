@@ -4,6 +4,7 @@ It supplies the G4 paths, schemas, settings and hooks. Eligibility, attempts, th
 provenance, accepted history, `--validate` and `--check` are the shared, G3-proven implementation.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_configs.inputs import fresh_upstream_hashes
 from fyp_evaluation.call_configs.run import ConfigRunner
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
@@ -67,11 +68,12 @@ class CheckPlanRunner(StageRunner):
     def _upstream_hashes(self, call_id):
         inputs = self.inputs
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
-                "call_config": inputs.config_hashes[call_id], **inputs.source_hashes()}
+                "call_config": inputs.config_hashes[call_id], **inputs.source_hashes(), **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         hashes = fresh_upstream_hashes(self.inputs.root, call_id)
         hashes["call_config"] = g1.sha256((self.inputs.root / "authoring/call_configs" / f"{call_id}.json").read_bytes())
+        hashes.update(register_guide.extra_hashes(self.inputs.specs[call_id]))  # re-read now, SINGLISH calls only
         return hashes
 
     # ---- version-matched context for historical / stale plans -------------------------------------------

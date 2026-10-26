@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from fyp_evaluation import release_versions as versions
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PROMPT_DIR = PROJECT_ROOT / "prompts" / "stage3"
 DEFAULT_AUDIT_ROOT = PROJECT_ROOT / ".llm_audit"
@@ -29,6 +31,28 @@ SEMANTIC_BUDGET = 3  # REJECTED attempts (schema/rule failure, incomplete, refus
 TRANSPORT_BUDGET = 3  # TRANSPORT_FAILED attempts that are not fatal configuration errors
 
 PRODUCT_ROLES = ("FINAL", "CANDIDATE", "INITIAL_ORDER", "SUPERSEDED", "READBACK_ERROR")
+
+
+def schema_version(documents):
+    """The artifact/record schema_version for a release: "2.0" for a multilingual release, else the historical "1.0"."""
+    return versions.generation(documents)
+
+
+def schema_names(documents):
+    """(artifact schema, record schema) file stems; the provenance schema is shared by both generations."""
+    return versions.versioned("call_config", documents), versions.versioned("call_config_record", documents)
+
+
+def response_schema_name(documents):
+    return versions.versioned(RESPONSE_SCHEMA, documents)
+
+
+def prompt_template(documents):
+    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+
+
+def response_format_name(documents):
+    return versions.versioned_format(RESPONSE_FORMAT_NAME, documents)
 
 
 def config_path(call_id):

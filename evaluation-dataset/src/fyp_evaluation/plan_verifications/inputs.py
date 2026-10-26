@@ -8,6 +8,7 @@ merely ineligible for verification until G4 is regenerated. Every other G4 findi
 from copy import copy
 from pathlib import Path
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import load_inputs as load_g4_inputs
 from fyp_evaluation.check_plans.run import CheckPlanRunner
@@ -50,9 +51,13 @@ def _blocking_g4_errors(g4, errors):
     return blocking, stale
 
 
-def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
-    """Refuse unless G0-G3 are complete and valid and every G4 artifact is structurally valid and reproducible."""
-    upstream = load_g4_inputs(root, schema_dir)  # raises for an invalid G0-G2B or an incomplete/invalid G3
+def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR, call_ids=None):
+    """Refuse unless G0-G3 are complete and valid and every G4 artifact is structurally valid and reproducible.
+
+    With `call_ids` (selected-call mode) G3 must still be intact release-wide, but only the selected calls need an accepted
+    G3 config; unrelated calls may be missing, and are simply not eligible."""
+    # raises for an invalid G0-G2B or an incomplete/invalid G3
+    upstream = load_g4_inputs(root, schema_dir, call_ids) if call_ids else load_g4_inputs(root, schema_dir)
     g4 = CheckPlanRunner(root, schema_dir=schema_dir, inputs=upstream)
     blocking, stale = _blocking_g4_errors(g4, g4.validate())
     if blocking:
@@ -75,6 +80,9 @@ def fresh_upstream_hashes(root, call_id):
     hashes = g3_fresh(root, call_id)
     hashes["call_config"] = g1.sha256((root / "authoring/call_configs" / f"{call_id}.json").read_bytes())
     hashes["check_plan"] = g1.sha256((root / G4_ARTIFACT_DIR / f"{call_id}.json").read_bytes())
+    # The register guide is an upstream input of every stage that reads it for a SINGLISH call. G6/G7 chain off these fresh
+    # hashes, so their recorded hashes must include it before those stages can run on a multilingual release (they refuse until then).
+    hashes.update(register_guide.fresh_hashes(root, call_id))
     return hashes
 
 

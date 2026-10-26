@@ -11,7 +11,7 @@ from fyp_evaluation.llm.stage_runner import RunError, StageRunner, StageSpec, ut
 from .compile import build_record, compile_artifact
 from .config import (
     CONFIG_DIR, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR, REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE,
-    TRANSPORT_BUDGET,
+    TRANSPORT_BUDGET, schema_names,
 )
 from .feasibility import feasibility_report, make_validator
 from .inputs import fresh_upstream_hashes, load_inputs
@@ -29,6 +29,10 @@ class ConfigRunner(StageRunner):
 
     def _load_inputs(self):
         return load_inputs(self.root, self.schema_dir)
+
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
 
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)

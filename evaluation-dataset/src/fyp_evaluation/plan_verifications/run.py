@@ -6,6 +6,7 @@ handling of ambiguous outcomes, fatal tier/model echo mismatches, recovery BEFOR
 entry point `run()`, and reports compiled against the exact G3/G4 versions they verified.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
 from fyp_evaluation.check_plans.run import CheckPlanRunner
@@ -19,7 +20,7 @@ from .compile import build_record, compile_artifact
 from .config import (
     API_KEY_VARIABLE, ARTIFACT_DIR, CAPACITY_BACKOFF_SECONDS, CAPACITY_JITTER, CAPACITY_SENDS, ESTIMATED_OUTPUT_TOKENS,
     MAX_OUTPUT_TOKENS, MODEL, PRICE_TABLE_VERSION, PRICES, PROMPT_DIR, PROVENANCE_DIR, RECORD, SEMANTIC_BUDGET, SERVICE_TIER,
-    STAGE, THINKING_LEVEL, TIMEOUT_MS, TRANSPORT_BUDGET,
+    STAGE, THINKING_LEVEL, TIMEOUT_MS, TRANSPORT_BUDGET, schema_names,
 )
 from .inputs import fresh_upstream_hashes, inputs_with_versions, load_inputs
 from .request import RequestBuilder, VerificationContext
@@ -66,13 +67,24 @@ class PlanVerificationRunner(GeminiFlexMixin, StageRunner):
     flex = G5_FLEX
     ARTIFACT_HASH_KEYS = {**StageRunner.ARTIFACT_HASH_KEYS, "check_plan": "check_plan_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
+    supports_selection = True  # --call-id: only the selected calls need an accepted G3 config and G4 plan
+
+    def __init__(self, root, *, selected_call_ids=None, **kwargs):
+        super().__init__(root, **kwargs)
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     def _runnable(self, call_id):
         return call_id in self.inputs.plans
 
     # ---- stage hooks ---------------------------------------------------------------------------------
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
+
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
 
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)
@@ -93,7 +105,8 @@ class PlanVerificationRunner(GeminiFlexMixin, StageRunner):
     def _upstream_hashes(self, call_id):
         inputs = self.inputs
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
-                "call_config": inputs.config_hashes[call_id], "check_plan": inputs.plan_hashes[call_id], **inputs.source_hashes()}
+                "call_config": inputs.config_hashes[call_id], "check_plan": inputs.plan_hashes[call_id], **inputs.source_hashes(),
+                **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         return fresh_upstream_hashes(self.inputs.root, call_id)

@@ -6,10 +6,11 @@ Compilation is a pure function of (inputs bound to the verified G3/G4 versions, 
 generation metadata), so `--check` rebuilds every report without any provider envelope.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
-from .config import GENERATOR_VERSION, HASHING, SCHEMA_VERSION, STAGE, VERDICTS
+from .config import GENERATOR_VERSION, HASHING, STAGE, VERDICTS, schema_version
 from .validate_response import expand
 
 
@@ -54,7 +55,7 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
         by_code[issue["code"]] = by_code.get(issue["code"], 0) + 1
     call_id = ctx.call_id
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "call_id": call_id,
@@ -62,7 +63,7 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
         "check_plan_skeleton_sha256": inputs.skeleton_hashes[call_id],
         "call_config_sha256": inputs.config_hashes[call_id],
         "check_plan_sha256": inputs.plan_hashes[call_id],
-        "source": inputs.source_hashes(),
+        "source": {**inputs.source_hashes(), **register_guide.extra_hashes(ctx.spec)},  # the guide only for SINGLISH calls
         "generation": generation_block(generation, parsed, response_schema),
         "verdict": verdict,
         "recommended_repair": derive_repair(verdict, issues),
@@ -101,7 +102,7 @@ def build_record(inputs, artifact_texts, provenance_by_call):
             "previous_artifact_sha256": [entry["artifact_sha256"] for entry in provenance["accepted_history"]],
         }
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "generator": {"package": "fyp_evaluation.plan_verifications", "version": GENERATOR_VERSION},

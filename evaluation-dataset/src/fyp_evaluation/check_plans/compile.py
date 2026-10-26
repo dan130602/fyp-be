@@ -8,6 +8,7 @@ skeleton bytes. Both are pure functions of (frozen inputs, accepted parsed respo
 
 from copy import deepcopy
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
@@ -36,7 +37,7 @@ def assemble(ctx, authoring, derived, generation):
         "call_spec_sha256": inputs.spec_hashes[ctx.call_id],
         "check_plan_skeleton_sha256": inputs.skeleton_hashes[ctx.call_id],
         "call_config_sha256": inputs.config_hashes[ctx.call_id],
-        "source": inputs.source_hashes(),
+        "source": {**inputs.source_hashes(), **register_guide.extra_hashes(ctx.spec)},  # the guide only for SINGLISH calls
         "generation": dict(generation),
         "skeleton_header": {key: deepcopy(value) for key, value in skeleton.items() if key not in FROZEN_BODY_KEYS},
         "planned_events": [{**deepcopy(event), "authoring": authoring[event["event_id"]]} for event in skeleton["planned_events"]],

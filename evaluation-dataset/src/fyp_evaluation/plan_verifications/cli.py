@@ -132,6 +132,8 @@ def main(argv=None, *, transport=None, transport_factory=None, clock=None, runne
     kwargs = {"audit_root": args.audit_dir, "schema_dir": args.schema_dir, "transport": transport, "transport_factory": transport_factory}
     if clock is not None:
         kwargs["clock"] = clock
+    if getattr(runner_class, "supports_selection", False) and getattr(args, "call_ids", None):
+        kwargs["selected_call_ids"] = list(args.call_ids)  # only these calls need their upstream accepted, current and valid
     try:
         return _run(runner_class(args.dataset_root, **kwargs), args, mode)
     except CredentialsError as error:

@@ -24,7 +24,8 @@ from fyp_evaluation.llm.responses import is_transient_error_code, parse_provider
 from fyp_evaluation.llm.store import (
     AttemptStore, StageWriteLockBusy, attempt_label, canonical_request_text, dataset_write_lock, submission_label,
 )
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.llm import live_guard
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual
 
 IN_FLIGHT = ("PREPARED", "SUBMITTED", "RESPONDED")
 BLOCKING_SUBMISSION_STATES = ("INTENT_RECORDED", "FILE_UPLOADED", "SUBMITTED", "SUBMISSION_UNKNOWN")
@@ -202,6 +203,33 @@ class StageRunner:
             self._store = AttemptStore(self.audit_root, self.inputs.dataset_id, self.spec.stage)
         return self._store
 
+    # ---- paid-run safeguards on a multilingual release (the historical release is never affected) -------------------
+    _allowlist_batch = None
+
+    def _paid_guard(self, call_ids, transport):
+        """Refuse a LIVE paid run on a multilingual release unless every call is in one human-approved allowlisted batch for this
+        stage, and the code directories are committed. Fake transports (tests, offline work) are never refused."""
+        if not is_multilingual(self.inputs.documents) or live_guard.is_fake_transport(transport):
+            return
+        try:
+            self._allowlist_batch = live_guard.authorised_batch(self.root, self.spec.stage, list(call_ids))
+        except ValueError as error:
+            raise RunError(str(error)) from error
+        state = live_guard.code_state()
+        if state["code_commit"] is None:
+            raise RunError("cannot establish the code commit (git unavailable); a live run must be reproducible")
+        if state["code_dirty_paths"]:
+            raise RunError("uncommitted code under src/, prompts/, schemas/ or scripts/ (" + ", ".join(state["code_dirty_paths"][:6])
+                           + "); commit it before a live run so the exposure is reproducible")
+
+    def _exposure(self):
+        """The exposure record persisted in every new attempt of a multilingual release (None for the historical release)."""
+        if not is_multilingual(self.inputs.documents):
+            return None
+        if live_guard.is_fake_transport(self._transport):
+            return {"run_kind": "offline", "code_commit": None, "code_dirty_paths": [], "allowlist_batch": None}
+        return {"run_kind": "live", **live_guard.code_state(), "allowlist_batch": self._allowlist_batch}
+
     def transport(self):
         """The injected transport, or a real one built on first use (raises CredentialsError before any request)."""
         if self._transport is None:
@@ -370,6 +398,8 @@ class StageRunner:
             "reopen": {"reason": reopen_reason, "previous_attempt_id": reopen_of} if reopen_reason else None,
             "created_at": self.clock(), "finished_at": "",
         }
+        if (exposure := self._exposure()) is not None:  # persisted in the PREPARED record, before anything is sent
+            attempt["exposure"] = exposure
         self.store.write_request(call_id, attempt_id, text)
         self.store.write_attempt(attempt)
         return attempt, body
@@ -677,6 +707,7 @@ class StageRunner:
         if not self._stale_submissions():
             self._select([call_id], retry_rejected=retry_rejected, reopen_call_ids=reopen_ids)  # fail early, before credentials
         transport = self.transport()  # CredentialsError here: no attempt exists yet and nothing was sent
+        self._paid_guard([call_id], transport)
         with self.store.lock():
             self._recover()
             self._ensure_fresh_inputs([call_id])
@@ -707,10 +738,11 @@ class StageRunner:
         transport = self.transport()
         with self.store.lock():
             self._recover()
-            self._ensure_fresh_inputs(self.inputs.call_ids)
+            self._ensure_fresh_inputs(getattr(self.inputs, "ready_call_ids", self.inputs.call_ids))  # selected-call mode: ready calls only
             chosen, skipped = self._select(call_ids, retry_rejected=retry_rejected, reopen_call_ids=reopen_ids)
             if not chosen:
                 return {"submission_id": None, "submitted": 0, "skipped": skipped, "state": None}
+            self._paid_guard(chosen, transport)  # before any attempt or submission is written
             submission_id = submission_label(self.store.next_submission_number())
             attempts, lines = [], []
             for call_id in chosen:

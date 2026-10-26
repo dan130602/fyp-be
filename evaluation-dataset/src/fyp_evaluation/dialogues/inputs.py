@@ -10,7 +10,7 @@ from pathlib import Path
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.plan_verifications.inputs import fresh_upstream_hashes as g5_fresh
 from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5_inputs
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual
 
 from .config import ARTIFACT_DIR, DIALOGUE_UNREADABLE, G5_ARTIFACT_DIR, G5_RECORD, G5_UNREADABLE
 
@@ -67,9 +67,18 @@ class DialogueInputs:
         return self.upstream.source_hashes()
 
 
+class MultilingualNotSupported(ValueError):
+    """A stage that has no multilingual version yet refuses a multilingual release (lifted by Phase 3B)."""
+
+
 def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
     """Refuse unless G0-G4 pass G5's own gate; G5 reports are fingerprinted per call and never refuse the stage."""
     upstream = load_g5_inputs(root, schema_dir)
+    if is_multilingual(upstream.documents):
+        # G6, G7 and G9 have no language-aware prompts, briefs, length policy or verification rows yet (Phase 3B); refuse
+        # explicitly rather than author, verify or compile a multilingual call through their English-only versions.
+        raise MultilingualNotSupported(f"{upstream.dataset_id} is a multilingual release; G6, G7 and G9 have no language-aware "
+                                       "version yet and refuse to start on it")
     reports = {call_id: g5_report_fingerprint(root, call_id) for call_id in upstream.call_ids}
     try:
         record = g1.sha256((Path(root) / G5_RECORD).read_bytes())

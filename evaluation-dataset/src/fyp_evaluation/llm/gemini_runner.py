@@ -278,6 +278,7 @@ class GeminiFlexMixin:
             if not chosen:
                 return report
             transport = self.transport()  # CredentialsError here: recovery is done, nothing was sent
+            self._paid_guard(chosen, transport)  # before any attempt is written
             for call_id in chosen:
                 previous = self.call_state(call_id)
                 reopen_of = None

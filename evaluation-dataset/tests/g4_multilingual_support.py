@@ -11,6 +11,7 @@ from pathlib import Path
 from fyp_evaluation.call_configs.compile import compile_artifact as compile_config
 from fyp_evaluation.call_configs.feasibility import synthesize_response as synthesize_config
 from fyp_evaluation.call_configs.inputs import ConfigInputs
+from fyp_evaluation.call_configs.request import response_schema_path
 from fyp_evaluation.call_configs.slots import CallContext as ConfigContext
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json
 from fyp_evaluation.check_plan_skeletons import inputs as g2b_inputs
@@ -42,7 +43,7 @@ def upstream_inputs(root=RELEASE):
 
 def artificial_config(upstream, call_id, *, fee_basis="RATE"):
     """The text of an artificial G3 call config for one call (deterministic; never accepted by G3 or written to disk)."""
-    schema = parse_json_text((SCHEMAS / "stage3" / "call_config_response.schema.json").read_text(encoding="utf-8"))
+    schema = parse_json_text(response_schema_path(SCHEMAS, upstream.documents).read_text(encoding="utf-8"))
     ctx = ConfigContext(upstream, call_id)
     return serialize_json(compile_config(upstream, ctx, synthesize_config(ctx, fee_basis=fee_basis), _GENERATION, schema))
 

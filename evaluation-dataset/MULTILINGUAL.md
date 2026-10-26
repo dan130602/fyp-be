@@ -4,12 +4,11 @@ A multilingual release keeps the gold-first G0 -> G9 pipeline and adds language 
 language-independent: the coverage matrix stores `T04 = 700`, never `七百`. A profile only constrains how values and
 dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unchanged and still reproduces byte-for-byte.
 
-Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH), and the
-deterministic G4 layer for schema 2.0 (Phase 2: renderers, independent decoders, shared form choices, guards, schema-2.0 provenance and
-selected-call readiness; see "G4 (schema 2.0)" below). G3 still refuses to start on a multilingual release
-(`call_configs/inputs.py`) until its language-aware briefs exist, so G4 only runs offline here (artificial G3 configs and fake
-transports in the tests); the multilingual G3-G7 prompts and briefs, G5-G7 language assessments,
-TTS, STT, scoring, the deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
+Implemented so far: G0, G1, G2A and G2B (Phase 1), resized to 250 calls (75 ENGLISH, 75 MANDARIN, 50 EN_ZH_MIXED, 50 SINGLISH), the
+deterministic G4 layer for schema 2.0 (Phase 2; see "G4 (schema 2.0)" below) and, offline, the multilingual G3, G4 and G5 generations
+(Phase 3A; see "G3-G5 (schema 2.0)"). G6, G7 and G9 still refuse a multilingual release (`dialogues/inputs.py`) until their versions exist
+(Phase 3B). No paid call has been made: every multilingual G3-G5 test runs on fake transports, and a live run is refused unless it is
+covered by a committed allowlist batch. TTS, STT, scoring, the deferred 70/30 development / held-out split (175 / 75 calls) and CI are later work.
 
 ## Release shape
 
@@ -120,6 +119,28 @@ Python validates each choice, renders every surface from frozen inputs and compu
 
 The Mandarin golden examples and word lists in the tests and `guards.py` are provisional until a native speaker has reviewed them.
 
+## G3-G5 (schema 2.0)
+
+Each stage selects its generation from the release (`release_versions`): a multilingual release uses `<name>.v2` schemas and prompts, the
+historical release keeps the originals byte for byte (request hashes are pinned in `tests/test_request_hashes.py`).
+
+* **Provenance.** Every v2 source and upstream block records `language_profiles_sha256`. G3 configs carry language-specific
+  `spoken_names` (Latin for English speech, Han for Mandarin speech; the planning name stays English) and the scenario prose stays English.
+* **Register guide.** `prompts/shared/register_singlish.<version>.md` is read only for SINGLISH calls and is an *upstream input* of
+  G4 and G5 (G6 and G7 in Phase 3B): its hash is recorded in attempts and artifacts and re-read from disk whenever staleness is checked, so a
+  change makes in-flight attempts `STALE_UPSTREAM` and accepted SINGLISH outputs `stale`, and never touches other profiles. A change
+  is a new version file; older versions stay so a recorded hash resolves to its exact text (`register_guide.version_of`). A guide
+  change never triggers regeneration by itself; it only reports what is affected.
+* **G4 prompt v2.** Within-turn switching is a property of the client's dialogue turn: it never forces a bilingual event and never overrides
+  a pin. Singlish register is realised only in existing client events; the employee stays professional English.
+* **G5 prompt v2.** A language section, the `LANGUAGE_REQUIREMENT_NOT_MET` issue code (a plan that breaks a stated language requirement,
+  including employee wording that is not professional English in a SINGLISH call, judged in context and blocking), and Chinese quotes
+  grounded verbatim. Controls for the semantic checks live in `plan_verifications/controls.py` (`MULTILINGUAL_CONTROLS`).
+* **Paid-run guard.** A live (non-fake transport) run of any stage on a multilingual release needs an allowlisted batch
+  (`authoring/live_allowlist.json`: stages and calls), a git commit and no uncommitted change under `src`, `prompts`, `schemas`, `scripts`.
+  The attempt records an `exposure` block (`run_kind`, `code_commit`, `code_dirty_paths`, `allowlist_batch`) in its PREPARED state, before
+  anything is sent. `scripts/report_exposure.py` derives `authoring/exposure_log.json` from the audit store and provenance (live attempts only).
+
 ## G1 rules (2.0)
 
 Each profile is planned exactly: duration, intent, composition, FAIL histogram, per-question FAIL counts, edge-case
@@ -147,5 +168,6 @@ python scripts/resolve_multilingual_quotas.py --dataset-root datasets/advisory_e
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/compile_call_specs.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
 python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_execution_multilingual_v1 --check
-python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py
+python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py tests/test_multilingual_foundations.py tests/test_multilingual_g5_chain.py
+python scripts/report_exposure.py --dataset-root datasets/advisory_execution_multilingual_v1 --check   # once a live batch exists
 ```

@@ -5,18 +5,21 @@ Nothing here touches the network or the attempt store.
 """
 
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json
+from fyp_evaluation.language_brief import language_brief
 from fyp_evaluation.llm.store import canonical_request_text
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
 from .config import (
-    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, REASONING_EFFORT, RESPONSE_FORMAT_NAME, RESPONSE_SCHEMA, STAGE,
+    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, REASONING_EFFORT, STAGE, prompt_template, response_format_name, response_schema_name,
 )
 from .slots import CallContext
 
 
-def response_schema_path(schema_dir=DEFAULT_SCHEMA_DIR):
-    return schema_dir / "stage3" / f"{RESPONSE_SCHEMA}.schema.json"
+def response_schema_path(schema_dir=DEFAULT_SCHEMA_DIR, documents=None):
+    """The response-schema file; `documents` selects the schema-2.0 file for a multilingual release."""
+    stem = response_schema_name(documents) if documents is not None else "call_config_response"
+    return schema_dir / "stage3" / f"{stem}.schema.json"
 
 
 def request_hash(body):
@@ -58,19 +61,24 @@ def build_brief(inputs, ctx):
     """The per-call user message (a plain dict; serialised canonically by the caller)."""
     catalog = {entry["id"]: entry for entry in inputs.documents["edge_case_catalog"]["edge_cases"]}
     meta = ctx.spec["metadata"]
-    return {
-        "call_id": ctx.call_id,
-        "metadata": {
+    if ctx.multilingual:  # schema 2.0: the language block replaces the pilot's single `language` value
+        header = {"call_id": ctx.call_id, "language": language_brief(ctx.spec), "required_name_languages": ctx.name_languages,
+                  "metadata": {"duration_profile": meta["duration_profile"], "target_duration_min_seconds": meta["target_duration_min_seconds"],
+                               "target_duration_max_seconds": meta["target_duration_max_seconds"]}}
+    else:
+        header = {"call_id": ctx.call_id, "metadata": {
             "language": meta["language"], "duration_profile": meta["duration_profile"],
             "target_duration_min_seconds": meta["target_duration_min_seconds"],
             "target_duration_max_seconds": meta["target_duration_max_seconds"],
-        },
+        }}
+    return {
+        **header,
         "fixed_verdicts": {q: ctx.verdict(q) for q in ctx.gold if q.startswith("C")},
         "fixed_transaction": {q: ctx.value(q) for q in ("T01", "T02", "T03", "T04", "T05", "T06")},
         "edge_assignments": [
             {"assignment_id": e["assignment_id"], "edge_case_id": e["edge_case_id"], "family": e["family"],
              "description": catalog[e["edge_case_id"]]["description"], "target_question_ids": e["target_question_ids"],
-             "parameters": _brief_parameters(e)}
+             "parameters": _brief_parameters(e), **({"language_variant": e["language_variant"]} if ctx.multilingual else {})}
             for e in ctx.edges if e["assignment_id"] in ctx.edge_context_ids],
         "products": ctx.products,
         "allowed_currencies": ctx.allowed_currencies,
@@ -83,9 +91,11 @@ class RequestBuilder:
 
     def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
         self.inputs = inputs
-        template_path = prompt_dir / PROMPT_TEMPLATE
+        documents = inputs.documents
+        template_path = prompt_dir / prompt_template(documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
-        schema_path = response_schema_path(schema_dir)
+        self.response_format_name = response_format_name(documents)
+        schema_path = response_schema_path(schema_dir, documents)
         self.response_schema_sha256 = g1.sha256(schema_path.read_bytes())
         self.response_schema = parse_json_text(schema_path.read_text(encoding="utf-8"))
         template = template_path.read_text(encoding="utf-8").replace("\r\n", "\n")
@@ -107,7 +117,7 @@ class RequestBuilder:
                 {"role": "developer", "content": self.developer_message},
                 {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx))},
             ],
-            "text": {"format": {"type": "json_schema", "name": RESPONSE_FORMAT_NAME, "strict": True, "schema": self.response_schema}},
+            "text": {"format": {"type": "json_schema", "name": self.response_format_name, "strict": True, "schema": self.response_schema}},
             "reasoning": {"effort": REASONING_EFFORT},
             "max_output_tokens": MAX_OUTPUT_TOKENS,
             "store": False,

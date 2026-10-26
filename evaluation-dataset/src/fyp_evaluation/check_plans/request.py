@@ -8,9 +8,12 @@ from fyp_evaluation.llm.store import canonical_request_text
 from fyp_evaluation.planning import outputs as g1
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
+from fyp_evaluation import register_guide
+from fyp_evaluation.language_brief import language_brief
+
 from .analysis import question_surface, scenario_surface
 from .config import (
-    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE, REASONING_EFFORT, RESPONSE_FORMAT_NAME, RESPONSE_SCHEMA, STAGE, schema_names,
+    MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, REASONING_EFFORT, RESPONSE_SCHEMA, STAGE, prompt_template, response_format_name, schema_names,
 )
 from .context import PlanContext, forms_of
 
@@ -94,17 +97,6 @@ def _event_brief(ctx, event):
     return entry
 
 
-def _language_brief(ctx):
-    """Schema 2.0: the frozen language requirements the deterministic layer enforces (prompt wording about them is Phase 3)."""
-    requirements = ctx.language_requirements
-    return {
-        "language_profile": ctx.spec["metadata"]["language_profile"], "mixing_style": ctx.spec["metadata"]["mixing_style"],
-        "script_rules": requirements["script_rules"],
-        "speakers": {speaker: {"spoken_languages": rule["spoken_languages"], "required_languages": rule["required_languages"]}
-                     for speaker, rule in requirements["speakers"].items()},
-    }
-
-
 def _product_brief(ctx, product):
     entry = {"product_ref": product["product_ref"], "name": product["name"], "roles": product["roles"]}
     if ctx.multilingual:
@@ -132,7 +124,8 @@ def build_brief(inputs, ctx):
         checks.append(row)
     return {
         "call_id": ctx.call_id,
-        **({"language": _language_brief(ctx)} if ctx.multilingual else {}),
+        **({"language": language_brief(ctx.spec)} if ctx.multilingual else {}),
+        **({"register_guide": block} if ctx.multilingual and (block := register_guide.brief_block(ctx.spec)) else {}),
         "scenario": {key: scenario[key] for key in ("client", "employee", "setting", "final_product", "other_products",
                                                     "holding_context", "red_flags")},
         "products": [_product_brief(ctx, p) for p in inputs.configs[ctx.call_id]["products"]],
@@ -150,7 +143,8 @@ class RequestBuilder:
 
     def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
         self.inputs = inputs
-        template_path = prompt_dir / PROMPT_TEMPLATE
+        template_path = prompt_dir / prompt_template(inputs.documents)
+        self.response_format_name = response_format_name(inputs.documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
         response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
         self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
@@ -174,7 +168,7 @@ class RequestBuilder:
                 {"role": "developer", "content": self.developer_message},
                 {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx))},
             ],
-            "text": {"format": {"type": "json_schema", "name": RESPONSE_FORMAT_NAME, "strict": True, "schema": self.response_schema}},
+            "text": {"format": {"type": "json_schema", "name": self.response_format_name, "strict": True, "schema": self.response_schema}},
             "reasoning": {"effort": REASONING_EFFORT},
             "max_output_tokens": MAX_OUTPUT_TOKENS,
             "store": False,
