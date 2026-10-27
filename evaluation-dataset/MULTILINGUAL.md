@@ -246,3 +246,33 @@ This checks the original request hash, completed response, original length-only 
 approval and every non-length validation rule. It creates a separate zero-cost `revalidation` attempt that links to the
 original response and retains its actual generation-prompt hash. The original rejection, response and original cost remain
 unchanged. Stale, ambiguous, incomplete or otherwise invalid responses cannot be reused. Recovered dialogues still need G7.
+
+
+## G6 prompt v5 and in-place regeneration (user decision, 2026-10-27)
+
+New multilingual G6 requests use `dialogue.v5.md` (v4 plus whole-call naturalness: topic development instead of repetition, a
+recognisably banker employee role, chronology of the speakers' own wording, an opening that follows `setting.call_reason`, natural turn
+length, and non-forced code-switching). Events, markers, placement constraints, the eleven supporting-speech bans, the recommendation rules
+and the advisory length text are unchanged; v1 to v4 stay byte-for-byte. Intentional non-response, hesitation and avoidance are preserved
+and no compliance act may be added to make a reaction sound appropriate.
+
+A completed call is regenerated in place with `--sync --reopen --reason ...` (batch `PILOT_2_G6V5`). The previous accepted attempt is marked
+SUPERSEDED and kept in `accepted_history` with its full response; its request, raw response and cost stay in the audit store, and the
+exposure ledger counts every live attempt. The G7 review of the old dialogue becomes STALE (G8-ineligible) until a new review of the new
+dialogue is ingested with `--reopen`; the old review stays in G7 history. The gitignored audit store must be backed up before regeneration.
+
+To make an earlier accepted dialogue active again (a plain Git restore is NOT supported: it contradicts provenance and the audit store):
+
+```powershell
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_multilingual_v1 --reinstate-accepted --call-id CALL_103 --attempt-id A002 --reason "v5 candidate judged worse"
+```
+
+This is offline and zero cost. It needs the source in `accepted_history`, its stored request and raw response matching their recorded
+hashes and parsing to the recorded accepted response, current upstream and G5 eligibility, and passing current validation. It creates a new
+`reinstatement` attempt (never reusing an ID) that supersedes the currently accepted attempt through the normal reopen path; the dialogue
+is then re-reviewed with G7 `--reopen`.
+
+Upstream presuppositions that v5 cannot fix (frozen G4 text or derived placement) are reported separately, not changed here:
+CALL_028 (a fee-currency distractor says "the currency I selected" before the currency is stated, forced by the derived EN to ZH order),
+CALL_027 and CALL_034 (distractor amounts are disclaimed as "not the amount for this order" before it is stated), CALL_036 (the
+recommendation wording cites a preference the client states later in the plan).

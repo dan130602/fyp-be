@@ -26,10 +26,19 @@ def main(argv=None, **kwargs):
     pre.add_argument("--repair-feedback", type=Path)
     pre.add_argument("--dataset-root", type=Path)
     pre.add_argument("--revalidate-length-only", action="store_true")
+    pre.add_argument("--reinstate-accepted", action="store_true")
     pre.add_argument("--attempt-id")
     known, rest = pre.parse_known_args(argv)
-    if known.revalidate_length_only:
-        parser = argparse.ArgumentParser(description="Offline reuse of one completed, length-only rejected G6 response; no network")
+    if known.revalidate_length_only and known.reinstate_accepted:
+        print("--revalidate-length-only and --reinstate-accepted are separate actions", file=sys.stderr)
+        return 2
+    if known.revalidate_length_only or known.reinstate_accepted:
+        flag, label, description, method = (
+            ("--revalidate-length-only", "length-only revalidation", "Offline reuse of one completed, length-only rejected G6 response; "
+             "no network", "revalidate_length_only") if known.revalidate_length_only else
+            ("--reinstate-accepted", "reinstatement", "Offline reinstatement of an earlier accepted G6 dialogue that a reopen superseded; "
+             "no network", "reinstate_accepted"))
+        parser = argparse.ArgumentParser(description=description)
         parser.add_argument("--dataset-root", type=Path, required=True)
         parser.add_argument("--call-id", required=True)
         parser.add_argument("--attempt-id", required=True)
@@ -39,20 +48,20 @@ def main(argv=None, **kwargs):
 
         parser.add_argument("--audit-dir", type=Path, default=DEFAULT_AUDIT_ROOT)
         parser.add_argument("--schema-dir", type=Path, default=DEFAULT_SCHEMA_DIR)
-        args = parser.parse_args([arg for arg in argv if arg != "--revalidate-length-only"])
+        args = parser.parse_args([arg for arg in argv if arg != flag])
         try:
             runner_class = kwargs.get("runner_class", DialogueRunner)
             runner = runner_class(args.dataset_root, audit_root=args.audit_dir, schema_dir=args.schema_dir,
                                   selected_call_ids=[args.call_id])
-            result = runner.revalidate_length_only(args.call_id, args.attempt_id, args.reason)
+            result = getattr(runner, method)(args.call_id, args.attempt_id, args.reason)
         except (OSError, ValueError, KeyError) as error:
-            print(f"length-only revalidation: {error}", file=sys.stderr)
+            print(f"{label}: {error}", file=sys.stderr)
             return 1
         print(json.dumps({"call_id": args.call_id, "attempt_id": result["attempt_id"], "state": result["state"],
                           "source_attempt_id": args.attempt_id, "estimated_cost_usd": result["estimated_cost_usd"]}))
         return 0 if result["state"] == "ACCEPTED" else 1
     if known.attempt_id:
-        print("--attempt-id applies only to --revalidate-length-only", file=sys.stderr)
+        print("--attempt-id applies only to --revalidate-length-only or --reinstate-accepted", file=sys.stderr)
         return 2
     if known.repair_feedback is not None:
         if known.dataset_root is None:

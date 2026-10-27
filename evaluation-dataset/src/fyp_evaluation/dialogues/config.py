@@ -89,8 +89,9 @@ def response_schema_name(documents):
     return versions.versioned(RESPONSE_SCHEMA, documents)
 
 
-# New multilingual requests use v4 (advisory length). Earlier prompt files and the policies recorded in history stay intact.
-PROMPT_TEMPLATE_MULTILINGUAL = "dialogue.v4.md"
+# New multilingual requests use v5 (v4's advisory length plus whole-call naturalness: topic development, role, chronology, opening,
+# turn length, code-switching). Earlier prompt files and the policies recorded in history stay intact.
+PROMPT_TEMPLATE_MULTILINGUAL = "dialogue.v5.md"
 
 
 def prompt_template(documents):

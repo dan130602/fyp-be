@@ -209,8 +209,11 @@ class DialogueRunner(StageRunner):
         re-hashed from the configured files NOW (the builder's cached hashes cannot see a change made while this process
         is alive). Raises OSError when either file cannot be read."""
         documents = self.inputs.documents
-        if attempt.get("transport") == "revalidation":
-            from .revalidation import verify_replay
+        if attempt.get("transport") in ("revalidation", "reinstatement"):
+            if attempt["transport"] == "revalidation":
+                from .revalidation import verify_replay
+            else:
+                from .reinstatement import verify_replay
 
             verify_replay(self, attempt)
             current_params = self._attempt_metadata(attempt["call_id"])["params"]
@@ -261,6 +264,11 @@ class DialogueRunner(StageRunner):
         from .revalidation import revalidate_length_only
 
         return revalidate_length_only(self, call_id, attempt_id, reason)
+
+    def reinstate_accepted(self, call_id, attempt_id, reason):
+        from .reinstatement import reinstate_accepted
+
+        return reinstate_accepted(self, call_id, attempt_id, reason)
 
     # ---- the G7 gate (read-only) -----------------------------------------------------------------------
     def _verified_dialogue(self, call_id):

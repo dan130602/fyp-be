@@ -17,11 +17,11 @@ def lines(name):
     return (PROMPTS / name).read_text(encoding="utf-8").splitlines()
 
 
-def test_a_multilingual_release_selects_v4_and_the_pilot_keeps_its_historical_prompt():
-    assert config.prompt_template(M.upstream_inputs().documents) == "dialogue.v4.md"
+def test_a_multilingual_release_selects_v5_and_the_pilot_keeps_its_historical_prompt():
+    assert config.prompt_template(M.upstream_inputs().documents) == "dialogue.v5.md"
     assert config.prompt_template(g6_support.shared_inputs().documents) == "dialogue.v1.md"
     multilingual = RequestBuilder(M.verification_inputs([M.first_call("MANDARIN")]), M.SCHEMAS)
-    assert multilingual.prompt_template_sha256 == text_hash((PROMPTS / "dialogue.v4.md").read_text(encoding="utf-8"))
+    assert multilingual.prompt_template_sha256 == text_hash((PROMPTS / "dialogue.v5.md").read_text(encoding="utf-8"))
     pilot = RequestBuilder(g6_support.shared_inputs(), M.SCHEMAS)
     assert pilot.prompt_template_sha256 == text_hash((PROMPTS / "dialogue.v1.md").read_text(encoding="utf-8"))
 
@@ -29,7 +29,7 @@ def test_a_multilingual_release_selects_v4_and_the_pilot_keeps_its_historical_pr
 def test_v2_is_preserved_unchanged_beside_v3():
     v2 = lines("dialogue.v2.md")
     assert v2[0] == "# G6 dialogue authoring instructions (template v2, multilingual releases)"
-    assert "dialogue.v2.md" in config.PROMPT_TEMPLATE_MULTILINGUAL.replace("v4", "v2")  # the file exists beside v3
+    assert "dialogue.v2.md" in config.PROMPT_TEMPLATE_MULTILINGUAL.replace("v5", "v2")  # the file exists beside v3
     assert (PROMPTS / "dialogue.v2.md").is_file() and (PROMPTS / "dialogue.v3.md").is_file()
 
 
@@ -58,5 +58,5 @@ def test_v3_states_its_intended_changes(phrase):
 def test_the_brief_and_the_request_format_are_unchanged_between_v2_and_v3_releases_of_a_call():
     builder = RequestBuilder(M.verification_inputs([M.first_call("SINGLISH")]), M.SCHEMAS)
     body = builder.build(M.first_call("SINGLISH"), "A001")
-    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v4" in body["input"][0]["content"]
+    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v5" in body["input"][0]["content"]
     assert set(body) == {"model", "input", "text", "reasoning", "max_output_tokens", "store", "metadata"}
