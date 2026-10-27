@@ -9,16 +9,59 @@ were moved verbatim from the G5 runner, so G5 behaviour and request bytes are un
 A stage sets `flex` (its `FlexSettings`) and implements `_runnable(call_id)` (does the call have the input to be verified).
 """
 
+import hashlib
+import json
 import random
 import time
 from dataclasses import dataclass
+from pathlib import Path
 
-from fyp_evaluation.call_specs.compile import parse_json_text
+from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.llm import provenance
+from fyp_evaluation.llm.canonical import canonical_response
 from fyp_evaluation.llm.errors import AmbiguousError, CapacityError, TransportError
 from fyp_evaluation.llm.stage_runner import RunError
+from fyp_evaluation.llm.store import canonical_request_text
+from fyp_evaluation.validation.stage0 import is_multilingual
 
 _TOOL_STEP_WORDS = ("call", "tool", "function")
+
+# Claude-assisted review (manual harness): a reviewer reads the stage's own brief and writes the stage's own response; Python then
+# validates, derives the verdict and accepts it exactly as for a provider response. The reviewer is recorded as itself, never as the
+# provider the stage normally uses, and nothing is sent anywhere.
+REVIEW_FORMAT = "claude-review/1"
+REVIEWER_KINDS = ("claude-code-harness",)
+REVIEW_KEYS = {"format", "stage", "call_id", "reviewer", "request_sha256", "response"}
+
+
+def load_review(path, stage, call_id):
+    """The parsed review file, or a RunError naming what is wrong with it. Never reads or writes anything else."""
+    try:
+        raw = Path(path).read_bytes()
+        review = json.loads(raw.decode("utf-8"))
+    except (OSError, ValueError) as error:
+        raise RunError(f"cannot read the review file {path}: {error}") from error
+    if not isinstance(review, dict) or set(review) != REVIEW_KEYS:
+        raise RunError(f"a review file needs exactly the keys {sorted(REVIEW_KEYS)}")
+    if review["format"] != REVIEW_FORMAT:
+        raise RunError(f"unsupported review format {review['format']!r}; expected {REVIEW_FORMAT}")
+    if review["stage"] != stage:
+        raise RunError(f"this review is for stage {review['stage']!r}, not {stage}")
+    if review["call_id"] != call_id:
+        raise RunError(f"this review is for {review['call_id']!r}, not {call_id}")
+    reviewer = review["reviewer"]
+    if not isinstance(reviewer, dict) or set(reviewer) - {"kind", "model", "note"} or {"kind", "model"} - set(reviewer):
+        raise RunError("reviewer needs kind and model (and optionally note)")
+    if reviewer["kind"] not in REVIEWER_KINDS:
+        raise RunError(f"reviewer.kind must be one of {REVIEWER_KINDS}")
+    if not isinstance(reviewer["model"], str) or not reviewer["model"].strip() or "gemini" in reviewer["model"].lower():
+        raise RunError("reviewer.model must name the reviewing model and must not claim to be the provider verifier")
+    if not isinstance(review["request_sha256"], str) or len(review["request_sha256"]) != 64:
+        raise RunError("request_sha256 must be the 64-hex hash of the brief the reviewer read (from --prepare-review)")
+    if not isinstance(review["response"], dict):
+        raise RunError("response must be the stage's JSON response object")
+    review["_file_sha256"] = hashlib.sha256(raw).hexdigest()
+    return review
 
 
 @dataclass(frozen=True)
@@ -111,6 +154,7 @@ class GeminiFlexMixin:
     flex = None  # the stage's FlexSettings
     sleep = staticmethod(time.sleep)  # replaced in tests
     jitter = random.Random()
+    _manual = False  # True only inside prepare_review / ingest_review
 
     def _runnable(self, call_id):
         """True when the call has the input this stage verifies (restricts the freshness check and selection)."""
@@ -165,7 +209,8 @@ class GeminiFlexMixin:
 
     def eligibility(self, call_id, *, retry_rejected=False, reopen=False, blocked=None):
         latest = self.call_state(call_id)["latest"]
-        if self._awaiting_acknowledgement(latest):
+        # an unacknowledged ambiguous PROVIDER attempt blocks another provider request; a review sends nothing, so it does not
+        if not self._manual and self._awaiting_acknowledgement(latest):
             return False, (f"AWAITING_ACKNOWLEDGEMENT: the outcome of {latest['attempt_id']} is unknown and it may have been billed; "
                            "rerun with --acknowledge-possible-duplicate --call-id " + call_id)
         return super().eligibility(call_id, retry_rejected=retry_rejected, reopen=reopen, blocked=blocked)
@@ -221,6 +266,73 @@ class GeminiFlexMixin:
             calls[call_id] = row
         totals["estimated_cost_usd"] = round(totals["estimated_cost_usd"], 6)
         return {"calls": calls, "totals": totals}
+
+    # ---- Claude-assisted review ------------------------------------------------------------------------
+    def _exposure(self):
+        if self._manual:  # not an exposure to a provider; recorded so the attempt is never mistaken for one
+            from fyp_evaluation.llm import live_guard
+
+            return {"run_kind": "manual", **live_guard.code_state(), "allowlist_batch": None}
+        return super()._exposure()
+
+    def _require_multilingual(self):
+        if not is_multilingual(self.inputs.documents):
+            raise RunError("Claude-assisted review is only available for multilingual (schema 2.0) releases")
+
+    def prepare_review(self, call_id, *, retry_rejected=False, reopen=False):
+        """The brief a reviewer must read and the hashes the review will be bound to. Read-only: nothing is written or sent."""
+        self._require_multilingual()
+        self._manual = True
+        try:
+            eligible, reason = self.eligibility(call_id, retry_rejected=retry_rejected, reopen=reopen)
+            if not eligible:
+                raise RunError(f"{call_id}: {reason}")
+            body = self.builder.build(call_id, "A000")  # G5/G7 request bodies carry no attempt id
+            return {"format": REVIEW_FORMAT, "stage": self.spec.stage, "call_id": call_id,
+                    "request_sha256": text_hash(canonical_request_text(body)), "upstream_sha256": self._upstream_hashes(call_id),
+                    "request": body}
+        finally:
+            self._manual = False
+
+    def ingest_review(self, call_id, review_path, *, reopen_reason=None, retry_rejected=False):
+        """Accept a review through the same recovery, freshness, eligibility, validation and acceptance as a provider response.
+
+        The review must have been written against exactly the brief the stage would build NOW (its request hash), so a change to
+        any input between preparation and acceptance is refused. An accepted call needs --reopen, exactly as for a provider run.
+        """
+        self._require_multilingual()
+        review = load_review(review_path, self.spec.stage, call_id)
+        reopen_ids = {call_id} if reopen_reason else set()
+        with self.store.lock():
+            self._manual = True
+            try:
+                self._recover()
+                if self._runnable(call_id):
+                    self._ensure_fresh_inputs([call_id])
+                self._select([call_id], retry_rejected=retry_rejected, reopen_call_ids=reopen_ids)
+                actual = text_hash(canonical_request_text(self.builder.build(call_id, "A000")))
+                if actual != review["request_sha256"]:
+                    raise RunError(f"{call_id}: the review was written against a different brief (request {review['request_sha256'][:12]}..., "
+                                   f"now {actual[:12]}...); inputs or instructions changed, so it is refused")
+                previous = self.call_state(call_id)
+                reopen_of = None
+                if reopen_reason:
+                    reopen_of = next((a["attempt_id"] for a in reversed(previous["attempts"]) if a["state"] == "ACCEPTED"), None)
+                attempt, _ = self._new_attempt(call_id, "manual", reopen_reason=reopen_reason, reopen_of=reopen_of)
+                reviewer = review["reviewer"]
+                attempt["model"] = f"{reviewer['kind']}:{reviewer['model']}"
+                attempt["params"] = {"method": "manual_review", "reviewer": reviewer["kind"], "reviewer_model": reviewer["model"],
+                                     "request_sha256": actual}
+                self._save(attempt)
+                # keys in the response schema's order, so the artifact compiled now is byte-identical to its later rebuild from the stored response
+                ordered = canonical_response(review["response"], self.builder.response_schema)
+                body = {"id": f"manual_review_{attempt['attempt_id']}", "status": "completed",
+                        "output_text": json.dumps(ordered, ensure_ascii=False),
+                        "manual_review": {"reviewer": reviewer, "request_sha256": actual, "review_file_sha256": review["_file_sha256"]}}
+                self._store_response(attempt, body, {"transport": "manual", "reviewer": reviewer})
+                return self._adjudicate(attempt)
+            finally:
+                self._manual = False
 
     # ---- recovery and the single mutating entry point ------------------------------------------------
     def _recover(self):

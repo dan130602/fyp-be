@@ -171,6 +171,30 @@ historical release keeps the originals byte for byte (request hashes are pinned 
   Only a confirmed false positive justifies versioning rule (d) to cover G6-authored speech only, as a change separate from any G6
   prompt change.
 
+## Claude-assisted review (G5 and G7, multilingual releases)
+
+A reviewer (Claude Code, recorded as `claude-code-harness:<model>`, never as the provider) can supply the G5 or G7 verification instead of
+Gemini, with no provider request and no credential:
+
+```
+python scripts/verify_authoring_plans.py   --dataset-root DS --prepare-review --call-id CALL_X --output packet.json   # G5; scripts/verify_dialogues.py for G7
+python scripts/verify_authoring_plans.py   --dataset-root DS --ingest-review review.json --call-id CALL_X [--reopen --reason ...] [--retry-rejected]
+```
+
+* `--prepare-review` writes the stage's own brief and its `request_sha256` (read-only). The reviewer reads the brief, the frozen targets and
+  the stage's instructions, and writes the stage's own response schema in a `claude-review/1` envelope bound to that hash.
+* `--ingest-review` runs the normal lifecycle: recovery, freshness, eligibility, validation (coverage, ordering, issue links, every quotation
+  located in the cited turn or event, mechanical language-row rules), Python verdict derivation and acceptance. A review written against any
+  other brief (changed inputs, guide or instructions between preparation and acceptance) is refused; a re-import is refused unless
+  `--reopen` (history is kept); a rejected review needs `--retry-rejected`; the semantic budget applies as for a provider response.
+* The response is stored in the response schema's key order so the accepted artifact rebuilds byte for byte. The attempt has `transport:
+  manual`, `params.method: manual_review`, cost 0 and exposure `run_kind: manual` (never counted as provider exposure). An ambiguous Gemini
+  attempt still blocks Gemini for that call but does not block a review.
+* VALID permits the next stage (G6 after G5, G8 after G7); INVALID and UNCLEAR block it. G7 language rows are blocking; naturalness findings
+  are advisory. The review is judgement, Python checks only that it is complete, consistent and grounded in real text.
+
+G6 uses prompt `dialogue.v3.md` on multilingual releases (`dialogue.v2.md` is kept; the first four pilot dialogues record its hash).
+
 ## G1 rules (2.0)
 
 Each profile is planned exactly: duration, intent, composition, FAIL histogram, per-question FAIL counts, edge-case

@@ -104,14 +104,18 @@ class Chain:
         self.g4 = runner
         return {call_id: runner.run_sync(call_id)["state"] for call_id in self.call_ids}
 
-    def run_g5(self, overrides=None):
+    def open_g5(self, overrides=None, errors=None):
         holder = {}
         runner = PlanVerificationRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g5_support.Clock(),
-                                        transport=FakeGeminiTransport(lambda body: holder["respond"](body)), selected_call_ids=self.call_ids,
-                                        inputs=load_g5_inputs(self.root, SCHEMAS, self.call_ids))
+                                        transport=FakeGeminiTransport(lambda body: holder["respond"](body), errors=errors),
+                                        selected_call_ids=self.call_ids, inputs=load_g5_inputs(self.root, SCHEMAS, self.call_ids))
         runner.sleep = lambda seconds: None
         holder["respond"] = g5_support.good_responder(runner, overrides)
         self.g5 = runner
+        return runner
+
+    def run_g5(self, overrides=None):
+        runner = self.open_g5(overrides)
         return {call_id: runner.run_sync(call_id)["state"] for call_id in self.call_ids}
 
 
@@ -139,12 +143,12 @@ class Chain:
         runner.collect()
         return {call_id: runner.store.read_attempt(call_id, "A001")["state"] for call_id in chosen}
 
-    def open_g7(self, overrides=None):
+    def open_g7(self, overrides=None, errors=None):
         holder = {}
         selected = self._selection()
         runner = DialogueVerificationRunner(self.root, audit_root=self.audit_root, schema_dir=SCHEMAS, clock=g7_support.Clock(),
-                                            transport=FakeGeminiTransport(lambda body: holder["respond"](body)), selected_call_ids=selected,
-                                            inputs=load_g7_inputs(self.root, SCHEMAS, selected))
+                                            transport=FakeGeminiTransport(lambda body: holder["respond"](body), errors=errors),
+                                            selected_call_ids=selected, inputs=load_g7_inputs(self.root, SCHEMAS, selected))
         runner.sleep = lambda seconds: None
         holder["respond"] = g7_support.good_responder(runner, overrides)
         self.g7 = runner
@@ -155,10 +159,11 @@ class Chain:
         return {call_id: runner.run_sync(call_id)["state"] for call_id in (call_ids or self.call_ids)}
 
 
-def copy_chain(source_root, destination, audit_root=None):
-    """A writable copy of an accepted G3-G5 chain root (authoring files only; the release has no audio) and a Chain over it."""
+def copy_chain(source_root, destination, audit_root=None, call_ids=None):
+    """A writable copy of an accepted chain root (authoring files only; the release has no audio) and a Chain over it
+    (all 250 calls unless `call_ids` names the selected ones)."""
     root = copy_tree(source_root, destination)
-    return Chain(root, Path(destination).parent / "audit_copy", list(upstream_inputs().call_ids))
+    return Chain(root, Path(destination).parent / "audit_copy", list(call_ids or upstream_inputs().call_ids))
 
 
 def chain(tmp_path, call_ids):

@@ -17,7 +17,7 @@ from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
 from .run import PlanVerificationRunner, RunError, describe
 
-MODES = ("dry_run", "run", "status", "validate", "check")
+MODES = ("dry_run", "run", "status", "validate", "check", "prepare_review", "ingest_review")
 
 
 def build_parser():
@@ -30,8 +30,13 @@ def build_parser():
     mode.add_argument("--run", action="store_true", help="Recover interrupted state, then verify eligible calls with paid Flex requests")
     mode.add_argument("--status", action="store_true", help="Per-call state, verdict and G6 eligibility; no network")
     mode.add_argument("--validate", action="store_true", help="Validate reports, provenance and record on disk; no network")
+    mode.add_argument("--prepare-review", action="store_true",
+                      help="Claude-assisted review: write the brief and its hash for one --call-id (multilingual releases); no network")
+    mode.add_argument("--ingest-review", type=Path, metavar="FILE",
+                      help="Claude-assisted review: validate and accept a review file for one --call-id; no network, no credentials")
     mode.add_argument("--check", action="store_true", help="Rebuild reports from stored accepted responses and compare byte for byte")
     parser.add_argument("--call-id", action="append", dest="call_ids", metavar="CALL_ID", help="Restrict to a call (repeatable)")
+    parser.add_argument("--output", type=Path, help="With --prepare-review: write the review packet to this file (default: stdout)")
     parser.add_argument("--limit", type=int, help="With --run: verify at most N calls")
     parser.add_argument("--retry-rejected", action="store_true", help="Allow new attempts for calls whose latest report was REJECTED")
     parser.add_argument("--reopen", action="store_true", help="Deliberately re-verify an accepted report (needs --call-id and --reason)")
@@ -48,8 +53,12 @@ def _usage_errors(parser, args, mode):
         parser.error("--reopen requires --call-id and --reason")
     if args.reason and not args.reopen:
         parser.error("--reason is only used with --reopen")
-    if (args.reopen or args.retry_rejected) and mode not in ("run", "dry_run"):
-        parser.error("--reopen and --retry-rejected apply to --run or --dry-run")
+    if (args.reopen or args.retry_rejected) and mode not in ("run", "dry_run", "prepare_review", "ingest_review"):
+        parser.error("--reopen and --retry-rejected apply to --run, --dry-run, --prepare-review or --ingest-review")
+    if mode in ("prepare_review", "ingest_review") and not (args.call_ids and len(args.call_ids) == 1):
+        parser.error("--prepare-review and --ingest-review take exactly one --call-id")
+    if args.output and mode != "prepare_review":
+        parser.error("--output is only used with --prepare-review")
     if args.acknowledge_possible_duplicate and (mode != "run" or not args.call_ids or len(args.call_ids) != 1):
         parser.error("--acknowledge-possible-duplicate is only used with --run and exactly one --call-id")
     if args.limit is not None and (mode != "run" or args.limit < 1):
@@ -97,6 +106,22 @@ def _run(runner, args, mode):
             _say(f"STOPPED: {report['stopped']}")
         failed = any(a["state"] != "ACCEPTED" for a in report["attempts"])
         return 1 if failed or report["stopped"] else 0
+    if mode == "prepare_review":
+        packet = runner.prepare_review(args.call_ids[0], retry_rejected=args.retry_rejected, reopen=args.reopen)
+        text = json.dumps(packet, ensure_ascii=False, indent=1)
+        if args.output:
+            args.output.write_text(text + "\n", encoding="utf-8")
+            _say(f"{args.call_ids[0]} review packet written to {args.output} (request_sha256 {packet['request_sha256']})")
+        else:
+            _say(text)
+        return 0
+    if mode == "ingest_review":
+        attempt = runner.ingest_review(args.call_ids[0], args.ingest_review, reopen_reason=args.reason if args.reopen else None,
+                                    retry_rejected=args.retry_rejected)
+        _say(describe(attempt))
+        for error in attempt["validation_errors"][:10]:
+            _say(f"  - {error}")
+        return 0 if attempt["state"] == "ACCEPTED" else 1
     if mode == "status":
         report = runner.status()
         for call_id, row in report["calls"].items():

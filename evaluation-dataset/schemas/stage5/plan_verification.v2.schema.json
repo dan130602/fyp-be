@@ -78,25 +78,56 @@
           "minLength": 1
         },
         "params": {
-          "type": "object",
-          "properties": {
-            "thinking_level": {
-              "type": "string"
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "thinking_level": {
+                  "type": "string"
+                },
+                "service_tier": {
+                  "type": "string"
+                },
+                "max_output_tokens": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "thinking_level",
+                "service_tier",
+                "max_output_tokens"
+              ],
+              "additionalProperties": false
             },
-            "service_tier": {
-              "type": "string"
-            },
-            "max_output_tokens": {
-              "type": "integer",
-              "minimum": 1
+            {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "const": "manual_review"
+                },
+                "reviewer": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reviewer_model": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "request_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "method",
+                "reviewer",
+                "reviewer_model",
+                "request_sha256"
+              ],
+              "additionalProperties": false
             }
-          },
-          "required": [
-            "thinking_level",
-            "service_tier",
-            "max_output_tokens"
-          ],
-          "additionalProperties": false
+          ]
         },
         "prompt_template_sha256": {
           "$ref": "#/$defs/sha256"

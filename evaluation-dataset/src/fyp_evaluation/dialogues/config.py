@@ -86,8 +86,15 @@ def response_schema_name(documents):
     return versions.versioned(RESPONSE_SCHEMA, documents)
 
 
+# A multilingual release writes dialogues with the v3 prompt (whole-conversation coherence). dialogue.v2.md is kept: the first four pilot
+# dialogues were written with it and their provenance records its hash. Other stages' prompt selection (release_versions) is unchanged.
+PROMPT_TEMPLATE_MULTILINGUAL = "dialogue.v3.md"
+
+
 def prompt_template(documents):
-    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+    if versions.generation(documents) == versions.MULTILINGUAL:
+        return PROMPT_TEMPLATE_MULTILINGUAL
+    return PROMPT_TEMPLATE
 
 
 def response_format_name(documents):

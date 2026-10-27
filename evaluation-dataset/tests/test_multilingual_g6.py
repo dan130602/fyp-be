@@ -85,7 +85,7 @@ def test_the_brief_carries_language_names_length_unit_and_the_guide_only_for_sin
     assert brief["call"]["length"]["unit"] == config.unit_of(builder.context(CALLS[profile]).length_policy)
     assert all(brief["people"][s]["spoken_names"] for s in ("client", "employee"))
     assert ("register_guide" in brief) is (profile == "SINGLISH")
-    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v2" in body["input"][0]["content"]
+    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v3" in body["input"][0]["content"]
     names = (brief.get("advisory_recommendation") or {}).get("product_names")
     if names is not None:
         assert set(names) == {"ENGLISH": {"en"}, "SINGLISH": {"en"}, "MANDARIN": {"zh"}, "EN_ZH_MIXED": {"en", "zh"}}[profile]

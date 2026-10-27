@@ -194,6 +194,8 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
         current = {"params": self._attempt_metadata()["params"],
                    "prompt_template_sha256": g1.sha256((self.prompt_dir / prompt_template(self.inputs.documents)).read_bytes()),
                    "response_schema_sha256": g1.sha256(schema_path(response_schema_name(self.inputs.documents), self.schema_dir).read_bytes())}
+        if attempt.get("transport") == "manual":  # a review carries its own parameters; only the prompt and schema can go stale
+            current["params"] = attempt.get("params")
         return sorted(key for key, value in current.items() if attempt.get(key) != value)
 
     def _judge_locked(self, attempt, parsed):
