@@ -51,6 +51,9 @@ LENGTH_POLICY = {
 # range's edge. ALL NON-WORD RATES AND BANDS ARE PROVISIONAL until the live pilot's audio calibrates them. The policy keeps the
 # provenance shape (`assumed_wpm` is the assumed units per minute, `*_words` the unit counts); its version names the unit.
 UNIT_OF_POLICY = {"g6-length-v1": "words", "g6-length-v2-han-chars": "han_chars", "g6-length-v2-han-chars-plus-words": "han_chars_plus_words"}
+# Advisory versions retain the same targets and counting rules. Old versions stay blocking when history is rebuilt.
+ADVISORY_POLICIES = {version: version + "-advisory-v1" for version in UNIT_OF_POLICY}
+UNIT_OF_POLICY.update({ADVISORY_POLICIES[version]: unit for version, unit in list(UNIT_OF_POLICY.items())})
 LENGTH_POLICY_V2 = {
     "MANDARIN": {
         "version": "g6-length-v2-han-chars",
@@ -86,9 +89,8 @@ def response_schema_name(documents):
     return versions.versioned(RESPONSE_SCHEMA, documents)
 
 
-# A multilingual release writes dialogues with the v3 prompt (whole-conversation coherence). dialogue.v2.md is kept: the first four pilot
-# dialogues were written with it and their provenance records its hash. Other stages' prompt selection (release_versions) is unchanged.
-PROMPT_TEMPLATE_MULTILINGUAL = "dialogue.v3.md"
+# New multilingual requests use v4 (advisory length). Earlier prompt files and the policies recorded in history stay intact.
+PROMPT_TEMPLATE_MULTILINGUAL = "dialogue.v4.md"
 
 
 def prompt_template(documents):
@@ -102,10 +104,15 @@ def response_format_name(documents):
 
 
 def length_policy_for(spec, documents):
-    """The length policy a call is written under: the historical one for the pilot, ENGLISH and SINGLISH; the profile's own otherwise."""
+    """Historical releases keep blocking length; new multilingual requests record an advisory version of their profile's policy."""
     if versions.generation(documents) == versions.HISTORICAL:
         return LENGTH_POLICY
-    return LENGTH_POLICY_V2.get(spec["metadata"].get("language_profile"), LENGTH_POLICY)
+    policy = LENGTH_POLICY_V2.get(spec["metadata"].get("language_profile"), LENGTH_POLICY)
+    return {**policy, "version": ADVISORY_POLICIES[policy["version"]]}
+
+
+def length_is_advisory(policy):
+    return policy["version"] in ADVISORY_POLICIES.values()
 
 
 def unit_of(policy):

@@ -20,7 +20,7 @@ from .advisory import advisory_recommendation
 from .language_order import language_order_constraints
 from .config import (
     EVENT_RELATIONS, IDENTITY_QUESTIONS, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, REASONING_EFFORT, STAGE, length_policy_for,
-    prompt_template, response_format_name, response_schema_name, schema_names, unit_of,
+    prompt_template, response_format_name, response_schema_name, schema_names, unit_of, length_is_advisory,
 )
 
 
@@ -143,6 +143,8 @@ def _call_block(ctx):
         call["language"] = language_brief(ctx.spec)
         call["length"] = {"unit": ctx.unit, "target": {"min": bounds["target_words"][0], "max": bounds["target_words"][1]},
                           "accepted": {"min": bounds["accepted_words"][0], "max": bounds["accepted_words"][1]}}
+        if length_is_advisory(ctx.length_policy):
+            call["length"]["enforcement"] = "advisory"
     else:
         call = {"call_id": ctx.call_id, "language": meta["language"], "call_intents": list(meta["call_intents"]),
                 "duration_profile": ctx.profile,

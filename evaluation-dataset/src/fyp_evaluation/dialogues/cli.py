@@ -10,6 +10,7 @@ call's current INVALID G7 report, to that call's request (see `request.load_repa
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -24,7 +25,35 @@ def main(argv=None, **kwargs):
     pre = argparse.ArgumentParser(add_help=False)
     pre.add_argument("--repair-feedback", type=Path)
     pre.add_argument("--dataset-root", type=Path)
+    pre.add_argument("--revalidate-length-only", action="store_true")
+    pre.add_argument("--attempt-id")
     known, rest = pre.parse_known_args(argv)
+    if known.revalidate_length_only:
+        parser = argparse.ArgumentParser(description="Offline reuse of one completed, length-only rejected G6 response; no network")
+        parser.add_argument("--dataset-root", type=Path, required=True)
+        parser.add_argument("--call-id", required=True)
+        parser.add_argument("--attempt-id", required=True)
+        parser.add_argument("--reason", required=True)
+        from fyp_evaluation.llm.stage_runner import DEFAULT_AUDIT_ROOT
+        from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+
+        parser.add_argument("--audit-dir", type=Path, default=DEFAULT_AUDIT_ROOT)
+        parser.add_argument("--schema-dir", type=Path, default=DEFAULT_SCHEMA_DIR)
+        args = parser.parse_args([arg for arg in argv if arg != "--revalidate-length-only"])
+        try:
+            runner_class = kwargs.get("runner_class", DialogueRunner)
+            runner = runner_class(args.dataset_root, audit_root=args.audit_dir, schema_dir=args.schema_dir,
+                                  selected_call_ids=[args.call_id])
+            result = runner.revalidate_length_only(args.call_id, args.attempt_id, args.reason)
+        except (OSError, ValueError, KeyError) as error:
+            print(f"length-only revalidation: {error}", file=sys.stderr)
+            return 1
+        print(json.dumps({"call_id": args.call_id, "attempt_id": result["attempt_id"], "state": result["state"],
+                          "source_attempt_id": args.attempt_id, "estimated_cost_usd": result["estimated_cost_usd"]}))
+        return 0 if result["state"] == "ACCEPTED" else 1
+    if known.attempt_id:
+        print("--attempt-id applies only to --revalidate-length-only", file=sys.stderr)
+        return 2
     if known.repair_feedback is not None:
         if known.dataset_root is None:
             print("--repair-feedback needs --dataset-root", file=sys.stderr)

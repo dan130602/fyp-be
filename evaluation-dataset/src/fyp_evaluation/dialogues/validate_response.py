@@ -3,7 +3,8 @@
 Rules: schema; at least two non-blank turns; well-formed whole-token markers; every planned event exactly once in a turn
 by its G4 speaker; strict EMPLOYEE/CLIENT alternation; every frozen and derived placement constraint; no planned text
 repeated outside event spans; no unplanned K01/K02 value surface; length within the recorded policy's band. Other value
-surfaces outside events are not errors: `review_notes` records them for G7.
+surfaces outside events are not errors: `review_notes` records them for G7. Length is advisory for newly recorded multilingual
+policies; historical policies retain their original blocking check.
 """
 
 from jsonschema import Draft202012Validator
@@ -11,6 +12,7 @@ from jsonschema import Draft202012Validator
 from fyp_evaluation.validation.dialogue import validate_speaker_alternation
 
 from .language_checks import language_errors
+from .config import length_is_advisory
 from .render import length_count, occurrences_outside, render, spans_by_turn
 
 
@@ -86,7 +88,7 @@ class DialogueValidator:
         errors += language_errors(ctx, turns, alignment, spans)
         low, high = ctx.bounds["accepted_words"]
         words = length_count(turns, ctx.unit)
-        if not low <= words <= high:
+        if not length_is_advisory(ctx.length_policy) and not low <= words <= high:
             unit = "words" if ctx.unit == "words" else ctx.unit.replace("_", " ")
             errors.append(f"length: {words} {unit}; the {ctx.profile} band of {ctx.length_policy['version']} is {low}-{high}")
         return errors

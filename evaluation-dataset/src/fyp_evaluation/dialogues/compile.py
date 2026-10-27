@@ -9,7 +9,7 @@ from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
-from .config import GENERATOR_VERSION, HASHING, STAGE, schema_version, unit_of
+from .config import GENERATOR_VERSION, HASHING, STAGE, schema_version, unit_of, length_is_advisory
 from .render import length_count, render
 from .validate_response import review_notes
 
@@ -56,6 +56,8 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
     }
     if multilingual:
         artifact["length"]["unit"] = unit
+        if length_is_advisory(policy):
+            artifact["length"].update(enforcement="advisory", within_range=low <= words <= high)
     return artifact
 
 

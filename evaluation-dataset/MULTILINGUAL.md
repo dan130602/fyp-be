@@ -225,3 +225,24 @@ python scripts/build_check_plan_skeletons.py --dataset-root datasets/advisory_ex
 python -m pytest -q tests/test_multilingual_planning.py tests/test_quota_resolution.py tests/test_multilingual_foundations.py tests/test_multilingual_g5_chain.py tests/test_multilingual_g6.py tests/test_multilingual_g7.py tests/test_multilingual_g9.py
 python scripts/report_exposure.py --dataset-root datasets/advisory_execution_multilingual_v1 --check   # once a live batch exists
 ```
+
+
+## Advisory G6 length (user decision, 2026-10-27)
+
+New multilingual G6 requests use `dialogue.v4.md` and a recorded `*-advisory-v1` length-policy version. Counts, target bands,
+reference acceptance bands and estimated seconds are retained; being under or over the band does not reject a response.
+New artifacts record `length.enforcement = "advisory"` and `length.within_range`. These are text measurements, not measured
+speech duration. All other G6 gates, G5 eligibility and G7 semantic verification remain mandatory. Quality findings remain
+visible for review; this change does not resolve repetitive dialogue. No audio generation is implied.
+
+Earlier prompts and policy versions remain unchanged, and accepted historical artifacts rebuild under their recorded policy.
+To reuse an existing completed response rejected ONLY for length, without another provider request:
+
+```powershell
+python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_multilingual_v1 --revalidate-length-only --call-id CALL_113 --attempt-id A001 --reason "User approved advisory length"
+```
+
+This checks the original request hash, completed response, original length-only rejection, current upstream hashes, G5
+approval and every non-length validation rule. It creates a separate zero-cost `revalidation` attempt that links to the
+original response and retains its actual generation-prompt hash. The original rejection, response and original cost remain
+unchanged. Stale, ambiguous, incomplete or otherwise invalid responses cannot be reused. Recovered dialogues still need G7.

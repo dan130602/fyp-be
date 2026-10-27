@@ -69,7 +69,7 @@ def test_each_attempt_records_its_calls_own_length_policy(world):
     for profile, call_id in CALLS.items():
         provenance = json.loads((world.root / "authoring/dialogue_provenance" / f"{call_id}.json").read_text(encoding="utf-8"))
         attempt, accepted = provenance["attempts"][0], provenance["accepted"]
-        assert attempt["params"]["length_policy"]["version"] == expected[profile] == accepted["params"]["length_policy"]["version"]
+        assert attempt["params"]["length_policy"]["version"] == config.ADVISORY_POLICIES[expected[profile]] == accepted["params"]["length_policy"]["version"]
         assert attempt["exposure"]["run_kind"] == "offline"
         assert ("register_guide_sha256" in attempt["upstream_sha256"]) is (profile == "SINGLISH")
         assert ("register_guide_sha256" in accepted) is (profile == "SINGLISH")
@@ -85,7 +85,7 @@ def test_the_brief_carries_language_names_length_unit_and_the_guide_only_for_sin
     assert brief["call"]["length"]["unit"] == config.unit_of(builder.context(CALLS[profile]).length_policy)
     assert all(brief["people"][s]["spoken_names"] for s in ("client", "employee"))
     assert ("register_guide" in brief) is (profile == "SINGLISH")
-    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v3" in body["input"][0]["content"]
+    assert body["text"]["format"]["name"] == "g6_dialogue_v2" and "template v4" in body["input"][0]["content"]
     names = (brief.get("advisory_recommendation") or {}).get("product_names")
     if names is not None:
         assert set(names) == {"ENGLISH": {"en"}, "SINGLISH": {"en"}, "MANDARIN": {"zh"}, "EN_ZH_MIXED": {"en", "zh"}}[profile]
@@ -158,14 +158,14 @@ def test_a_number_cannot_be_extended_by_words_glued_to_its_event():
     assert numeral_extension_errors(None, [{"turn_id": 0, "speaker": "CLIENT", "text": "好的，七百。"}], span(3, 5)) == []
 
 
-def test_the_length_band_is_counted_in_the_calls_unit_and_rejects_the_wrong_size(world):
+def test_the_length_band_is_counted_in_the_calls_unit_and_is_advisory(world):
     validator, ctx = validator_and_ctx(world, CALLS["MANDARIN"])
     from fyp_evaluation.dialogues.feasibility import synthesize_dialogue
     full = synthesize_dialogue(ctx)
     assert validator.errors(full, ctx) == []
     short = {"turns": [turn for turn in full["turns"] if "[[" in turn["text"]]}  # only the event turns: far below the band
     errors = validator.errors(short, ctx)
-    assert any(e.startswith("length:") and "han chars" in e for e in errors)
+    assert not any(e.startswith("length:") for e in errors)
     assert length_count([{"text": "好的 OK thank 谢谢 7"}], "words") == 5
     assert length_count([{"text": "好的 OK thank 谢谢 7"}], "han_chars") == 4
     assert length_count([{"text": "好的 OK thank 谢谢 7"}], "han_chars_plus_words") == 7
