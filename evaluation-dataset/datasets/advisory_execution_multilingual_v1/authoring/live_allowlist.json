@@ -66,6 +66,28 @@
         "CALL_034",
         "CALL_024"
       ]
+    },
+    "PILOT_CODEX_1": {
+      "description": "User-approved 2026-10-28: five previously ungenerated calls, two LONG and three SHORT, all four language profiles. Standard synchronous OpenAI G3/G4/G6, Codex manual G5/G7. Additional generation ceiling SGD 20; internal USD 10 stop limit with SGD 1.50/USD budget accounting and SGD 5 buffer. No automatic semantic repairs or ambiguous retries; stop new submissions on a blocker. Persist each call/stage and reconcile interruption before resume. No audio or remaining-rollout authorization.",
+      "stages": [
+        "G3",
+        "G4",
+        "G6"
+      ],
+      "call_ids": [
+        "CALL_044",
+        "CALL_102",
+        "CALL_209",
+        "CALL_010",
+        "CALL_004"
+      ],
+      "budget": {
+        "ceiling_sgd": 20.0,
+        "internal_ceiling_usd": 10.0,
+        "accounting_sgd_per_usd": 1.5,
+        "remaining_sgd_buffer": 5.0,
+        "scope": "Additional spend for this five-call pilot only; no automatic retries"
+      }
     }
   }
 }
