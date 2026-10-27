@@ -1,6 +1,6 @@
 """Semantic control fixtures for G5 (isolated dataset copies; production files are never touched).
 
-Each control is a full copy of a release in which ONE call's accepted G4 plan is replaced through G4's own acceptance path:
+Each control is a text/configuration copy of a release in which ONE call's accepted G4 plan is replaced through G4's own acceptance path:
 the stored accepted G4 response is mutated and fed back to `CheckPlanRunner` (`--reopen`) through the offline fake
 transport, so the structural G4 gate accepts it and writes real provenance. G5 then sees a structurally valid plan whose
 meaning is deliberately wrong. No network and no credentials are involved.
@@ -27,12 +27,14 @@ SKIP = ("authoring/plan_verification",)
 
 
 def copy_release(source, destination):
-    """Copy file contents only (OneDrive-safe), keeping G0-G4 outputs and dropping any G5 output or lock file."""
+    """Copy text/configuration only (OneDrive-safe), excluding G5 outputs, locks and all rendered recordings."""
     source, destination = Path(source), Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     for path in sorted(source.rglob("*")):
         relative = path.relative_to(source).as_posix()
-        if relative.startswith(SKIP) or relative.endswith(".lock"):
+        parts = relative.split("/")
+        rendered = len(parts) >= 3 and parts[0] == "calls" and parts[2] == "renders"
+        if relative.startswith(SKIP) or relative.endswith(".lock") or rendered:
             continue
         target = destination / relative
         if path.is_dir():

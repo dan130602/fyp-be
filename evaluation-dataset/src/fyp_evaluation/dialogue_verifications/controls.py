@@ -1,6 +1,6 @@
 """Semantic control fixtures for G7 (isolated dataset copies; production files are never touched).
 
-Each control is a full copy of a release in which ONE call's accepted G6 dialogue is replaced through G6's own acceptance path:
+Each control is a text/configuration copy of a release in which ONE call's accepted G6 dialogue is replaced through G6's own acceptance path:
 the stored accepted G6 response (model turns with event markers) is mutated and fed back to `DialogueRunner` (`--submit` with a
 reopen reason, then `--collect`) through the offline fake Batch transport, so the structural G6 gate accepts it and writes real
 provenance. Every planned event is preserved (the mutation only adds speech to a turn without markers), and strict alternation
@@ -31,12 +31,14 @@ SKIP = ("authoring/dialogue_verification",)
 
 
 def copy_release(source, destination):
-    """Copy file contents only (OneDrive-safe), keeping G0-G6 outputs and dropping any G7 output or lock file."""
+    """Copy text/configuration only (OneDrive-safe), excluding G7 outputs, locks and all rendered recordings."""
     source, destination = Path(source), Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     for path in sorted(source.rglob("*")):
         relative = path.relative_to(source).as_posix()
-        if relative.startswith(SKIP) or relative.endswith(".lock"):
+        parts = relative.split("/")
+        rendered = len(parts) >= 3 and parts[0] == "calls" and parts[2] == "renders"
+        if relative.startswith(SKIP) or relative.endswith(".lock") or rendered:
             continue
         target = destination / relative
         if path.is_dir():

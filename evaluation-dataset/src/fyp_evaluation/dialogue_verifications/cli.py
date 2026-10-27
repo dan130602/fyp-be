@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from fyp_evaluation.llm.errors import CredentialsError, TransportError
+from fyp_evaluation.llm.gemini_runner import REVIEWER_KINDS
 from fyp_evaluation.llm.stage_runner import DEFAULT_AUDIT_ROOT
 from fyp_evaluation.llm.store import LockHeldError
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
@@ -32,12 +33,14 @@ def build_parser():
     mode.add_argument("--status", action="store_true", help="Per-call lifecycle, verdict, quality review and G8 eligibility; no network")
     mode.add_argument("--validate", action="store_true", help="Validate reports, provenance and record on disk; no network")
     mode.add_argument("--prepare-review", action="store_true",
-                      help="Claude-assisted review: write the brief and its hash for one --call-id (multilingual releases); no network")
+                      help="Manual review: write the brief and its hash for one --call-id (multilingual releases); no network")
     mode.add_argument("--ingest-review", type=Path, metavar="FILE",
-                      help="Claude-assisted review: validate and accept a review file for one --call-id; no network, no credentials")
+                      help="Manual review: validate and accept a review file for one --call-id; no network, no credentials")
     mode.add_argument("--check", action="store_true", help="Rebuild reports from stored accepted responses and compare byte for byte")
     parser.add_argument("--call-id", action="append", dest="call_ids", metavar="CALL_ID", help="Restrict to a call (repeatable)")
     parser.add_argument("--output", type=Path, help="With --prepare-review: write the review packet to this file (default: stdout)")
+    parser.add_argument("--reviewer-kind", choices=REVIEWER_KINDS,
+                        help="With --prepare-review: reviewer identity (default: claude-code-harness)")
     parser.add_argument("--limit", type=int, help="With --run: verify at most N calls")
     parser.add_argument("--retry-rejected", action="store_true", help="Allow new attempts for calls whose latest report was REJECTED")
     parser.add_argument("--reopen", action="store_true", help="Deliberately re-verify an accepted report (needs --call-id and --reason)")
@@ -60,6 +63,8 @@ def _usage_errors(parser, args, mode):
         parser.error("--prepare-review and --ingest-review take exactly one --call-id")
     if args.output and mode != "prepare_review":
         parser.error("--output is only used with --prepare-review")
+    if args.reviewer_kind and mode != "prepare_review":
+        parser.error("--reviewer-kind is only used with --prepare-review; ingestion reads the file identity")
     if args.acknowledge_possible_duplicate and (mode != "run" or not args.call_ids or len(args.call_ids) != 1):
         parser.error("--acknowledge-possible-duplicate is only used with --run and exactly one --call-id")
     if args.limit is not None and (mode != "run" or args.limit < 1):
@@ -113,7 +118,8 @@ def _run(runner, args, mode):
         failed = any(a["state"] != "ACCEPTED" for a in report["attempts"])
         return 1 if failed or report["stopped"] else 0
     if mode == "prepare_review":
-        packet = runner.prepare_review(args.call_ids[0], retry_rejected=args.retry_rejected, reopen=args.reopen)
+        packet = runner.prepare_review(args.call_ids[0], retry_rejected=args.retry_rejected, reopen=args.reopen,
+                                       reviewer_kind=args.reviewer_kind or "claude-code-harness")
         text = json.dumps(packet, ensure_ascii=False, indent=1)
         if args.output:
             args.output.write_text(text + "\n", encoding="utf-8")

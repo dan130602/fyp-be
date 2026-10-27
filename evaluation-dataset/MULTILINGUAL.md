@@ -193,7 +193,57 @@ python scripts/verify_authoring_plans.py   --dataset-root DS --ingest-review rev
 * VALID permits the next stage (G6 after G5, G8 after G7); INVALID and UNCLEAR block it. G7 language rows are blocking; naturalness findings
   are advisory. The review is judgement, Python checks only that it is complete, consistent and grounded in real text.
 
-G6 uses prompt `dialogue.v3.md` on multilingual releases (`dialogue.v2.md` is kept; the first four pilot dialogues record its hash).
+G6 currently selects `dialogue.v5.md` on multilingual releases. Earlier versioned prompts are retained; the first four pilot dialogues record the v2 hash.
+
+### Codex review adapter and qualification
+
+For Codex, add `--reviewer-kind codex-harness` to **prepare** (both G5 and G7).
+The default remains the historical Claude packet. Codex packets use
+`codex-review/1`; the reviewer writes that format with `reviewer.kind:
+codex-harness`, an honestly identified reviewing model, the prepared
+`request_sha256`, `review_policy_sha256` from `review_policy.sha256`, and the
+stage's unchanged `response` object. Ingestion reads the identity from the file;
+do not pass `--reviewer-kind` on ingest or label Codex as Claude or Gemini.
+
+The packet contains the exact existing provider request **plus** the immutable
+`prompts/shared/codex_review.v1.md` supplement. The request hash binds the brief
+and original stage instructions; the separate policy hash binds the additional
+review scope. Both are checked again before a new attempt is created. The policy
+version and hash persist in generation parameters; its full text is also kept
+with the raw manual response. Historical reconstruction uses recorded metadata,
+not a replacement current policy, and existing reports are not automatically
+reopened. Add a new policy version rather than editing a used version.
+
+For G7, this supplement explicitly checks authoring conformance even when gold
+is unchanged. A G6-authored refusal to execute, protected escalation, review
+commitment, disclosure or instruction can violate the authoring rules without
+changing a checklist answer. Report the actual act as a whole-dialogue
+`CROSS_CHECK_INTERFERENCE` MISMATCH when no checklist row changes; do not falsely
+mark an unaffected checklist row MISMATCH. Such issues already participate in
+Python's blocking verdict. Authorized G4 acts and the permitted rationale-free
+G6 recommendation are exceptions, assessed contextually. Naturalness stays
+advisory. Historical Claude/Gemini reports have not assessed this added scope
+merely because their verdict says VALID.
+
+Adapter tests use artificial responses to verify lifecycle and compatibility;
+they are not semantic qualification. Qualification separately requires actual
+reviews of existing examples covering all four profiles, paired clean and
+defective controls (fee invention, strengthened weak confirmation, changed final
+instruction, omitted negation, unplanned escalation), grounded findings for the
+intended reasons, and explicit reporting of misses and false alarms. Keep this
+exercise in isolated text-only copies with separate audit stores. Preserve
+production reports, gold and all existing dialogue bytes. A small successful
+exercise is evidence for use, not a statistical reliability guarantee.
+
+The manual transport makes no provider request and records zero API spend;
+the reviewing assistant still consumes its own usage allowance. Model-family
+blind spots remain possible. Independent audits should include apparently VALID
+cases, not only disputes. A paid rollout still needs its own approved scope,
+budget and committed allowlist. Use OpenAI Batch for G3/G4/G6 when so authorized,
+with G5 approval before G6 submission and G7 after collection. Check the semantic
+verdict as well as CLI exit status: an accepted verification artifact can be
+INVALID/UNCLEAR. Stop new submissions on a blocker; in-flight Batch work may
+still complete and cost money. Never retry an unchanged semantic failure.
 
 ## G1 rules (2.0)
 

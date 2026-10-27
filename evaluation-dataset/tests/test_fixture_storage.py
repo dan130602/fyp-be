@@ -20,15 +20,18 @@ import g4_support
 import g5_support
 import g6_support
 import g7_support
+from fyp_evaluation.plan_verifications import controls as g5_controls
+from fyp_evaluation.dialogue_verifications import controls as g7_controls
 
 TESTS = Path(__file__).resolve().parent
 MAX_FILE_BYTES = 5 * 1024 * 1024
 MAX_TOTAL_BYTES = 60 * 1024 * 1024
 
 
-@pytest.mark.parametrize("module", [g3_support, g4_support, g5_support, g6_support, g7_support], ids=lambda m: m.__name__)
+@pytest.mark.parametrize("module", [g3_support, g4_support, g5_support, g6_support, g7_support, g5_controls, g7_controls], ids=lambda m: m.__name__)
 def test_shared_copy_helpers_produce_light_copies_of_the_real_pilot(module, tmp_path):
-    copied = module.copy_release(tmp_path / "pilot")
+    copied = (module.copy_release(g3_support.RELEASE, tmp_path / "pilot") if module in (g5_controls, g7_controls)
+              else module.copy_release(tmp_path / "pilot"))
     files = [p for p in copied.rglob("*") if p.is_file()]
     assert files, "the copy is empty"
     assert not [p for p in files if p.suffix.lower() in {".mp3", ".wav", ".ogg"}]

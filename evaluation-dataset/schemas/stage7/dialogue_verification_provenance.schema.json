@@ -108,7 +108,8 @@
             },
             "reviewer": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "const": "claude-code-harness"
             },
             "reviewer_model": {
               "type": "string",
@@ -124,6 +125,45 @@
             "reviewer",
             "reviewer_model",
             "request_sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "manual_review"
+            },
+            "reviewer": {
+              "const": "codex-harness"
+            },
+            "reviewer_model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "request_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "review_format": {
+              "const": "codex-review/1"
+            },
+            "review_policy_version": {
+              "const": "codex-review-v1"
+            },
+            "review_policy_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "method",
+            "reviewer",
+            "reviewer_model",
+            "request_sha256",
+            "review_format",
+            "review_policy_version",
+            "review_policy_sha256"
           ],
           "additionalProperties": false
         }

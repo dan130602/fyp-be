@@ -20,17 +20,19 @@ from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.llm import provenance
 from fyp_evaluation.llm.canonical import canonical_response
 from fyp_evaluation.llm.errors import AmbiguousError, CapacityError, TransportError
+from fyp_evaluation.llm.review_policy import CODEX_REVIEW_FORMAT, CODEX_REVIEWER, codex_review_policy
 from fyp_evaluation.llm.stage_runner import RunError
 from fyp_evaluation.llm.store import canonical_request_text
 from fyp_evaluation.validation.stage0 import is_multilingual
 
 _TOOL_STEP_WORDS = ("call", "tool", "function")
 
-# Claude-assisted review (manual harness): a reviewer reads the stage's own brief and writes the stage's own response; Python then
+# Manual review: a reviewer reads the stage's own brief and writes the stage's own response; Python then
 # validates, derives the verdict and accepts it exactly as for a provider response. The reviewer is recorded as itself, never as the
 # provider the stage normally uses, and nothing is sent anywhere.
 REVIEW_FORMAT = "claude-review/1"
-REVIEWER_KINDS = ("claude-code-harness",)
+REVIEW_FORMATS = {"claude-code-harness": REVIEW_FORMAT, CODEX_REVIEWER: CODEX_REVIEW_FORMAT}
+REVIEWER_KINDS = tuple(REVIEW_FORMATS)
 REVIEW_KEYS = {"format", "stage", "call_id", "reviewer", "request_sha256", "response"}
 
 
@@ -41,10 +43,11 @@ def load_review(path, stage, call_id):
         review = json.loads(raw.decode("utf-8"))
     except (OSError, ValueError) as error:
         raise RunError(f"cannot read the review file {path}: {error}") from error
-    if not isinstance(review, dict) or set(review) != REVIEW_KEYS:
-        raise RunError(f"a review file needs exactly the keys {sorted(REVIEW_KEYS)}")
-    if review["format"] != REVIEW_FORMAT:
-        raise RunError(f"unsupported review format {review['format']!r}; expected {REVIEW_FORMAT}")
+    keys = REVIEW_KEYS | ({"review_policy_sha256"} if isinstance(review, dict) and review.get("format") == CODEX_REVIEW_FORMAT else set())
+    if not isinstance(review, dict) or set(review) != keys:
+        raise RunError(f"a review file needs exactly the keys {sorted(keys)}")
+    if review["format"] not in REVIEW_FORMATS.values():
+        raise RunError(f"unsupported review format {review['format']!r}; expected one of {tuple(REVIEW_FORMATS.values())}")
     if review["stage"] != stage:
         raise RunError(f"this review is for stage {review['stage']!r}, not {stage}")
     if review["call_id"] != call_id:
@@ -54,6 +57,8 @@ def load_review(path, stage, call_id):
         raise RunError("reviewer needs kind and model (and optionally note)")
     if reviewer["kind"] not in REVIEWER_KINDS:
         raise RunError(f"reviewer.kind must be one of {REVIEWER_KINDS}")
+    if REVIEW_FORMATS[reviewer["kind"]] != review["format"]:
+        raise RunError("reviewer.kind does not match the review format")
     if not isinstance(reviewer["model"], str) or not reviewer["model"].strip() or "gemini" in reviewer["model"].lower():
         raise RunError("reviewer.model must name the reviewing model and must not claim to be the provider verifier")
     if not isinstance(review["request_sha256"], str) or len(review["request_sha256"]) != 64:
@@ -277,20 +282,25 @@ class GeminiFlexMixin:
 
     def _require_multilingual(self):
         if not is_multilingual(self.inputs.documents):
-            raise RunError("Claude-assisted review is only available for multilingual (schema 2.0) releases")
+            raise RunError("Manual review is only available for multilingual (schema 2.0) releases")
 
-    def prepare_review(self, call_id, *, retry_rejected=False, reopen=False):
+    def prepare_review(self, call_id, *, retry_rejected=False, reopen=False, reviewer_kind="claude-code-harness"):
         """The brief a reviewer must read and the hashes the review will be bound to. Read-only: nothing is written or sent."""
         self._require_multilingual()
+        if reviewer_kind not in REVIEWER_KINDS:
+            raise RunError(f"reviewer.kind must be one of {REVIEWER_KINDS}")
         self._manual = True
         try:
             eligible, reason = self.eligibility(call_id, retry_rejected=retry_rejected, reopen=reopen)
             if not eligible:
                 raise RunError(f"{call_id}: {reason}")
             body = self.builder.build(call_id, "A000")  # G5/G7 request bodies carry no attempt id
-            return {"format": REVIEW_FORMAT, "stage": self.spec.stage, "call_id": call_id,
+            packet = {"format": REVIEW_FORMATS[reviewer_kind], "stage": self.spec.stage, "call_id": call_id,
                     "request_sha256": text_hash(canonical_request_text(body)), "upstream_sha256": self._upstream_hashes(call_id),
                     "request": body}
+            if reviewer_kind == CODEX_REVIEWER:
+                packet["review_policy"] = codex_review_policy()
+            return packet
         finally:
             self._manual = False
 
@@ -314,6 +324,9 @@ class GeminiFlexMixin:
                 if actual != review["request_sha256"]:
                     raise RunError(f"{call_id}: the review was written against a different brief (request {review['request_sha256'][:12]}..., "
                                    f"now {actual[:12]}...); inputs or instructions changed, so it is refused")
+                policy = codex_review_policy() if review["reviewer"]["kind"] == CODEX_REVIEWER else None
+                if policy is not None and review["review_policy_sha256"] != policy["sha256"]:
+                    raise RunError(f"{call_id}: review policy changed or its hash is missing/incorrect; prepare and review again")
                 previous = self.call_state(call_id)
                 reopen_of = None
                 if reopen_reason:
@@ -323,12 +336,17 @@ class GeminiFlexMixin:
                 attempt["model"] = f"{reviewer['kind']}:{reviewer['model']}"
                 attempt["params"] = {"method": "manual_review", "reviewer": reviewer["kind"], "reviewer_model": reviewer["model"],
                                      "request_sha256": actual}
+                if policy is not None:
+                    attempt["params"].update(review_format=CODEX_REVIEW_FORMAT, review_policy_version=policy["version"],
+                                             review_policy_sha256=policy["sha256"])
                 self._save(attempt)
                 # keys in the response schema's order, so the artifact compiled now is byte-identical to its later rebuild from the stored response
                 ordered = canonical_response(review["response"], self.builder.response_schema)
                 body = {"id": f"manual_review_{attempt['attempt_id']}", "status": "completed",
                         "output_text": json.dumps(ordered, ensure_ascii=False),
                         "manual_review": {"reviewer": reviewer, "request_sha256": actual, "review_file_sha256": review["_file_sha256"]}}
+                if policy is not None:
+                    body["manual_review"]["review_policy"] = policy
                 self._store_response(attempt, body, {"transport": "manual", "reviewer": reviewer})
                 return self._adjudicate(attempt)
             finally:
@@ -339,8 +357,8 @@ class GeminiFlexMixin:
         """Under the stage lock: settle every interrupted synchronous attempt, then adjudicate stored responses.
 
         The stage lock is held across each provider request, so a PREPARED attempt seen here belongs to a run that died.
-        With a stored raw response it is re-adjudicated (never resent); without one its outcome is unknown, so it becomes an
-        ambiguous TRANSPORT_FAILED that blocks the call until explicitly acknowledged. A stored fatal response raises here.
+        A stored raw response is re-adjudicated (never resent). Without one, a provider request is ambiguous and possibly
+        billed; a manual import sent nothing and closes unbilled. A stored fatal response raises here.
         """
         settled = []
         for call_id in self.inputs.call_ids:
@@ -351,6 +369,11 @@ class GeminiFlexMixin:
                 raw = self.store.read_raw_response(call_id, attempt_id)
                 if raw is not None:
                     self._store_response(attempt, raw["response"], raw.get("meta") or {"transport": "sync"})
+                elif attempt["transport"] == "manual":
+                    attempt["estimated_cost_usd"] = 0.0
+                    self._close(attempt, "TRANSPORT_FAILED", possibly_billed=False,
+                                reason="interrupted local review ingestion before its response was stored; no provider request was sent")
+                    settled.append(attempt)
                 else:
                     attempt["ambiguous"] = True
                     self._close(attempt, "TRANSPORT_FAILED", possibly_billed=True,
