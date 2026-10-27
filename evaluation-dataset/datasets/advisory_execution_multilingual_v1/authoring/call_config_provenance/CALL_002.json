@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_002",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_002-G3-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "resp_0d2c3bb6791b5696016adf42b0167887d08c3e8cffdebcdd6c",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+      "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+      "request_sha256": "6dd57ce2ca450c6d55ff837d9420b0752e1013ce0c881fee4a7e0a7f372d6258",
+      "upstream_sha256": {
+        "call_spec": "924eeb24abde302cc3f80b6e8f0b96f161caec80ac93dcc0c3a5807decf0f373",
+        "check_plan_skeleton": "b4d07bde339c8297f7f6021aba4910a4af67a2a44d311d9b6e250fc5516aeb13",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 4193,
+        "cached_tokens": 3320,
+        "cache_write_tokens": 870,
+        "output_tokens": 772,
+        "reasoning_tokens": 98
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.010233,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-26T12:08:15Z",
+      "finished_at": "2026-10-26T12:08:38Z",
+      "exposure": {
+        "run_kind": "live",
+        "code_commit": "119b73349a240ca37c241bd3445f679137ed64fc",
+        "code_dirty_paths": [],
+        "allowlist_batch": "PILOT_1"
+      },
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+    "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+    "parsed_response": {
+      "client": {
+        "name": "Daniel Lim",
+        "spoken_names": {
+          "en": "Daniel Lim",
+          "zh": null
+        },
+        "background": "An international logistics business owner who manages personal investments separately from business finances and prefers concise explanations before giving instructions.",
+        "investment_objective": "Seek income and diversify investment exposure through emerging-market bonds, with flexibility to remain invested through periods of market volatility.",
+        "loss_attitude": "Accepts that investment values can fall and is willing to bear losses, but wants to understand the main drivers of those losses before proceeding."
+      },
+      "employee": {
+        "name": "Rachel Tan",
+        "spoken_names": {
+          "en": "Rachel Tan",
+          "zh": null
+        }
+      },
+      "setting": {
+        "call_reason": "The client calls to discuss and place a limit purchase of Crest Emerging Markets Bond Fund after reviewing its broad investment focus.",
+        "conversation_style": "The client speaks standard, courteous English, asks direct questions, and corrects administrative mistakes calmly. The employee maintains a professional, focused manner suited to a short telephone discussion."
+      },
+      "final_product": {
+        "description": "Crest Emerging Markets Bond Fund provides pooled exposure to emerging-market debt, with returns influenced by bond income, issuer creditworthiness, interest rates, and market conditions.",
+        "concrete_risks": [
+          "Deteriorating issuer creditworthiness or defaults can reduce the value of the fund's bond holdings.",
+          "Rising interest rates can depress bond prices and reduce the fund's value.",
+          "Political instability and limited market liquidity in emerging markets can cause sharp valuation changes and make underlying bonds harder to sell.",
+          "Currency movements affecting underlying holdings can influence returns in the transaction currency."
+        ],
+        "recommendation_basis": "The fund's emerging-market bond exposure supports the client's income-seeking objective and preference for diversification, while pooled holdings reduce reliance on an individual issuer without eliminating credit or market risk."
+      },
+      "other_products": [],
+      "holding_context": null,
+      "fee_disclosure": {
+        "basis": "RATE",
+        "value": 0.5,
+        "currency": null
+      },
+      "limit_prices": {
+        "final": 20000,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": null,
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_001",
+          "motivation": "A transcription slip in the employee's working note produces an incorrect transaction amount during readback. The client has a settled allocation in mind and notices the discrepancy immediately; this is an administrative correction rather than a change in investment intention."
+        },
+        {
+          "assignment_id": "EA_002",
+          "motivation": "The employee establishes the transaction currency early while organizing the order details. The client subsequently refers back to that established currency to avoid repeating information already settled."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's preference for concise account updates",
+        "Balancing business responsibilities with time for personal administration"
+      ]
+    },
+    "parsed_response_sha256": "36ac8843602b4462802d1738aba6a5b799bfc4993cf543ad583cf76f9f432fb2",
+    "artifact_sha256": "2dc6058cb3050739da62d00143fef7e0dca2549514c6f4cfccff0846e809547e"
+  },
+  "accepted_history": []
+}

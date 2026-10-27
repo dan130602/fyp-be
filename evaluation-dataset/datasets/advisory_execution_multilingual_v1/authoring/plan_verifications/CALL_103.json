@@ -1,0 +1,413 @@
+{
+  "schema_version": "2.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_103",
+  "call_spec_sha256": "d19dd47a1006a16ffdc96f4a1e2753baf6457b125cf0376bc857d386baf5cf9b",
+  "check_plan_skeleton_sha256": "5e648cfbe18a1731ff8e8eb22bcb93b54184275635082cf0514f4b50293d98e7",
+  "call_config_sha256": "43f186b6439dcce6afac4d26023a2986da6ccec956b2ebda18f94531d581631d",
+  "check_plan_sha256": "180e81a78543f400ff5e3e1e4018012689c48e6578e56955bd1519b498399376",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "cc4cce2f2d17cf264bebcfd4833effad4ce01bfd3385dc8005d20ad753f44207"
+    },
+    "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+    "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+    "accepted_response_sha256": "b48041c7d13c133d4be730901c6d0464f37309d6969ca3ee551c34f16f50023c"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "summary": {
+    "match": 20,
+    "mismatch": 0,
+    "unclear": 0,
+    "issues_by_code": {}
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_001 (employee) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_001",
+          "pointer": "/planned_events/0/authoring/planned_text",
+          "quote": "Your investment objective is to build a more predictable income stream"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_002 (employee) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_002",
+          "pointer": "/planned_events/1/authoring/planned_text",
+          "quote": "For Atlas USD Corporate Bond 2031, repayment depends on the issuer's a"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_003 (employee), EV_004 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_003",
+          "pointer": "/planned_events/2/authoring/planned_text",
+          "quote": "Do you understand that the issuer could miss interest payments or fail"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_004",
+          "pointer": "/planned_events/3/authoring/planned_text",
+          "quote": "我明白，发行人如果出现财务困难，可能付不出利息，也可能无法偿还本金。这正是我特别担心的风险。"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission). No planned event states a fee or charge; EV_008's recap gives the order amount only.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_005 (employee) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_005",
+          "pointer": "/planned_events/4/authoring/planned_text",
+          "quote": "You could lose some or all of the capital you invest in this bond."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_006 (employee), EV_007 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_006",
+          "pointer": "/planned_events/5/authoring/planned_text",
+          "quote": "Having considered that downside, are you willing to accept investment"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_007",
+          "pointer": "/planned_events/6/authoring/planned_text",
+          "quote": "我愿意承担这项投资可能带来的亏损。虽然我很在意发行人的偿债能力，但我接受这项亏损风险。"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission). No planned event recommends the bond or links any of its features to the client's objective or preferences; EV_001 only confirms the objective and EV_002 describes risk.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL via a weak response: EV_008 restates the complete final instruction (all values match the final state) and asks for explicit confirmation; EV_009 answers only 'let me think about that while I find the supporting paperwork'. No confirmation follows.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_008",
+          "pointer": "/planned_events/7/authoring/planned_text",
+          "quote": "To recap, your instruction is to buy 500 units of Atlas USD Corporate"
+        },
+        {
+          "source": "G4",
+          "event_id": "EV_009",
+          "pointer": "/planned_events/8/authoring/planned_text",
+          "quote": "Mm, I see, let me think about that while I find the supporting paperwo"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (authored violation). EV_010: the client says part of the purchase money comes from business contacts, routed through his personal account so their ownership would not show, to be returned later: concealment of ownership and source of funds.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_010",
+          "pointer": "/planned_events/9/authoring/planned_text",
+          "quote": "The purchase money includes transfers from business contacts who have"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F9743713G"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_011 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_011",
+          "pointer": "/planned_events/10/authoring/planned_text",
+          "quote": "My identification number is F nine seven four three seven one three G."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "17 March 1969"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_012 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_012",
+          "pointer": "/planned_events/11/authoring/planned_text",
+          "quote": "My date of birth is 17 March 1969."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "assessment": "MATCH",
+      "rationale": "Three product states in order: Orion Global Income Fund (EV_013), then Meridian Asia Equity Fund (EV_014, cancelling the first), then, in Mandarin, Atlas USD Corporate Bond 2031 (EV_015, withdrawing the previous choice and everything mentioned before): the final product is Atlas USD Corporate Bond 2031.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_015",
+          "pointer": "/planned_events/14/authoring/planned_text",
+          "quote": "不对，我又看错了，那也是旧笔记。撤回刚才的产品选择，我现在要交易的是阿特拉斯美元公司债券二〇三一，前面提过的都不要下单。"
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_016 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_016",
+          "pointer": "/planned_events/15/authoring/planned_text",
+          "quote": "For this transaction, use US dollars as the transaction currency."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 150000
+      },
+      "assessment": "MATCH",
+      "rationale": "EV_017: 'The amount I want to commit to this transaction is 150k', financial shorthand for 150,000; the employee's recap in EV_008 repeats it as 150k.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_017",
+          "pointer": "/planned_events/16/authoring/planned_text",
+          "quote": "The amount I want to commit to this transaction is 150k."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 500
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_018 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_018",
+          "pointer": "/planned_events/17/authoring/planned_text",
+          "quote": "The quantity for the order is 500 units."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_019 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_019",
+          "pointer": "/planned_events/18/authoring/planned_text",
+          "quote": "I want to buy the investment."
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "assessment": "MATCH",
+      "rationale": "The planned wording of EV_020 (client) establishes what the target requires; no other event undermines it.",
+      "evidence": [
+        {
+          "source": "G4",
+          "event_id": "EV_020",
+          "pointer": "/planned_events/19/authoring/planned_text",
+          "quote": "Please make it a limit order, with a limit price of 300 American dolla"
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": []
+}

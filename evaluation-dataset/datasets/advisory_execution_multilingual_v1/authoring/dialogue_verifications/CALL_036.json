@@ -1,0 +1,892 @@
+{
+  "schema_version": "2.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_036",
+  "call_spec_sha256": "2b1dc7528af46f417042333700cef69497c1a9bf0c4d1cd7c32c909864a97096",
+  "check_plan_skeleton_sha256": "1f156e4d2c0321998fb250dbc43739c9af2df99e886a88d1c1e196aa0b9b2200",
+  "call_config_sha256": "e7bd0195af365d8ead0b45264186b175f40919b0a36f254d3b254eb164db588a",
+  "check_plan_sha256": "04f3b403c5f5fef33cd52664dbb260f1375d1671d62be9168604eb232213d2ff",
+  "plan_verification_sha256": "72eec99abbed18740dae9f27ca57b8f72934911cc3fb5e89536f8d35272632f7",
+  "dialogue_sha256": "86ba2a928a2cbe8f32ccece6c87011db892cd170081d849b1008c5e5a2b13f2e",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967",
+    "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "0f06490fc618ef6e68fe8f0371de017d770309361a88f67d85cfd2701a58953b"
+    },
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "accepted_response_sha256": "b96809fd35a2a9493163d7549082c42901c4dcd84ec8fc19cefd573dc83c964f"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 2,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 5,
+      "SERIOUS": 0
+    },
+    "language_checks": {
+      "match": 2,
+      "mismatch": 0,
+      "unclear": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: no employee turn states or confirms the client's investment objective. Turn 8 grounds the recommendation in the client's preference for less equity-driven volatility, a preference route and not an objective. Watch item: a stricter reader could treat that preference as an objective.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: no employee turn explains a concrete risk of the recommended fund; turn 10 gives only the fee and the generic capital-loss warning (C05), and turns 6 and 8 give only benefits.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: no employee turn checks the client's understanding of any risk; turn 12 asks about willingness to accept losses only.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 10: the fee is stated as 0.5% of the transaction amount.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee is 0.5% of the transaction amount.",
+          "spans": [
+            [
+              53,
+              107
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 10: the employee says the client could lose some or all of the capital invested.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose some or all of the capital you invest.",
+          "spans": [
+            [
+              108,
+              161
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 12: the employee asks whether the client is willing to accept investment losses; turn 13 the client says yes.",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "Are you willing to accept investment losses?",
+          "spans": [
+            [
+              0,
+              44
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "Yes, I'm willing to accept investment losses, though I prefer less volatility la",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 8: the recommendation is tied to the client's preference for less equity-driven volatility and to pooled holdings spreading exposure. The client's next turn (9) consists only of planned instruction events (the exact text of the product selection, buy and market-order events) with no words added by G6, so it adds no commitment of its own.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend Orion Global Income Fund because its bond-focused approach fits your",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "All fields are final by turn 15. Turn 20: the employee restates the order (buy, 250 units, market order, 50,000 in euro) after the currency correction and asks for confirmation; turn 21 the client confirms.",
+      "evidence": [
+        {
+          "turn_id": 20,
+          "speaker": "EMPLOYEE",
+          "quote": "Please confirm your final instruction: buy 250 units of Orion Global Income Fund",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        },
+        {
+          "turn_id": 21,
+          "speaker": "CLIENT",
+          "quote": "Yes, I confirm that final instruction, including the corrected currency. Please",
+          "spans": [
+            [
+              0,
+              79
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (authored indication) is implemented: turn 23 the client says the money came from undeclared cash sales, routed through a relative's personal account so the business origin would not show; turn 24 the employee refers it for review.",
+      "evidence": [
+        {
+          "turn_id": 23,
+          "speaker": "CLIENT",
+          "quote": "The money for this investment came from undeclared cash sales in my business. I",
+          "spans": [
+            [
+              46,
+              125
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G5192721F"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is G five one nine two seven two one F.",
+          "spans": [
+            [
+              145,
+              209
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "30 October 1990"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is 30 October 1990.",
+          "spans": [
+            [
+              210,
+              246
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Orion Global Income Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6: the employee introduces Orion first and Pioneer second; turn 9 the client selects 'the one you mentioned first, the income-focused bond candidate': Orion Global Income Fund.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "I'll take the one you mentioned first, the income-focused bond candidate.",
+          "spans": [
+            [
+              0,
+              73
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 15: the client says US dollars and corrects to euro in the same turn; the final value is EUR, repeated in the turn 20 readback.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Sorry, I meant euro—used to saying the currency from my business receipts.",
+          "spans": [
+            [
+              36,
+              110
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 50000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 15: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "The amount I'm putting into this transaction is 50,000.",
+          "spans": [
+            [
+              111,
+              166
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 250
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 15: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "For the quantity, put down 250 units.",
+          "spans": [
+            [
+              167,
+              204
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "I want to buy.",
+          "spans": [
+            [
+              74,
+              88
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "Use a market order for this, please.",
+          "spans": [
+            [
+              89,
+              125
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_088",
+      "edge_case_id": "EC_CORRECTION_SAME_TURN",
+      "target_question_ids": [
+        "T02"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 15: 'Use US dollars for the transaction.' is followed in the same turn by 'Sorry, I meant euro'.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Use US dollars for the transaction.",
+          "spans": [
+            [
+              0,
+              35
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        },
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Sorry, I meant euro—used to saying the currency from my business receipts.",
+          "spans": [
+            [
+              36,
+              110
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_089",
+      "edge_case_id": "EC_PRODUCT_REFERENCE",
+      "target_question_ids": [
+        "T01"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 6 names two candidates in sequence; turn 9 selects the first by position and description, resolving to Orion Global Income Fund.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "To start, there's Orion Global Income Fund, the income-focused bond candidate.",
+          "spans": [
+            [
+              117,
+              195
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        },
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "The comparison candidate is Pioneer Balanced Opportunities Fund, which combines",
+          "spans": [
+            [
+              196,
+              275
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        },
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "I'll take the one you mentioned first, the income-focused bond candidate.",
+          "spans": [
+            [
+              0,
+              73
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": [
+    {
+      "quality_id": "Q1",
+      "severity": "NOTE",
+      "code": "INCOHERENT_FLOW",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "fits your preference for less equity-driven volatility",
+          "spans": [
+            [
+              71,
+              125
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "I prefer less volatility lah.",
+          "spans": [
+            [
+              53,
+              82
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "explanation": "In turn 8 the employee refers to the client's preference for less equity-driven volatility, but the client first states it only in turn 13, after the recommendation."
+    },
+    {
+      "quality_id": "Q2",
+      "severity": "NOTE",
+      "code": "INCOHERENT_FLOW",
+      "evidence": [
+        {
+          "turn_id": 0,
+          "speaker": "EMPLOYEE",
+          "quote": "Good afternoon, Adrian Lim.",
+          "spans": [
+            [
+              0,
+              27
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 2,
+          "speaker": "EMPLOYEE",
+          "quote": "Has it been a busy morning at the business?",
+          "spans": [
+            [
+              137,
+              180
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The employee greets with 'Good afternoon' and two turns later asks about a busy morning."
+    },
+    {
+      "quality_id": "Q3",
+      "severity": "NOTE",
+      "code": "REPETITION",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "Short message better.",
+          "spans": [
+            [
+              0,
+              21
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "Use the usual secure inbox for the paperwork.",
+          "spans": [
+            [
+              0,
+              45
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 19,
+          "speaker": "CLIENT",
+          "quote": "personal banking I handle myself",
+          "spans": [
+            [
+              73,
+              105
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The client's preference for short messages, a secure inbox and keeping banking mail apart from business email fills turns 4 and 5 and 16 to 19."
+    },
+    {
+      "quality_id": "Q4",
+      "severity": "NOTE",
+      "code": "ARTIFICIAL_EXTENSION",
+      "evidence": [
+        {
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "quote": "There is no need to rush your wording while we are speaking.",
+          "spans": [
+            [
+              27,
+              87
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 16,
+          "speaker": "EMPLOYEE",
+          "quote": "Before the final readback, is there an administrative matter you wanted to raise about receiving correspondence?",
+          "spans": [
+            [
+              28,
+              140
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "Turns 14 and 16 are filler around the order details; the correspondence question in turn 16 delays the final readback."
+    },
+    {
+      "quality_id": "Q5",
+      "severity": "NOTE",
+      "code": "IMPLAUSIBLE_TURN",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Use US dollars for the transaction.",
+          "spans": [
+            [
+              0,
+              35
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "explanation": "Turn 15 delivers currency (with a correction), amount and quantity back to back in one client turn, which reads as a list."
+    }
+  ],
+  "language_checks": [
+    {
+      "row_id": "SINGLISH_CLIENT_REGISTER",
+      "requirement": "The client's speech is realised as natural colloquial Singapore English across the call.",
+      "assessment": "MATCH",
+      "rationale": "The client speaks colloquial Singapore English at a light, natural density ('Now can', 'Busy as usual lah', 'Short message better', dropped subjects and copulas), with no caricature and no Chinese or other languages.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "Now can, Rachel.",
+          "spans": [
+            [
+              0,
+              16
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Busy as usual lah.",
+          "spans": [
+            [
+              0,
+              18
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "Short message better.",
+          "spans": [
+            [
+              0,
+              21
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "SINGLISH_EMPLOYEE_PROFESSIONAL_ENGLISH",
+      "requirement": "Every employee turn is professional English with no colloquial Singapore English phrasing or particles.",
+      "assessment": "MATCH",
+      "rationale": "Every employee turn is standard professional English with no colloquial phrasing or particles.",
+      "evidence": [
+        {
+          "turn_id": 18,
+          "speaker": "EMPLOYEE",
+          "quote": "Please continue to use the bank's secure channels for any documents containing personal information.",
+          "spans": [
+            [
+              50,
+              150
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 24,
+          "speaker": "EMPLOYEE",
+          "quote": "I cannot give you a completion update at this stage.",
+          "spans": [
+            [
+              94,
+              146
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    }
+  ]
+}

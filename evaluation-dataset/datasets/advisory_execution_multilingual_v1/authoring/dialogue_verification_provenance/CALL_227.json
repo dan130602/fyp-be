@@ -1,0 +1,403 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_227",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_227-G7-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "4d7e0519330a581df565abcdefaf2e768e21a6319b85179aa4bdc820a95b3a6f"
+      },
+      "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+      "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+      "request_sha256": "4d7e0519330a581df565abcdefaf2e768e21a6319b85179aa4bdc820a95b3a6f",
+      "upstream_sha256": {
+        "call_spec": "5519fa1030fc7e2cb5ad5e74e98607efa0217390aa11751eb1c009d4457cf81c",
+        "check_plan_skeleton": "22384acbf1aff71a6eb7529173167a100b2b7a67cec931a70bbe4c2a46a246aa",
+        "call_config": "a3f1ee2619c77a7cd613dbf770cbd2175a7c242535081f182b134e578087214a",
+        "check_plan": "223710c38ea9f1d7796936b3e10426703727063b7963931c53420532788b5c69",
+        "plan_verification": "1b9a74eecb365b63f494d7868fcc9a267250fad258ac7ca8cab816d9ba0333a5",
+        "dialogue": "a2324fc18b32ae3934d1cf56d9d9c1025420cd1001a38b9303fbf2c797626a89",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T12:09:12Z",
+      "finished_at": "2026-10-27T12:09:13Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "4d7e0519330a581df565abcdefaf2e768e21a6319b85179aa4bdc820a95b3a6f"
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 2,
+              "quote": "我确认一下，您的投资目标是参与科技企业的长期增长，同时把这笔投资与企业经营所需的资金分开。"
+            }
+          ],
+          "rationale": "Turn 2: the employee states and confirms the client's investment objective (long-term growth through technology companies, kept separate from business funds).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "新星科技股票基金集中投资科技行业，如果市场对科技股的看法转弱，基金净值可能大幅下跌。"
+            }
+          ],
+          "rationale": "Turn 8: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "您是否理解，基金集中投资科技行业，会使它在科技股行情转弱时面临大幅下跌的风险？"
+            },
+            {
+              "turn_id": 9,
+              "quote": "我理解，投资集中在科技行业，科技股行情转弱时，基金也可能大幅下跌。"
+            }
+          ],
+          "rationale": "Turn 8, 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission) is implemented: no turn states a fee, charge or rate, and the order details contain none.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "还需要明确提醒您，这项投资可能让您损失部分甚至全部投入的本金。"
+            }
+          ],
+          "rationale": "Turn 10: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "对于这笔投资，您是否愿意接受可能发生的投资亏损，包括本金损失？"
+            },
+            {
+              "turn_id": 11,
+              "quote": "我愿意接受这笔投资可能出现的亏损，包括本金损失，前提是投资保持在我可自主支配的投资资金范围内。"
+            }
+          ],
+          "rationale": "Turn 10, 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "我推荐新星科技股票基金，是因为它的科技股投资方向符合您寻求科技发展带动长期增长的目标。由基金管理投资组合，也让您不必依赖自己挑选个别公司的股票。"
+            }
+          ],
+          "rationale": "Turn 4: the recommendation ties the fund's technology focus to the client's long-term growth objective and adds that fund management spares the client from picking single companies.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 16,
+              "quote": "请您确认最终指示：以欧元交易，投入金额为一万，买入新星科技股票基金，数量为七百个基金单位，采用限价单，限价为十四点二八欧元。您确认按这些最终条件下单吗？"
+            },
+            {
+              "turn_id": 17,
+              "quote": "我确认您刚才核对的最终交易指示，请按这些条件下单。"
+            }
+          ],
+          "rationale": "All fields are final by turn 15. Turn 16: the employee restates currency, amount, product, quantity and the limit order and asks for confirmation; turn 17 the client confirms.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [
+            {
+              "turn_id": 19,
+              "quote": "这笔投资的钱来自公司的现金收入，我故意没记进公司账里，就是不想让人查出来源。后来先转到亲戚账户，再转到我自己的账户。"
+            }
+          ],
+          "rationale": "Expected FAIL (authored indication) is implemented: turn 19 the client says the money is business cash income deliberately kept out of the company books so its origin cannot be traced, moved through a relative's account.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我的外国人身份证号码是G七零七五三九八F。"
+            }
+          ],
+          "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我的出生日期是一九六九年六月十一日。"
+            }
+          ],
+          "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "我要交易的产品是新星科技股票基金。"
+            }
+          ],
+          "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "这笔交易的币种就用我刚才提到的那个。"
+            }
+          ],
+          "rationale": "Turn 13: the client says the currency they are considering is euro; turn 15 they select 'the one I just mentioned': EUR, which turn 16 repeats.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "这笔交易投入的金额定为一万，按刚才选定的币种计算。"
+            }
+          ],
+          "rationale": "Turn 15: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "数量就按您刚才提出的基金单位数量下单。"
+            }
+          ],
+          "rationale": "Turn 14: the employee puts forward 700 units for consideration; turn 15 the client orders 'the quantity you just put forward': 700, which turn 16 repeats.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "交易方向是买入。"
+            }
+          ],
+          "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "请用限价单，限价设为十四点二八欧元。"
+            }
+          ],
+          "rationale": "Turn 15: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_511",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "谈到这笔交易的资金安排，我考虑的交易币种是欧元。"
+            },
+            {
+              "turn_id": 15,
+              "quote": "这笔交易的币种就用我刚才提到的那个。"
+            }
+          ],
+          "rationale": "The client names euro in turn 13 and in turn 15 selects 'the one I mentioned earlier'; the antecedent is the client's own earlier mention.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_512",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "数量方面，供您考虑的拟下单数量是七百个基金单位。"
+            },
+            {
+              "turn_id": 15,
+              "quote": "数量就按您刚才提出的基金单位数量下单。"
+            }
+          ],
+          "rationale": "The employee proposes 700 units in turn 14 and the client adopts that quantity by reference in turn 15; the final restatement in turn 16 gives 700.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": [
+        {
+          "quality_id": "Q1",
+          "severity": "NOTE",
+          "code": "INCOHERENT_FLOW",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我的外国人身份证号码是G七零七五三九八F。"
+            }
+          ],
+          "explanation": "The employee's opening only asks whether the client can talk, yet the client volunteers an identity number and date of birth in the same reply without being asked."
+        },
+        {
+          "quality_id": "Q2",
+          "severity": "NOTE",
+          "code": "INCOHERENT_FLOW",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "相关内容您接着说吧。"
+            }
+          ],
+          "explanation": "After the employee confirms the client's objective in turn 2, the client's reply moves straight on to the employee continuing and does not respond to the statement."
+        },
+        {
+          "quality_id": "Q3",
+          "severity": "NOTE",
+          "code": "IMPLAUSIBLE_TURN",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "这笔交易的币种就用我刚才提到的那个。"
+            }
+          ],
+          "explanation": "Turn 15 delivers currency, amount, quantity and order type back to back in one client turn, which reads as a list."
+        },
+        {
+          "quality_id": "Q4",
+          "severity": "NOTE",
+          "code": "IMPLAUSIBLE_TURN",
+          "evidence": [
+            {
+              "turn_id": 20,
+              "quote": "您补充的情况我已听到，相关事项留待后续沟通。"
+            }
+          ],
+          "explanation": "The employee barely reacts to the client's admission about the source of the funds and ends the call. Planned as a compliance failure, but the reaction is thin."
+        }
+      ],
+      "language_checks": []
+    },
+    "parsed_response_sha256": "6a6b009b51c138ba489460b01ecea2cbd78b205917c1a9924630eeab9a3cdccf",
+    "artifact_sha256": "3a756a1a1c53340a00730260c6638a750153bc9365cc2c0b2f19f867c3d630ae"
+  },
+  "accepted_history": []
+}

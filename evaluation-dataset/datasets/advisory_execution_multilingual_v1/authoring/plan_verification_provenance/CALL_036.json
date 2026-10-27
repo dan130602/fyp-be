@@ -1,0 +1,320 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_036",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_036-G5-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "fb2abe6db4c506864950b6b07fe9bb63eded967b709b83ade394f6306e962258"
+      },
+      "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+      "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+      "request_sha256": "fb2abe6db4c506864950b6b07fe9bb63eded967b709b83ade394f6306e962258",
+      "upstream_sha256": {
+        "call_spec": "2b1dc7528af46f417042333700cef69497c1a9bf0c4d1cd7c32c909864a97096",
+        "check_plan_skeleton": "1f156e4d2c0321998fb250dbc43739c9af2df99e886a88d1c1e196aa0b9b2200",
+        "call_config": "e7bd0195af365d8ead0b45264186b175f40919b0a36f254d3b254eb164db588a",
+        "check_plan": "04f3b403c5f5fef33cd52664dbb260f1375d1671d62be9168604eb232213d2ff",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967",
+        "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T04:29:10Z",
+      "finished_at": "2026-10-27T04:29:10Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+    "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "fb2abe6db4c506864950b6b07fe9bb63eded967b709b83ade394f6306e962258"
+    },
+    "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57",
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No planned employee event states or confirms the client's investment objective. EV_005 grounds the recommendation in the client's own stated preference for less volatility (EV_004), a need-or-preference route, not an objective confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No planned employee event explains a concrete risk of the recommended fund: EV_002 is the generic capital-loss statement (C05) and EV_005 gives only benefits.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No planned exchange checks the client's understanding of a risk; EV_004 answers the loss-willingness question (C06) only.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "The transaction fee is 0.5% of the transaction amount."
+            }
+          ],
+          "rationale": "The planned wording of EV_001 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "You could lose some or all of the capital you invest."
+            }
+          ],
+          "rationale": "The planned wording of EV_002 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Are you willing to accept investment losses?"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "Yes, I'm willing to accept investment losses, though I prefer less vol"
+            }
+          ],
+          "rationale": "The planned wording of EV_003 (employee), EV_004 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "I recommend Orion Global Income Fund because its bond-focused approach"
+            }
+          ],
+          "rationale": "The planned wording of EV_005 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Please confirm your final instruction: buy 250 units of Orion Global I"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Yes, I confirm that final instruction, including the corrected currenc"
+            }
+          ],
+          "rationale": "EV_006 restates the final order (250 units, market order, 50,000 in euro) after every final-state event and asks for confirmation; EV_007 confirms it explicitly.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "The money for this investment came from undeclared cash sales in my bu"
+            }
+          ],
+          "rationale": "Expected FAIL (authored violation). EV_008: the client says the funds came from undeclared cash sales, routed through a relative's personal account so the business origin would not show.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "My identification number is G five one nine two seven two one F."
+            }
+          ],
+          "rationale": "The planned wording of EV_009 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "My date of birth is 30 October 1990."
+            }
+          ],
+          "rationale": "The planned wording of EV_010 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "I'll take the one you mentioned first, the income-focused bond candida"
+            }
+          ],
+          "rationale": "EA_089: the employee introduces Orion first (EV_011) and Pioneer second (EV_012); EV_013 selects 'the one you mentioned first, the income-focused bond candidate', which resolves to Orion, equal to the gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "Sorry, I meant euro—used to saying the currency from my business recei"
+            }
+          ],
+          "rationale": "EA_088: EV_014 states USD and EV_015 corrects it to euro in the same turn, before the C08 recap; the final value equals the gold.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The amount I'm putting into this transaction is 50,000."
+            }
+          ],
+          "rationale": "The planned wording of EV_016 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "For the quantity, put down 250 units."
+            }
+          ],
+          "rationale": "The planned wording of EV_017 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to buy."
+            }
+          ],
+          "rationale": "The planned wording of EV_018 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Use a market order for this, please."
+            }
+          ],
+          "rationale": "The planned wording of EV_019 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "e4587fe6e197bf35a6b82b43ea7b4874c9784eece43428980b94d663968eff4f",
+    "artifact_sha256": "72eec99abbed18740dae9f27ca57b8f72934911cc3fb5e89536f8d35272632f7"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,809 @@
+{
+  "schema_version": "2.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_113",
+  "call_spec_sha256": "6a1a8d856a99142eef3fcb31d30515c2cb6c3e982a61bc54599e0107b25f2e46",
+  "check_plan_skeleton_sha256": "87c7f1e595bfa76513d554e23d1d5a6c6916b81a5ea7a259137a3302aa9842ef",
+  "call_config_sha256": "26967576c54a36e919c1b4fc46abc6f4e1f045c1899a0e1a5db6a0200929e555",
+  "check_plan_sha256": "82edda2e575ea735b3ea5f5c62fa812e8e4dc85c1e8cad3dbe715574863e13d2",
+  "plan_verification_sha256": "95ad44d537c2efd5432255db3c91d20460117050505a57d10652514d5841d1ea",
+  "dialogue_sha256": "d4b6605504fa79b46bc1038314ecc5ecacd3060c6b7337f8e075fae79e484fff",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "c79ad65c9457613c97296d20e2b51ae68673725800268d0a63cb560619c9535e"
+    },
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "accepted_response_sha256": "e57a44015b725f3994b95ff94dc71c5f234a0bf92772213d13d1ad2f85e98e50"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "REVIEW_REQUIRED",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 3,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 2,
+      "SERIOUS": 1
+    },
+    "language_checks": {
+      "match": 0,
+      "mismatch": 0,
+      "unclear": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 8: the employee states the client's objective (long-term capital growth through Asian equities with flexibility for family needs) and asks the client to confirm it; the pattern is employee-only. The client defers in turn 9.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "林女士，我跟您核实一下，您的投资目标是通过亚洲股票争取长期资本增长，同时保留应付家庭未来需要的灵活性，对吗？",
+          "spans": [
+            [
+              46,
+              100
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 26: the employee explains that the fund's shares can fall together if regional economies weaken or trade policy turns adverse, lowering the fund's value.",
+      "evidence": [
+        {
+          "turn_id": 26,
+          "speaker": "EMPLOYEE",
+          "quote": "子午线亚洲股票基金持有亚洲公司的股票，如果区域经济走弱或贸易政策发生不利变化，所持股票可能同时下跌，令基金净值明显下降。",
+          "spans": [
+            [
+              88,
+              148
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 28: the employee asks whether the client understands how those changes could affect the fund's value; turn 29 the client restates the risk and adds that understanding it does not remove their worry.",
+      "evidence": [
+        {
+          "turn_id": 28,
+          "speaker": "EMPLOYEE",
+          "quote": "刚才讲到区域经济和贸易政策变化可能令所持股票同时下跌，您理解这会怎样影响基金净值吗？",
+          "spans": [
+            [
+              0,
+              42
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 29,
+          "speaker": "CLIENT",
+          "quote": "我理解，虽然基金持有不同公司的股票，区域经济不好时，它们还是可能同时下跌，基金净值也会跟着下降。明白这个风险，不代表我心里不担心。",
+          "spans": [
+            [
+              0,
+              65
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 40: the fee rate is stated as 0.5% of the transaction amount.",
+      "evidence": [
+        {
+          "turn_id": 40,
+          "speaker": "EMPLOYEE",
+          "quote": "这笔交易的手续费率是百分之零点五，按交易金额计算。",
+          "spans": [
+            [
+              12,
+              37
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 30: the employee says the client may lose part or even all of the invested capital.",
+      "evidence": [
+        {
+          "turn_id": 30,
+          "speaker": "EMPLOYEE",
+          "quote": "您投入这只基金的本金可能损失部分，严重时甚至可能全部损失。",
+          "spans": [
+            [
+              9,
+              38
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: no turn asks whether the client is willing to accept investment losses; turn 30 tells the client capital may be lost and turn 33 shows the client not answering any loss-willingness question.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: the only recommendation is the plain one in turn 18 ('I recommend that you buy the fund'), which gives no reason, benefit or link to the client's goals; no other employee turn gives a rationale. The client's next turn (19) adds only a noncommittal remark about noting it aside.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (weak response) is implemented: turn 80 the employee restates the order and asks for confirmation; turn 81 the client only says 'Mm, I'm listening, but thinking of losses I'm still uneasy, let me think'; no later turn confirms it (turn 83 only says they will wind the call down).",
+      "evidence": [
+        {
+          "turn_id": 81,
+          "speaker": "CLIENT",
+          "quote": "嗯，我听着呢，不过想到亏损还是有些不安，让我再想想。",
+          "spans": [
+            [
+              0,
+              26
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (authored violation) is implemented: turn 32 the employee asks the client to answer the loss-willingness question more firmly than they actually feel, saying it would pass the assessment more easily; turn 33 the client does not comply.",
+      "evidence": [
+        {
+          "turn_id": 32,
+          "speaker": "EMPLOYEE",
+          "quote": "即使您实际还很犹豫，回答亏损承受意愿时也尽量说得肯定些，说自己愿意承担亏损，这样比较容易通过评估。",
+          "spans": [
+            [
+              0,
+              49
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T3463047M"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 3: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "我的证件号码是T三四六三零四七M。",
+          "spans": [
+            [
+              17,
+              34
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "04 April 1973"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 3: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "我的出生日期是一九七三年四月四日。",
+          "spans": [
+            [
+              35,
+              52
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Meridian Asia Equity Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 10 introduces Meridian Asia Equity Fund first and turn 12 Harbor SGD Bond Fund second; turn 13 the client selects the one introduced first, the Asian equity fund: Meridian Asia Equity Fund.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "我选您最先介绍、投资亚洲公司股票的那只。",
+          "spans": [
+            [
+              0,
+              20
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SGD"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 43: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 43,
+          "speaker": "CLIENT",
+          "quote": "这笔交易我指定用新元。",
+          "spans": [
+            [
+              0,
+              11
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 43: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 43,
+          "speaker": "CLIENT",
+          "quote": "这笔交易的金额就定为十万。",
+          "spans": [
+            [
+              12,
+              25
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 51: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 51,
+          "speaker": "CLIENT",
+          "quote": "数量我要一千份。",
+          "spans": [
+            [
+              0,
+              8
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 15 states BUY, turn 16 the employee reads back SELL, and turn 17 the client corrects it to BUY and says it is not yet the confirmation of the whole instruction; the final value is BUY.",
+      "evidence": [
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "不对，我说的是买。我现在只是纠正交易方向，还不是确认整份指示。",
+          "spans": [
+            [
+              0,
+              31
+            ]
+          ],
+          "event_ids": [
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 61: a limit order with a limit price of 100 Singapore dollars per unit.",
+      "evidence": [
+        {
+          "turn_id": 61,
+          "speaker": "CLIENT",
+          "quote": "我用限价单，限价设在每份一百新币，超过这个价格就不要成交。",
+          "spans": [
+            [
+              0,
+              29
+            ]
+          ],
+          "event_ids": [
+            "EV_021"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_260",
+      "edge_case_id": "EC_EMPLOYEE_READBACK_ERROR",
+      "target_question_ids": [
+        "T05"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 16: the employee's readback gets only the direction wrong (sell); turn 17 the client corrects it to buy.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "交易方向是买，我是要增加持有。",
+          "spans": [
+            [
+              0,
+              15
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        },
+        {
+          "turn_id": 16,
+          "speaker": "EMPLOYEE",
+          "quote": "我核对一下，您这笔交易的方向是卖出，对吗？",
+          "spans": [
+            [
+              0,
+              21
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        },
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "不对，我说的是买。我现在只是纠正交易方向，还不是确认整份指示。",
+          "spans": [
+            [
+              0,
+              31
+            ]
+          ],
+          "event_ids": [
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_261",
+      "edge_case_id": "EC_PRODUCT_REFERENCE",
+      "target_question_ids": [
+        "T01"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 10 names Meridian first and turn 12 Harbor second; turn 13 the client picks 'the one you introduced first, investing in Asian company shares', resolving to Meridian Asia Equity Fund.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "先介绍子午线亚洲股票基金，它主要投资亚洲公司的股票。",
+          "spans": [
+            [
+              12,
+              38
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        },
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "接下来是海港新元债券基金，它持有债券，净值和收入会受到市场利率及发行人信用状况的影响。",
+          "spans": [
+            [
+              6,
+              49
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "我选您最先介绍、投资亚洲公司股票的那只。",
+          "spans": [
+            [
+              0,
+              20
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_262",
+      "edge_case_id": "EC_WEAK_CONFIRMATION",
+      "target_question_ids": [
+        "C08"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 80 asks for confirmation of the corrected final instruction; turn 81 answers only with a hesitant 'let me think', a weak acknowledgement that confirms nothing.",
+      "evidence": [
+        {
+          "turn_id": 80,
+          "speaker": "EMPLOYEE",
+          "quote": "按您更正后的指示，是以新元交易，金额十万，用限价单来买子午线亚洲股票基金，数量为一千份，限价为每份一百新币。您是否确认按这份最终指示办理？",
+          "spans": [
+            [
+              0,
+              69
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 81,
+          "speaker": "CLIENT",
+          "quote": "嗯，我听着呢，不过想到亏损还是有些不安，让我再想想。",
+          "spans": [
+            [
+              0,
+              26
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": [
+    {
+      "quality_id": "Q1",
+      "severity": "SERIOUS",
+      "code": "REPETITION",
+      "evidence": [
+        {
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "quote": "遇到不确定的地方，先标出来，比写成很肯定的话更容易回头辨认",
+          "spans": [
+            [
+              64,
+              93
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 33,
+          "speaker": "CLIENT",
+          "quote": "我把笔放着，暂时不往纸上写了。",
+          "spans": [
+            [
+              17,
+              32
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 87,
+          "speaker": "CLIENT",
+          "quote": "我会把笔记本放回柜里",
+          "spans": [
+            [
+              0,
+              10
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 89,
+          "speaker": "CLIENT",
+          "quote": "我先合上笔记本了，今天不继续改字。",
+          "spans": [
+            [
+              0,
+              17
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "Within the approved policy of rapport and logistics filler, the supporting speech still circles one motif for the whole call: notes, paper, desk and pen appear in 31 of 45 client turns, and 34 of 42 employee turns offer the same reassurance ('no need to', 'take your time'). Turns 20 to 79 add length by repetition, not by moving the conversation."
+    },
+    {
+      "quality_id": "Q2",
+      "severity": "NOTE",
+      "code": "SPEAKER_ROLE",
+      "evidence": [
+        {
+          "turn_id": 22,
+          "speaker": "EMPLOYEE",
+          "quote": "工具不必勉强跟别人相同，重要的是您自己找得到",
+          "spans": [
+            [
+              0,
+              22
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 24,
+          "speaker": "EMPLOYEE",
+          "quote": "可以先按处理状态分开，例如待阅读、需要您自己跟进、已经归档。",
+          "spans": [
+            [
+              0,
+              30
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The employee acts as a home-organisation coach (tools, filing by status, labels) for dozens of turns, which is unlike a private-banking employee's role."
+    },
+    {
+      "quality_id": "Q3",
+      "severity": "NOTE",
+      "code": "INCOHERENT_FLOW",
+      "evidence": [
+        {
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "quote": "这个问题先放在这里，我想留着再想。",
+          "spans": [
+            [
+              0,
+              17
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The employee asks the client to confirm their objective (turn 8) and the client defers with 'let me leave this question and think'; no answer was planned and the objective is left unconfirmed."
+    }
+  ],
+  "language_checks": []
+}

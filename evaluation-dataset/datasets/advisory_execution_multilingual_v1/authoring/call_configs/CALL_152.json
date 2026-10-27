@@ -1,0 +1,94 @@
+{
+  "schema_version": "2.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_152",
+  "call_spec_sha256": "1eaa8157255656aab5efa81621a3dff88aa8f4ce130ed0533f476196898030c4",
+  "check_plan_skeleton_sha256": "40a40d7b5c3375574dd93ae81a9466937b0a395c9d43d6aba2b7de0c85acaa4f",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+    "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+    "accepted_response_sha256": "f5c4243488ba0ce41ea67062dc592609dd3c808bfe50909d8ccb863c8eefb6e9"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Orion Global Income Fund",
+      "category": "BOND_FUND",
+      "roles": [
+        "FINAL"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Adrian Lim",
+      "spoken_names": {
+        "en": "Adrian Lim",
+        "zh": null
+      },
+      "background": "A business owner who manages personal investments through the private bank and is familiar with pooled investment funds.",
+      "investment_objective": "Build a source of investment income while maintaining a diversified portfolio.",
+      "loss_attitude": "Accepts that bond fund values can fall and is willing to bear investment losses, despite preferring less volatile investments."
+    },
+    "employee": {
+      "name": "Clara Lee",
+      "spoken_names": {
+        "en": "Clara Lee",
+        "zh": null
+      }
+    },
+    "setting": {
+      "call_reason": "The client calls to arrange a purchase of Orion Global Income Fund after receiving confidential information from an acquaintance involved in managing the fund. The client also needs to clarify identity details and the currency used for the transaction charge.",
+      "conversation_style": "The client uses standard, courteous English and prefers a concise, practical conversation. The employee maintains a professional tone."
+    },
+    "final_product": {
+      "description": "Orion Global Income Fund is a bond fund offering pooled exposure to income-producing debt securities. Its unit value and distributions can fluctuate with market conditions and the performance of its underlying holdings.",
+      "concrete_risks": [
+        "Rising market interest rates can reduce the value of bonds held by the fund and lower its unit value.",
+        "An underlying issuer's credit deterioration or default can reduce interest receipts and the value of the fund's holdings.",
+        "Reduced liquidity in bond markets can make holdings harder to sell at expected prices, adversely affecting the fund's valuation."
+      ],
+      "recommendation_basis": "The fund's exposure to income-producing bonds provides a substantive fit with the client's preference for an income-oriented investment."
+    },
+    "other_products": [],
+    "holding_context": null,
+    "fee_disclosure": {
+      "basis": "AMOUNT",
+      "value": 1500,
+      "currency": "JPY"
+    },
+    "limit_prices": {
+      "final": null,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": "The client explicitly bases the purchase instruction on confidential information supplied by an acquaintance on the fund's investment team about a substantial recovery on a distressed portfolio holding. The recovery has not been publicly announced and is expected to materially benefit the fund's valuation; the client wants to buy before the information becomes public."
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_349",
+        "motivation": "During identity verification, the client begins reciting an identifier from memory, notices a transcription error in personal notes, and immediately corrects the identifier within the same speaking turn."
+      },
+      {
+        "assignment_id": "EA_350",
+        "motivation": "The client uses a separate account to settle the transaction charge, so the charge currency enters the discussion independently of the currency committed to the fund purchase."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The convenience of receiving account correspondence electronically",
+      "The client's preference for brief telephone appointments"
+    ]
+  }
+}

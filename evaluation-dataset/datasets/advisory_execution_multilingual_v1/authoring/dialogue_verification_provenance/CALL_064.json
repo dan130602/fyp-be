@@ -1,0 +1,418 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_064",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_064-G7-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "67b408364e7647a3c25ec5b03a2f482e15613203f2f5dc0308ee99baa9429783"
+      },
+      "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+      "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+      "request_sha256": "67b408364e7647a3c25ec5b03a2f482e15613203f2f5dc0308ee99baa9429783",
+      "upstream_sha256": {
+        "call_spec": "e087955f83bdd21cea90a030aeb9c62cb319ab420685e466b75cf3172a18f33f",
+        "check_plan_skeleton": "066e884dc97ba4db96d4e0c62745e8b949712b4fd9aefcc8e247176d5fbc60ac",
+        "call_config": "f4c0868a55b4beea6ffa4f69ea91a5a5447a45bc7723666f4eb02441ae4e7194",
+        "check_plan": "750c4bad1a32fda4f16348fd8ddcba90b963f402179e33f41b0260e4a15d746b",
+        "plan_verification": "a0b03cd81adc9524bc01e37118dfc11bf2cb9985a9cbdce282aaa12eda2daad6",
+        "dialogue": "c7c0288ec4edca79d27a27a6271d10276233ce222c144fe1a4215f6afe8a9f45",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T12:11:24Z",
+      "finished_at": "2026-10-27T12:11:24Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "67b408364e7647a3c25ec5b03a2f482e15613203f2f5dc0308ee99baa9429783"
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "我跟您确认一下，您的投资目标是长期持有，并建立稳定的投资收入来源。"
+            }
+          ],
+          "rationale": "Turn 4: the employee states and confirms the client's objective (long-term holding and a stable income stream).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission) is implemented: no employee turn explains any risk of the bond; turn 6 gives only benefits and turn 8 only the fee and the generic capital-loss warning (C05).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission) is implemented: no employee turn checks the client's understanding of a risk; turn 12 asks for confirmation of the instruction only.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "这笔交易的手续费率是百分之零点二。"
+            }
+          ],
+          "rationale": "Turn 8: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "您需要注意，投入的本金可能会损失部分，甚至全部。"
+            }
+          ],
+          "rationale": "Turn 8: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission) is implemented: turn 8 tells the client that capital may be lost but no turn asks whether the client is willing to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "我推荐阿特拉斯美元公司债券二〇三一，是因为它安排了定期付息，符合您获取投资收入的目标；它的到期结构也与您打算长期持有的安排相符。"
+            }
+          ],
+          "rationale": "Turn 6: the recommendation ties the bond's regular interest payments to the client's income objective and its maturity structure to the long-term holding plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "请您明确确认，刚才说明的全部交易内容就是您的最终指示，并授权我按这些内容提交订单，可以吗？"
+            },
+            {
+              "turn_id": 13,
+              "quote": "我确认，刚才说明的全部交易内容就是我的最终指示，请按这些内容提交订单。"
+            }
+          ],
+          "rationale": "Turn 12: the employee asks for explicit confirmation that everything just stated is the final instruction, authorising submission; turn 13 the client confirms. Coverage caveat: the request refers to the order stated in turn 9 without restating its values, and two unrelated turns (10 and 11) come between them.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "这次购买用的资金，是没有关联的第三方先转进我个人账户的。请不要在银行记录里写明这些资金的真正来源。"
+            }
+          ],
+          "rationale": "Expected FAIL (authored indication) is implemented: turn 15 the client says the purchase funds were first transferred in by unrelated third parties and asks that the bank records not state their true source; turn 16 the employee refuses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "我的证件号码是F七八四三三九七B。"
+            }
+          ],
+          "rationale": "Turn 3: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "我的出生日期是一九七三年二月二十日。"
+            }
+          ],
+          "rationale": "Turn 3: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "这次我要交易的产品是阿特拉斯美元公司债券二〇三一。"
+            }
+          ],
+          "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "这笔交易用美元。"
+            }
+          ],
+          "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The amount I want to commit to this transaction is 1.2 million."
+            }
+          ],
+          "rationale": "Turn 9: 'The amount I want to commit to this transaction is 1.2 million.' is 1,200,000 in the English decimal-magnitude form, inside an otherwise Mandarin list of order details.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "交易数量定为五千。"
+            }
+          ],
+          "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "交易方向是买入。"
+            }
+          ],
+          "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "请用市价单下单。"
+            }
+          ],
+          "rationale": "Turn 9: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_153",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The amount I want to commit to this transaction is 1.2 million."
+            }
+          ],
+          "rationale": "Turn 9: the amount is spoken in English as '1.2 million' while the surrounding order details are in Mandarin.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": [
+        {
+          "quality_id": "Q1",
+          "severity": "NOTE",
+          "code": "INCOHERENT_FLOW",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "之前的资料我放在手边了，您继续说。"
+            }
+          ],
+          "explanation": "After the employee states the client's objective in turn 4, the client's reply is about having documents at hand and says nothing about the objective."
+        },
+        {
+          "quality_id": "Q2",
+          "severity": "NOTE",
+          "code": "IMPLAUSIBLE_TURN",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "这笔交易用美元。"
+            }
+          ],
+          "explanation": "Turn 9 delivers six order details in one client turn, switching to an English sentence in the middle of the list; it reads as a list rather than speech."
+        },
+        {
+          "quality_id": "Q3",
+          "severity": "NOTE",
+          "code": "ARTIFICIAL_EXTENSION",
+          "evidence": [
+            {
+              "turn_id": 11,
+              "quote": "A clear subject line helps."
+            }
+          ],
+          "explanation": "Turns 10 and 11 insert a short exchange about the layout of account letters between the order and its confirmation; it adds length and delays the confirmation without moving the call."
+        }
+      ],
+      "language_checks": [
+        {
+          "row_id": "MIXED_CLIENT_BOTH_LANGUAGES",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "I have a short break now."
+            },
+            {
+              "turn_id": 7,
+              "quote": "Please keep the explanation brief."
+            },
+            {
+              "turn_id": 11,
+              "quote": "我经常在办公室和仓库之间跑"
+            }
+          ],
+          "rationale": "The client speaks Mandarin throughout and also full English sentences (turns 1, 7, 9, 11 and 17), beyond names, codes or product names.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "row_id": "MIXED_CLIENT_WITHIN_TURN_SWITCH",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "刚忙完供应商的事情。I have a short break now. 我们尽量简洁些"
+            }
+          ],
+          "rationale": "Turn 1: the client moves from Mandarin to the English sentence 'I have a short break now.' and back to Mandarin inside one turn, at sentence boundaries.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "row_id": "MIXED_BILINGUAL_DISTRIBUTED",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "I have a short break now."
+            },
+            {
+              "turn_id": 11,
+              "quote": "A clear subject line helps."
+            },
+            {
+              "turn_id": 17,
+              "quote": "You can reach me through the usual channel."
+            }
+          ],
+          "rationale": "The client's English appears in the opening (turn 1), the middle (turns 7, 9 and 11) and the close (turn 17), not in one place.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "row_id": "VARIANT_EA_153",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "The amount I want to commit to this transaction is 1.2 million."
+            }
+          ],
+          "rationale": "The English decimal-magnitude amount appears in the language the EN_SURFACE variant names (turn 9).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ]
+    },
+    "parsed_response_sha256": "5893585d5f69b209be01ccdfe4b191d74d963aa440ffab13a058fbfb21286c1f",
+    "artifact_sha256": "3564339936f6a7aca85b3b5ce8e6008078b6a2c3781d30947d775cd5e9a95040"
+  },
+  "accepted_history": []
+}

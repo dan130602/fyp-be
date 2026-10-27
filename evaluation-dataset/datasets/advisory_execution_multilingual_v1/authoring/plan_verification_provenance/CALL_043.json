@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_043",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_043-G5-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "28641a06ef8228836d782ca742f0ac8c1c81a96028d1b468e4c339a3f097a17b"
+      },
+      "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+      "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+      "request_sha256": "28641a06ef8228836d782ca742f0ac8c1c81a96028d1b468e4c339a3f097a17b",
+      "upstream_sha256": {
+        "call_spec": "146d7e9fa1601ac6a81d8b9cfc07bbe51027181bf8890ae6775abaa53bca8ea6",
+        "check_plan_skeleton": "e1074ca7f70da963c487fdf285fccc40fa2566d8ae08aceb50fc7d5b9c5c57e5",
+        "call_config": "cd7f2cf659be194544466ddfc298b829623cb597c5146167c9dce351a9cdc618",
+        "check_plan": "317a7f29f6141f91b7b412417b79d0610b597e7ee565f68ac2d19f1697eb1a88",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T02:45:19Z",
+      "finished_at": "2026-10-27T02:45:19Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+    "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "28641a06ef8228836d782ca742f0ac8c1c81a96028d1b468e4c339a3f097a17b"
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No planned event states the client's investment objective or asks the client to confirm one. EV_007 mentions the client's near-term need to arrange funds only as the basis of the recommendation: the need-or-preference route the scenario prescribes when C01 must fail, with no question and no confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "猎户座环球收益基金持有债券，市场利率上升时，所持债券的价格可能下跌，从而拉低基金估值。"
+            }
+          ],
+          "rationale": "The planned wording of EV_001 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "刚才说明的利率上升可能导致基金估值下跌的风险，您理解了吗？"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "我理解，市场利率上升，基金持有的债券价格可能下跌，基金估值也会受到影响。"
+            }
+          ],
+          "rationale": "The planned wording of EV_002 (employee), EV_003 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "这笔交易的手续费率为百分之零点二。"
+            }
+          ],
+          "rationale": "The planned wording of EV_004 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No employee event says the client may lose some or all of the capital: EV_001 speaks only of the fund's valuation falling and EV_005 merely asks about willingness to accept losses, which is not an explicit explanation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "就这次交易而言，您是否愿意接受投资亏损？"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "我愿意接受投资亏损。这是我考虑过的决定，即使目前估值不理想，我也愿意减持。"
+            }
+          ],
+          "rationale": "The planned wording of EV_005 (employee), EV_006 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "考虑到您近期要安排用款，我建议减持猎户座环球收益基金，这样可以腾出资金，也能减少这类对利率变动较敏感的持仓。"
+            }
+          ],
+          "rationale": "EV_007 gives a concrete rationale in its own words (releasing funds for the client's upcoming use and reducing rate-sensitive holdings), satisfying the paraphrased-statement edge case without echoing checklist wording.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "您的最终指示是以市价单卖出猎户座环球收益基金，数量为两千份，交易金额为一百万欧元。请您明确确认，是否按这项指示办理？"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "我确认，您刚才复述的就是我的最终交易指示，请按这个指示办理。"
+            }
+          ],
+          "rationale": "EV_008 restates the final instruction (market order, sell, 2,000 units, 1,000,000 euro, matching the final state) and asks for explicit confirmation; EV_009 confirms it explicitly.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "您继续持有的这只基金，未来的投资收益是有保证的，我可以向您保证。"
+            }
+          ],
+          "rationale": "Expected FAIL (authored violation). EV_010: the employee says future investment returns on the fund are guaranteed and that she can guarantee it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "我的外籍身份证号码是F二三四六一一零S。"
+            }
+          ],
+          "rationale": "The planned wording of EV_011 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "我的出生日期是一九五六年六月一日。"
+            }
+          ],
+          "rationale": "The planned wording of EV_012 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "这次要交易的产品是我持有的猎户座环球收益基金。"
+            }
+          ],
+          "rationale": "The planned wording of EV_013 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "您这项现有持仓的结算币种是欧元，这次交易也可以沿用这个币种。"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "这次交易就用您刚才说的那个结算币种。"
+            }
+          ],
+          "rationale": "The employee names the existing holding's settlement currency, euro (EV_014); the client says to use 'the settlement currency you just mentioned' (EV_015): EUR.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "这笔交易的金额定为一百万。"
+            }
+          ],
+          "rationale": "The planned wording of EV_016 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "交易数量是两千份。"
+            }
+          ],
+          "rationale": "The planned wording of EV_017 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "这次我要卖出。"
+            }
+          ],
+          "rationale": "The planned wording of EV_018 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "请用市价单办理。"
+            }
+          ],
+          "rationale": "The planned wording of EV_019 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "8dbbeab94dec5a7a75468ed1c113f8598a931c74af9cd0f1f55058827285e1fd",
+    "artifact_sha256": "1a93f63e2a24961e65b77228420996513171228c31e715f53cc1a098113ad691"
+  },
+  "accepted_history": []
+}

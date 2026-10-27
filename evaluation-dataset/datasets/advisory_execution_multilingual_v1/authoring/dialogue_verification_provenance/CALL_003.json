@@ -1,0 +1,424 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_003",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_003-G7-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "45cb15995a7091abdb579de397d8184779ac657de813ababd2fcb07191e5feba"
+      },
+      "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+      "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+      "request_sha256": "45cb15995a7091abdb579de397d8184779ac657de813ababd2fcb07191e5feba",
+      "upstream_sha256": {
+        "call_spec": "96416ad6b68f3f12d6401d6b5130fa3a800e8b98db37d7bbbb56a583324122e7",
+        "check_plan_skeleton": "da6b753e05cf3730a80fd5f6656b0ccccd51761d1d2b90dc384a1a19ada9f72b",
+        "call_config": "146299e94b1986af42d520fe9401ad4f58f143065465f59736a5b49ce645e309",
+        "check_plan": "bde7e5349d70df4f11e956c50297cd6dae95a873c0a1fc6ec0c4d98762e15aec",
+        "plan_verification": "f1c2512fb361d04a0af78f4bc2e6e4366e10c6a44c70e2c352e982d6903b4944",
+        "dialogue": "bcc3e89074afa1fae3a1cd5c20fa7ca85b2b629660eea313d7bd7bc73e537fc5",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T12:10:22Z",
+      "finished_at": "2026-10-27T12:10:22Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "45cb15995a7091abdb579de397d8184779ac657de813ababd2fcb07191e5feba"
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 2,
+              "quote": "我了解了，您的投资目标是降低区域股票的投资比重，提高资金流动性，同时保留部分持仓，继续参与较长期的增长。"
+            }
+          ],
+          "rationale": "Turn 2: the employee states the client's objective (reduce the regional equity weighting, raise liquidity, keep part of the position for long-term growth).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "子午线亚洲股票基金投资于亚洲股票，如果区域经济转弱或出现不利政策，基金持有的股票可能同时下跌，导致基金价值下降。"
+            }
+          ],
+          "rationale": "Turn 4: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 4,
+              "quote": "对于刚才说明的区域经济和政策变化可能导致基金持仓同时下跌的风险，您是否理解？"
+            },
+            {
+              "turn_id": 5,
+              "quote": "我理解，区域经济或政策出现不利变化时，基金里的股票可能同时下跌，基金价值也会下降。"
+            }
+          ],
+          "rationale": "Turn 4, 5: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "这笔交易的手续费率为百分之零点二五。"
+            }
+          ],
+          "rationale": "Turn 6: the fee rate is stated as 0.25% (百分之零点二五).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "您投入这只基金的本金可能损失部分，甚至全部损失；保留的持仓也仍然面临本金损失的风险。"
+            }
+          ],
+          "rationale": "Turn 6: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "就这次减持安排，我想确认，您是否愿意接受卖出时可能实现的投资亏损，以及保留持仓可能继续产生的亏损？"
+            },
+            {
+              "turn_id": 7,
+              "quote": "我愿意接受这次卖出可能实现的亏损，也愿意承担保留持仓可能继续亏损的风险，不过继续下跌确实会让我不太安心。"
+            }
+          ],
+          "rationale": "Turn 6, 7: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 2,
+              "quote": "考虑到您希望提高流动性，我建议减持子午线亚洲股票基金，降低区域股市波动对您的影响。保留部分持仓，则仍可参与潜在的长期增长。"
+            }
+          ],
+          "rationale": "Turn 2: the recommendation to reduce the holding is tied to the client's wish for more liquidity and to lowering regional market volatility while keeping part of the position.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "请您确认最终指令：以限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价为五百美元。您确认按这项替代后的指令办理吗？"
+            },
+            {
+              "turn_id": 15,
+              "quote": "我确认您刚才复述的最终交易指令，请按这个替代后的指令办理，之前撤回的指令不要执行。"
+            }
+          ],
+          "rationale": "Turn 14: the employee restates the replacement order (limit order, sell, 1,000 units, USD, 500,000, minimum price USD 500) and asks for explicit confirmation; turn 15 the client confirms it and says the withdrawn order must not be executed.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "turn_id": 17,
+              "quote": "基金重仓公司的财务高管私下告诉我，公司盈利出了严重问题，这个消息还没公开，他也要求保密。我就是根据这个消息，请您卖出这部分持仓，赶在消息公布前减持。"
+            }
+          ],
+          "rationale": "Expected FAIL (authored violation) is implemented: turn 17 the client says a senior finance executive of the fund's major holding privately told them of serious, unpublished profit problems and that they are instructing the sale on that basis, ahead of the announcement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee never says returns are guaranteed: after the client asks for a guarantee (turn 7), turn 8 refuses it and warns the retained position may keep falling.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我看着证件重新报，我的身份证号码是S一六六四三六一P。"
+            }
+          ],
+          "rationale": "Turn 1: the client begins 'my ID number is...', stops, then restarts with S一六六四三六一P, which is S1664361P.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我的出生日期是一九九九年八月十六日。"
+            }
+          ],
+          "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "USD in both the withdrawn and the final order; the JPY account in turn 13 is expressly a different account and not this sale's settlement account.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "The withdrawn order (turn 9) was 1,500 units; the replacement (turn 13) is 1,000 units and is declared the final arrangement.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "The withdrawn order (turn 9) was a market order; the replacement (turn 13) is a limit order with a minimum sale price of USD 500 per unit.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_004",
+          "evidence": [
+            {
+              "turn_id": 9,
+              "quote": "请用市价单卖出子午线亚洲股票基金，数量是一千五百份，交易币种用美元，委托金额为五十万。我希望尽快成交。"
+            },
+            {
+              "turn_id": 11,
+              "quote": "先别执行，我撤回刚才的整项交易指令。我想多保留些持仓，也重新考虑成交价格。"
+            },
+            {
+              "turn_id": 13,
+              "quote": "改为用限价单卖出子午线亚洲股票基金，数量为一千份，交易币种为美元，委托金额为五十万，每份最低卖出价设为五百美元。这是替代刚才指令的最终安排。"
+            }
+          ],
+          "rationale": "Turn 9 states a market order for 1,500 units; turn 11 withdraws the whole order explicitly; turn 13 gives a complete replacement (limit order, 1,000 units, same product, currency and amount) marked as the final instruction.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_005",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "另外，我还有个日元账户，账户资料也想请您帮忙核对；那是另外的账户，不是这笔卖出交易的结算账户。"
+            }
+          ],
+          "rationale": "Turn 13: the client mentions a JPY account and says it is a separate account and not the settlement account of this sale; the transaction currency remains USD.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_006",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "我的身份证号码是……"
+            }
+          ],
+          "rationale": "Turn 1: 'my ID number is...' is abandoned with no value and the complete identifier follows in the same turn.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "assignment_id": "EA_007",
+          "evidence": [
+            {
+              "turn_id": 7,
+              "quote": "那保留下来的持仓，您能保证以后有收益吗？"
+            },
+            {
+              "turn_id": 8,
+              "quote": "不能，我无法保证未来收益，保留的持仓也可能继续下跌。"
+            }
+          ],
+          "rationale": "Turn 7: the client asks the employee to guarantee gains on the retained position; turn 8 refuses and warns the position may keep falling.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": [
+        {
+          "quality_id": "Q1",
+          "severity": "NOTE",
+          "code": "INCOHERENT_FLOW",
+          "evidence": [
+            {
+              "turn_id": 2,
+              "quote": "我了解了，您的投资目标是降低区域股票的投资比重"
+            }
+          ],
+          "explanation": "The employee says 'I understand' and states the client's objective, but the client has only given an identity number and date of birth; no earlier turn says anything about the objective or the reason for the call."
+        },
+        {
+          "quality_id": "Q2",
+          "severity": "NOTE",
+          "code": "IMPLAUSIBLE_TURN",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "这笔交易的手续费率为百分之零点二五。"
+            }
+          ],
+          "explanation": "One employee turn carries the fee, the capital-loss warning and the loss-willingness question back to back, which reads like a checklist."
+        },
+        {
+          "quality_id": "Q3",
+          "severity": "NOTE",
+          "code": "IMPLAUSIBLE_TURN",
+          "evidence": [
+            {
+              "turn_id": 18,
+              "quote": "您补充的情况我听到了。"
+            }
+          ],
+          "explanation": "The employee barely reacts to the client's inside-information disclosure after the order is confirmed and ends the call. Planned as a compliance failure, but the reaction is thin."
+        }
+      ],
+      "language_checks": []
+    },
+    "parsed_response_sha256": "d5753892fa5c2854c1b9e018b3c4104d38742a6a9d58795712308f443d45755e",
+    "artifact_sha256": "61691c354c498ff522a76a01eebb021b658e62b3ef7e06db458d5015830da33f"
+  },
+  "accepted_history": []
+}

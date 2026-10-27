@@ -1,0 +1,103 @@
+{
+  "schema_version": "2.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_003",
+  "call_spec_sha256": "96416ad6b68f3f12d6401d6b5130fa3a800e8b98db37d7bbbb56a583324122e7",
+  "check_plan_skeleton_sha256": "da6b753e05cf3730a80fd5f6656b0ccccd51761d1d2b90dc384a1a19ada9f72b",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+    "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+    "accepted_response_sha256": "026b083cc1a9a2fc96d7b752990f7917672f1587532636ac5d3ef924ba6bbb55"
+  },
+  "products": [
+    {
+      "product_ref": "P1",
+      "name": "Meridian Asia Equity Fund",
+      "category": "EQUITY_FUND",
+      "roles": [
+        "FINAL",
+        "INITIAL_ORDER"
+      ]
+    }
+  ],
+  "scenario": {
+    "client": {
+      "name": "Chen Ming",
+      "spoken_names": {
+        "en": null,
+        "zh": "陈明"
+      },
+      "background": "A business owner with an established private-banking relationship and an existing regional equity investment. The client is reviewing investment exposure as business cash-flow needs become less predictable.",
+      "investment_objective": "Reduce regional equity exposure and improve liquidity while retaining some participation in longer-term growth.",
+      "loss_attitude": "Willing to realize a loss on part of the holding to reduce exposure, but uneasy about further declines in the retained investment."
+    },
+    "employee": {
+      "name": "Lin Hui",
+      "spoken_names": {
+        "en": null,
+        "zh": "林慧"
+      }
+    },
+    "setting": {
+      "call_reason": "The client calls to discuss reducing an existing holding in Meridian Asia Equity Fund and placing a sale instruction, then revises the intended execution approach before execution.",
+      "conversation_style": "The client speaks polite, conversational Mandarin, is concise about investment preferences, and occasionally pauses to reconsider an instruction. The employee maintains a professional manner throughout."
+    },
+    "final_product": {
+      "description": "Meridian Asia Equity Fund is an equity fund providing exposure to Asian stock markets, with performance dependent on its underlying portfolio companies and regional market conditions.",
+      "concrete_risks": [
+        "Regional economic weakness or adverse policy developments can cause correlated declines across the fund's Asian equity holdings.",
+        "Disappointing corporate earnings can depress underlying share prices and reduce the fund's value.",
+        "A limit sale may remain unexecuted if an executable price does not meet the client's limit, leaving the client exposed to further market movements."
+      ],
+      "recommendation_basis": "Reducing the holding lowers exposure to regional equity volatility and supports the client's preference for greater liquidity. Retaining part of the investment preserves some participation in potential longer-term growth, while a limit instruction gives the client control over the minimum acceptable execution price without ensuring execution."
+    },
+    "other_products": [],
+    "holding_context": "The client already holds Meridian Asia Equity Fund and has sufficient units available for either contemplated sale instruction. The intended sale reduces rather than fully exits the holding.",
+    "fee_disclosure": {
+      "basis": "RATE",
+      "value": 0.25,
+      "currency": null
+    },
+    "limit_prices": {
+      "final": 500,
+      "initial": null
+    },
+    "red_flags": {
+      "C09": null,
+      "C10": "The client explicitly bases the sale instruction on confidential, unpublished information received from a finance executive at a major company held by the fund about a materially adverse earnings development."
+    },
+    "edge_case_context": [
+      {
+        "assignment_id": "EA_004",
+        "motivation": "The client initially prioritizes prompt execution, then decides to retain more exposure and exercise greater price control. The earlier instruction is withdrawn before execution and replaced in full."
+      },
+      {
+        "assignment_id": "EA_005",
+        "motivation": "The client also maintains an account in a different currency and mentions it while discussing account administration, creating a natural distinction between that account and the settlement instruction for the sale."
+      },
+      {
+        "assignment_id": "EA_006",
+        "motivation": "During identity verification, the client starts recalling the identifier from memory, pauses before completing it, and consults the identity document before restarting with the intended identifier."
+      },
+      {
+        "assignment_id": "EA_007",
+        "motivation": "Concern about the retained holding leads the client to seek certainty about future returns. The request arises from discomfort with uncertainty rather than any actual protection or guaranteed feature of the fund."
+      }
+    ],
+    "additional_discussion_topics": [
+      "The client's preference for telephone contact over lengthy correspondence.",
+      "Recent changes in the client's business workload."
+    ]
+  }
+}

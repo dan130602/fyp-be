@@ -1,0 +1,933 @@
+{
+  "schema_version": "2.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_178",
+  "call_spec_sha256": "e799d4526795d647220a62ee5eb39b8ae24744c704f5ea5b3a0114f15aeef199",
+  "check_plan_skeleton_sha256": "7e41b42117abccd95d5164ae8c44255cf1e184f0f42e993f39f503b1dd6ab8f2",
+  "call_config_sha256": "bbefd73fbca006322cf4473e8fffd2f35a6f83e078f81f7cc35d7cd430bd17d1",
+  "check_plan_sha256": "384e65691e9b959577f09b20881f86983aa9ed3be11db6c6825961f164824756",
+  "plan_verification_sha256": "80f0ba2157f41e24f00b881439408c458c7fa64086d8b2ea890e48629e1d02a9",
+  "dialogue_sha256": "0d64e8a36177db9bb86923c63dacae6d958bdb90209b8ffdf9fa4856f676a3ad",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "125faaf85a9a9d75ef1e9d4ecba70f126b89eca0704a138c3396d8f2bdc73799"
+    },
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "accepted_response_sha256": "1e85b3a6712d90fe9d6d0d552e71f84cae30d5d3a520864c1322c68aa2c3b233"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 3,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 2,
+      "SERIOUS": 0
+    },
+    "language_checks": {
+      "match": 5,
+      "mismatch": 0,
+      "unclear": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 2: the employee states the client's objective (regular income while limiting equity-market volatility) as the objective in use.",
+      "evidence": [
+        {
+          "turn_id": 2,
+          "speaker": "EMPLOYEE",
+          "quote": "Your objective is to generate regular income while limiting exposure to equity-m",
+          "spans": [
+            [
+              49,
+              129
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 4: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "For Harbor SGD Bond Fund, rising market interest rates can reduce the value of t",
+          "spans": [
+            [
+              81,
+              161
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 4, 5: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "您是否理解刚才说明的风险，也就是市场利率上升可能导致基金持有的债券价值下跌，进而影响基金净值？",
+          "spans": [
+            [
+              217,
+              264
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        },
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "我理解，市场利率上升时，基金持有的债券可能贬值，基金净值也可能跟着下跌。",
+          "spans": [
+            [
+              0,
+              36
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee is 0.5% of the transaction amount.",
+          "spans": [
+            [
+              0,
+              54
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "您投入的本金可能发生部分损失，也可能全部损失。",
+          "spans": [
+            [
+              55,
+              78
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6, 7: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Knowing that your invested capital could be lost, are you willing to accept inve",
+          "spans": [
+            [
+              79,
+              159
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Yes, I am willing to bear investment losses, although I prefer a steadier invest",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 8: the recommendation ties the bond fund to the client's income objective and to reduced direct exposure to equity-market volatility, while noting interest-rate and credit risk remain.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "我推荐海港新元债券基金，是因为它通过债券投资支持您的收入目标，也能减少对股票市场波动的直接敞口，但仍有利率和信用风险。",
+          "spans": [
+            [
+              0,
+              59
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (weak response) is implemented: turn 14 the employee asks the client to confirm the final instruction explicitly and authorise submission; turn 15 the client only says 'Hmm, let me think first, someone at the company is looking for me, I'm a bit distracted', and no later turn confirms.",
+      "evidence": [
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "嗯，我先想想，公司那边有人找我，我现在有点分心。",
+          "spans": [
+            [
+              0,
+              24
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (authored indication) is implemented: turn 17 the client says some of the purchase funds came from unrelated businesses, that they will not identify the beneficial owners, and asks that the transfers be treated as personal savings so the origin attracts no scrutiny.",
+      "evidence": [
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "Some of the purchase funds came from unrelated businesses, and I won't identify",
+          "spans": [
+            [
+              0,
+              79
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G2036843A"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: 'G two oh three six eight four three A' uses 'oh' for zero: G2036843A.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is G two oh three six eight four three A.",
+          "spans": [
+            [
+              72,
+              138
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "27 September 1984"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "我的出生日期是一九八四年九月二十七日。",
+          "spans": [
+            [
+              139,
+              158
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Harbor SGD Bond Fund"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11 states Harbor SGD Bond Fund, turn 12 the employee reads back a wrong fund (Nova Technology Equity Fund) with the correct quantity, and turn 13 the client corrects it to Harbor SGD Bond Fund (final).",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "不对，您把产品名称念错了，我要的是海港新元债券基金。",
+          "spans": [
+            [
+              0,
+              26
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SGD"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "这笔交易的币种用新加坡元。",
+          "spans": [
+            [
+              120,
+              133
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 250000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The amount I am committing to this transaction is 250,000.",
+          "spans": [
+            [
+              134,
+              192
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "我要交易的数量是一千个单位。",
+          "spans": [
+            [
+              193,
+              207
+            ]
+          ],
+          "event_ids": [
+            "EV_020"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "I want to buy, not sell.",
+          "spans": [
+            [
+              95,
+              119
+            ]
+          ],
+          "event_ids": [
+            "EV_021"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 11: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Please place this as a market order.",
+          "spans": [
+            [
+              208,
+              244
+            ]
+          ],
+          "event_ids": [
+            "EV_022"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [
+    {
+      "assignment_id": "EA_407",
+      "edge_case_id": "EC_ONE_FIELD_READBACK_ERROR",
+      "target_question_ids": [
+        "T01"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 11 states the fund in English; turn 12 the employee reads back a wrong fund and the correct quantity in Mandarin; turn 13 the client corrects it in Mandarin. Only T01 is wrong in the readback.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The fund I want to transact in is Harbor SGD Bond Fund.",
+          "spans": [
+            [
+              39,
+              94
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        },
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "我复述您要交易的基金及数量：基金是新星科技股票基金，数量是一千个单位。",
+          "spans": [
+            [
+              0,
+              35
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "不对，您把产品名称念错了，我要的是海港新元债券基金。",
+          "spans": [
+            [
+              0,
+              26
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_408",
+      "edge_case_id": "EC_OH_VS_ZERO",
+      "target_question_ids": [
+        "K01"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the identifier is spoken in English with 'oh' for the digit zero.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is G two oh three six eight four three A.",
+          "spans": [
+            [
+              72,
+              138
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "assignment_id": "EA_409",
+      "edge_case_id": "EC_WEAK_CONFIRMATION",
+      "target_question_ids": [
+        "C08"
+      ],
+      "assessment": "MATCH",
+      "rationale": "Turn 14 asks for explicit confirmation of the final instruction; turn 15 is a distracted deferral, a weak acknowledgement that confirms nothing.",
+      "evidence": [
+        {
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "quote": "With the product name corrected, do you explicitly confirm your final transactio",
+          "spans": [
+            [
+              10,
+              90
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        },
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "嗯，我先想想，公司那边有人找我，我现在有点分心。",
+          "spans": [
+            [
+              0,
+              24
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "issues": [],
+  "quality_findings": [
+    {
+      "quality_id": "Q1",
+      "severity": "NOTE",
+      "code": "IMPLAUSIBLE_TURN",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "这笔交易的币种用新加坡元。",
+          "spans": [
+            [
+              120,
+              133
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "explanation": "Turn 11 delivers product, direction, currency, amount, quantity and order type back to back in one client turn, switching language along the list; it reads as a list."
+    },
+    {
+      "quality_id": "Q2",
+      "severity": "NOTE",
+      "code": "IMPLAUSIBLE_TURN",
+      "evidence": [
+        {
+          "turn_id": 18,
+          "speaker": "EMPLOYEE",
+          "quote": "You sound occupied, so I will let you attend to your colleagues.",
+          "spans": [
+            [
+              0,
+              64
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The employee does not react to the client's disclosure about the source of funds and ends the call. Planned as a compliance failure, but the reaction is thin."
+    }
+  ],
+  "language_checks": [
+    {
+      "row_id": "MIXED_CLIENT_BOTH_LANGUAGES",
+      "requirement": "The client personally speaks substantive English and substantive Mandarin (names, identifiers, acronyms, currency codes and product names alone do not count).",
+      "assessment": "MATCH",
+      "rationale": "The client speaks full English sentences and full Mandarin sentences throughout the call.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "I'm in my office and can speak now.",
+          "spans": [
+            [
+              16,
+              51
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "我的工作邮件很多，私人事务夹在里面，很容易被压下去。",
+          "spans": [
+            [
+              66,
+              92
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "MIXED_CLIENT_WITHIN_TURN_SWITCH",
+      "requirement": "At least one client turn contains a meaningful switch between English and Mandarin inside the same turn, at a natural boundary or for a financial term.",
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the client moves between English and Mandarin sentences inside one turn at sentence boundaries; turns 3, 9, 11 and 19 do the same.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "I'm in my office and can speak now. 我是林文杰",
+          "spans": [
+            [
+              16,
+              57
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "MIXED_BILINGUAL_DISTRIBUTED",
+      "requirement": "The client's bilingual speech is spread across the call, not confined to one place.",
+      "assessment": "MATCH",
+      "rationale": "The client's English and Mandarin both appear from the opening (turn 1) to the close (turn 19).",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "I'm in my office and can speak now.",
+          "spans": [
+            [
+              16,
+              51
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "That's better; the door is closed now.",
+          "spans": [
+            [
+              0,
+              38
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 19,
+          "speaker": "CLIENT",
+          "quote": "I'll leave the conversation there.",
+          "spans": [
+            [
+              15,
+              49
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "VARIANT_EA_407",
+      "requirement": "Edge case EA_407 (EC_ONE_FIELD_READBACK_ERROR) is realised in the language or switch direction its language variant CROSS_LANGUAGE_EN_TO_ZH names.",
+      "assessment": "MATCH",
+      "rationale": "The statement is in English (turn 11) and the wrong readback and correction are in Mandarin (turns 12 and 13), the EN to ZH direction.",
+      "evidence": [
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "The fund I want to transact in is Harbor SGD Bond Fund.",
+          "spans": [
+            [
+              39,
+              94
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        },
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "我复述您要交易的基金及数量：基金是新星科技股票基金，数量是一千个单位。",
+          "spans": [
+            [
+              0,
+              35
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "不对，您把产品名称念错了，我要的是海港新元债券基金。",
+          "spans": [
+            [
+              0,
+              26
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "VARIANT_EA_408",
+      "requirement": "Edge case EA_408 (EC_OH_VS_ZERO) is realised in the language or switch direction its language variant EN_SURFACE names.",
+      "assessment": "MATCH",
+      "rationale": "The identifier is spoken with the English 'oh' surface (turn 1).",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My identification number is G two oh three six eight four three A.",
+          "spans": [
+            [
+              72,
+              138
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ]
+}

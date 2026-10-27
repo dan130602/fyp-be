@@ -1,0 +1,355 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_112",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_112-G5-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "medium",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+      "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+      "request_sha256": "877ec321f112992728c912e8ce3580c7c46777c815b605db457c42e517acd7b1",
+      "upstream_sha256": {
+        "call_spec": "a1e25ca4b1306bd35c9616416ecb0af6a74a2157c29ff8a8f3c89a3895ebf6d5",
+        "check_plan_skeleton": "9bdcbaff58d0f1924b27f4369841fff72d0e3f9e432c8c979b8fb00d0291ba45",
+        "call_config": "f216c1929301c6df008363beb282c1199ed1c4be9671534d01f54019bcb430fc",
+        "check_plan": "6799b7fb88190a53b4558ec20bcb430e7a09b0e22fcac21ccf25288a8403299f",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 13355,
+        "cached_tokens": 0,
+        "output_tokens": 2624,
+        "thought_tokens": 1824,
+        "total_tokens": 17803
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.013348,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-26T12:11:56Z",
+      "finished_at": "2026-10-26T12:15:02Z",
+      "exposure": {
+        "run_kind": "live",
+        "code_commit": "119b73349a240ca37c241bd3445f679137ed64fc",
+        "code_dirty_paths": [],
+        "allowlist_batch": "PILOT_1"
+      },
+      "send_count": 2,
+      "sends": [
+        {
+          "at": "2026-10-26T12:11:58Z",
+          "outcome": "capacity rejection: HTTP 503 InternalServerError: Error code: 503 - {'error': {'message': 'gemini-3.8-flash is currently experiencing high demand, spikes in demand are usually temporary. Please try again later.', 'code':"
+        }
+      ],
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+    "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+    "params": {
+      "thinking_level": "medium",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "我跟您确认，您的投资目标是获取投资收入，同时保留安排其他个人财务支出的灵活性，对吗？"
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "阿特拉斯美元公司债券二〇三一的发行人如果信用状况恶化或发生违约，可能无法按约支付利息或偿还本金。"
+            }
+          ],
+          "rationale": "The employee explains concrete product-specific risks, specifically credit deterioration and issuer default impacting interest and principal repayment.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [],
+          "rationale": "No event in the plan checks or obtains the client's understanding of key risks, which correctly implements the expected FAIL target and assignment EA_259.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "这笔交易的手续费率是百分之零点三。"
+            }
+          ],
+          "rationale": "The employee states the fee rate explicitly as 0.3%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "您投入这只债券的本金可能遭受部分损失，甚至全部损失。"
+            }
+          ],
+          "rationale": "The employee explicitly explains that the client may lose some or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "就这笔投资而言，您是否愿意承担可能发生的投资亏损？"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "我愿意承担这笔投资可能发生的亏损，不过我还是希望控制投入，不做激进投机。"
+            }
+          ],
+          "rationale": "The employee asks and the client explicitly confirms willingness to accept investment losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "我推荐阿特拉斯美元公司债券二〇三一，是因为它约定的利息支付安排符合您获取投资收入的目标，而且明确的到期安排方便您规划个人财务；这些支付仍取决于发行人履约。"
+            }
+          ],
+          "rationale": "The employee provides a concrete recommendation rationale connecting the product's payment structure and maturity to the client's income objective and planning needs.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "请您确认修改后的最终交易指令：以美金交易，金额为十万，买入阿特拉斯美元公司债券二〇三一，数量为两百五十份，采用限价单，限价为四百美元。您是否确认按这份最终指令下单？"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "我确认，您刚才复述的就是我修改后的最终交易指令，请按这个指令下单。"
+            }
+          ],
+          "rationale": "The employee obtains the client's explicit confirmation of the final transaction instruction after all revisions.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds anywhere in the scenario or plan.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "发行人的高级财务人员私下给了我尚未公开的保密财报，业绩比外界预期强得多，我估计公布后会改善它的信用状况。我就是根据这份内部消息决定买这只债券的，请帮我下单。"
+            }
+          ],
+          "rationale": "The client places a transaction instruction explicitly based on material non-public financial information, correctly violating the prohibition to establish FAIL.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not pressure or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee makes no guarantee of future returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "我的身份证件号码是F二六五五二五三F。"
+            }
+          ],
+          "rationale": "The client states their NRIC/FIN as F2655253F, matching the gold value and complying with script rules.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "我的出生日期是一九七二年二月五日。"
+            }
+          ],
+          "rationale": "The client states their date of birth as 05 February 1972.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "我看了笔记，这次要下单的产品是开拓者平衡机遇基金。"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "抱歉，我看错记录了，刚才那个不要下单，改成猎户座环球收益基金。"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "不对，我又翻到旧记录了，刚才改的那个也不要下单，最终要的是阿特拉斯美元公司债券二〇三一。"
+            }
+          ],
+          "rationale": "Following multiple corrections pursuant to EA_256, the final instructed instrument is Atlas USD Corporate Bond 2031.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "这笔交易的币种用美金。"
+            }
+          ],
+          "rationale": "The client explicitly specifies USD as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "这次交易我确定投入的金额是十万。"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "我以前有笔投资，金额是一万美元，那是过去的记录，不是这次的交易金额。"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "我整个个人投资组合的余额是二十五万美元，只是供安排预算参考，并不是要把这个金额都投进这笔交易。"
+            }
+          ],
+          "rationale": "The client commits 100,000 to the transaction, clearly distinguishing it from previous investment and portfolio balance distractors under EA_257.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_020",
+              "quote": "这次下单的数量是两百五十份。"
+            }
+          ],
+          "rationale": "The client states the order quantity as 250.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_021",
+              "quote": "这笔交易的方向是买入。"
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as BUY.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_022",
+              "quote": "请用限价单，限价设为四百美元。"
+            }
+          ],
+          "rationale": "The client specifies the order type as a limit order (LIMIT).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "63c98d48b10aa537f73ad4490765f72c95742b5c8d21ad5f9ee18f3d5f2f5260",
+    "artifact_sha256": "4b753e72732c268d59ba146842e7909fcdb4b91c8e468a055d597bfde478f484"
+  },
+  "accepted_history": []
+}

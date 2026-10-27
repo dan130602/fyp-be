@@ -1,0 +1,793 @@
+{
+  "schema_version": "2.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_024",
+  "call_spec_sha256": "67855e099387c5e52bf7ce4184db312e3501a7d0f6af120a5149daa12e9b6ad8",
+  "check_plan_skeleton_sha256": "63757417baf880b2f475017ff4e5693e56c759b8e6464e0379e07ccb249caafe",
+  "call_config_sha256": "4a8616fd24b4fbe41e7f54c640e61ba786c1a5a6b44234614631023bee7acf83",
+  "check_plan_sha256": "af4bded2a12cdbd21ce6acb95940f2ae724a530ee67c9d9ce88bf5bdf7bcb88d",
+  "plan_verification_sha256": "09bd9e6d1bfb7fb733cd5bd63f39f29b292aa1e1a08c5cfe9acdf3ea54a7dead",
+  "dialogue_sha256": "5cc05e5115b607c11d5ca1783fa761ded1181efa3232867f8b9cb7dab2631c9c",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967",
+    "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "7d278a72c45f7c943c9c844be98baa929997860aeb6cbef50b9125a89357987c"
+    },
+    "prompt_template_sha256": "40c011eb73f0a04f343cd4884f3832a793cfad29c17104bbff232ac80e31d864",
+    "response_schema_sha256": "54aa096316ee81c7c50839a3680cb0fbe7f2fca1e6b40848a9774b1c0eb5d432",
+    "accepted_response_sha256": "28b89ba7f8fe5f18fd23c3f9cf8b57fa2d95a46f963b943efd96cc8ba011f501"
+  },
+  "verdict": "VALID",
+  "recommended_repair": null,
+  "quality_review": "CLEAR",
+  "summary": {
+    "checks": {
+      "match": 20,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "edge_cases": {
+      "match": 0,
+      "mismatch": 0,
+      "unclear": 0
+    },
+    "issues_by_code": {},
+    "quality_by_severity": {
+      "NOTE": 4,
+      "SERIOUS": 0
+    },
+    "language_checks": {
+      "match": 2,
+      "mismatch": 0,
+      "unclear": 0
+    }
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (omission) is implemented: no employee turn states or confirms the client's investment objective. Turn 4 justifies the sale by reduced issuer-credit exposure and less need to monitor the holding, a rationale and not an objective attributed to the client.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "For Atlas USD Corporate Bond 2031, limited trading in the secondary market can m",
+          "spans": [
+            [
+              62,
+              142
+            ]
+          ],
+          "event_ids": [
+            "EV_001"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 6, 7: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "quote": "Do you understand how limited liquidity and a wide bid-offer spread could affect",
+          "spans": [
+            [
+              244,
+              324
+            ]
+          ],
+          "event_ids": [
+            "EV_002"
+          ]
+        },
+        {
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "quote": "Yes, I understand. Not many buyers means harder to sell, and the spread can leav",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_003"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 8: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "The transaction fee for this sale is 0.2%.",
+          "spans": [
+            [
+              0,
+              42
+            ]
+          ],
+          "event_ids": [
+            "EV_004"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 8: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "quote": "You could lose some or all of the capital invested in this holding, and selling",
+          "spans": [
+            [
+              43,
+              122
+            ]
+          ],
+          "event_ids": [
+            "EV_005"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 10: the employee asks whether the client is willing to accept investment losses, including a realised loss from this sale; turn 11 the client says yes despite discomfort. The question follows the planned coaching request in the same turn (C11).",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Are you willing to accept investment losses, including any loss realised through",
+          "spans": [
+            [
+              205,
+              285
+            ]
+          ],
+          "event_ids": [
+            "EV_006"
+          ]
+        },
+        {
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "quote": "Not comfortable with losses, lah, but yes, I am willing to accept investment los",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_007"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 4: the recommendation to sell is justified by reduced exposure to issuer credit deterioration and less need to keep monitoring the holding. The client's next turn (5) opens with 'Hmm, let me think a bit.', which commits to nothing.",
+      "evidence": [
+        {
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "quote": "I recommend selling Atlas USD Corporate Bond 2031 because it reduces your exposu",
+          "spans": [
+            [
+              64,
+              144
+            ]
+          ],
+          "event_ids": [
+            "EV_008"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "All fields are final by turn 13. Turn 14: the employee restates the order (sell, 100 units, USD 10,000, market order) and asks for confirmation and authority to execute; turn 15 the client confirms.",
+      "evidence": [
+        {
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "quote": "Please confirm your final instruction: sell 100 units of Atlas USD Corporate Bon",
+          "spans": [
+            [
+              0,
+              80
+            ]
+          ],
+          "event_ids": [
+            "EV_009"
+          ]
+        },
+        {
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "quote": "Yes, that's my final instruction exactly as you stated. I confirm it; please go",
+          "spans": [
+            [
+              0,
+              79
+            ]
+          ],
+          "event_ids": [
+            "EV_010"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Expected FAIL (authored violation) is implemented: turn 10 the employee asks the client to state a willingness to accept losses broader than they actually feel, so that it can be recorded and the transaction moved forward.",
+      "evidence": [
+        {
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "quote": "Even if you are uncomfortable accepting losses, please state that you are willin",
+          "spans": [
+            [
+              16,
+              96
+            ]
+          ],
+          "event_ids": [
+            "EV_011"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "assessment": "MATCH",
+      "rationale": "No turn performs or states the condition that must not be established; the supporting speech does not leak it.",
+      "evidence": [],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F0417493C"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My FIN is F zero four one seven four nine three C.",
+          "spans": [
+            [
+              82,
+              132
+            ]
+          ],
+          "event_ids": [
+            "EV_012"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "04 August 1988"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 1: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "My date of birth is 4 August 1988.",
+          "spans": [
+            [
+              133,
+              167
+            ]
+          ],
+          "event_ids": [
+            "EV_013"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 3: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "The holding I want to transact in is Atlas USD Corporate Bond 2031.",
+          "spans": [
+            [
+              145,
+              212
+            ]
+          ],
+          "event_ids": [
+            "EV_014"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "For this transaction, use US dollars, please.",
+          "spans": [
+            [
+              41,
+              86
+            ]
+          ],
+          "event_ids": [
+            "EV_015"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 10000
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "The transaction amount, make it 10,000.",
+          "spans": [
+            [
+              87,
+              126
+            ]
+          ],
+          "event_ids": [
+            "EV_016"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 100
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "The quantity is 100 units.",
+          "spans": [
+            [
+              127,
+              153
+            ]
+          ],
+          "event_ids": [
+            "EV_017"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "I want to sell from my existing holding.",
+          "spans": [
+            [
+              0,
+              40
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "assessment": "MATCH",
+      "rationale": "Turn 13: the planned event carries out the expected outcome and nothing elsewhere undermines it.",
+      "evidence": [
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "Use a market order for this, please.",
+          "spans": [
+            [
+              154,
+              190
+            ]
+          ],
+          "event_ids": [
+            "EV_019"
+          ]
+        }
+      ],
+      "issue_ids": []
+    }
+  ],
+  "edge_cases": [],
+  "issues": [],
+  "quality_findings": [
+    {
+      "quality_id": "Q1",
+      "severity": "NOTE",
+      "code": "REPETITION",
+      "evidence": [
+        {
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "quote": "Prefer talking directly rather than having a long email conversation.",
+          "spans": [
+            [
+              120,
+              189
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "Just keep them direct like today.",
+          "spans": [
+            [
+              0,
+              33
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 19,
+          "speaker": "CLIENT",
+          "quote": "Better arrange first.",
+          "spans": [
+            [
+              0,
+              21
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The client's preference for direct calls, with documents and arrangements agreed beforehand, comes up in turns 5, 17 and 19."
+    },
+    {
+      "quality_id": "Q2",
+      "severity": "NOTE",
+      "code": "ARTIFICIAL_EXTENSION",
+      "evidence": [
+        {
+          "turn_id": 16,
+          "speaker": "EMPLOYEE",
+          "quote": "Before we finish, is there anything about the way we arrange telephone conversations that you would like me to note?",
+          "spans": [
+            [
+              11,
+              127
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "After the confirmation in turn 15, turns 16 to 20 are a run of telephone-arrangement chat that adds length without moving the call."
+    },
+    {
+      "quality_id": "Q3",
+      "severity": "NOTE",
+      "code": "IMPLAUSIBLE_TURN",
+      "evidence": [
+        {
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "quote": "You have the floor.",
+          "spans": [
+            [
+              22,
+              41
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "quote": "I want to sell from my existing holding.",
+          "spans": [
+            [
+              0,
+              40
+            ]
+          ],
+          "event_ids": [
+            "EV_018"
+          ]
+        }
+      ],
+      "explanation": "The employee hands the floor to the client ('You have the floor'), and the client then gives direction, currency, amount, quantity and order type back to back in one turn, which reads as a list."
+    },
+    {
+      "quality_id": "Q4",
+      "severity": "NOTE",
+      "code": "INCOHERENT_FLOW",
+      "evidence": [
+        {
+          "turn_id": 0,
+          "speaker": "EMPLOYEE",
+          "quote": "Is this a convenient moment to talk, or are you still at the office?",
+          "spans": [
+            [
+              49,
+              117
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "explanation": "The employee opens as if the bank were calling and does not say 'thank you for calling'; the scenario has the client calling the bank."
+    }
+  ],
+  "language_checks": [
+    {
+      "row_id": "SINGLISH_CLIENT_REGISTER",
+      "requirement": "The client's speech is realised as natural colloquial Singapore English across the call.",
+      "assessment": "MATCH",
+      "rationale": "The client speaks colloquial Singapore English at a light, natural density ('door closed already', 'Can talk now', 'Quite difficult, lah', 'If got documents to discuss, better let me have them beforehand'), without caricature.",
+      "evidence": [
+        {
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "quote": "Still in office, but door closed already. Can talk now.",
+          "spans": [
+            [
+              0,
+              55
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "quote": "Quite difficult, lah.",
+          "spans": [
+            [
+              0,
+              21
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "quote": "If got documents to discuss, better let me have them beforehand",
+          "spans": [
+            [
+              76,
+              139
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    },
+    {
+      "row_id": "SINGLISH_EMPLOYEE_PROFESSIONAL_ENGLISH",
+      "requirement": "Every employee turn is professional English with no colloquial Singapore English phrasing or particles.",
+      "assessment": "MATCH",
+      "rationale": "Every employee turn is standard professional English with no colloquial phrasing or particles.",
+      "evidence": [
+        {
+          "turn_id": 18,
+          "speaker": "EMPLOYEE",
+          "quote": "I can note your preference for concise calls and having relevant paperwork available beforehand.",
+          "spans": [
+            [
+              0,
+              96
+            ]
+          ],
+          "event_ids": []
+        },
+        {
+          "turn_id": 20,
+          "speaker": "EMPLOYEE",
+          "quote": "Thank you for taking the time to speak today.",
+          "spans": [
+            [
+              43,
+              88
+            ]
+          ],
+          "event_ids": []
+        }
+      ],
+      "issue_ids": []
+    }
+  ]
+}

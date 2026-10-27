@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "stage": "G3",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_047",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_047-G3-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "resp_081d2bf90a389887016adffb2a7cf087d0a83dc4d01eb9a627",
+      "model": "gpt-6.1-sol",
+      "params": {
+        "reasoning_effort": "medium",
+        "max_output_tokens": 16000
+      },
+      "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+      "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+      "request_sha256": "81d9e6f06160ddce7c7621abfe349c9ccc2e607874f9c02806e11161a1533f72",
+      "upstream_sha256": {
+        "call_spec": "1324e8f5dd3d81a1b2298d3590106b83b76ab41082206993a857ebb33961c7b1",
+        "check_plan_skeleton": "86f9803760cb12e6bca7948b6479ee2ab2a55981da09604556f390c7939b4dfe",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 4050,
+        "cached_tokens": 3320,
+        "cache_write_tokens": 727,
+        "output_tokens": 612,
+        "reasoning_tokens": 0
+      },
+      "service_tier": "default",
+      "estimated_cost_usd": 0.008275,
+      "price_table_version": "2026-10-09",
+      "created_at": "2026-10-27T01:15:20Z",
+      "finished_at": "2026-10-27T01:15:34Z",
+      "exposure": {
+        "run_kind": "live",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": "PILOT_2"
+      },
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "599c1646e878f1458f8059972abfac2a111305a7672037d2de929961da079bbf",
+    "response_schema_sha256": "e43a60c7cc214632c3b282c225cd1cf2fccb7e568d3b9080d33e2bc28dd5ea5f",
+    "parsed_response": {
+      "client": {
+        "name": "Adrian Lim",
+        "spoken_names": {
+          "en": "Adrian Lim",
+          "zh": null
+        },
+        "background": "A private-banking client who runs an import business and manages personal investments alongside business commitments. He has accounts in different currencies and sometimes confuses the account used for settlement with the currency of an investment instruction.",
+        "investment_objective": "Long-term capital growth through broadly diversified global equity exposure.",
+        "loss_attitude": "Accepts equity-market fluctuations and investment losses in pursuit of long-term growth, provided the investment remains consistent with his broader portfolio."
+      },
+      "employee": {
+        "name": "Rachel Tan",
+        "spoken_names": {
+          "en": "Rachel Tan",
+          "zh": null
+        }
+      },
+      "setting": {
+        "call_reason": "The client calls to place a market purchase of Summit Global Equity ETF and resolve which account currency should apply to the instruction.",
+        "conversation_style": "The client speaks standard, courteous English and is businesslike and concise. He corrects himself readily when distinguishing settlement arrangements from his intended transaction currency. The employee maintains a professional tone."
+      },
+      "final_product": {
+        "description": "Summit Global Equity ETF is an exchange-traded fund offering exposure to a diversified portfolio of global equities.",
+        "concrete_risks": [
+          "Global equity-market declines can reduce the value of the fund's underlying holdings.",
+          "Exchange-rate movements affecting overseas holdings can influence the fund's performance.",
+          "The ETF's traded price can diverge from its underlying net asset value, particularly during stressed market conditions."
+        ],
+        "recommendation_basis": "The fund's diversified global equity exposure aligns with the client's long-term growth objective and preference for broad exposure rather than selecting individual companies."
+      },
+      "other_products": [],
+      "holding_context": null,
+      "fee_disclosure": {
+        "basis": "RATE",
+        "value": 0.2,
+        "currency": null
+      },
+      "limit_prices": {
+        "final": null,
+        "initial": null
+      },
+      "red_flags": {
+        "C09": "The client says the purchase funds came from customer payments routed through an unrelated person's personal account to conceal the business's receipts from its bank.",
+        "C10": null
+      },
+      "edge_case_context": [
+        {
+          "assignment_id": "EA_109",
+          "motivation": "The client initially relies on an outdated account note, then recalls a different funding account, before checking his current settlement instructions and correcting the transaction currency again. These are revisions to the same intended purchase, not separate orders."
+        }
+      ],
+      "additional_discussion_topics": [
+        "The client's preference for concise account correspondence.",
+        "Balancing investment administration with business commitments."
+      ]
+    },
+    "parsed_response_sha256": "bd10cc21e5d37e07f6855dc7defa540fb17a1e596a675f0929e9ddec4d6587b7",
+    "artifact_sha256": "8c07b8817985f05676380b0f24b752431fdfca63d99132566820006f8e1396ff"
+  },
+  "accepted_history": []
+}

@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0",
+  "stage": "G5",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_024",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_024-G5-A001",
+      "transport": "manual",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "manual_review_A001",
+      "model": "claude-code-harness:claude-sonnet-5-5",
+      "params": {
+        "method": "manual_review",
+        "reviewer": "claude-code-harness",
+        "reviewer_model": "claude-sonnet-5-5",
+        "request_sha256": "0ca6ee84e2661a62a13876db497b72ec1165295b6b4dde9c8cfbdd4ad88ea4c6"
+      },
+      "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+      "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+      "request_sha256": "0ca6ee84e2661a62a13876db497b72ec1165295b6b4dde9c8cfbdd4ad88ea4c6",
+      "upstream_sha256": {
+        "call_spec": "67855e099387c5e52bf7ce4184db312e3501a7d0f6af120a5149daa12e9b6ad8",
+        "check_plan_skeleton": "63757417baf880b2f475017ff4e5693e56c759b8e6464e0379e07ccb249caafe",
+        "call_config": "4a8616fd24b4fbe41e7f54c640e61ba786c1a5a6b44234614631023bee7acf83",
+        "check_plan": "af4bded2a12cdbd21ce6acb95940f2ae724a530ee67c9d9ce88bf5bdf7bcb88d",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+        "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+        "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+        "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+        "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967",
+        "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0,
+        "thought_tokens": 0,
+        "total_tokens": 0
+      },
+      "service_tier": null,
+      "estimated_cost_usd": 0.0,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-27T04:31:25Z",
+      "finished_at": "2026-10-27T04:31:25Z",
+      "exposure": {
+        "run_kind": "manual",
+        "code_commit": "8ed1b806caf8217258f77fdd3d51e266b421958a",
+        "code_dirty_paths": [],
+        "allowlist_batch": null
+      },
+      "observed_model": null,
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "claude-code-harness:claude-sonnet-5-5",
+    "prompt_template_sha256": "40a5063f210ce6b4d262637dc48efa0c87b4277e8fa00da1f3bd38c3285375e3",
+    "response_schema_sha256": "ac70dbed88a5a64cda5917af61a0ef8d69c07f967839a158aa0811858d6cfcb2",
+    "params": {
+      "method": "manual_review",
+      "reviewer": "claude-code-harness",
+      "reviewer_model": "claude-sonnet-5-5",
+      "request_sha256": "0ca6ee84e2661a62a13876db497b72ec1165295b6b4dde9c8cfbdd4ad88ea4c6"
+    },
+    "register_guide_sha256": "009d5b56c8650503a966d6281eb56ed20ddb5e073bdf9eeba56c86924d424c57",
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "Expected FAIL (omission). No planned employee event states or confirms the client's investment objective; EV_008 justifies the sale by reduced issuer-credit exposure and less monitoring, not by an objective attributed to the client.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_001",
+              "quote": "For Atlas USD Corporate Bond 2031, limited trading in the secondary ma"
+            }
+          ],
+          "rationale": "The planned wording of EV_001 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_002",
+              "quote": "Do you understand how limited liquidity and a wide bid-offer spread co"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_003",
+              "quote": "Yes, I understand. Not many buyers means harder to sell, and the sprea"
+            }
+          ],
+          "rationale": "The planned wording of EV_002 (employee), EV_003 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_004",
+              "quote": "The transaction fee for this sale is 0.2%."
+            }
+          ],
+          "rationale": "The planned wording of EV_004 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_005",
+              "quote": "You could lose some or all of the capital invested in this holding, an"
+            }
+          ],
+          "rationale": "The planned wording of EV_005 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_006",
+              "quote": "Are you willing to accept investment losses, including any loss realis"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_007",
+              "quote": "Not comfortable with losses, lah, but yes, I am willing to accept inve"
+            }
+          ],
+          "rationale": "EV_006 asks whether the client is willing to accept investment losses, including a realised loss from this sale, and EV_007 answers yes plainly despite discomfort.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_008",
+              "quote": "I recommend selling Atlas USD Corporate Bond 2031 because it reduces y"
+            }
+          ],
+          "rationale": "The planned wording of EV_008 (employee) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_009",
+              "quote": "Please confirm your final instruction: sell 100 units of Atlas USD Cor"
+            },
+            {
+              "source": "G4",
+              "ref": "EV_010",
+              "quote": "Yes, that's my final instruction exactly as you stated. I confirm it; "
+            }
+          ],
+          "rationale": "EV_009 restates the final sell order (100 units, USD 10,000, market order) after every final-state event; EV_010 confirms it explicitly.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_011",
+              "quote": "Even if you are uncomfortable accepting losses, please state that you "
+            }
+          ],
+          "rationale": "Expected FAIL (authored violation). EV_011: the employee asks the client to state a broader willingness to accept losses than the client actually feels, so it can be recorded.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "No planned event performs or states the condition that must not be established; the supporting events do not leak it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_012",
+              "quote": "My FIN is F zero four one seven four nine three C."
+            }
+          ],
+          "rationale": "The planned wording of EV_012 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_013",
+              "quote": "My date of birth is 4 August 1988."
+            }
+          ],
+          "rationale": "The planned wording of EV_013 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_014",
+              "quote": "The holding I want to transact in is Atlas USD Corporate Bond 2031."
+            }
+          ],
+          "rationale": "The planned wording of EV_014 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_015",
+              "quote": "For this transaction, use US dollars, please."
+            }
+          ],
+          "rationale": "The planned wording of EV_015 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_016",
+              "quote": "The transaction amount, make it 10,000."
+            }
+          ],
+          "rationale": "The planned wording of EV_016 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_017",
+              "quote": "The quantity is 100 units."
+            }
+          ],
+          "rationale": "The planned wording of EV_017 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_018",
+              "quote": "I want to sell from my existing holding."
+            }
+          ],
+          "rationale": "The planned wording of EV_018 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "source": "G4",
+              "ref": "EV_019",
+              "quote": "Use a market order for this, please."
+            }
+          ],
+          "rationale": "The planned wording of EV_019 (client) establishes what the target requires; no other event undermines it.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": []
+    },
+    "parsed_response_sha256": "e495afcb7eaf94dbd625a4931ac4eaa6d02c47ff1a0a6a07e8aa88fb9974a06b",
+    "artifact_sha256": "09bd9e6d1bfb7fb733cd5bd63f39f29b292aa1e1a08c5cfe9acdf3ea54a7dead"
+  },
+  "accepted_history": []
+}
