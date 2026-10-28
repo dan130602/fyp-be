@@ -57,7 +57,7 @@ def _brief_parameters(edge):
     return WITHHELD if IDENTITY_QUESTIONS & set(edge["target_question_ids"]) else edge["parameters"]
 
 
-def build_brief(inputs, ctx):
+def build_brief(inputs, ctx, *, include_language_pins=False):
     """The per-call user message (a plain dict; serialised canonically by the caller)."""
     catalog = {entry["id"]: entry for entry in inputs.documents["edge_case_catalog"]["edge_cases"]}
     meta = ctx.spec["metadata"]
@@ -71,7 +71,7 @@ def build_brief(inputs, ctx):
             "target_duration_min_seconds": meta["target_duration_min_seconds"],
             "target_duration_max_seconds": meta["target_duration_max_seconds"],
         }}
-    return {
+    brief = {
         **header,
         "fixed_verdicts": {q: ctx.verdict(q) for q in ctx.gold if q.startswith("C")},
         "fixed_transaction": {q: ctx.value(q) for q in ("T01", "T02", "T03", "T04", "T05", "T06")},
@@ -84,15 +84,28 @@ def build_brief(inputs, ctx):
         "allowed_currencies": ctx.allowed_currencies,
         "required_slots": ctx.required_slots(),
     }
+    if include_language_pins and ctx.multilingual:
+        for edge in brief["edge_assignments"]:
+            case = catalog[edge["edge_case_id"]]
+            variant = next((v for v in case.get("language_variants", [])
+                            if v["variant_id"] == edge["language_variant"]), None)
+            if variant is not None:
+                edge["language_variant_details"] = {
+                    key: variant[key] for key in ("event_languages", "purpose") if key in variant}
+    return brief
 
 
 class RequestBuilder:
     """Builds the identical request body for any call; computes the template/schema hashes once."""
 
-    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
+    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR, *, prompt_template_name=None):
         self.inputs = inputs
         documents = inputs.documents
-        template_path = prompt_dir / prompt_template(documents)
+        template_name = prompt_template_name or prompt_template(documents)
+        if template_name not in {"call_config.v1.md", "call_config.v2.md", "call_config.v3.md"}:
+            raise ValueError("Unknown G3 prompt template")
+        self.include_language_pins = template_name == "call_config.v3.md"
+        template_path = prompt_dir / template_name
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
         self.response_format_name = response_format_name(documents)
         schema_path = response_schema_path(schema_dir, documents)
@@ -115,7 +128,7 @@ class RequestBuilder:
             "model": MODEL,
             "input": [
                 {"role": "developer", "content": self.developer_message},
-                {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx))},
+                {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx, include_language_pins=self.include_language_pins))},
             ],
             "text": {"format": {"type": "json_schema", "name": self.response_format_name, "strict": True, "schema": self.response_schema}},
             "reasoning": {"effort": REASONING_EFFORT},

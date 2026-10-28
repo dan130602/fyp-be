@@ -48,7 +48,7 @@ def response_schema_name(documents):
 
 
 def prompt_template(documents):
-    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+    return "call_config.v3.md" if versions.generation(documents) == "2.0" else PROMPT_TEMPLATE
 
 
 def response_format_name(documents):

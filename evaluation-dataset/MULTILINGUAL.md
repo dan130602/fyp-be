@@ -331,3 +331,11 @@ Upstream presuppositions that v5 cannot fix (frozen G4 text or derived placement
 CALL_028 (a fee-currency distractor says "the currency I selected" before the currency is stated, forced by the derived EN to ZH order),
 CALL_027 and CALL_034 (distractor amounts are disclaimed as "not the amount for this order" before it is stated), CALL_036 (the
 recommendation wording cites a preference the client states later in the plan).
+
+G3 variant-language repair (2026-10-28): new multilingual requests use
+`call_config.v3.md` and include the exact frozen variant purpose and available
+source/target language mapping. This clarifies the pinned participants, especially
+client-instruction/employee-readback variants. G0-G2B and response schemas are
+unchanged; historical v1/v2 requests remain available through explicit template
+selection. Existing accepted calls are not regenerated automatically. A diagnosed
+repair uses normal reopen/history/staleness and a fresh G5 review.

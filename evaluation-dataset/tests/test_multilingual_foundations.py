@@ -82,7 +82,7 @@ def test_the_g3_brief_replaces_the_single_language_value_with_the_language_block
 def test_the_g3_request_uses_the_v2_prompt_schema_and_format_and_the_pilot_keeps_v1(g3_builder):
     body = g3_builder.build("CALL_001", "A001")
     assert body["text"]["format"]["name"] == "g3_call_config_v2"
-    assert "template v2" in body["input"][0]["content"] and "spoken_names" in json.dumps(body["text"]["format"]["schema"])
+    assert "template v3" in body["input"][0]["content"] and "spoken_names" in json.dumps(body["text"]["format"]["schema"])
     pilot = G3RequestBuilder(g3_support.shared_inputs(), M.SCHEMAS).build("CALL_001", "A001")
     assert pilot["text"]["format"]["name"] == "g3_call_config_v1" and "template v1" in pilot["input"][0]["content"]
 
