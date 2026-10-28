@@ -77,7 +77,8 @@ def system_prefix(template, documents):
 class RequestBuilder:
     """Builds the identical request body for any call; computes the template/schema hashes once."""
 
-    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR, *, prompt_template_name=None):
+    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR, *, prompt_template_name=None, tier=SERVICE_TIER):
+        self.tier = tier  # "flex" (synchronous) or "batch" (Gemini Batch); the only difference between the two request bodies
         self.inputs = inputs
         template_name = prompt_template_name or prompt_template(inputs.documents)
         if template_name not in {"dialogue_verification.v1.md", "dialogue_verification.v2.md", "dialogue_verification.v3.md"}:
@@ -106,6 +107,6 @@ class RequestBuilder:
             "input": self.brief_text(call_id),
             "generation_config": {"thinking_level": THINKING_LEVEL, "max_output_tokens": MAX_OUTPUT_TOKENS},
             "response_format": {"type": "text", "mime_type": "application/json", "schema": self.response_schema},
-            "service_tier": SERVICE_TIER,
+            "service_tier": self.tier,
             "store": False,
         }

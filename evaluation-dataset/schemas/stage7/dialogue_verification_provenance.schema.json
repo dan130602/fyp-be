@@ -86,7 +86,7 @@
               "const": "high"
             },
             "service_tier": {
-              "const": "flex"
+              "enum": ["flex", "batch"]
             },
             "max_output_tokens": {
               "type": "integer",
@@ -230,14 +230,15 @@
         "transport": {
           "enum": [
             "sync",
+            "batch",
             "manual"
           ]
         },
         "submission_id": {
-          "type": "null"
+          "type": ["string", "null"]
         },
         "batch_id": {
-          "type": "null"
+          "type": ["string", "null"]
         },
         "custom_id": {
           "type": "string"

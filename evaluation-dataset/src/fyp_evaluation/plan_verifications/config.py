@@ -55,7 +55,9 @@ CAPACITY_JITTER = 0.2  # +/- fraction applied to each backoff
 
 # Dated price table (USD per million tokens). Estimates only; thinking tokens are billed as output.
 PRICE_TABLE_VERSION = "2026-10-11"
-PRICES = {MODEL: {"flex": {"input": 0.375, "cached_input": 0.0375, "output": 1.875}}}
+PRICES = {MODEL: {"flex": {"input": 0.375, "cached_input": 0.0375, "output": 1.875},
+                  # Gemini Batch is also billed at a 50% discount; the same figures as Flex, an assumption to confirm against the invoice.
+                  "batch": {"input": 0.375, "cached_input": 0.0375, "output": 1.875}}}
 ESTIMATED_OUTPUT_TOKENS = 8000  # report + thinking, for --dry-run planning only
 
 QUESTION_IDS = ("C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12",

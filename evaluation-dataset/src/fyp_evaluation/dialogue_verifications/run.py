@@ -12,6 +12,8 @@ The Gemini Flex send/recovery loop is the one G5 proved (`llm.gemini_runner.Gemi
   advisory: a SERIOUS finding never changes the verdict or the eligibility.
 """
 
+import dataclasses
+
 from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
@@ -448,4 +450,29 @@ class DialogueVerificationRunner(GeminiFlexMixin, StageRunner):
         }
 
 
-__all__ = ["DialogueVerificationRunner", "RunError", "describe", "synthesize_response"]
+G7_BATCH = dataclasses.replace(G7_FLEX, service_tier="batch")
+
+
+class DialogueVerificationBatchRunner(DialogueVerificationRunner):
+    """The same G7 verification submitted as one Gemini Batch (`llm.gemini_batch`) through the shared submit/collect lifecycle.
+
+    Identical prompt, schema, thinking level, output limit, validation and acceptance as the synchronous Flex runner; the only
+    differences are the request's `service_tier` ("batch"), the transport, and the 50%-discount price entry of the same table.
+    """
+
+    flex = G7_BATCH
+
+    def _make_builder(self):
+        return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir, tier="batch")
+
+    def _default_transport_factory(self):
+        from fyp_evaluation.llm.gemini_batch import GeminiBatchTransport
+
+        settings = self.flex
+        return lambda: GeminiBatchTransport.from_env(variable=settings.api_key_variable, timeout_ms=settings.timeout_ms, model=settings.model)
+
+    def run_sync(self, *args, **kwargs):
+        raise RunError("the Gemini Batch runner only submits batches; use the Flex runner for a synchronous request")
+
+
+__all__ = ["DialogueVerificationBatchRunner", "DialogueVerificationRunner", "RunError", "describe", "synthesize_response"]
