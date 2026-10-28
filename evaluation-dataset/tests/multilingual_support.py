@@ -66,7 +66,7 @@ GENERATED = tuple(f"authoring/{name}" for name in (
 
 def scratch_release(destination):
     """A scratch copy of the multilingual release: the frozen G0-G2B state only (no generated outputs, no audio)."""
-    return copy_tree(RELEASE, destination, skip_prefixes=GENERATED)
+    return copy_tree(RELEASE, destination, skip_prefixes=(*GENERATED, "calls/"))  # the committed compiled calls/ are G9 output too
 
 
 def first_call(profile, index=0):
