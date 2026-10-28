@@ -10,7 +10,7 @@ from .errors import AmbiguousError, CapacityError, TransportError
 from .stage_runner import RunError
 
 
-def run_cohort(runner, call_ids, *, max_workers=4, before_prepare=None, on_prepared=None, on_outcome=None, reopen_reason=None):
+def run_cohort(runner, call_ids, *, max_workers=4, before_prepare=None, on_prepared=None, on_response=None, on_outcome=None, reopen_reason=None):
     if not 1 <= max_workers <= 8:
         raise ValueError("max_workers must be between1 and8")
     report = {"attempts":[], "recovered":[], "skipped":{}, "stopped":None}
@@ -22,6 +22,13 @@ def run_cohort(runner, call_ids, *, max_workers=4, before_prepare=None, on_prepa
                 on_outcome(attempt)
         if any(a.get('possibly_billed') or a.get('fatal') for a in recovered):
             raise RunError("Recovery found an ambiguous or fatal attempt; no new verification sent")
+        for attempt in recovered:
+            if attempt['state']!='ACCEPTED':
+                raise RunError("Recovery has an unresolved attempt; no new verification sent")
+            from fyp_evaluation.call_specs.compile import parse_json_text
+            artifact=parse_json_text((runner.root/runner.spec.artifact_path(attempt['call_id'])).read_text(encoding='utf-8'))
+            if artifact['verdict']!='VALID':
+                raise RunError("Recovered verification is not VALID; diagnose before new sends")
         runner._ensure_fresh_inputs([c for c in call_ids if runner._runnable(c)])
         chosen, skipped = runner._select(call_ids, retry_rejected=False, reopen_call_ids=set(call_ids) if reopen_reason else set())
         report['skipped'] = skipped
@@ -38,6 +45,8 @@ def run_cohort(runner, call_ids, *, max_workers=4, before_prepare=None, on_prepa
         def send(attempt, body):
             response = runner._send(attempt, transport, body)  # existing identical-byte capacity policy
             runner._store_response(attempt, response, {'transport':'sync','cohort_workers':max_workers})
+            if on_response:
+                on_response(attempt)
             return attempt  # raw response exists before the parent can adjudicate
 
         def start_next(pool):

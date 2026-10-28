@@ -117,3 +117,14 @@ def test_explicit_reopen_preserves_the_original_report_history(tmp_path):
     prov=json.loads((runner.root/runner.spec.provenance_path(CALLS[0])).read_text(encoding='utf-8'))
     assert [v['attempt_id'] for v in prov['accepted_history']]==['A001']
     assert len(fake.calls)==2 and runner.validate()==[]
+
+
+def test_response_checkpoint_precedes_adjudication(tmp_path):
+    runner,fake=make_runner(tmp_path)
+    checkpointed=[]
+    def checkpoint(attempt):
+        assert attempt['state']=='RESPONDED'
+        assert runner.store.read_raw_response(attempt['call_id'],attempt['attempt_id'])
+        checkpointed.append(attempt['call_id'])
+    result=run_cohort(runner,CALLS[:1],max_workers=1,on_response=checkpoint)
+    assert checkpointed==CALLS[:1] and result['attempts'][0]['state']=='ACCEPTED'
