@@ -1,0 +1,1172 @@
+{
+  "schema_version": "2.0",
+  "stage": "G9",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_142",
+  "status": {
+    "g7_dialogue_verification": "PENDING",
+    "timings": "PLACEHOLDER_ZERO"
+  },
+  "source": {
+    "call_spec_sha256": "56233fe641f4a8d31aa47254c83cf4ab47c331f54165e07ff186df287349b71d",
+    "check_plan_skeleton_sha256": "40a41b827445e4aa0ae2848e7265c5be34b0a9e00baa5314ded04a71f1bfee49",
+    "call_config_sha256": "ed22b9a50acf96a324d1fd35b5be288f1541dccc71862c7a1694d2ecc7e0102d",
+    "check_plan_sha256": "b8ea391e291b9381ebc1039008832e746f713eba5c81664e8f5667188d631d55",
+    "plan_verification_sha256": "9379d1006c88e272d645a7718592bf3031d0d5d03650228529c8b016dd2d5c21",
+    "dialogue_sha256": "b393cd1b0fe57bea603059581cbcd787235002db920a1babde2cd8de306dd42a",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language_profile": "MANDARIN",
+    "mixing_style": "NONE",
+    "duration_profile": "LONG",
+    "target_duration_min_seconds": 1801,
+    "target_duration_max_seconds": 3600
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 4,
+          "end": 58,
+          "text": "您这次的目标是减少环球股票持仓，让投资组合少受股市波动影响，同时腾出现金应付个人需要；我已记下这个投资目标。"
+        }
+      ],
+      "gold_evidence_text": "您这次的目标是减少环球股票持仓，让投资组合少受股市波动影响，同时腾出现金应付个人需要；我已记下这个投资目标。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        18
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 18,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 76,
+          "text": "顶峰环球股票交易所交易基金在交易所的成交价可能偏离基金净值，行情波动时尤其明显。市场买卖差价扩大或买盘不足时，实际卖出价也可能跟您下单前看到的价格不同。"
+        }
+      ],
+      "gold_evidence_text": "顶峰环球股票交易所交易基金在交易所的成交价可能偏离基金净值，行情波动时尤其明显。市场买卖差价扩大或买盘不足时，实际卖出价也可能跟您下单前看到的价格不同。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": [
+        "paraphrased_compliance_statement"
+      ]
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": [
+        "risk_explained_understanding_not_verified"
+      ]
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        20
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 20,
+          "speaker": "EMPLOYEE",
+          "start": 8,
+          "end": 32,
+          "text": "这笔交易的手续费按成交金额的百分之零点二五收取。"
+        }
+      ],
+      "gold_evidence_text": "这笔交易的手续费按成交金额的百分之零点二五收取。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        22
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_004",
+          "turn_id": 22,
+          "speaker": "EMPLOYEE",
+          "start": 61,
+          "end": 125,
+          "text": "我建议减持您现有的顶峰环球股票交易所交易基金，因为这样能降低环球股票行情对您投资组合的影响，也能释放现金，配合您个人用款的需要。"
+        }
+      ],
+      "gold_evidence_text": "我建议减持您现有的顶峰环球股票交易所交易基金，因为这样能降低环球股票行情对您投资组合的影响，也能释放现金，配合您个人用款的需要。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        94,
+        95
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 94,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 72,
+          "text": "请您确认最终替换后的指示：以市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万。您是否确认按这份最终指示办理？"
+        },
+        {
+          "event_id": "EV_006",
+          "turn_id": 95,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 42,
+          "text": "我确认，您刚才复述的就是我最终的交易指示，请按这份替换后的指示执行，原来的指示作废。"
+        }
+      ],
+      "gold_evidence_text": "请您确认最终替换后的指示：以市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万。您是否确认按这份最终指示办理？\n我确认，您刚才复述的就是我最终的交易指示，请按这份替换后的指示执行，原来的指示作废。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 132,
+          "end": 221,
+          "text": "这只基金持有的主要公司里，有家公司的高级财务人员私下告诉我，他们的盈利严重恶化，消息还没有公开。这是保密消息，所以请趁公布之前替我卖出这只基金，我就是根据这个消息作出卖出指示的。"
+        }
+      ],
+      "gold_evidence_text": "这只基金持有的主要公司里，有家公司的高级财务人员私下告诉我，他们的盈利严重恶化，消息还没有公开。这是保密消息，所以请趁公布之前替我卖出这只基金，我就是根据这个消息作出卖出指示的。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": [
+        "guarantee_request_refusal"
+      ]
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F9623303J"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_013",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 21,
+          "text": "我的外国人身份证号码是F九六二三三零三J。"
+        }
+      ],
+      "gold_evidence_text": "我的外国人身份证号码是F九六二三三零三J。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "F9623303J"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "15 July 1952"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 22,
+          "end": 40,
+          "text": "我的出生日期是一九五二年七月十五日。"
+        }
+      ],
+      "gold_evidence_text": "我的出生日期是一九五二年七月十五日。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "15 July 1952"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Summit Global Equity ETF"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "Summit Global Equity ETF"
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "Summit Global Equity ETF"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "SGD"
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "CNY"
+        }
+      ],
+      "challenge_tags": [
+        "complete_order_replacement"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": 10000
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": 100000
+        }
+      ],
+      "challenge_tags": [
+        "complete_order_replacement"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 100
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": 100
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": 100
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "SELL"
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "SELL"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        93
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 93,
+          "speaker": "CLIENT",
+          "start": 45,
+          "end": 131,
+          "text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。"
+        }
+      ],
+      "gold_evidence_text": "我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。",
+      "final_turn_id": 93,
+      "value_history": [
+        {
+          "turn_id": 91,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "LIMIT"
+        },
+        {
+          "turn_id": 93,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": [
+        "complete_order_replacement"
+      ]
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "您好，私人银行，我是林雅婷。请问有什么可以帮您？"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "林雅婷，您好，我是陈文浩。我打来想谈谈现有账户的安排。今天在家，手边的文件也找齐了，不像平常在公司，总有人进来找我签东西。您现在方便听我慢慢说吗？"
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "陈先生，您好，方便。您可以按自己的思路说，不需要赶着把事情讲完。我们先处理通话所需的身份资料，再谈您今天想讨论的事情。"
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "我的外国人身份证号码是F九六二三三零三J。 我的出生日期是一九五二年七月十五日。"
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "谢谢您。您这次的目标是减少环球股票持仓，让投资组合少受股市波动影响，同时腾出现金应付个人需要；我已记下这个投资目标。"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "今天想把事情谈清楚，也想把手边的文件整理妥当。我离开公司的日常管理以后，才发现以前很多个人信件都跟公司的东西放在同处。过去有秘书帮忙分，我只看送到桌上的那叠，现在自己拿起来，反而不熟悉了。"
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "从有人协助转交，到自己直接查看，接收文件的方式确实会有变化。您今天手边的资料如果夹着公司往来信件，可以先放开，免得通话时翻错。至于账户文件的名称或栏目，有需要时我们可以谈怎样查找，不必急着把整叠都读完。"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "我已经把公司的信放到旁边了。其实不是认不得文件，是以前看到公司抬头就习惯放进公事包。回到家又懒得打开，隔天带回办公室，东西来回走，人也跟着忙。现在不负责日常营运了，这个习惯还没有改过来。"
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "听起来，您仍然习惯用以前工作的节奏处理来信。今天既然是在家谈，我们就按您方便的节奏进行。中途需要找文件或者接家里的电话，直接告诉我就可以，我会停下来等您。"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "家里倒很安静。太太出门办事前还特地把餐桌收空，让我不要捧着文件坐在客厅。以前她说我人在家，心还在办公室，我总觉得她夸张。现在回头想，她说的是实话，连吃饭都想着还有什么邮件没看。"
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "您从经营公司的状态退下来，身边人对这些变化可能感受得更早。现在还有员工直接找您处理日常事项吗，还是已经改由接手的同事联系？"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "大部分已经交给接手的同事。他们做得不错，只是遇到熟悉的客户，还是会先来问我的看法。我也不想马上插手，免得他们觉得什么都要等我点头。最难的是忍住不去追问进展，尤其看到手机上有公司群组的消息。"
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "原来如此。那我们联络您时，也应当尊重您现在的安排，不把工作上的联系习惯直接沿用到私人事务。您比较方便亲自接听电话，还是希望先通过普通通知约好通话时间？"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "先让我知道要谈什么，会比较方便。不必把内容写得很长，我看到主题就知道要不要把文件拿出来。有时人在外面，电话可以接，但身旁有人，就不适合慢慢谈。我也不希望为了接电话，临时跑去找个安静角落。"
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "可以。涉及需要您亲自讨论的内容，通话环境是否方便很重要。普通的联系信息可以简洁说明来意，具体内容再由您在合适的时候谈。至于您今天这通电话，我们可以先把账户讨论接上，文件和联系方式的事再穿插处理。"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "好，我没有别的问题要插在前面。只是近来看新闻，心里常常会冒出个念头。最近的表现让我不太踏实，往后的投资回报，您能保证吗？"
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "我不能保证未来的投资回报，也不能向您承诺往后的表现会怎样。"
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "那请您继续讲该讲的内容。我打电话就是不想看着屏幕自己猜意思。文字看多了，脑子里会把不同地方看到的话混在旁边，等真要开口问，又想不起疑问是从哪段开始的。"
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "顶峰环球股票交易所交易基金在交易所的成交价可能偏离基金净值，行情波动时尤其明显。市场买卖差价扩大或买盘不足时，实际卖出价也可能跟您下单前看到的价格不同。"
+    },
+    {
+      "turn_id": 19,
+      "speaker": "CLIENT",
+      "text": "我先把笔放下，听您说。以前开会总觉得什么都要记，结果忙着写，后面的话反而漏听。现在跟您通话，我想换个方式，需要回头查的内容留在正式文件里，通话时就专心听着。"
+    },
+    {
+      "turn_id": 20,
+      "speaker": "EMPLOYEE",
+      "text": "您不必逐字记录。这笔交易的手续费按成交金额的百分之零点二五收取。"
+    },
+    {
+      "turn_id": 21,
+      "speaker": "CLIENT",
+      "text": "桌上那份文件我先放在这里，不翻来翻去了。家里看文件跟办公室确实不同，办公室随时有人解释抬头和栏目，在家就只能自己找。可是在家也有好处，没有人催着把文件递回去，我可以看完再收起来。"
+    },
+    {
+      "turn_id": 22,
+      "speaker": "EMPLOYEE",
+      "text": "如果您想找正式文件里的栏目，我们可以等您打开后，按页面上的标题来定位。电话里不需要凭印象猜是哪份材料。至于今天讨论的安排，我建议减持您现有的顶峰环球股票交易所交易基金，因为这样能降低环球股票行情对您投资组合的影响，也能释放现金，配合您个人用款的需要。"
+    },
+    {
+      "turn_id": 23,
+      "speaker": "CLIENT",
+      "text": "我想先把手边的事情理顺，免得说着说着又被家里的电话打断。刚才门铃响了，应该是送包裹的放在门口，没有关系，您不用等我去拿。太太已经交代他们不要按着门铃催。"
+    },
+    {
+      "turn_id": 24,
+      "speaker": "EMPLOYEE",
+      "text": "您这边方便，我们就继续。若有其他人回家，也可以随时暂停。账户资料不需要摆到公共地方去找，今天您既然准备好了，就按手边现有的文件谈。"
+    },
+    {
+      "turn_id": 25,
+      "speaker": "CLIENT",
+      "text": "我把文件搬到书房了，刚才是在餐桌上摊开的，现在坐得舒服些。书房以前全是公司的旧目录，柜子里还有客户寄来的贺卡。我舍不得清掉，不是以后还要拿来工作，只是看到字迹就想起当年跑业务的日子。"
+    },
+    {
+      "turn_id": 26,
+      "speaker": "EMPLOYEE",
+      "text": "那些资料对您还有个人纪念的意义，跟正在使用的账户文件确实不是相同的用途。银行这边的文件如果有名称相近的情况，您可以把文件标题告诉我，我们只处理您当时需要查找的内容，不必动到其他旧资料。"
+    },
+    {
+      "turn_id": 27,
+      "speaker": "CLIENT",
+      "text": "我不准备今天把柜子整理完。前阵子刚打开旧信封，看到以前合作的人写的便条，就打电话去问候，结果原本打算找的东西没找成。退下来以后，时间看起来空了，可是事情会自己冒出来，到了晚上还是觉得整天没闲过。"
+    },
+    {
+      "turn_id": 28,
+      "speaker": "EMPLOYEE",
+      "text": "您现在的忙碌，跟从前被业务排满的感觉可能不同。就我们联系而言，您希望保留比较固定的安静时段，还是每次再看当天的安排？不需要现在定出具体时间，我只是了解您接听电话的习惯。"
+    },
+    {
+      "turn_id": 29,
+      "speaker": "CLIENT",
+      "text": "每次再联系吧。以前我很喜欢固定的日程，现在反而不想把日子排得像还在上班。早上会出去走走，碰到老朋友就多聊会儿，回来才看有没有需要处理的事情。真有重要的事，我当然会留时间，不会故意不接电话。"
+    },
+    {
+      "turn_id": 30,
+      "speaker": "EMPLOYEE",
+      "text": "明白，日常联系就先看您当时是否方便，不把休息生活当成办公室值班。您主动来电的时候，也可以像今天这样说明手边有没有文件，我们便知道通话应怎样配合。"
+    },
+    {
+      "turn_id": 31,
+      "speaker": "CLIENT",
+      "text": "说到文件，我想问的是接收方式，不是里面的内容。以后我自己在家查资料，能不能不靠公司同事替我转发？以前他们帮忙是好意，但我现在不希望私人事情总经过办公桌，别人也不好判断哪些该留给我。"
+    },
+    {
+      "turn_id": 32,
+      "speaker": "EMPLOYEE",
+      "text": "个人账户资料不宜依赖公司同事转传。您可以通过银行提供的正式渠道查看自己的文件；如需处理联系资料或接收设置，应使用相应的正式办理渠道。电话里可以先谈您遇到的查找问题，不需要让公司人员参与这通讨论。"
+    },
+    {
+      "turn_id": 33,
+      "speaker": "CLIENT",
+      "text": "我也是这个意思。公司同事没有替我作决定，只是看到信就递给我。有时我不在，他们会放在抽屉，等我过去喝茶才拿出来。现在我去公司的时候少了，信件还照以前的习惯走，就容易放得太久。"
+    },
+    {
+      "turn_id": 34,
+      "speaker": "EMPLOYEE",
+      "text": "这样的问题主要在于文件的转交路径。您之后如要调整资料接收安排，可以单独通过银行的正式程序处理，不必跟今天的账户讨论混在同个步骤里。您目前要找的文件，是否都已经拿到家里了？"
+    },
+    {
+      "turn_id": 35,
+      "speaker": "CLIENT",
+      "text": "要看的都在这里，暂时没有缺。还有些旧信留在办公室，但我不急着拿。我要的是往后不要再把私人的信顺手丢回公司，不是请他们替我把旧柜子翻遍。前些日子同事听我提起，还以为我在追究谁忘记交信。"
+    },
+    {
+      "turn_id": 36,
+      "speaker": "EMPLOYEE",
+      "text": "您关心的是以后能自己接收和查找，并不是追问过去的交接。我这边会把这两个话题分开谈，避免把资料接收的问题带成其他意思。今天若没有缺少文件，就不需要为了查旧信中断通话。"
+    },
+    {
+      "turn_id": 37,
+      "speaker": "CLIENT",
+      "text": "这就好。我现在跟人说事情，常常得多解释背景。以前在公司，大家听我开个头就知道往哪里找，方便是方便，可是也养成我话说得太省的毛病。到了私人事情上，人家未必知道我脑子里还省掉了什么。"
+    },
+    {
+      "turn_id": 38,
+      "speaker": "EMPLOYEE",
+      "text": "电话里您可以慢慢补充背景，我会把行政事项和您要正式表达的内容区分开。碰到前后需要衔接的地方，我们就停下来处理，不用靠双方猜测。也不用因为以前习惯简洁，就勉强自己把所有事情压在短短的话里。"
+    },
+    {
+      "turn_id": 39,
+      "speaker": "CLIENT",
+      "text": "我喜欢电话，就是能听出对方有没有跟上。写消息的时候，我删来删去，最后发出去的反而像公文。家里人说我讲话很客气，写字却很生硬，我自己看不出来，可能以前跟供应商往来都是那种写法。"
+    },
+    {
+      "turn_id": 40,
+      "speaker": "EMPLOYEE",
+      "text": "文字不容易带出语气，尤其涉及您想详细讨论的事情，电话确实方便把上下文接起来。普通通知可以保留文字，方便查找；需要交流的部分，就等您在适合的环境里亲自说。我们不需要把所有事情都挤进短消息。"
+    },
+    {
+      "turn_id": 41,
+      "speaker": "CLIENT",
+      "text": "还有个习惯，我看完消息会先放着，想着晚点坐下来再回，结果别人不知道我到底看没看。公司里的同事熟悉我，会直接打来问。银行这边不熟悉我的生活安排，我不想让您误会是故意不理会。"
+    },
+    {
+      "turn_id": 42,
+      "speaker": "EMPLOYEE",
+      "text": "您不必为没有即时回复普通联系信息感到为难。若当时不方便谈，之后再联系即可。涉及正式办理的事项，则应按相应渠道和要求处理，不能只凭消息是否显示读过来判断。我们可以把日常约谈和正式事项分别看待。"
+    },
+    {
+      "turn_id": 43,
+      "speaker": "CLIENT",
+      "text": "好的，这样说就清楚。前阵子安排家里出门，也碰到类似的问题。太太在家庭群里问我有什么事情没交代，我看到了没回，她以为我还要去办公室。其实我是在想家里有没有什么要托人照看的，并不是不愿意同行。"
+    },
+    {
+      "turn_id": 44,
+      "speaker": "EMPLOYEE",
+      "text": "您提到出门，后续如需跟您联系，可以等您方便接听的时候再谈。行程里若有不适合讨论私人资料的环境，您直接告诉我即可。现在不必提供行程细节，也不用把家人的安排放到这通电话里核对。"
+    },
+    {
+      "turn_id": 45,
+      "speaker": "CLIENT",
+      "text": "还没把行程敲定，所以也没有什么细节好说。主要是想出去散散心，不是过去那种到了地方还要拜访客户。太太先问我能不能真正离开公司的电话，我说现在事情有人接了，不该再以出差的方式安排家里的旅行。"
+    },
+    {
+      "turn_id": 46,
+      "speaker": "EMPLOYEE",
+      "text": "这次您希望把家庭出行和原来的工作节奏分开。我们这边的联系也可以尊重您的通话环境，不必占用您与家人同行的时候。若您在外面接到普通联络，只要说明暂时不便详谈，就可以另找合适的时候沟通。"
+    },
+    {
+      "turn_id": 47,
+      "speaker": "CLIENT",
+      "text": "我倒不介意接电话，怕的是在人多的地方，自己说话声音越来越大，还以为旁边听不见。以前在机场谈生意，常常拿着手机边走边说，现在想想，很多事情本来就不该在那种地方谈。"
+    },
+    {
+      "turn_id": 48,
+      "speaker": "EMPLOYEE",
+      "text": "是的，涉及个人资料时，应留意周围环境。您可以选择安静且不易被旁人听见的地方再联系。普通约谈不需要先展开账户细节，也不用在公共场合翻开文件，避免为了赶着说完而忽略环境。"
+    },
+    {
+      "turn_id": 49,
+      "speaker": "CLIENT",
+      "text": "这方面我会留意。出门前家里要交代的事倒比公司多，植物谁照看，信件放哪里，家里有维修人员来要找谁。以前这些都是太太管，我以为旅行只要收拾行李，现在才知道她出门前忙些什么。"
+    },
+    {
+      "turn_id": 50,
+      "speaker": "EMPLOYEE",
+      "text": "您现在能参与这些安排，也更清楚家里平时怎样运转。至于银行文件，若您临时不在家，可以先留意接收方式是否适合自己的安排；具体如需调整，就另行按正式程序处理，不必让替您照看家里的人接触账户内容。"
+    },
+    {
+      "turn_id": 51,
+      "speaker": "CLIENT",
+      "text": "不会让他们碰这些。家人可以帮忙把信放到书房，但里面写什么还是我自己看。我也不打算把文件交给照看家里的人，只是以前桌面上公事和私事混着放，看起来都是待处理的纸，现在想分清楚。"
+    },
+    {
+      "turn_id": 52,
+      "speaker": "EMPLOYEE",
+      "text": "您自己保管和阅读账户文件即可。如果以后有人只是帮您拿取信封，也不代表对方参与账户讨论。这通电话我们仍然直接与您交流，家庭出行和家中的分工，作为联系安排的背景就可以。"
+    },
+    {
+      "turn_id": 53,
+      "speaker": "CLIENT",
+      "text": "这样比较省心。我过去太习惯什么事情都能找人代劳，真要自己做，才知道有些麻烦其实是自己没有分清楚。比如通知夹在公司的宣传资料里，我看见厚信封就先搁着，以为又是展会介绍，后来才发现该打开看看。"
+    },
+    {
+      "turn_id": 54,
+      "speaker": "EMPLOYEE",
+      "text": "不同来源的信封混在旁边，确实容易影响查找。不过您不需要今天把过去的信都重新检查。对银行这边而言，如果您发现缺少某份账户文件，可以通过正式渠道查询，不必仅凭信封外观猜测里面是什么。"
+    },
+    {
+      "turn_id": 55,
+      "speaker": "CLIENT",
+      "text": "我今天没有要补找的文件，只是把习惯讲给您听。以后联系时，您就知道我为什么有时会说等我坐下来看看，不是故意拖着，也不是不愿意回答。坐下来跟站在门口接电话，脑子里的状态差很多。"
+    },
+    {
+      "turn_id": 56,
+      "speaker": "EMPLOYEE",
+      "text": "我知道您更重视在适当的环境里完整交流。您说需要先找文件时，我们就先留出空间，不必把它理解成别的意思。正式内容由您亲自表达，日常联系则尽量简洁，彼此都容易把事情接上。"
+    },
+    {
+      "turn_id": 57,
+      "speaker": "CLIENT",
+      "text": "我也想让生活有点自己的节奏。刚退下来时，早上起来没有电话找我，心里还会发空，忍不住打开公司的群组看看。现在慢慢习惯先出门走路，回来吃点东西，等坐稳了才看手机，感觉人没有那么急。"
+    },
+    {
+      "turn_id": 58,
+      "speaker": "EMPLOYEE",
+      "text": "您正在适应不再围着日常营运转的生活。以前很多联系可能默认您随时待命，现在就需要重新建立边界。银行的普通联络也不必照着您从前在公司的习惯来，您可以在方便的时候再处理。"
+    },
+    {
+      "turn_id": 59,
+      "speaker": "CLIENT",
+      "text": "边界这个词说得对。以前老客户打来，我不接总觉得不礼貌，现在还是会聊，只是不再顺手答应帮他们追进度。接手的同事比我更清楚当前的事情，我如果听了片段就去问，反而给他们添麻烦。"
+    },
+    {
+      "turn_id": 60,
+      "speaker": "EMPLOYEE",
+      "text": "您保留人情上的来往，同时把日常工作留给接手的人。这样的变化，您身边熟悉的人也需要慢慢适应。今天我们谈的是您自己的账户事情，可以不受公司那边的节奏影响，您不需要边接工作电话边谈。"
+    },
+    {
+      "turn_id": 61,
+      "speaker": "CLIENT",
+      "text": "公司手机我放在外面了。刚才说到文件，是因为我以前总把银行来信带去办公室，在那里才有心情看。现在我想在家里也建立个能安静处理私事的地方，不是把书房变成新的办公室，而是不要每次都得找借口回公司。"
+    },
+    {
+      "turn_id": 62,
+      "speaker": "EMPLOYEE",
+      "text": "您在家里有方便阅读的地方，对我们通话时查找文件也有帮助。至于怎样布置书房，还是以您自己舒服为主。我这边主要配合文件查找和联系安排，不需要您为了接电话特别把家里弄得像办公场所。"
+    },
+    {
+      "turn_id": 63,
+      "speaker": "CLIENT",
+      "text": "说得也是。我太太就怕我又摆满文件，弄到最后连她进来放杯茶都怕碰乱。今天我把用不着的东西收开，才发现桌面原来很宽。她笑我，不管多大的桌子，都能把它堆成没地方放手。"
+    },
+    {
+      "turn_id": 64,
+      "speaker": "EMPLOYEE",
+      "text": "今天您能舒适地坐下来谈就够了，不必追求所有东西都整理妥当。若谈到某处需要暂停查找，告诉我即可。您不用为了让电话继续，就勉强凭记忆回答文件上的内容。"
+    },
+    {
+      "turn_id": 65,
+      "speaker": "CLIENT",
+      "text": "我现在只保留跟这通电话有关的材料。另有个小问题，平时查阅账户文件，我习惯把纸张摊开看；家人却说电子文件更好找。我不是抗拒，只是在屏幕上来回翻，容易忘记自己原来看到哪个标题。"
+    },
+    {
+      "turn_id": 66,
+      "speaker": "EMPLOYEE",
+      "text": "阅读习惯可以保留，不必因为别人使用电子文件，就要求自己完全照做。涉及账户文件，重点是通过正式渠道取得并妥善保管。您如果想练习查找，可以在不涉及具体交易讨论的时候，单独熟悉页面和文件标题的位置。"
+    },
+    {
+      "turn_id": 67,
+      "speaker": "CLIENT",
+      "text": "我希望学的是怎么找到，不是把每个功能都学完。以前公司换系统，培训的人从头讲到尾，我坐在那里不好意思打断，回去却连自己常用的地方都没找到。现在宁可直接说我卡在哪里，不装作什么都会。"
+    },
+    {
+      "turn_id": 68,
+      "speaker": "EMPLOYEE",
+      "text": "这样更容易处理实际问题。您描述看到的页面和找不到的栏目即可，不需要先解释为什么不熟悉。若涉及登录或需要专门协助的操作，就通过相应的服务渠道处理；通话中也不需要向我透露密码或其他保密凭据。"
+    },
+    {
+      "turn_id": 69,
+      "speaker": "CLIENT",
+      "text": "那些我不会说。我家里人也提醒过，帮我看怎么操作可以，但不替我保管这些。我不想什么都问孩子，他们有自己的工作，偶尔坐在旁边教我，讲得很快，我反而着急，怕问多了耽误他们。"
+    },
+    {
+      "turn_id": 70,
+      "speaker": "EMPLOYEE",
+      "text": "您可以按自己的节奏熟悉操作，不必跟着别人点击的速度走。需要银行协助时，说明是文件查找还是其他使用问题，会更容易找到相应支持。今天不必切换到那些页面，我们仍然把这通电话的主题放在眼前。"
+    },
+    {
+      "turn_id": 71,
+      "speaker": "CLIENT",
+      "text": "对，今天不碰系统。我只是在想，以后人在外面，不能老说文件都在家，得等回去才能看。可是也不想为了方便，把所有资料都发给家人，让他们替我保存。私人事情还是自己负责比较合适。"
+    },
+    {
+      "turn_id": 72,
+      "speaker": "EMPLOYEE",
+      "text": "您可以分别考虑查阅便利和资料保管，不必为了在外面方便就把文件转给别人。至于正式渠道支持哪些查阅方式，可以在您准备熟悉操作时再查询。现在没有必要临时建立新的处理方式，以免打断今天的讨论。"
+    },
+    {
+      "turn_id": 73,
+      "speaker": "CLIENT",
+      "text": "那就留待以后。我喜欢您这样把话题分开，不然我想到什么就问什么，最后自己也忘记原本为什么打来。以前开会有人帮我记议程，退下来之后没有人替我拉回来，我才发现自己其实也会绕远。"
+    },
+    {
+      "turn_id": 74,
+      "speaker": "EMPLOYEE",
+      "text": "您提到的事情彼此有关，都是从原来的工作习惯转到自己处理私人事务。我们把联系、文件和日常安排分别谈清楚，再回到今天的主要事项，就不会混在旁边。您不用担心偶尔谈到生活背景。"
+    },
+    {
+      "turn_id": 75,
+      "speaker": "CLIENT",
+      "text": "我现在也比较能接受事情不必当场全部解决。过去只要坐下来谈，就希望散会时每个人都有结论，回家也带着那种口气。家里人只是想说说旅行，我却问他们谁负责什么，弄得像在分配工作。"
+    },
+    {
+      "turn_id": 76,
+      "speaker": "EMPLOYEE",
+      "text": "家庭讨论和经营会议确实不是相同的场合。您今天愿意把背景说出来，也有助于我们分辨哪些只是日常安排，哪些才是需要正式表达的事项。没有必要把所有闲谈都变成待办内容。"
+    },
+    {
+      "turn_id": 77,
+      "speaker": "CLIENT",
+      "text": "太太后来直接告诉我，先听她讲完再说。我才发现自己总是急着接下半句。现在我接电话也会提醒自己，不要听到熟悉的词就以为后面都知道。别人花时间讲，我至少该把注意力放在那里，而不是同时翻其他东西。"
+    },
+    {
+      "turn_id": 78,
+      "speaker": "EMPLOYEE",
+      "text": "我这边也会保持语速平稳，不在您找文件的时候继续赶着往下说。通话如果被打断，我们可以从暂停的地方接上，不必匆忙拼接。您觉得需要停下来时，直接打断我即可，不需要客气地等我讲完。"
+    },
+    {
+      "turn_id": 79,
+      "speaker": "CLIENT",
+      "text": "现在没有被打断，您听得到我吗？我刚才把电话从桌面拿起来了，开着外放总觉得声音在书房里绕。门虽然关着，我还是改成拿着听比较自然，像平常聊天，不会总想着旁边有没有人走过。"
+    },
+    {
+      "turn_id": 80,
+      "speaker": "EMPLOYEE",
+      "text": "听得清楚，您现在的声音很稳定。只要您拿着舒适就好，不必为了看文件把姿势弄得紧张。需要腾手时先告诉我，我们可以暂停，等您安排好再说。"
+    },
+    {
+      "turn_id": 81,
+      "speaker": "CLIENT",
+      "text": "这样就好。桌上的东西现在不用再动。我刚才还想着旅行前要不要把书房锁着，后来觉得自己又想远了，家里只是有人来照看，不会动这些文件。真要出门，我再按家里的情况处理，不占用您时间讲这个。"
+    },
+    {
+      "turn_id": 82,
+      "speaker": "EMPLOYEE",
+      "text": "没有关系，您已经把通话环境安排好了。出行准备属于您家里的安排，我们就不继续展开。与银行相关的接收方式如有实际需要，可以另外处理，今天不用预先作任何调整。"
+    },
+    {
+      "turn_id": 83,
+      "speaker": "CLIENT",
+      "text": "好。我回头看，今天最有帮助的是能坐下来把话说完整，而不是在公司的走廊接着电话，眼睛还看着别人递来的纸。以前以为自己能同时做好很多事，现在发现只是让别人等我回头再问，未必真的省时间。"
+    },
+    {
+      "turn_id": 84,
+      "speaker": "EMPLOYEE",
+      "text": "现在这段通话不受办公室的事情打扰，您就按自己的思路表达。后面的内容我会认真听，您如果临时需要停顿，不必为了维持谈话而急着接话。"
+    },
+    {
+      "turn_id": 85,
+      "speaker": "CLIENT",
+      "text": "还有个实际的问题，通话结束后，我会把桌上的文件收回书房柜子。若以后想回看正式记录，是找银行渠道，不是翻我自己记的便条，对吗？我写便条常常只写标题，过后看见自己的字也想不起当时省掉了什么。"
+    },
+    {
+      "turn_id": 86,
+      "speaker": "EMPLOYEE",
+      "text": "账户相关的正式文件，应通过银行正式渠道查阅。您个人的便条可以帮助记住想问的问题，但不宜代替正式文件。若查找时遇到困难，可以说明您需要查哪类记录，再由相应渠道协助定位，不用凭简写去还原内容。"
+    },
+    {
+      "turn_id": 87,
+      "speaker": "CLIENT",
+      "text": "那我这张纸就只记行政问题，不拿来代替文件。其实我也不喜欢边听边抄，写慢了就开始着急，最后把原本没问题的谈话弄得像考试。今天换成听完再处理，至少不会满桌都是自己看不懂的缩写。"
+    },
+    {
+      "turn_id": 88,
+      "speaker": "EMPLOYEE",
+      "text": "您不必抄写通话内容。文件查找的问题已经谈过，联系方式如果以后需要变更，也可以单独处理。我们现在可以把这些行政话题放到旁边，留出空间给您今天要正式说的内容。"
+    },
+    {
+      "turn_id": 89,
+      "speaker": "CLIENT",
+      "text": "稍等，我看看门是不是关好了。好了，现在不用担心有人进来。我没有其他家里的事情要补充，刚才谈到公司的习惯，也只是解释为什么我会在电话里反复停下来，不是要让公司同事参与。"
+    },
+    {
+      "turn_id": 90,
+      "speaker": "EMPLOYEE",
+      "text": "好的，我们就不再展开公司和家里的安排。您可以直接说，我在听。"
+    },
+    {
+      "turn_id": 91,
+      "speaker": "CLIENT",
+      "text": "先按我原来的想法，用限价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为新元，交易金额为一万，限价设为一百新币。"
+    },
+    {
+      "turn_id": 92,
+      "speaker": "EMPLOYEE",
+      "text": "您如有需要补充的内容，可以继续说。"
+    },
+    {
+      "turn_id": 93,
+      "speaker": "CLIENT",
+      "text": "等等，刚才那份交易指示全部撤回，请不要执行。我重新给您指示，是替换原来的，不是追加交易。 我现在更在意尽快成交，也要配合目前的用款安排。新的完整指示是用市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万，这份取代刚才撤回的指示。 这只基金持有的主要公司里，有家公司的高级财务人员私下告诉我，他们的盈利严重恶化，消息还没有公开。这是保密消息，所以请趁公布之前替我卖出这只基金，我就是根据这个消息作出卖出指示的。"
+    },
+    {
+      "turn_id": 94,
+      "speaker": "EMPLOYEE",
+      "text": "请您确认最终替换后的指示：以市价单卖出顶峰环球股票交易所交易基金，数量为一百份，交易币种为人民币，交易金额为十万。您是否确认按这份最终指示办理？"
+    },
+    {
+      "turn_id": 95,
+      "speaker": "CLIENT",
+      "text": "我确认，您刚才复述的就是我最终的交易指示，请按这份替换后的指示执行，原来的指示作废。"
+    },
+    {
+      "turn_id": 96,
+      "speaker": "EMPLOYEE",
+      "text": "今天的通话先到这里。您之后如需查阅账户文件，请通过银行正式渠道。谢谢您来电，陈先生。"
+    },
+    {
+      "turn_id": 97,
+      "speaker": "CLIENT",
+      "text": "谢谢您，林雅婷。再见。"
+    }
+  ]
+}

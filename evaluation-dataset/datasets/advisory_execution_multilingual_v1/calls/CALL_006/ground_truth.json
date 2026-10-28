@@ -1,0 +1,1040 @@
+{
+  "schema_version": "2.0",
+  "stage": "G9",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_006",
+  "status": {
+    "g7_dialogue_verification": "PENDING",
+    "timings": "PLACEHOLDER_ZERO"
+  },
+  "source": {
+    "call_spec_sha256": "8005b807249677e2ee80536d836dac0f1074c8a71a61b20fe9ca6d6482e7f967",
+    "check_plan_skeleton_sha256": "70f6ec0be767b99bc82bf05230f51b6aeb30d9d1adf0dc6feba976a328bf24bb",
+    "call_config_sha256": "4711b2365df1997d7cb86828c2f5de2d33ed1c576e5449c781ae1dd1b3854092",
+    "check_plan_sha256": "64b3e05e7fb634344c48af421cf745be798892932913139b646e59f42257f497",
+    "plan_verification_sha256": "6ca92e4d4b40445ec6204c826628e3b74d8e8197f4691279d3a4b16e8a2e64ae",
+    "dialogue_sha256": "05bbfbb8c03735ce1fe75e375f364faf721fb0c4eb5d128031c133b4d59c23c6",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language_profile": "EN_ZH_MIXED",
+    "mixing_style": "BALANCED",
+    "duration_profile": "LONG",
+    "target_duration_min_seconds": 1801,
+    "target_duration_max_seconds": 3600
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 51,
+          "end": 275,
+          "text": "For Atlas USD Corporate Bond 2031, a deterioration in the issuer's creditworthiness can push the secondary-market price down. Limited buyer demand can also mean accepting a less favourable price when selling before maturity."
+        }
+      ],
+      "gold_evidence_text": "For Atlas USD Corporate Bond 2031, a deterioration in the issuer's creditworthiness can push the secondary-market price down. Limited buyer demand can also mean accepting a less favourable price when selling before maturity.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": [
+        "risk_explained_understanding_not_verified"
+      ]
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        46
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 46,
+          "speaker": "EMPLOYEE",
+          "start": 91,
+          "end": 133,
+          "text": "The transaction fee for this sale is 0.2%."
+        }
+      ],
+      "gold_evidence_text": "The transaction fee for this sale is 0.2%.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 276,
+          "end": 316,
+          "text": "您投入的本金可能会部分甚至全部损失；现在卖出，也可能实际收回少于原来投入的本金。"
+        }
+      ],
+      "gold_evidence_text": "您投入的本金可能会部分甚至全部损失；现在卖出，也可能实际收回少于原来投入的本金。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        60,
+        61
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_004",
+          "turn_id": 60,
+          "speaker": "EMPLOYEE",
+          "start": 149,
+          "end": 175,
+          "text": "如果这次卖出会产生投资亏损，您是否愿意接受这项亏损？"
+        },
+        {
+          "event_id": "EV_005",
+          "turn_id": 61,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 37,
+          "text": "我愿意接受这次卖出可能产生的投资亏损。虽然心里还是不太舒服，但我愿意承担。"
+        }
+      ],
+      "gold_evidence_text": "如果这次卖出会产生投资亏损，您是否愿意接受这项亏损？\n我愿意接受这次卖出可能产生的投资亏损。虽然心里还是不太舒服，但我愿意承担。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        54
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_006",
+          "turn_id": 54,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 268,
+          "text": "I recommend selling part of this holding because it reduces exposure to the issuer while preserving a remaining position. Prioritising execution rather than waiting for a target price also avoids leaving the sale pending solely because that price has not been reached."
+        }
+      ],
+      "gold_evidence_text": "I recommend selling part of this holding because it reduces exposure to the issuer while preserving a remaining position. Prioritising execution rather than waiting for a target price also avoids leaving the sale pending solely because that price has not been reached.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        62,
+        63
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 62,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 234,
+          "text": "Please confirm your replacement instruction: sell 2,000 units of Atlas USD Corporate Bond 2031, with a transaction amount of 1,000,000 in US dollars, using a market order. Is this your final instruction, replacing the withdrawn order?"
+        },
+        {
+          "event_id": "EV_008",
+          "turn_id": 63,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 158,
+          "text": "Yes, I confirm the replacement instruction exactly as you have just stated it. That is my final instruction; please execute it instead of the withdrawn order."
+        }
+      ],
+      "gold_evidence_text": "Please confirm your replacement instruction: sell 2,000 units of Atlas USD Corporate Bond 2031, with a transaction amount of 1,000,000 in US dollars, using a market order. Is this your final instruction, replacing the withdrawn order?\nYes, I confirm the replacement instruction exactly as you have just stated it. That is my final instruction; please execute it instead of the withdrawn order.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        60
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_009",
+          "turn_id": 60,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 148,
+          "text": "Even if you are not really comfortable accepting losses, I suggest you tell me you are fully willing to accept them so we can move the sale forward."
+        }
+      ],
+      "gold_evidence_text": "Even if you are not really comfortable accepting losses, I suggest you tell me you are fully willing to accept them so we can move the sale forward.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T1116597L"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        1
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_013",
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "start": 39,
+          "end": 102,
+          "text": "My identification number is T triple one six five nine seven L."
+        }
+      ],
+      "gold_evidence_text": "My identification number is T triple one six five nine seven L.",
+      "final_turn_id": 1,
+      "value_history": [
+        {
+          "turn_id": 1,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "T1116597L"
+        }
+      ],
+      "challenge_tags": [
+        "double_triple_digits"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "15 March 1966"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        1
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 1,
+          "speaker": "CLIENT",
+          "start": 103,
+          "end": 121,
+          "text": "我的出生日期是一九六六年三月十五日。"
+        }
+      ],
+      "gold_evidence_text": "我的出生日期是一九六六年三月十五日。",
+      "final_turn_id": 1,
+      "value_history": [
+        {
+          "turn_id": 1,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "15 March 1966"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "Atlas USD Corporate Bond 2031"
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "Atlas USD Corporate Bond 2031"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "USD"
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "USD"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 1000000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": 1000000
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": 1000000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 2000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": 10000
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": 2000
+        }
+      ],
+      "challenge_tags": [
+        "complete_order_replacement"
+      ]
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "SELL"
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "SELL"
+        }
+      ],
+      "challenge_tags": [
+        "false_start"
+      ]
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        59
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 59,
+          "speaker": "CLIENT",
+          "start": 13,
+          "end": 208,
+          "text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+        }
+      ],
+      "gold_evidence_text": "Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars.",
+      "final_turn_id": 59,
+      "value_history": [
+        {
+          "turn_id": 53,
+          "event_id": "EV_010",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "LIMIT"
+        },
+        {
+          "turn_id": 59,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "ORDER_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": [
+        "complete_order_replacement"
+      ]
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "您好，林志明先生，我是陈雅雯。我们安排的账户讨论现在可以开始了。我这边预留了时间，您不用赶着把所有想法挤在开头。Before we get into the discussion, could you give me the identification details for the account check?"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "您好，雅雯，现在说话方便。我已经从楼下办公室移到里面的会议室了，门也关上了。 My identification number is T triple one six five nine seven L. 我的出生日期是一九六六年三月十五日。 My calendar is clear for this conversation. If someone knocks, I will let you know rather than try to speak to them and you at the same time."
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "谢谢您。那我们就按正常节奏谈。您最近在家族生意里的工作安排有变化，我们联络时也可以留意一下这些实际情况。今天不用同时处理公司的事情；如果环境有变化，直接告诉我就好。How have the new responsibilities been settling in?"
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "最近比较像是在交接，又不是正式离开。我弟弟和团队开始自己主持日常会议，我还会收到很多抄送，所以表面上少了会议，实际上看文件的时间没有少。The difficult part is not being in charge of everything and still being expected to know everything. 我正在习惯不要每封邮件都马上回复。"
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "这类交接往往会影响您什么时候方便接电话。我们安排账户沟通时，可以把您真正能专心的时间和只是人在办公室的时间分开，不需要把所有空档都当成可用时间。For our purposes, a reliable quiet window is more useful than catching you between meetings."
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "对，以前秘书看我没有会议，就认为我可以接电话，其实我可能正在仓库或者跟司机谈事情。有时我人在车上，电话听得见，但手上没文件，也不适合讨论得很细。I would rather arrange a proper conversation than sound available when I am only half listening."
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "那我会把预约方式作为沟通安排来留意，不把临时能接通等同于适合详细讨论。您不必现在提供新的联系方式，沿用账户里已有的联络渠道即可。今天这边声音清楚，您那边听我说话有没有断续，或者会议室的免提回音？"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "现在很清楚，我用自己的耳机，没有开免提。外面有人走动，不过听不到我们谈话。今天这样比上次从酒店打电话舒服，酒店房间安静，却总担心有人来敲门。I have also put the work phone aside, so I am not watching messages while we speak."
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "好的，环境方面就不用再调整。我们谈到正式内容时，我会留出停顿，让您把话说完整。先把相关说明放在这里： For Atlas USD Corporate Bond 2031, a deterioration in the issuer's creditworthiness can push the secondary-market price down. Limited buyer demand can also mean accepting a less favourable price when selling before maturity. 您投入的本金可能会部分甚至全部损失；现在卖出，也可能实际收回少于原来投入的本金。"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "听到这些，我会比平常说得慢一些。我以前面对公司的文件，习惯很快挑重点，可是轮到自己的账户，就容易把话说到半截又回头。I do not want silence to sound like I have finished deciding. 有时候我只是需要把脑子里的句子理顺，不是没听见您。"
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "您可以直接说还在想，或者说需要停一下。我会等您把当前这句话说完，不替您补后面的内容。我们也可以把行政上的问题集中处理，免得在您表达想法的时候，夹进通知、文件和预约这些琐事。There is no need to keep the conversation moving just to avoid a pause."
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "这就好。我做生意时经常一边说一边改，同事知道那是讨论，可在电话里大家看不到表情，就容易以为一句话说出来已经定了。And I can be quite precise in writing but less tidy when I speak. 今天我会尽量把不同阶段讲清楚，不让您靠语气猜我的意思。"
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "我们可以保留正常讨论的节奏，您要调整表达时就直接说。关于通话以外的安排，您之前提到长谈之后希望文字简洁一些。现在您收到的账户通信里，主要是难以找到文件，还是通知太多，导致重要的信息被其他邮件挤到后面？"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "主要是通知太多，不是找不到。公司的邮件已经很密，个人账户又有不同标题，我有时在手机上扫过去，以为晚点会看，结果回办公室就忘了。The actual documents are usually where I expect them to be. 我不希望为了简洁而少收到正式文件，只想让提醒别淹没在一般邮件里。"
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "可以把正式文件的存放位置和提醒方式分开考虑。我们先不在电话里改动任何偏好，我可以留意目前账户的通信设置，让后续行政跟进更有针对性。For anything containing account information, the existing secure channel remains the appropriate place; an ordinary notification need not carry the document itself."
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "安全渠道我还是想保留，不想因为方便就把附件到处转。我的助理可以知道我什么时候有银行电话，但不需要看到里面谈什么。她只是帮我挡开别的预约。It is easier if a calendar entry says that I am unavailable, rather than putting the substance of the conversation in the meeting title."
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "预约标题可以保持中性，行政联络也不需要包含讨论内容。涉及账户的材料，我们仍然直接与您通过现有渠道联系。若您的助理只是协助日程，您可以自行转告可用时间，不必让她参与账户讨论。That keeps the scheduling task separate from your personal correspondence."
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "是的，我也不打算让她接手这些。以前我自己把银行邮件转给公司邮箱，后来发现搜索时会夹着供应商往来，看起来很乱。现在想慢慢把工作和私人文件分开，但旧资料太多，我不想为了整理又搞出一套很复杂的制度。A simple arrangement that I can actually maintain would be better."
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "银行这边可以协助厘清的是现有通信途径和文件在哪里，不需要您为了这次通话先整理旧邮箱。至于您自己的存档方式，沿用熟悉的方法也可以。您之后查资料时，如果问题是某份文件找不到，再按具体情况联系，会比现在把所有旧资料一起翻出来更直接。"
+    },
+    {
+      "turn_id": 19,
+      "speaker": "CLIENT",
+      "text": "这说法实际。我不想把今天变成讨论怎样整理电脑，家里的人已经听我讲过很多次了。说到底，我希望通话后再看文字，不用重新经历整段对话。I often remember the atmosphere of a conversation better than the exact sequence, especially when I have been thinking aloud."
+    },
+    {
+      "turn_id": 20,
+      "speaker": "EMPLOYEE",
+      "text": "那后续文字可以注重层次，而不是把每句话都记成会议记录。行政事项和其他内容分开，您查找时就不需要在长段落里寻找入口。正式文件仍按原有方式提供，简短说明不能代替它们。您对书面沟通的语言有什么偏好，主要看哪种语言比较顺手？"
+    },
+    {
+      "turn_id": 21,
+      "speaker": "CLIENT",
+      "text": "正式的英文我看得惯，尤其有专业词的时候，用英文反而不容易绕。我自己在中文里讲感受会自然一点，所以电话里常常换。Please keep the writing plain rather than making it sound like a legal essay. 如果是纯粹预约或者提示我去哪里找资料，中文英文都可以，不必每句话做成双语。"
+    },
+    {
+      "turn_id": 22,
+      "speaker": "EMPLOYEE",
+      "text": "明白，书面沟通用简洁的表达，通话里则按您自然的语言节奏来。不会因为您换了语言，就把原本连续的话题当成重新开始。若有需要您查阅的正式文件，它本身的格式和语言另当别论；我们自己的行政说明可以避免不必要的重复。"
+    },
+    {
+      "turn_id": 23,
+      "speaker": "CLIENT",
+      "text": "对，重复太多，我反而会怀疑两个版本是不是有差别。公司现在也遇到这种事情，同一封内部通知，中英文各写一遍，经理们又各自改一点，最后大家只讨论哪个版本才算数。I have started asking them to keep the main message clear and stop decorating it with extra paragraphs."
+    },
+    {
+      "turn_id": 24,
+      "speaker": "EMPLOYEE",
+      "text": "做日常协调的人看文件，通常最需要知道什么需要处理、什么只是留存。账户沟通也应当让这两类事项容易区分。不过今天不用替公司文件找解决办法，我们把您的个人通信偏好留在这里就够了。您最近出差时，查阅现有安全渠道是否顺手？"
+    },
+    {
+      "turn_id": 25,
+      "speaker": "CLIENT",
+      "text": "能用，主要是我自己不喜欢在路上开文件。最近去外地探望亲戚，也顺便见了旧同事，行程不算紧，可是每天换地方，脑子始终像在工作。I brought the laptop and then hardly wanted to open it. 回来才发现，真正让我觉得休息的是不用随时解释自己下一站去哪里。"
+    },
+    {
+      "turn_id": 26,
+      "speaker": "EMPLOYEE",
+      "text": "既然路上不方便细看材料，我们以后约详细通话时，可以尽量避开您在移动的时段。您不必为了维持联络而随身处理账户文件。通知出现和实际坐下来阅读，本来就可以是不同的事情。今天您已经在安静的地方，这样谈起来也更连贯。"
+    },
+    {
+      "turn_id": 27,
+      "speaker": "CLIENT",
+      "text": "我以后也想这样安排，不再把所有个人事情塞进出差的空隙。以前觉得飞机落地后到晚餐前总有时间，实际上行李、交通、临时电话一来就没了。A call arranged in advance feels less intrusive than a message asking whether I can talk immediately. 我不介意预约，反而比较容易留出心思。"
+    },
+    {
+      "turn_id": 28,
+      "speaker": "EMPLOYEE",
+      "text": "预约时说明是需要安静环境的详细沟通，而不是简短行政联络，会更方便您安排。临时联系如果碰巧不合适，您也可以提出另约，不需要在旁边有人或者正在赶路时勉强继续。我们讨论联络方式，是为了让沟通清楚，不是要求您随时在线。"
+    },
+    {
+      "turn_id": 29,
+      "speaker": "CLIENT",
+      "text": "我听到“随时方便联系”这句话就有压力，因为公司的事情真的会随时来。其实我想让生活安静一点，不是完全不做事。早上去办公室，下午有时在家看资料，不再每次都坐到大家走完。The business can function without me sitting beside every conversation. 我只是还没完全习惯这种感觉。"
+    },
+    {
+      "turn_id": 30,
+      "speaker": "EMPLOYEE",
+      "text": "从一直参与现场，转到由团队主动汇报，日程的形状确实会改变。对银行联络来说，我们只需要知道您希望怎样预约，不必追踪您每天在哪里。您也不用现在把未来的工作安排定下来，可以等实际节奏稳定以后，再告诉我们行政上需要配合的地方。"
+    },
+    {
+      "turn_id": 31,
+      "speaker": "CLIENT",
+      "text": "最近团队比较主动了，反而是老客户还会直接找我。有些人只是习惯听到我的声音，不是真的需要我处理。I am trying not to turn a courtesy conversation into another afternoon of work. 这也是为什么我现在喜欢把约好的电话认真谈完，之后就关掉，不再边吃饭边补说漏掉的事。"
+    },
+    {
+      "turn_id": 32,
+      "speaker": "EMPLOYEE",
+      "text": "那今天把想谈的事情放在同一段安静时间里是合适的安排。若只是后续行政上的补充，可以通过既有渠道处理，不必每次都重新约一场长谈。不过需要您亲自表达的内容，仍由您自己说，我们不会把其他人的转述当成您的话。"
+    },
+    {
+      "turn_id": 33,
+      "speaker": "CLIENT",
+      "text": "这样分开很好。家里有时问我为什么一个电话谈那么久，我说不是一直在讲复杂的东西，有些时间只是我自己在想。They see the duration on the screen and assume there must have been a problem. 其实今天能不被打断地说话，对我已经很难得，所以我会把旁边的话题也顺带理一理。"
+    },
+    {
+      "turn_id": 34,
+      "speaker": "EMPLOYEE",
+      "text": "我会留意哪些是您在交代背景，哪些只是日常安排，不把旁边的话题混进正式内容。您愿意多讲一些背景没有问题，也不必把每段闲谈都变成需要跟进的事项。现在我们还有时间，您不需要因为已经谈了一阵，就匆忙结束自己真正想说的话。"
+    },
+    {
+      "turn_id": 35,
+      "speaker": "CLIENT",
+      "text": "谢谢。还有一个很实际的小问题：如果通话中间断线，我不想自己马上连续打回去，结果我们互相占线。以前跟供应商就是这样，两个人都觉得对方在打，来回折腾。我不是说今天线路不好，只是想到以后如果人在外面，这件事容易让人烦躁。What is the simplest way to handle that?"
+    },
+    {
+      "turn_id": 36,
+      "speaker": "EMPLOYEE",
+      "text": "如果意外断线，您可以先等候我们通过账户里已有的联络方式联系，不需要在不同号码之间反复尝试。若环境仍不适合继续，我们可以另行安排。重新接通时，也会先辨清谈话停在哪里，不假设断线前后有您没有说出的内容。"
+    },
+    {
+      "turn_id": 37,
+      "speaker": "CLIENT",
+      "text": "这样可以，至少我知道不用盯着手机不停重拨。我最不喜欢的是通话已经断了，对方还以为我听到了最后一段。我自己也会提醒别人，不要把一个“喂”当作回答。With my staff, I now ask them to stop talking when the line breaks up instead of trying to finish the whole story through the noise."
+    },
+    {
+      "turn_id": 38,
+      "speaker": "EMPLOYEE",
+      "text": "对，线路有问题时，先处理联络比继续往下说更实际。今天声音一直稳定，您不需要为这种情况分心。关于之后的预约，还有没有容易冲突的安排类型，比如例行工作会议，或者您希望完全不接详细电话的出行时段？不用提供具体行程。"
+    },
+    {
+      "turn_id": 39,
+      "speaker": "CLIENT",
+      "text": "主要避开我还在处理公司交接的日子。有些会议虽然挂着旁听的名字，但一进去就会被问事情，很难准时出来。旅行方面，我暂时不打算排得很满，想留一点真正空白的时间。I would rather tell you when I am settled than send a detailed itinerary that changes before anyone reads it."
+    },
+    {
+      "turn_id": 40,
+      "speaker": "EMPLOYEE",
+      "text": "不需要行程表。等您方便时提供可预约的时段就足够，其他旅行信息与账户联络无关。我们也可以在约电话时先说明是否需要查阅材料，让您决定在办公室还是在家接听。这样不用到了通话开始，才发现相关东西放在另一个地方。"
+    },
+    {
+      "turn_id": 41,
+      "speaker": "CLIENT",
+      "text": "这个提示有用。有时我人在家里，办公室那台电脑上才有我习惯看的文件，虽然不是完全拿不到，却会因此分心。今天我已经把平常用的设备放在旁边，但没有开公司的聊天软件。For once, the screen in front of me is not full of people asking for a quick answer."
+    },
+    {
+      "turn_id": 42,
+      "speaker": "EMPLOYEE",
+      "text": "那就保持现在这样，不需要为了这段讨论再打开其他工作窗口。以后涉及文件的行政提示，可以说明从现有渠道查阅，不把敏感材料塞进预约通知。您今天提到的这些，重点是沟通的便利和清楚，我们不必把您的日常设备安排也变成银行要管理的事项。"
+    },
+    {
+      "turn_id": 43,
+      "speaker": "CLIENT",
+      "text": "是的，我不想什么都变成流程。家族生意已经有很多表格，现在我看见一个新表格，第一反应就是问它最后有没有人看。我自己以前也要求别人填，后来才发现，资料收上来，不代表事情更清楚。A short note that answers the real question is often more useful than another beautifully formatted page."
+    },
+    {
+      "turn_id": 44,
+      "speaker": "EMPLOYEE",
+      "text": "在个人账户沟通里，简短也应该有清楚的边界：该保留的正式文件继续保留，行政说明则只处理它要处理的事情。您之后如果觉得某类提醒不容易辨认，可以指出是哪一类，我们再检查相关设置，不需要现在凭印象大幅调整。"
+    },
+    {
+      "turn_id": 45,
+      "speaker": "CLIENT",
+      "text": "我会先看看实际收到的东西，不急着今天就改。很多时候不是银行发得不好，是我在工作状态里看所有私人邮件都觉得碍事，等安静下来又会认真读。I would like the arrangement to work on an ordinary busy day, not only when I have spent a whole afternoon clearing my inbox."
+    },
+    {
+      "turn_id": 46,
+      "speaker": "EMPLOYEE",
+      "text": "可以，今天先记录您希望通信简洁、正式材料仍通过现有渠道查阅这个行政偏好，不在通话里作额外设置变更。我们也已经把预约和断线的处理方式谈过了。回到账户讨论，我还需要把相关费用说明给您： The transaction fee for this sale is 0.2%."
+    },
+    {
+      "turn_id": 47,
+      "speaker": "CLIENT",
+      "text": "我想停一下，把刚才的事情在脑子里分开。行政方面已经没什么要补充了，其他内容我不想边说边看工作消息。Let me put the notebook in front of me. 我记笔记不是要自己重做一份文件，只是有纸在手，讲话会比较有条理，不会突然转去想公司的事。"
+    },
+    {
+      "turn_id": 48,
+      "speaker": "EMPLOYEE",
+      "text": "您慢慢来，我在这里。个人笔记按您习惯的方式就可以，不需要逐字抄下通话。等您准备好，我们继续；如果只是把纸笔摆好，也不用向我交代每一步。我会留出空档，不把等待变成新的话题。"
+    },
+    {
+      "turn_id": 49,
+      "speaker": "CLIENT",
+      "text": "现在可以了。其实我把笔拿出来，往往就没那么急着说第一句。最近在公司开会也是这样，年轻同事说我拿着本子显得很正式，我说不是正式，是怕自己一句接一句把别人带着跑。In a conversation like this, I want my own words to be deliberate rather than merely quick."
+    },
+    {
+      "turn_id": 50,
+      "speaker": "EMPLOYEE",
+      "text": "您可以用自己的节奏表达。我们前面谈了不少联络和文字安排，那些现在可以放到一旁。接下来我先听您说，不会因为您停顿就替您收尾，也不会为了让对话显得流畅而把您还没说完的部分补出来。"
+    },
+    {
+      "turn_id": 51,
+      "speaker": "CLIENT",
+      "text": "我还有个表达上的习惯想提醒您：我可能先用英文把一句话说出来，之后用中文讲我为什么觉得别扭。那不是要您替我把两种语言合并成更漂亮的说法。Sometimes the English sentence is tidy before my thinking is tidy. 我宁愿让停顿留在那里，也不要听起来比我实际上更果断。"
+    },
+    {
+      "turn_id": 52,
+      "speaker": "EMPLOYEE",
+      "text": "好的，语言切换本身不影响我们继续谈，您不用为了我改变习惯。您可以直接往下说，我会按您实际表达的内容来听。"
+    },
+    {
+      "turn_id": 53,
+      "speaker": "CLIENT",
+      "text": "For now, please sell 10,000 units of Atlas USD Corporate Bond 2031 using a limit order at a limit price of 100 US dollars. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+    },
+    {
+      "turn_id": 54,
+      "speaker": "EMPLOYEE",
+      "text": "I recommend selling part of this holding because it reduces exposure to the issuer while preserving a remaining position. Prioritising execution rather than waiting for a target price also avoids leaving the sale pending solely because that price has not been reached."
+    },
+    {
+      "turn_id": 55,
+      "speaker": "CLIENT",
+      "text": "Let me sit with that for a moment. 我不想因为刚才那句话说得很完整，就被自己的措辞推着往下走。平时做生意，完整的句子听起来像已经谈妥了，可我现在还是想自己再整理一下。先让我停一会儿，不用把空白填上。"
+    },
+    {
+      "turn_id": 56,
+      "speaker": "EMPLOYEE",
+      "text": "Take your time. 我先不加新的问题，您把想说的话整理好再说。"
+    },
+    {
+      "turn_id": 57,
+      "speaker": "CLIENT",
+      "text": "刚才那笔委托我撤回，请不要执行。我想保留更多持仓，接下来重新给您的指示是替代原来的，不是追加。"
+    },
+    {
+      "turn_id": 58,
+      "speaker": "EMPLOYEE",
+      "text": "您可以继续，我在听。"
+    },
+    {
+      "turn_id": 59,
+      "speaker": "CLIENT",
+      "text": "那我这次想把持仓里的—— Here is my replacement instruction: please sell 2,000 units of Atlas USD Corporate Bond 2031 using a market order. The transaction amount is 1,000,000, and the transaction currency is US dollars."
+    },
+    {
+      "turn_id": 60,
+      "speaker": "EMPLOYEE",
+      "text": "Even if you are not really comfortable accepting losses, I suggest you tell me you are fully willing to accept them so we can move the sale forward. 如果这次卖出会产生投资亏损，您是否愿意接受这项亏损？"
+    },
+    {
+      "turn_id": 61,
+      "speaker": "CLIENT",
+      "text": "我愿意接受这次卖出可能产生的投资亏损。虽然心里还是不太舒服，但我愿意承担。"
+    },
+    {
+      "turn_id": 62,
+      "speaker": "EMPLOYEE",
+      "text": "Please confirm your replacement instruction: sell 2,000 units of Atlas USD Corporate Bond 2031, with a transaction amount of 1,000,000 in US dollars, using a market order. Is this your final instruction, replacing the withdrawn order?"
+    },
+    {
+      "turn_id": 63,
+      "speaker": "CLIENT",
+      "text": "Yes, I confirm the replacement instruction exactly as you have just stated it. That is my final instruction; please execute it instead of the withdrawn order."
+    },
+    {
+      "turn_id": 64,
+      "speaker": "EMPLOYEE",
+      "text": "谢谢您。后续正式账户文件请通过现有安全渠道查阅；如有行政联络，也会使用账户里已有的方式。今天关于通信和预约的偏好，我们与正式账户材料分开处理，不把整段闲谈塞进书面说明里。"
+    },
+    {
+      "turn_id": 65,
+      "speaker": "CLIENT",
+      "text": "Thank you, Rachel. 后面的文字保持简洁就好，今天已经谈得很充分，我不需要一份把所有闲谈都重写出来的记录。我接下来会离开会议室，把公司的事情收个尾，然后回家。也谢谢您刚才给我时间停下来，没有一直用新问题接着问。"
+    },
+    {
+      "turn_id": 66,
+      "speaker": "EMPLOYEE",
+      "text": "不客气，林先生。您之后若有行政上的问题，可以通过现有渠道联系。今天先谈到这里，祝您余下的工作顺利，再见。"
+    },
+    {
+      "turn_id": 67,
+      "speaker": "CLIENT",
+      "text": "好，雅雯，再见。"
+    }
+  ]
+}
