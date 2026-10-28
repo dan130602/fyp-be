@@ -30,7 +30,7 @@ ARTIFACT_DIR = "authoring/dialogue_verifications"
 PROVENANCE_DIR = "authoring/dialogue_verification_provenance"
 RECORD = "authoring/dialogue_verification_record.json"
 
-SEMANTIC_BUDGET = 3  # structurally REJECTED reports per call since the last accepted version (never semantic verdicts)
+SEMANTIC_BUDGET = 4  # raised for CALL_134 (approved by the user after three truncated attempts); # structurally REJECTED reports per call since the last accepted version (never semantic verdicts)
 TRANSPORT_BUDGET = 3
 
 # Rough --dry-run planning figures (visible report + thinking), per duration profile. Estimates only.

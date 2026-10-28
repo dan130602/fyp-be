@@ -181,10 +181,10 @@ def test_malformed_reports_are_rejected_within_the_response_budget(tmp_path):
     assert runner.run([CALL])["attempts"][0]["state"] == "REJECTED"
     with pytest.raises(RunError, match="latest attempt was REJECTED"):
         runner.run([CALL])
-    runner.run([CALL], retry_rejected=True)
-    runner.run([CALL], retry_rejected=True)
+    for _ in range(3):  # SEMANTIC_BUDGET is 4: the 4th rejected attempt exhausts it
+        runner.run([CALL], retry_rejected=True)
     assert runner.eligibility(CALL, retry_rejected=True)[1].startswith("AWAITING_HUMAN")
-    assert runner.status()["calls"][CALL]["status"] == "AWAITING_HUMAN" and len(fake.calls) == 3
+    assert runner.status()["calls"][CALL]["status"] == "AWAITING_HUMAN" and len(fake.calls) == 4
 
 
 def test_an_ungrounded_quote_is_a_rejection_with_the_reason_recorded(tmp_path):
