@@ -110,7 +110,7 @@ def generation(call_id):
 def test_the_request_is_deterministic_high_thinking_flex_and_carries_the_whole_dialogue():
     first, second = builder().build(X, "A001"), builder().build(X, "A009")
     assert first == second  # no attempt id anywhere in the request
-    assert first["generation_config"] == {"thinking_level": "high", "max_output_tokens": 65536}
+    assert first["generation_config"] == {"thinking_level": "high", "max_output_tokens": 100000}
     assert first["service_tier"] == "flex" and first["model"] == "gemini-3.8-flash" and first["store"] is False
     assert call_id_of(first) == X
     brief = json.loads(first["input"])

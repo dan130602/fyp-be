@@ -21,7 +21,7 @@ HASHING = "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
 
 # Approved verifier settings: Gemini 3.8 Flash, HIGH thinking, paid Flex tier. There is never a fallback to Standard.
 THINKING_LEVEL = "high"
-MAX_OUTPUT_TOKENS = 65536  # thinking + report (the model ceiling); a truncated report is REJECTED, never repaired
+MAX_OUTPUT_TOKENS = 100000  # thinking + report; a truncated report is REJECTED, never repaired
 
 PROMPT_TEMPLATE = "dialogue_verification.v1.md"
 RESPONSE_SCHEMA = "dialogue_verification_response"
