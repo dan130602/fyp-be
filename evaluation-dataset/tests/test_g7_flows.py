@@ -84,7 +84,7 @@ def test_valid_report_is_accepted_reproducible_and_g8_eligible_and_production_is
     assert attempt["state"] == "ACCEPTED" and fake.calls == [("create_response", CALL)] and attempt["send_count"] == 1
     result = artifact(runner)
     assert result["verdict"] == "VALID" and result["recommended_repair"] is None and result["quality_review"] == "CLEAR"
-    assert result["generation"]["params"] == {"thinking_level": "high", "service_tier": "flex", "max_output_tokens": 32768}
+    assert result["generation"]["params"] == {"thinking_level": "high", "service_tier": "flex", "max_output_tokens": 65536}
     inputs = shared_inputs()
     assert result["dialogue_sha256"] == inputs.dialogue_hashes[CALL] and result["plan_verification_sha256"] == inputs.report_hashes[CALL]
     summary = prov(runner)["attempts"][0]
