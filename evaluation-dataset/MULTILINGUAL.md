@@ -339,3 +339,20 @@ client-instruction/employee-readback variants. G0-G2B and response schemas are
 unchanged; historical v1/v2 requests remain available through explicit template
 selection. Existing accepted calls are not regenerated automatically. A diagnosed
 repair uses normal reopen/history/staleness and a fresh G5 review.
+
+G4 diagnosed repairs (2026-10-28): `check_plan.v4.md` retains v3 plus
+clarification that EC_ONE_FIELD_READBACK_ERROR requires two T-fields (KYC does
+not substitute), and C07 PASS needs the product/action rationale rather than
+only an execution-method rationale. Response schemas, compiler, validators,
+brief data and frozen artifacts are unchanged. V1-v3 remain reconstructable.
+
+Explicit rollout verification approval (2026-10-28): after Codex usage was
+exhausted, the user authorized existing Gemini Flex for unfinished G5 and new
+G7 reviews inside the sameSGD60 total. Completed Codex reports are retained.
+G7 `dialogue_verification.v3.md` makes the no-unplanned-protected-acts scope
+explicit, including gold-preserving violations; old prompt versions remain.
+`llm.gemini_cohort.run_cohort` can overlap bounded whole-call network sends
+while retaining one stage mutex. Raw responses persist immediately, and only
+the parent adjudicates/writes provenance. Existing Flex/model/thinking settings,
+capacity handling, disabled SDK retries, ambiguity holds and acceptance rules
+remain. It stops new launches after a blocker and reconciles in-flight work.

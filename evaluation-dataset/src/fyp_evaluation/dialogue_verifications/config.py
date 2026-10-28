@@ -69,4 +69,4 @@ def response_schema_name(documents):
 
 
 def prompt_template(documents):
-    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+    return "dialogue_verification.v3.md" if versions.generation(documents) == "2.0" else PROMPT_TEMPLATE

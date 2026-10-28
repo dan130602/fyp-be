@@ -14,12 +14,12 @@ from g4_support import shared_inputs
 @pytest.fixture(scope="module")
 def builders():
     inputs = plan_inputs(call_ids=["CALL_149"])
-    return RequestBuilder(inputs, SCHEMAS), RequestBuilder(inputs, SCHEMAS, prompt_template_name="check_plan.v2.md")
+    return RequestBuilder(inputs, SCHEMAS, prompt_template_name="check_plan.v3.md"), RequestBuilder(inputs, SCHEMAS, prompt_template_name="check_plan.v2.md")
 
 
 def test_new_multilingual_requests_clarify_slots_and_preserve_the_old_brief(builders):
     current, old = builders
-    assert prompt_template(current.inputs.documents) == "check_plan.v3.md"
+    assert "template v3" in current.developer_message  # Historical v3 remains reconstructable after activation of later versions.
     new_body, old_body = current.build("CALL_149", "A002"), old.build("CALL_149", "A002")
     assert "template v3" in new_body["input"][0]["content"]
     assert "template v2" in old_body["input"][0]["content"]

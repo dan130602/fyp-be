@@ -152,10 +152,10 @@ class RequestBuilder:
         # Explicit old-version selection is for exact historical request reconstruction.
         # Normal live runners always use config.prompt_template for the release.
         template_name = prompt_template_name or prompt_template(inputs.documents)
-        if template_name not in {"check_plan.v1.md", "check_plan.v2.md", "check_plan.v3.md"}:
+        if template_name not in {"check_plan.v1.md", "check_plan.v2.md", "check_plan.v3.md", "check_plan.v4.md"}:
             raise ValueError(f"Unknown G4 prompt version: {template_name}")
         template_path = prompt_dir / template_name
-        self.concrete_readback_slots = template_name == "check_plan.v3.md"
+        self.concrete_readback_slots = template_name in {"check_plan.v3.md", "check_plan.v4.md"}
         self.response_format_name = response_format_name(inputs.documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
         response_path = schema_path(RESPONSE_SCHEMA, schema_dir)

@@ -77,9 +77,12 @@ def system_prefix(template, documents):
 class RequestBuilder:
     """Builds the identical request body for any call; computes the template/schema hashes once."""
 
-    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
+    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR, *, prompt_template_name=None):
         self.inputs = inputs
-        template_path = prompt_dir / prompt_template(inputs.documents)
+        template_name = prompt_template_name or prompt_template(inputs.documents)
+        if template_name not in {"dialogue_verification.v1.md", "dialogue_verification.v2.md", "dialogue_verification.v3.md"}:
+            raise ValueError("Unknown G7 prompt template")
+        template_path = prompt_dir / template_name
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
         response_path = schema_path(response_schema_name(inputs.documents), schema_dir)
         self.response_schema_sha256 = g1.sha256(response_path.read_bytes())
