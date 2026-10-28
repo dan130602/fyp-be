@@ -133,6 +133,11 @@ historical release keeps the originals byte for byte (request hashes are pinned 
   change never triggers regeneration by itself; it only reports what is affected.
 * **G4 prompt v2.** Within-turn switching is a property of the client's dialogue turn: it never forces a bilingual event and never overrides
   a pin. Singlish register is realised only in existing client events; the employee stays professional English.
+* **G4 prompt v3 (readback clarification).** New multilingual requests explicitly use the chosen question ID as each READBACK
+  placeholder name (for example `[[T04]]`), in both the prompt and the per-call readback note. Earlier wording used the
+  metavariable `[[Q]]`, which some live responses copied literally. The validator, schema and Python value insertion are
+  unchanged. Prompt v1/v2 files remain immutable; `RequestBuilder(..., prompt_template_name="check_plan.v2.md")` retains
+  the earlier note for historical request reconstruction. Existing accepted evidence is not regenerated for this change.
 * **G5 prompt v2.** A language section, the `LANGUAGE_REQUIREMENT_NOT_MET` issue code (a plan that breaks a stated language requirement,
   including employee wording that is not professional English in a SINGLISH call, judged in context and blocking), and Chinese quotes
   grounded verbatim. Controls for the semantic checks live in `plan_verifications/controls.py` (`MULTILINGUAL_CONTROLS`).

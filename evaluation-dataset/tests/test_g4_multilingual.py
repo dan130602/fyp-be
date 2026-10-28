@@ -551,11 +551,26 @@ def test_a_multilingual_artifact_is_current_until_language_profiles_change(tmp_p
     assert status["status"] == "stale" and "language_profiles_sha256" in status["changed"]
 
 
-def test_g4_and_g5_wait_for_accepted_g3_configs_on_the_multilingual_release():
-    """No G3 config has been generated for the multilingual release, so G4 (and G5, which loads through it) cannot start."""
+def test_g4_and_g5_wait_for_accepted_g3_configs_on_the_multilingual_release(tmp_path):
+    """An isolated G0-G2B-only release cannot start G4/G5, regardless of live generation progress."""
     from fyp_evaluation.check_plans.inputs import G3StateError, load_inputs as load_g4
     from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5
 
+    root = tmp_path / "without_g3"
+    frozen_files = {
+        "checklist.json", "check_semantics.json", "dataset_manifest.json", "edge_case_catalog.json",
+        "language_profiles.json", "normalization.json", "authoring/generation_plan.json",
+        "authoring/quota_design.json", "authoring/planning_record.json", "authoring/call_manifest.csv",
+        "authoring/coverage_matrix.csv", "authoring/edge_case_assignments.csv",
+        "authoring/call_spec_record.json", "authoring/check_plan_skeleton_record.json",
+    }
+    for path in RELEASE.rglob("*"):
+        relative = path.relative_to(RELEASE).as_posix()
+        if path.is_file() and (relative in frozen_files or relative.startswith(("authoring/call_specs/", "authoring/check_plan_skeletons/"))):
+            target = root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
+    assert not (root / "authoring/call_configs").exists()
     for loader in (load_g4, load_g5):
         with pytest.raises(G3StateError, match="not complete"):
-            loader(RELEASE, SCHEMAS)
+            loader(root, SCHEMAS)

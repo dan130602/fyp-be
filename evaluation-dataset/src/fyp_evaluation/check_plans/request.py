@@ -40,7 +40,7 @@ def _surfaces(ctx, event, placeholder):
     return {form: question_surface(ctx, placeholder, binding[2], form, binding[1]) for form in forms}
 
 
-def _event_brief(ctx, event):
+def _event_brief(ctx, event, *, concrete_readback_slots=False):
     rules = ctx.slot_rules(event)
     entry = {
         "event_id": event["event_id"], "kind": event["kind"], "status": event["status"],
@@ -74,6 +74,12 @@ def _event_brief(ctx, event):
             "note": ("list the fields you read back in readback_question_ids and write one [[Q]] per field; for every chosen field "
                      "that appears in form_choices, add one value_forms entry choosing one of its listed forms"),
         }
+        if concrete_readback_slots:
+            entry["readback"]["note"] = (
+                "list the chosen field IDs in readback_question_ids; use each chosen field ID as its placeholder name "
+                "exactly once in text (for example, T04 becomes [[T04]]); Q is not a literal placeholder name; "
+                "for every chosen field that appears in form_choices, add one value_forms entry choosing one of its listed forms"
+            )
         choices = {q: list(surfaces) for q, surfaces in selectable.items() if surfaces and len(surfaces) > 1}
         if choices:
             entry["form_choices"] = choices
@@ -106,7 +112,7 @@ def _product_brief(ctx, product):
     return entry
 
 
-def build_brief(inputs, ctx):
+def build_brief(inputs, ctx, *, concrete_readback_slots=False):
     scenario = ctx.scenario
     catalog = {e["id"]: e for e in inputs.documents["edge_case_catalog"]["edge_cases"]}
     motivations = {item["assignment_id"]: item["motivation"] for item in scenario["edge_case_context"]}
@@ -134,16 +140,22 @@ def build_brief(inputs, ctx):
                              for e in ctx.spec["edge_cases"]],
         "checks": checks,
         "constraints": [{key: value for key, value in c.items()} for c in ctx.skeleton["constraints"]],
-        "events": [_event_brief(ctx, event) for event in ctx.events],
+        "events": [_event_brief(ctx, event, concrete_readback_slots=concrete_readback_slots) for event in ctx.events],
     }
 
 
 class RequestBuilder:
     """Builds the identical request body for any call; computes the template/schema hashes once."""
 
-    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR):
+    def __init__(self, inputs, schema_dir=DEFAULT_SCHEMA_DIR, prompt_dir=PROMPT_DIR, *, prompt_template_name=None):
         self.inputs = inputs
-        template_path = prompt_dir / prompt_template(inputs.documents)
+        # Explicit old-version selection is for exact historical request reconstruction.
+        # Normal live runners always use config.prompt_template for the release.
+        template_name = prompt_template_name or prompt_template(inputs.documents)
+        if template_name not in {"check_plan.v1.md", "check_plan.v2.md", "check_plan.v3.md"}:
+            raise ValueError(f"Unknown G4 prompt version: {template_name}")
+        template_path = prompt_dir / template_name
+        self.concrete_readback_slots = template_name == "check_plan.v3.md"
         self.response_format_name = response_format_name(inputs.documents)
         self.prompt_template_sha256 = g1.sha256(template_path.read_bytes())
         response_path = schema_path(RESPONSE_SCHEMA, schema_dir)
@@ -166,7 +178,7 @@ class RequestBuilder:
             "model": MODEL,
             "input": [
                 {"role": "developer", "content": self.developer_message},
-                {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx))},
+                {"role": "user", "content": serialize_json(build_brief(self.inputs, ctx, concrete_readback_slots=self.concrete_readback_slots))},
             ],
             "text": {"format": {"type": "json_schema", "name": self.response_format_name, "strict": True, "schema": self.response_schema}},
             "reasoning": {"effort": REASONING_EFFORT},

@@ -15,13 +15,14 @@ HASHING = "SHA-256 over UTF-8 bytes with CRLF normalised to LF"
 
 RESPONSE_FORMAT_NAME = "g4_check_plan_v1"
 PROMPT_TEMPLATE = "check_plan.v1.md"
+MULTILINGUAL_PROMPT_TEMPLATE = "check_plan.v3.md"
 RESPONSE_SCHEMA = "check_plan_response"
 
 def prompt_template(documents):
-    """`check_plan.v1.md` for the historical release; the multilingual `check_plan.v2.md` otherwise."""
-    from fyp_evaluation import release_versions
+    """Keep historical v1 requests; new multilingual requests clarify readback slots in v3."""
+    from fyp_evaluation.validation.stage0 import is_multilingual
 
-    return release_versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+    return MULTILINGUAL_PROMPT_TEMPLATE if is_multilingual(documents) else PROMPT_TEMPLATE
 
 
 def response_format_name(documents):
