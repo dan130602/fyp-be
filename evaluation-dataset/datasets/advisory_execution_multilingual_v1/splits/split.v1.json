@@ -1,0 +1,1372 @@
+{
+  "algorithm": {
+    "group_weights": {
+      "duration": 4.0,
+      "edge": 2.0,
+      "fail": 2.0,
+      "secondary": 1.0,
+      "style": 1.5
+    },
+    "heldout_fraction": 0.3,
+    "long_target_per_language": 2,
+    "name": "constrained-multilabel-greedy-swap",
+    "objective": "sum over labels of weight * ((heldout_count - target) / sqrt(n * 0.3 * 0.7))^2, labels counted per distinct call",
+    "priorities": [
+      "SHORT/LONG overall and within language",
+      "edge-case types, families and language variants",
+      "per-question C01-C12 FAIL/PASS",
+      "mixed-language style",
+      "secondary transaction categories"
+    ],
+    "stages": [
+      "development locks and exact language quotas",
+      "greedy construction (rare labels dominate)",
+      "best-improvement equal-size swaps inside one language"
+    ],
+    "tie_break": "sha256('<seed>:<first call id of the unit>')",
+    "units": "whole calls (no genuine groups found)",
+    "version": "1.0"
+  },
+  "assignments": {
+    "CALL_001": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_002": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_003": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_004": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_005": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_006": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_007": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_008": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_009": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_010": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_011": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_012": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_013": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_014": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_015": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_016": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_017": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_018": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_019": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_020": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_021": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_022": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_023": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_024": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_025": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_026": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_027": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_028": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_029": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_030": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_031": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_032": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_033": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_034": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_035": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_036": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_037": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_038": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_039": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_040": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_041": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_042": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_043": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_044": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_045": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_046": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_047": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_048": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_049": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_050": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_051": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_052": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_053": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_054": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_055": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_056": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_057": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_058": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_059": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_060": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_061": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_062": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_063": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_064": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_065": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_066": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_067": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_068": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_069": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_070": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_071": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_072": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_073": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_074": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_075": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_076": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_077": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_078": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_079": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_080": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_081": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_082": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_083": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_084": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_085": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_086": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_087": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_088": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_089": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_090": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_091": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_092": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_093": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_094": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_095": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_096": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_097": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_098": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_099": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_100": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_101": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_102": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_103": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_104": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_105": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_106": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_107": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_108": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_109": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_110": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_111": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_112": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_113": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_114": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_115": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_116": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_117": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_118": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_119": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_120": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_121": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_122": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_123": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_124": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_125": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_126": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_127": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_128": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_129": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_130": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_131": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_132": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_133": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_134": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_135": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_136": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_137": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_138": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_139": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_140": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_141": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_142": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_143": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_144": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_145": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_146": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_147": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_148": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_149": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_150": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_151": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_152": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_153": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_154": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_155": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_156": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_157": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_158": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_159": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_160": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_161": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_162": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_163": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_164": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_165": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_166": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_167": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_168": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_169": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_170": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_171": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_172": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_173": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_174": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_175": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_176": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_177": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_178": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_179": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_180": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_181": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_182": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_183": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_184": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_185": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_186": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_187": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_188": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_189": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_190": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_191": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_192": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_193": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_194": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_195": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_196": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_197": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_198": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_199": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_200": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_201": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_202": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_203": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_204": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_205": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_206": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_207": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_208": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_209": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_210": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_211": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_212": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_213": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_214": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_215": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_216": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_217": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_218": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_219": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_220": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_221": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_222": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_223": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_224": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_225": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_226": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_227": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_228": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_229": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_230": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_231": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_232": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_233": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_234": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "HELDOUT"
+    },
+    "CALL_235": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_236": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_237": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_238": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_239": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_240": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "HELDOUT"
+    },
+    "CALL_241": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_242": {
+      "basis": "ALLOCATED",
+      "language": "ENGLISH",
+      "split": "HELDOUT"
+    },
+    "CALL_243": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_244": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_245": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_246": {
+      "basis": "ALLOCATED",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_247": {
+      "basis": "ALLOCATED",
+      "language": "EN_ZH_MIXED",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_248": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_249": {
+      "basis": "ALLOCATED",
+      "language": "SINGLISH",
+      "split": "DEVELOPMENT"
+    },
+    "CALL_250": {
+      "basis": "DEVELOPMENT_LOCK",
+      "language": "MANDARIN",
+      "split": "DEVELOPMENT"
+    }
+  },
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "development_locks": [
+    "CALL_002",
+    "CALL_003",
+    "CALL_004",
+    "CALL_010",
+    "CALL_014",
+    "CALL_023",
+    "CALL_024",
+    "CALL_027",
+    "CALL_028",
+    "CALL_030",
+    "CALL_034",
+    "CALL_035",
+    "CALL_036",
+    "CALL_043",
+    "CALL_044",
+    "CALL_047",
+    "CALL_059",
+    "CALL_064",
+    "CALL_071",
+    "CALL_090",
+    "CALL_102",
+    "CALL_103",
+    "CALL_112",
+    "CALL_113",
+    "CALL_122",
+    "CALL_134",
+    "CALL_147",
+    "CALL_149",
+    "CALL_152",
+    "CALL_155",
+    "CALL_156",
+    "CALL_163",
+    "CALL_165",
+    "CALL_178",
+    "CALL_198",
+    "CALL_203",
+    "CALL_208",
+    "CALL_209",
+    "CALL_218",
+    "CALL_227",
+    "CALL_250"
+  ],
+  "feature_definitions": {
+    "duration": "metadata.duration_profile: label dur:LONG and lang_dur:<language>|LONG (SHORT is the complement)",
+    "edge": "edge_cases[]: ec:<edge_case_id>, fam:<family>, ecv:<edge_case_id>|<language_variant> (variant != NONE), edge_free; each counted once per CALL (distinct calls), never per assignment",
+    "fail": "gold C01-C12 expected_verdict: fail:<question> for each FAIL, allpass when none fails",
+    "language": "metadata.language_profile (hard quota, not a balance label)",
+    "secondary": "frozen gold T01 prod:, T02 cur:, T05 dir:, T06 ord:",
+    "style": "metadata.mixing_style (only EN_ZH_MIXED calls): style:<mixing_style>"
+  },
+  "groups": [],
+  "inputs": {
+    "authoring/call_manifest.csv": "db1e7c2979ed0a3f073b3fa00c35a3cc7499fb437dc1886096e5f7f90c803a31",
+    "authoring/call_spec_record.json": "9b27be48eca7f6367040f38bc3ccd45f1c4b7b8a36de0bd7a4951b7e729f1cb0",
+    "authoring/edge_case_assignments.csv": "279d7d34c1521d8cef503494e1a07271e93fcf2759fa00279490bf204c8b1379",
+    "authoring/planning_record.json": "bd6b56cc8e40fcb3e7b6117d3dd9a9cfe81695ea7c36651b74575d5ecbfae1d5",
+    "call_spec_count": 250,
+    "call_specs_sha256": "b1c28cd3a26247d8fe032ec1d90643e5604d52eb02f6d4a1f19a58bd7cf7987c",
+    "registry_sha256": "6e4ee64d6b8bd9ec9437735d94ba0edb3f3325fc4b0c41f88c6c46b4c28cee8d"
+  },
+  "method": "retrospective: drawn after generation; calls used for prompt tuning, qualification, diagnosis or targeted debugging stay in DEVELOPMENT. Not a pre-registered hold-out.",
+  "quotas": {
+    "development": {
+      "ENGLISH": 52,
+      "EN_ZH_MIXED": 35,
+      "MANDARIN": 53,
+      "SINGLISH": 35
+    },
+    "heldout": {
+      "ENGLISH": 23,
+      "EN_ZH_MIXED": 15,
+      "MANDARIN": 22,
+      "SINGLISH": 15
+    },
+    "language_totals": {
+      "ENGLISH": 75,
+      "EN_ZH_MIXED": 50,
+      "MANDARIN": 75,
+      "SINGLISH": 50
+    }
+  },
+  "schema_version": "1.0",
+  "seed": 20261028,
+  "split_version": "split.v1",
+  "totals": {
+    "DEVELOPMENT": 175,
+    "HELDOUT": 75
+  }
+}
