@@ -71,11 +71,34 @@ def _g9_errors(dataset, schemas, paths):
     return errors
 
 
-def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncommitted=False):
+SPLIT_FILES = ("splits/split.v1.json", "splits/development_exposure.v1.json", "splits/split_report.v1.json")
+
+
+def split_selection(dataset, schemas, label):
+    """The call IDs a frozen split assigns to `label`, after the full offline verification of the split (stale, altered or missing
+    assignments, fingerprints, quotas and locks). The manifest is the sole authority; nothing here draws or edits assignments."""
+    from .splits import SplitError
+    from .splits.build import manifest_hash, split_calls, verify
+
+    errors = verify(dataset, schemas)
+    if errors:
+        raise ValueError("The split is missing, altered or stale: " + "; ".join(errors[:5]))
+    manifest = load_json(dataset / "splits" / "split.v1.json")
+    try:
+        call_ids = split_calls(manifest, label)
+    except SplitError as error:
+        raise ValueError(str(error)) from error
+    return {"label": label, "call_ids": call_ids, "split_version": manifest["split_version"], "split_manifest_sha256": manifest_hash(dataset),
+            "dataset_calls": len(manifest["assignments"]), "totals": manifest["totals"], "seed": manifest["seed"]}
+
+
+def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncommitted=False, split=None):
     """Validate the prepared source and return deterministic snapshot bytes.
 
     By default every input must match committed HEAD. `allow_uncommitted=True` skips that comparison (for a provisional
     export); the manifest then records `source.uncommitted: true`, because `source.git_commit` no longer identifies the data.
+    `split` ("DEVELOPMENT" or "HELDOUT") exports only the calls the frozen split assigns to it, in the same v1 layout; the manifest then
+    carries a `split` object (label, split manifest hash). Without it the export is byte-identical to before.
     """
     project = Path(project).resolve()
     repo = Path(git(project, "rev-parse", "--show-toplevel").decode().strip())
@@ -104,6 +127,15 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
     discovered_call_ids = [call.name for call in calls]
     if source_manifest["call_ids"] != discovered_call_ids:
         raise ValueError("dataset_manifest.json call_ids must exactly match sorted call directories")
+    selection = split_selection(dataset, schemas, split) if split else None
+    if selection:
+        if selection["dataset_calls"] != len(discovered_call_ids):
+            raise ValueError("The split assignments do not cover exactly the calls of the release")
+        wanted = set(selection["call_ids"])
+        calls = [call for call in calls if call.name in wanted]
+        discovered_call_ids = [call.name for call in calls]
+        if discovered_call_ids != selection["call_ids"]:
+            raise ValueError("The split names calls that are not compiled in this release")
 
     paths = {"checklist.json": dataset / "checklist.json"}
     for call in calls:
@@ -116,6 +148,8 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
     # detects ignored/untracked inputs and works with Git's CRLF checkout rules.
     normalization_path = dataset / "normalization.json" if g9 else project / "configs/normalization.json"
     inputs = [source_manifest_path, *paths.values(), normalization_path, *schemas.glob("*.json")]
+    if selection:
+        inputs += [dataset / name for name in SPLIT_FILES]
     for path in inputs:
         no_links(path)
         if allow_uncommitted:
@@ -162,6 +196,10 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
     }
     if allow_uncommitted:  # added only when used, so committed exports stay byte-identical to before
         manifest["source"]["uncommitted"] = True
+    if selection:  # the loader ignores extra manifest keys; dataset_sha256 still covers exactly the exported files
+        manifest["split"] = {"label": selection["label"], "split_version": selection["split_version"],
+                             "split_manifest_sha256": selection["split_manifest_sha256"], "dataset_calls": selection["dataset_calls"],
+                             "calls": len(discovered_call_ids), "totals": selection["totals"], "seed": selection["seed"]}
     if g9:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
         manifest["dataset_status"] = load_json(calls[0] / "ground_truth.json")["status"]
     manifest["dataset_sha256"] = digest(serialize(manifest["files"]))
@@ -203,14 +241,14 @@ def verify_snapshot(destination):
     return manifest
 
 
-def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False, allow_uncommitted=False):
+def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False, allow_uncommitted=False, split=None):
     destination = Path(destination).absolute()
     no_links(destination)
     destination = destination.resolve()
     project = Path(project).resolve()
     if destination == project or project in destination.parents or destination in project.parents:
         raise ValueError("Destination must be outside the dataset project")
-    files = prepare_snapshot(project, dataset_root, allow_uncommitted=allow_uncommitted)  # Complete validation before any writes.
+    files = prepare_snapshot(project, dataset_root, allow_uncommitted=allow_uncommitted, split=split)  # Complete validation before any writes.
     if destination.exists():
         if not overwrite:
             raise ValueError("Destination exists; use --overwrite for a verified snapshot update")
@@ -262,6 +300,8 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true", help="Verify destination only; write nothing")
     parser.add_argument("--allow-uncommitted", action="store_true",
                         help="Export without requiring the source to match committed HEAD (manifest records source.uncommitted)")
+    parser.add_argument("--split", choices=("DEVELOPMENT", "HELDOUT"),
+                        help="Export only the calls the frozen splits/split.v1.json assigns to this label (same v1 layout)")
     args = parser.parse_args(argv)
     try:
         manifest = verify_snapshot(args.destination) if args.check else export_snapshot(
@@ -270,6 +310,7 @@ def main(argv=None):
             dataset_root=args.dataset_root,
             overwrite=args.overwrite,
             allow_uncommitted=args.allow_uncommitted,
+            split=args.split,
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(f"Export error: {error}", file=sys.stderr)
@@ -278,5 +319,8 @@ def main(argv=None):
     print(f"Source commit: {manifest['source']['git_commit']}" + (" (plus UNCOMMITTED changes)" if manifest["source"].get("uncommitted") else ""))
     if manifest.get("dataset_status"):
         print(f"Dataset status: {manifest['dataset_status']}")
+    if manifest.get("split"):
+        print(f"Split: {manifest['split']['label']} ({manifest['split']['calls']} of {manifest['split']['dataset_calls']} calls), "
+              f"split manifest {manifest['split']['split_manifest_sha256']}")
     print(f"Dataset SHA256: {manifest['dataset_sha256']}")
     return 0

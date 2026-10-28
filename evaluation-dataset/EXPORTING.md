@@ -6,7 +6,19 @@ Run from `fyp-be/evaluation-dataset` in CMD or PowerShell:
 python -B scripts/export_dataset.py --dataset-root "datasets/legacy_pilot_v1" --destination "../../fyp-ai/evaluation/datasets/pilot"
 ```
 
-The script creates all destination folders. It does not create Git branches,
+The script creates all destination folders.
+
+For a release with a frozen split (`splits/split.v1.json`), `--split DEVELOPMENT` or `--split HELDOUT` exports only the calls that
+manifest assigns to that label, in the same layout below (so the existing loader works unchanged; ground truth sits beside the
+transcripts, so held-out answers are visible to anyone with access to the exported folder). The manifest gains an optional `split`
+object (label, split manifest hash, call counts); `dataset_sha256` still covers exactly the exported files. The exporter refuses a missing,
+altered or stale split, and the split files must be committed unless `--allow-uncommitted` is used:
+
+```bat
+python -B scripts/export_dataset.py --dataset-root "datasets/advisory_execution_multilingual_v1" --split DEVELOPMENT --destination "../../fyp-ai/evaluation/datasets/advisory_execution_multilingual_v1_development"
+python -B scripts/export_dataset.py --dataset-root "datasets/advisory_execution_multilingual_v1" --split HELDOUT --destination "../../fyp-ai/evaluation/datasets/advisory_execution_multilingual_v1_heldout"
+```
+ It does not create Git branches,
 commits, pushes or PRs. Review and commit its output in `fyp-ai` normally.
 The evaluator itself is not implemented by this change.
 

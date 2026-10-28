@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/splits/development_exposure.schema.json",
+  "title": "Development-use registry (separate from the provider-exposure ledger)",
+  "type": "object",
+  "required": ["schema_version", "registry_version", "dataset_id", "method", "rules", "exposure_ledger", "user_given_locks", "audit_derived_locks", "locks", "routine_not_locked", "uncertain_exposure", "groups"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "registry_version": {"const": "development_exposure.v1"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "method": {"type": "string"},
+    "rules": {"type": "array", "items": {"type": "string"}},
+    "exposure_ledger": {"type": "object", "required": ["path", "sha256", "status"], "properties": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "status": {"const": "STALE_HISTORICAL_ONLY"}}},
+    "user_given_locks": {"type": "array", "items": {"type": "string", "pattern": "^CALL_[0-9]{3}$"}},
+    "audit_derived_locks": {"type": "array", "items": {"type": "string", "pattern": "^CALL_[0-9]{3}$"}},
+    "locks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["call_id", "status", "category", "source", "reasons", "evidence"],
+        "properties": {
+          "call_id": {"type": "string", "pattern": "^CALL_[0-9]{3}$"},
+          "status": {"const": "DEVELOPMENT_LOCK"},
+          "category": {"enum": ["PILOT_PROMPT_TUNING", "DIAGNOSED_REPAIR", "DIAGNOSED_REGENERATION", "VERIFIER_DEBUGGING"]},
+          "source": {"enum": ["user_given", "audit_derived"]},
+          "reasons": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "evidence": {"type": "object", "required": ["allowlist_batches", "attempt_history"]}
+        }
+      }
+    },
+    "routine_not_locked": {"type": "array", "items": {"type": "object", "required": ["pattern", "calls", "why_not_locked"]}},
+    "uncertain_exposure": {"type": "array", "items": {"type": "object", "required": ["call_id", "attempt_id", "note"]}},
+    "groups": {"type": "object", "required": ["genuine_groups", "audit"], "properties": {"genuine_groups": {"type": "array"}}}
+  }
+}

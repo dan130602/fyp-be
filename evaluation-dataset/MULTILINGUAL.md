@@ -89,9 +89,27 @@ and a future 70/30 development / held-out assessment (175 / 75 calls) over whole
 with one call in a subset or unable to appear in both. Distinct calls come from the G1 outputs; with only the quotas they are shown
 as `unknown` and no split assessment is produced. The group estimates are independent, so they are indicators, not proof that one
 split satisfies every group at once. The report assigns
-nothing; the deterministic stratified split, CI and the registry of inspected or pilot-exposed calls (to be assigned to development)
-are later work, and the planning artifacts already carry the metadata a split needs (language profile, mixing style, duration,
-verdicts, edge-case IDs, families, variants and transaction attributes).
+nothing. CI is later work; the split itself is implemented (next section).
+
+## Development / held-out split (`splits/`, retrospective)
+
+`python scripts/build_split.py --dataset-root datasets/advisory_execution_multilingual_v1 --check` verifies the frozen split offline
+(committed inputs only; it never reads the local-only G3-G7 files). The split is **retrospective**: it was drawn after generation, so
+it is not a pre-registered hold-out and claims no more independence than the history supports. `splits/split.v1.json` is the sole
+authority for export and evaluation; assignments are never redrawn, and every version, regeneration or TTS rendition of a call inherits
+its assignment.
+
+- `development_exposure.v1.json` is the development-use registry (separate from the provider-exposure ledger `authoring/exposure_log.json`,
+  which records live API usage for all 250 calls and is stale; it is left unchanged). 41 calls are locked into DEVELOPMENT: the 25 pilot
+  calls, 8 diagnosed repair/regeneration calls, and 8 audit-derived calls with targeted-debugging history; each lock has reasons and
+  evidence (attempt histories). Routine retries and independent QA under a fixed procedure do not lock a call. A lock is only ever added.
+- `split.v1.json`: 175 DEVELOPMENT / 75 HELDOUT, exact held-out quotas ENGLISH 23, MANDARIN 22, EN_ZH_MIXED 15, SINGLISH 15, seed 20261028,
+  deterministic tie-breaking, input fingerprints. Stratified on frozen G2A metadata only (language, SHORT/LONG, edge cases and language
+  variants by distinct calls, per-question C01-C12 FAIL/PASS, mixing style, product/currency/direction/order type); verifier outcomes are
+  not labels. No genuine linked or duplicate calls were found (shared products and edge-case families are not leakage groups).
+- `split_report.v1.json`: counts, per-label balance and deviations, rare labels, and the limitations (heuristic search, no global optimality,
+  marginal balance only, single-call groups cannot appear in both subsets).
+- Regenerate nothing by hand: `--write-registry` (local-only evidence), `--write`, `--check`.
 
 ## G4 (schema 2.0)
 
