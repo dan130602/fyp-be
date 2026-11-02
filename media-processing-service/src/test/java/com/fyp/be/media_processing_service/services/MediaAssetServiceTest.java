@@ -121,16 +121,15 @@ class MediaAssetServiceTest {
     void missingAssetIsNotFound() {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service().getAnalysis(assetId, ownerId))
+        assertThatThrownBy(() -> service().getAnalysis(assetId))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
-    void someoneElsesAssetIsNotFound() {
-        when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
+    void anotherUsersAssetIsReadable() {
+        when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.FAILED, "boom")));
 
-        assertThatThrownBy(() -> service().getAnalysis(assetId, UUID.randomUUID()))
-                .isInstanceOf(ResourceNotFoundException.class);
+        assertThat(service().getAnalysis(assetId).analysisStatus()).isEqualTo(AnalysisStatus.FAILED);
     }
 
     @Test
@@ -138,7 +137,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         when(checklistRepository.findByMediaAssetId(assetId)).thenReturn(Optional.empty());
 
-        MediaAssetAnalysisResponse result = service().getAnalysis(assetId, ownerId);
+        MediaAssetAnalysisResponse result = service().getAnalysis(assetId);
 
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.PENDING);
         assertThat(result.result()).isNull();
@@ -149,7 +148,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         givenOutput("{\"call_id\":\"c1\",\"segments\":[]}");
 
-        MediaAssetAnalysisResponse result = service().getAnalysis(assetId, ownerId);
+        MediaAssetAnalysisResponse result = service().getAnalysis(assetId);
 
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.READY);
         assertThat(result.fileName()).isEqualTo("call.mp3");
@@ -161,7 +160,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         givenOutput("{\"__error__\":{\"message\":\"boom\"}}");
 
-        MediaAssetAnalysisResponse result = service().getAnalysis(assetId, ownerId);
+        MediaAssetAnalysisResponse result = service().getAnalysis(assetId);
 
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.FAILED);
         assertThat(result.failureReason()).isEqualTo("AI analysis failed");
@@ -173,7 +172,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId))
                 .thenReturn(Optional.of(asset(MediaAssetStatus.FAILED, "Transcribe failed")));
 
-        MediaAssetAnalysisResponse result = service().getAnalysis(assetId, ownerId);
+        MediaAssetAnalysisResponse result = service().getAnalysis(assetId);
 
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.FAILED);
         assertThat(result.failureReason()).isEqualTo("Transcribe failed");
@@ -221,7 +220,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         givenOutput("not json {");
 
-        MediaAssetAnalysisResponse result = service().getAnalysis(assetId, ownerId);
+        MediaAssetAnalysisResponse result = service().getAnalysis(assetId);
 
         assertThat(result.analysisStatus()).isEqualTo(AnalysisStatus.FAILED);
         assertThat(result.failureReason()).isEqualTo("AI analysis returned an unreadable result");
@@ -233,7 +232,7 @@ class MediaAssetServiceTest {
         when(mediaAssetRepository.findById(assetId)).thenReturn(Optional.of(asset(MediaAssetStatus.COMPLETED, null)));
         givenOutput("{\"final_results\":[]}");
 
-        assertThat(service().getAnalysis(assetId, ownerId).review()).isNull();
+        assertThat(service().getAnalysis(assetId).review()).isNull();
     }
 
     @Test
@@ -250,7 +249,7 @@ class MediaAssetServiceTest {
         when(langgraphOutputRepository.findByChecklistId(checklistId))
                 .thenReturn(Optional.of(LanggraphOutput.builder().checklistId(checklistId).output("{\"final_results\":[]}").build()));
 
-        ChecklistReviewResponse review = service().getAnalysis(assetId, ownerId).review();
+        ChecklistReviewResponse review = service().getAnalysis(assetId).review();
 
         assertThat(review.reviewedBy()).isEqualTo(ownerId);
         assertThat(review.reviewedAt()).isEqualTo(ApiTime.of(reviewedAt));
