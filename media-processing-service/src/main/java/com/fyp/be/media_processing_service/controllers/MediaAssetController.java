@@ -52,9 +52,8 @@ public class MediaAssetController {
 
     @GetMapping("/{id}/analysis")
     @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
-    public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id, Authentication authentication) {
-        User currentUser = currentUserService.getCurrentUser(authentication);
-        return ResponseEntity.ok(mediaAssetService.getAnalysis(id, currentUser.getId()));
+    public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id) {
+        return ResponseEntity.ok(mediaAssetService.getAnalysis(id));
     }
 
     @PutMapping("/{id}/review")

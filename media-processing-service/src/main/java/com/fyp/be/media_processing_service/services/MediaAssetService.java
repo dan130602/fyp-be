@@ -105,14 +105,10 @@ public class MediaAssetService {
         return new PlaybackUrlResponse(url, expiresIn);
     }
 
-    // Same 404 for missing and not-yours, as getPlaybackUrl.
-    public MediaAssetAnalysisResponse getAnalysis(UUID assetId, UUID userId) {
+    // Not limited to the uploader: the org-wide dashboard opens any call, and the controller restricts the roles.
+    public MediaAssetAnalysisResponse getAnalysis(UUID assetId) {
         MediaAsset asset = mediaAssetRepository.findById(assetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Media asset not found: " + assetId));
-
-        if (!asset.getUserId().equals(userId)) {
-            throw new ResourceNotFoundException("Media asset not found: " + assetId);
-        }
 
         if (asset.getStatus() == MediaAssetStatus.FAILED) {
             return analysisResponse(asset, AnalysisStatus.FAILED, asset.getFailureReason(), null, null);
@@ -154,7 +150,7 @@ public class MediaAssetService {
         );
     }
 
-    // Same 404 for missing and not-yours, as getAnalysis.
+    // Same 404 for missing and not-yours, as getPlaybackUrl.
     public ChecklistReviewResponse submitReview(UUID assetId, UUID userId, SubmitReviewRequest request) {
         MediaAsset asset = mediaAssetRepository.findById(assetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Media asset not found: " + assetId));
