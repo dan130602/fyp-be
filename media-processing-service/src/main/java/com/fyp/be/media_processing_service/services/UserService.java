@@ -98,7 +98,7 @@ public class UserService {
                 && userRepository.countByRoleAndStatus(role, UserStatus.ACTIVE) <= 1;
     }
 
-    /** ADMIN can grant COMPLIANCE_OFFICER/MANAGER freely, but only a SUPER_ADMIN can grant
+    /** ADMIN can grant COMPLIANCE_OFFICER/MANAGER/DEVELOPER, but only a SUPER_ADMIN can grant
      * ADMIN or SUPER_ADMIN itself - otherwise any ADMIN could mint themselves a peer. */
     private void requireSuperAdminToGrant(Role targetRole, User currentUser) {
         if (ELEVATED_ROLES.contains(targetRole) && currentUser.getRole() != Role.SUPER_ADMIN) {

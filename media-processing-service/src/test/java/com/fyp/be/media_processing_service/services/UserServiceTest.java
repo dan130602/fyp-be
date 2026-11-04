@@ -143,4 +143,45 @@ class UserServiceTest {
         verify(cognitoAdminService, never()).disableUser(any());
         verify(cognitoAdminService, never()).enableUser(any());
     }
+    @Test
+    void administratorCanAssignDeveloperAndSynchronizeItsCognitoGroup() {
+        UserService service = new UserService(userRepository, cognitoAdminService);
+        User caller = user(UUID.randomUUID(), Role.ADMIN, UserStatus.ACTIVE, "admin@example.com");
+        User target = user(UUID.randomUUID(), Role.COMPLIANCE_OFFICER, UserStatus.ACTIVE, "developer@example.com");
+        when(userRepository.findById(target.getId())).thenReturn(Optional.of(target));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserResponseDto result = service.updateRole(target.getId(), Role.DEVELOPER, caller);
+
+        assertThat(result.role()).isEqualTo(Role.DEVELOPER);
+        verify(userRepository).save(target);
+        verify(cognitoAdminService).setUserGroup("developer@example.com", Role.DEVELOPER);
+    }
+
+    @Test
+    void administratorCanCreateADeveloperUsingTheExistingProvisioningFlow() {
+        UserService service = new UserService(userRepository, cognitoAdminService);
+        User caller = user(UUID.randomUUID(), Role.ADMIN, UserStatus.ACTIVE, "admin@example.com");
+        CreateUserRequest request = new CreateUserRequest("developer@example.com", "Developer", Role.DEVELOPER);
+        when(cognitoAdminService.createUser(request.email(), request.name(), Role.DEVELOPER)).thenReturn("developer-sub");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserResponseDto result = service.createUser(request, caller);
+
+        assertThat(result.role()).isEqualTo(Role.DEVELOPER);
+        verify(cognitoAdminService).createUser(request.email(), request.name(), Role.DEVELOPER);
+    }
+
+    @Test
+    void usersCannotPromoteThemselvesToDeveloper() {
+        UserService service = new UserService(userRepository, cognitoAdminService);
+        User self = user(UUID.randomUUID(), Role.COMPLIANCE_OFFICER, UserStatus.ACTIVE, "self@example.com");
+        when(userRepository.findById(self.getId())).thenReturn(Optional.of(self));
+
+        assertThatThrownBy(() -> service.updateRole(self.getId(), Role.DEVELOPER, self))
+                .isInstanceOf(SelfModificationException.class);
+        verify(userRepository, never()).save(any(User.class));
+        verify(cognitoAdminService, never()).setUserGroup(any(), any());
+    }
+
 }
