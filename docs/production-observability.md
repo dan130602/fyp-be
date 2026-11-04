@@ -1,5 +1,51 @@
 # Production observability
 
+## Live RDS reporting from a local backend (5 November 2026)
+
+The default reader still uses the application's JDBC datasource. For local
+development against the private Aurora cluster, an opt-in RDS Data API reader
+reuses the same endpoint and ProductionMetrics calculations. Configure only
+the backend (never the frontend):
+
+```text
+APP_OBSERVABILITY_SOURCE=rds-data
+APP_OBSERVABILITY_RDS_CLUSTERARN=<Aurora cluster ARN>
+APP_OBSERVABILITY_RDS_SECRETARN=<existing database secret ARN>
+APP_OBSERVABILITY_RDS_DATABASE=ingestion
+```
+
+The backend uses its AWS SDK credential chain. AWS access must permit Data API
+transactions/queries for that cluster and access to the configured secret. No
+secret value is copied into source or returned to the browser. An expired AWS
+session produces an error, not fallback metrics from the local database.
+
+This option switches only the reporting reader. Local application sign-in still
+uses the existing local user record. The reader additionally checks the verified
+Cognito subject against an ACTIVE reporting role in RDS on every request. Local
+roles alone cannot grant access to live results. It does not provision accounts,
+change roles, run migrations, invoke AI, or start queue consumers in RDS.
+
+Each read uses one repeatable-read, read-only Data API transaction, which is
+rolled back after reading. Results and override history are paginated in that
+snapshot. The SQL selects verdicts and telemetry, excluding evidence text,
+transcripts, checklist wording and officer comments. The existing history IDs
+are preserved. JDBC remains the deployment default; no cloud rollout is needed
+to use this local mode.
+
+Live verification found 23 saved outputs overall, 18 in the 30-day cohort,
+one finalized review and zero override rows. The latest output was 26 October,
+so the 7-day view was empty. Select **Last 30 days** to inspect existing records.
+The reviewed metrics currently represent only one reviewed call. Missing cost
+and latency metadata remains unavailable. These are observations as of the
+verification time, not seeded dashboard values.
+
+The local Docker reporting setup uses UTC, matching the deployed database's
+zone-less timestamps. Keep that timezone when running this mode elsewhere.
+Starting Aurora resumes normal AWS database charges; ECS can remain stopped.
+Refresh the AWS session and restart the local container when credentials expire.
+
+The older deployment notes below describe previous verification stages.
+
 The Developer -> Production dashboard reads live application records through
 `GET /api/observability?days=7`. Reporting allows DEVELOPER, ADMIN, SUPER_ADMIN and MANAGER. Management and officer screens and authentication
 are unchanged. Existing accounts are not automatically reassigned.
