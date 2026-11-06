@@ -12,9 +12,30 @@ evaluation_runs/*
 !evaluation_runs/.gitkeep
 datasets/*/calls/*/renders/*/audio.mp3
 datasets/*/calls/*/renders/*/segments/*.mp3
+datasets/*/calls/*/renders/*/audio.wav
+datasets/*/calls/*/renders/*/segments/*.wav
 .pytest-tmp/
 # G3 operational audit store (raw provider envelopes, live attempt state); never committed
 .llm_audit/
 
 # short cross-stage write lock (crash leftovers must be deleted by hand after confirming no run is active)
 datasets/*/.stage_write.lock
+
+# Keep generated multilingual G3-G7 working artifacts local. Frozen G0-G2B
+# inputs remain versioned; existing tracked files are unaffected by these rules.
+/datasets/advisory_execution_multilingual_v1/authoring/call_configs/
+/datasets/advisory_execution_multilingual_v1/authoring/call_config_provenance/
+/datasets/advisory_execution_multilingual_v1/authoring/check_plans/
+/datasets/advisory_execution_multilingual_v1/authoring/check_plan_provenance/
+/datasets/advisory_execution_multilingual_v1/authoring/plan_verifications/
+/datasets/advisory_execution_multilingual_v1/authoring/plan_verification_provenance/
+/datasets/advisory_execution_multilingual_v1/authoring/dialogues/
+/datasets/advisory_execution_multilingual_v1/authoring/dialogue_provenance/
+/datasets/advisory_execution_multilingual_v1/authoring/dialogue_verifications/
+/datasets/advisory_execution_multilingual_v1/authoring/dialogue_verification_provenance/
+
+# Held-out split: never published (the owner runs it once at the end); the development split is the shared, tunable one.
+/datasets/advisory_execution_multilingual_v1_heldout/
+
+# Full 250-call authoring release: kept locally, not published. The shared dataset is the development split.
+/datasets/advisory_execution_multilingual_v1/

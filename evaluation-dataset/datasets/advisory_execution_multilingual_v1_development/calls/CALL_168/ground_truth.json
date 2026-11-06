@@ -1,0 +1,793 @@
+{
+  "schema_version": "2.0",
+  "stage": "G9",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_168",
+  "status": {
+    "g7_dialogue_verification": "VERIFIED",
+    "timings": "AUDIO_DERIVED"
+  },
+  "source": {
+    "call_spec_sha256": "9e8b35d991e78cdc92502ab663d910e7357ad27d091e490b17c2e75a592e0ba4",
+    "check_plan_skeleton_sha256": "c205ec69ab7b2293438be5b93c0b4bc377399993795412072d0a42cd94d1c814",
+    "call_config_sha256": "30d2c368001164e1ba7ce77e135eb8e5b10cf2915136d2ca27f3783e1f249e0f",
+    "check_plan_sha256": "f5d6d1fe73bba567b3bc61b720a8bafe4c7da789de34f2ce9ca49a151987b9a4",
+    "plan_verification_sha256": "5c05132defcfda5fe965b121d99461404079b256508f8d93e0f404b37802d587",
+    "dialogue_sha256": "b7b20677056207f4b0601f16de25180cb38b52be54895bcdb64064982936535c",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language_profile": "MANDARIN",
+    "mixing_style": "NONE",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 63,
+          "text": "陈先生，我了解您的投资目标是持有公司债券至到期，在发行人履行偿付义务的前提下获取合约约定的利息收入，我们就围绕这个目标来讨论。"
+        }
+      ],
+      "gold_evidence_text": "陈先生，我了解您的投资目标是持有公司债券至到期，在发行人履行偿付义务的前提下获取合约约定的利息收入，我们就围绕这个目标来讨论。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 78,
+          "text": "阿特拉斯美元公司债券二〇三一的发行人如果财务状况恶化或违约，可能延迟支付，甚至无法支付利息或偿还本金。此外，市场利率上升也可能使这只债券在到期前的市价下跌。"
+        }
+      ],
+      "gold_evidence_text": "阿特拉斯美元公司债券二〇三一的发行人如果财务状况恶化或违约，可能延迟支付，甚至无法支付利息或偿还本金。此外，市场利率上升也可能使这只债券在到期前的市价下跌。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6,
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 79,
+          "end": 121,
+          "text": "刚才说明的发行人可能无法偿付，以及利率上升可能导致债券市价下跌的风险，您是否都理解？"
+        },
+        {
+          "event_id": "EV_004",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 41,
+          "text": "我理解，发行人出问题可能付不出利息和本金；市场利率上升，也可能让债券在到期前跌价。"
+        }
+      ],
+      "gold_evidence_text": "刚才说明的发行人可能无法偿付，以及利率上升可能导致债券市价下跌的风险，您是否都理解？\n我理解，发行人出问题可能付不出利息和本金；市场利率上升，也可能让债券在到期前跌价。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 17,
+          "text": "这笔交易的手续费率是百分之零点二。"
+        }
+      ],
+      "gold_evidence_text": "这笔交易的手续费率是百分之零点二。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_006",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 18,
+          "end": 56,
+          "text": "您需要清楚，投资这只债券可能损失部分本金，严重时甚至可能损失全部投入的本金。"
+        }
+      ],
+      "gold_evidence_text": "您需要清楚，投资这只债券可能损失部分本金，严重时甚至可能损失全部投入的本金。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 57,
+          "end": 86,
+          "text": "了解这些风险后，您是否愿意接受这项投资可能带来的本金损失？"
+        },
+        {
+          "event_id": "EV_008",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 33,
+          "text": "我愿意接受这项投资可能带来的本金损失，也能接受持有期间的价格波动。"
+        }
+      ],
+      "gold_evidence_text": "了解这些风险后，您是否愿意接受这项投资可能带来的本金损失？\n我愿意接受这项投资可能带来的本金损失，也能接受持有期间的价格波动。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_009",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 86,
+          "text": "我推荐阿特拉斯美元公司债券二〇三一，是因为它约定的利息支付符合您获取收入的目标，而您打算持有至到期，也能减少对中途转售的依赖。不过，持有至到期仍然需要承担发行人的信用风险。"
+        }
+      ],
+      "gold_evidence_text": "我推荐阿特拉斯美元公司债券二〇三一，是因为它约定的利息支付符合您获取收入的目标，而您打算持有至到期，也能减少对中途转售的依赖。不过，持有至到期仍然需要承担发行人的信用风险。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12,
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_010",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 67,
+          "text": "请您最后确认：以美金交易，金额为五十万，数量为一千五百，使用市价单买阿特拉斯美元公司债券二〇三一。这是否就是您最终授权执行的交易指示？"
+        },
+        {
+          "event_id": "EV_011",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 32,
+          "text": "我确认，您刚才核对的内容就是我的最终交易指示，请按这个指示执行。"
+        }
+      ],
+      "gold_evidence_text": "请您最后确认：以美金交易，金额为五十万，数量为一千五百，使用市价单买阿特拉斯美元公司债券二〇三一。这是否就是您最终授权执行的交易指示？\n我确认，您刚才核对的内容就是我的最终交易指示，请按这个指示执行。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "S6449868Q"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 23,
+          "end": 48,
+          "text": "我看过证件了，我的身份证号码是S六四四九八六八Q。"
+        }
+      ],
+      "gold_evidence_text": "我看过证件了，我的身份证号码是S六四四九八六八Q。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "S6449868Q"
+        }
+      ],
+      "challenge_tags": [
+        "false_start"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "06 February 1991"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_014",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 49,
+          "end": 66,
+          "text": "我的出生日期是一九九一年二月六日。"
+        }
+      ],
+      "gold_evidence_text": "我的出生日期是一九九一年二月六日。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "06 February 1991"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_015",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 67,
+          "end": 92,
+          "text": "这次我要交易的产品是阿特拉斯美元公司债券二〇三一。"
+        }
+      ],
+      "gold_evidence_text": "这次我要交易的产品是阿特拉斯美元公司债券二〇三一。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Atlas USD Corporate Bond 2031"
+        }
+      ],
+      "challenge_tags": [
+        "long_distance_dependency"
+      ]
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 42,
+          "end": 54,
+          "text": "这次交易的币种定为美金。"
+        }
+      ],
+      "gold_evidence_text": "这次交易的币种定为美金。",
+      "final_turn_id": 11,
+      "value_history": [
+        {
+          "turn_id": 11,
+          "event_id": "EV_017",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": "SGD"
+        },
+        {
+          "turn_id": 11,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "USD"
+        }
+      ],
+      "challenge_tags": [
+        "multiple_currencies",
+        "long_distance_dependency"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 500000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_018",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 55,
+          "end": 72,
+          "text": "这次交易我确定投入的金额是五十万。"
+        }
+      ],
+      "gold_evidence_text": "这次交易我确定投入的金额是五十万。",
+      "final_turn_id": 11,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_020",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 1000000
+        },
+        {
+          "turn_id": 5,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 50000
+        },
+        {
+          "turn_id": 11,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 500000
+        }
+      ],
+      "challenge_tags": [
+        "multiple_monetary_values"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1500
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_021",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 73,
+          "end": 88,
+          "text": "这次下单的数量确定为一千五百。"
+        }
+      ],
+      "gold_evidence_text": "这次下单的数量确定为一千五百。",
+      "final_turn_id": 11,
+      "value_history": [
+        {
+          "turn_id": 11,
+          "event_id": "EV_021",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 1500
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_022",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 89,
+          "end": 103,
+          "text": "这笔交易我要买入，不是卖出。"
+        }
+      ],
+      "gold_evidence_text": "这笔交易我要买入，不是卖出。",
+      "final_turn_id": 11,
+      "value_history": [
+        {
+          "turn_id": 11,
+          "event_id": "EV_022",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "BUY"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_023",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 104,
+          "end": 114,
+          "text": "订单类型请用市价单。"
+        }
+      ],
+      "gold_evidence_text": "订单类型请用市价单。",
+      "final_turn_id": 11,
+      "value_history": [
+        {
+          "turn_id": 11,
+          "event_id": "EV_023",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "陈先生，您好，我是林佳怡。我们按预约通话，您现在方便说话吗？"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "方便。我刚整理完阳台上的盆栽，已经回屋坐好了。最近忙着修剪枝叶，倒是能暂时放下公司的事情。"
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "工作之外能有自己的爱好，很难得。我们开始吧，请您提供身份核对所需的证件资料和出生日期。"
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "我的身份证号码是……我拿证件看着说，免得记错。我看过证件了，我的身份证号码是S六四四九八六八Q。 我的出生日期是一九九一年二月六日。 这次我要交易的产品是阿特拉斯美元公司债券二〇三一。"
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "陈先生，我了解您的投资目标是持有公司债券至到期，在发行人履行偿付义务的前提下获取合约约定的利息收入，我们就围绕这个目标来讨论。"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "我把个人投资和公司的账务分开处理，背景情况也想说清楚。我的整体投资组合余额是一百万美金，这是组合的背景情况，不是这次要投入的金额。 我以前那笔投资的金额是五万美金，提这个只是作参考，不是这次的交易金额。"
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "阿特拉斯美元公司债券二〇三一的发行人如果财务状况恶化或违约，可能延迟支付，甚至无法支付利息或偿还本金。此外，市场利率上升也可能使这只债券在到期前的市价下跌。 刚才说明的发行人可能无法偿付，以及利率上升可能导致债券市价下跌的风险，您是否都理解？"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "我理解，发行人出问题可能付不出利息和本金；市场利率上升，也可能让债券在到期前跌价。"
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "这笔交易的手续费率是百分之零点二。 您需要清楚，投资这只债券可能损失部分本金，严重时甚至可能损失全部投入的本金。 了解这些风险后，您是否愿意接受这项投资可能带来的本金损失？"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "我愿意接受这项投资可能带来的本金损失，也能接受持有期间的价格波动。"
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "我推荐阿特拉斯美元公司债券二〇三一，是因为它约定的利息支付符合您获取收入的目标，而您打算持有至到期，也能减少对中途转售的依赖。不过，持有至到期仍然需要承担发行人的信用风险。"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "家里的日常开销是用新元，所以我考虑利息收入时会拿它作比较，但那不是这笔交易的币种。 这次交易的币种定为美金。 这次交易我确定投入的金额是五十万。 这次下单的数量确定为一千五百。 这笔交易我要买入，不是卖出。 订单类型请用市价单。"
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "请您最后确认：以美金交易，金额为五十万，数量为一千五百，使用市价单买阿特拉斯美元公司债券二〇三一。这是否就是您最终授权执行的交易指示？"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "我确认，您刚才核对的内容就是我的最终交易指示，请按这个指示执行。"
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "后续的交易通知请您留意。关于今后预约电话，您希望我们怎样联系比较方便？"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "请先发预约消息，让我看看公司的安排再回复。直接打过来，有时正在开会，不太方便谈个人的事情。"
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "我会记下您的联系偏好，今后预约时先发消息，再和您协调通话时间。感谢您今天抽空。"
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "谢谢林女士，今天就谈到这里，再见。"
+    }
+  ],
+  "timing": {
+    "render_id": "gemini_tts_pilot_A",
+    "timings_sha256": "1d894905c39a93adcc8541e3de56048417796ff74e2373673a34d5e153ccdd74",
+    "render_manifest_sha256": "e6ae9a4d94046d416c177cb8ea20909ad6969c760e166124bd4e841b35b60002",
+    "audio_sha256": "d123c76dbad1581e94c427d0f327a7c7275a51fac2345752afa0c284966471c5",
+    "g7_report_sha256": "234cb72b662c21db168bcd410432c864301f5cbae2c6a8bf549093b5373d3929",
+    "duration_seconds": 225.12
+  }
+}

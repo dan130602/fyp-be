@@ -1,0 +1,1448 @@
+{
+  "schema_version": "2.0",
+  "stage": "G4",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_246",
+  "call_spec_sha256": "e23b6a077a4a14f2d654a426104148019d3b77b5c42bc8b15ac044fcfd94ded3",
+  "check_plan_skeleton_sha256": "3b9babb69b91c1101737b07df43a08650b681e7f6a2cd6bc175eac64dcffa7ee",
+  "call_config_sha256": "8f093d955969d70e2a5b51555f83383cee874add0799cfce55890372922e95dc",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "d50139eb2f3a3995986fd3c044c087f406b167dcca2fad6488141ff72f6b0124",
+    "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+    "accepted_response_sha256": "ebb19da77c2a478f1d073c7e197ba86a98e5a1691bcc0d7bee520163eeac533f"
+  },
+  "skeleton_header": {
+    "schema_version": "2.0",
+    "stage": "G2B",
+    "dataset_id": "advisory_execution_multilingual_v1",
+    "call_id": "CALL_246",
+    "call_spec_sha256": "e23b6a077a4a14f2d654a426104148019d3b77b5c42bc8b15ac044fcfd94ded3",
+    "source": {
+      "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+      "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+      "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+      "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+      "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+    }
+  },
+  "planned_events": [
+    {
+      "event_id": "EV_001",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C01"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C01.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "陈先生，我确认您这次的投资目标是通过债券投资获取收益，同时希望审慎控制投资组合的波动。",
+        "planned_text": "陈先生，我确认您这次的投资目标是通过债券投资获取收益，同时希望审慎控制投资组合的波动。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_002",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C02"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C02.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "[[T01]]持有的债券会受市场利率影响；如果利率上升，债券的市场价格可能下跌，从而拉低基金净值。",
+        "planned_text": "海港新元债券基金持有的债券会受市场利率影响；如果利率上升，债券的市场价格可能下跌，从而拉低基金净值。",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Harbor SGD Bond Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "海港新元债券基金",
+            "start": 0,
+            "end": 8,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_003",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "刚才说明的利率上升可能导致债券价格及基金净值下跌的风险，您是否理解？",
+        "planned_text": "刚才说明的利率上升可能导致债券价格及基金净值下跌的风险，您是否理解？",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_004",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我理解，市场利率上升时，基金持有的债券可能跌价，基金净值也可能跟着下跌。",
+        "planned_text": "我理解，市场利率上升时，基金持有的债券可能跌价，基金净值也可能跟着下跌。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_005",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C04"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C04.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "这笔交易的手续费率是[[FEE]]。",
+        "planned_text": "这笔交易的手续费率是百分之零点二五。",
+        "value_mentions": [
+          {
+            "placeholder": "FEE",
+            "question_id": null,
+            "value": {
+              "basis": "RATE",
+              "value": 0.25,
+              "currency": null
+            },
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "百分之零点二五",
+            "start": 10,
+            "end": 17,
+            "source": "SCENARIO_FEE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_006",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C05"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C05.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "还需要提醒您，投资这只基金可能令您损失部分甚至全部投入的本金。",
+        "planned_text": "还需要提醒您，投资这只基金可能令您损失部分甚至全部投入的本金。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_007",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "了解这些风险后，您是否愿意承担这项投资可能带来的本金损失？",
+        "planned_text": "了解这些风险后，您是否愿意承担这项投资可能带来的本金损失？",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_008",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我已经了解这些损失可能怎样产生，也愿意承担这项投资可能带来的本金损失。",
+        "planned_text": "我已经了解这些损失可能怎样产生，也愿意承担这项投资可能带来的本金损失。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_009",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C07"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C07.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "我推荐[[T01]]，是因为它通过持有不同发行人的债券分散投资，既能配合您寻求债券收益的目标，也避免过度依赖个别发行人。",
+        "planned_text": "我推荐海港新元债券基金，是因为它通过持有不同发行人的债券分散投资，既能配合您寻求债券收益的目标，也避免过度依赖个别发行人。",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Harbor SGD Bond Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "海港新元债券基金",
+            "start": 3,
+            "end": 11,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_010",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "请您确认最终指令：以[[T02]]交易，金额为[[T03]]，[[T05]]入[[T01]][[T04]]份，采用[[T06]]，每份限价为[[LIMIT_PRICE]]。您确认按这些内容下单吗？",
+        "planned_text": "请您确认最终指令：以新加坡元交易，金额为十万，买入海港新元债券基金五百份，采用限价单，每份限价为两百新币。您确认按这些内容下单吗？",
+        "value_mentions": [
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "SGD",
+            "form": "ZH_NATURAL_NAME",
+            "language": "zh",
+            "surface": "新加坡元",
+            "start": 10,
+            "end": 14,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 100000,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "十万",
+            "start": 20,
+            "end": 22,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "BUY",
+            "form": "ZH_NATURAL_VERB",
+            "language": "zh",
+            "surface": "买",
+            "start": 23,
+            "end": 24,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Harbor SGD Bond Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "海港新元债券基金",
+            "start": 25,
+            "end": 33,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 500,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "五百",
+            "start": 33,
+            "end": 35,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "ZH_NATURAL_PHRASE",
+            "language": "zh",
+            "surface": "限价单",
+            "start": 39,
+            "end": 42,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 200,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "两百新币",
+            "start": 48,
+            "end": 52,
+            "source": "SCENARIO_LIMIT_PRICE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_011",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我确认您刚才核对的全部内容就是我的最终交易指令，请按这个指令下单。",
+        "planned_text": "我确认您刚才核对的全部内容就是我的最终交易指令，请按这个指令下单。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_012",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K01"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K01": {
+          "value": "F1296717A",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_CHARACTER_BY_CHARACTER"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我的外籍身份证号码是[[K01]]。",
+        "planned_text": "我的外籍身份证号码是F一二九六七一七A。",
+        "value_mentions": [
+          {
+            "placeholder": "K01",
+            "question_id": "K01",
+            "value": "F1296717A",
+            "form": "ZH_CHARACTER_BY_CHARACTER",
+            "language": "zh",
+            "surface": "F一二九六七一七A",
+            "start": 10,
+            "end": 19,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_013",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "26 March 1984",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_YEAR_MONTH_DAY"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我的出生日期是[[K02]]。",
+        "planned_text": "我的出生日期是一九八四年三月二十六日。",
+        "value_mentions": [
+          {
+            "placeholder": "K02",
+            "question_id": "K02",
+            "value": "26 March 1984",
+            "form": "ZH_YEAR_MONTH_DAY",
+            "language": "zh",
+            "surface": "一九八四年三月二十六日",
+            "start": 7,
+            "end": 18,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_014",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_549"
+      ],
+      "values": {
+        "T01": {
+          "value": "Harbor SGD Bond Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "先介绍的是[[T01]]，它通过汇集资金投资债券组合，让您参与不同债券的投资。",
+        "planned_text": "先介绍的是海港新元债券基金，它通过汇集资金投资债券组合，让您参与不同债券的投资。",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Harbor SGD Bond Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "海港新元债券基金",
+            "start": 5,
+            "end": 13,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_015",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_549"
+      ],
+      "values": {
+        "T01": {
+          "value": "Orion Global Income Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "接下来是[[T01]]，侧重环球债券收益，这里作为比较对象供您参考。",
+        "planned_text": "接下来是猎户座环球收益基金，侧重环球债券收益，这里作为比较对象供您参考。",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Orion Global Income Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "猎户座环球收益基金",
+            "start": 4,
+            "end": 13,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_016",
+      "kind": "REFERENCE_SELECTION",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_549"
+      ],
+      "values": {
+        "T01": {
+          "value": "Harbor SGD Bond Fund",
+          "spoken_form": {
+            "requirement": "NOT_EXPLICIT"
+          }
+        }
+      },
+      "refers_to_event_id": "EV_014",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我选您刚才先介绍的那只。",
+        "planned_text": "我选您刚才先介绍的那只。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_017",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T02": {
+          "value": "SGD",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_NATURAL_NAME"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "这次交易的币种就用[[T02]]。",
+        "planned_text": "这次交易的币种就用新加坡元。",
+        "value_mentions": [
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "SGD",
+            "form": "ZH_NATURAL_NAME",
+            "language": "zh",
+            "surface": "新加坡元",
+            "start": 9,
+            "end": 13,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_018",
+      "kind": "DISTRACTOR_MENTION",
+      "status": "DISTRACTOR",
+      "allowed_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "T02"
+      ],
+      "assignment_ids": [
+        "EA_548"
+      ],
+      "values": {
+        "T02": {
+          "value": "EUR",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_NATURAL_NAME"
+            ]
+          }
+        }
+      },
+      "distractor_role": "EXISTING_HOLDING_CURRENCY",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我现有的部分持仓是以[[T02]]计价的，那只是原有组合的情况，不是这次交易要用的币种。",
+        "planned_text": "我现有的部分持仓是以欧元计价的，那只是原有组合的情况，不是这次交易要用的币种。",
+        "value_mentions": [
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "EUR",
+            "form": "ZH_NATURAL_NAME",
+            "language": "zh",
+            "surface": "欧元",
+            "start": 10,
+            "end": 12,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_019",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T03"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T03": {
+          "value": 100000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_CARDINAL"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "这次交易的金额定为[[T03]]。",
+        "planned_text": "这次交易的金额定为十万。",
+        "value_mentions": [
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 100000,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "十万",
+            "start": 9,
+            "end": 11,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_020",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [
+        "EA_550"
+      ],
+      "values": {
+        "T04": {
+          "value": 500,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_CARDINAL"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "谈到交易规模，我目前考虑的数量是[[T04]]份。",
+        "planned_text": "谈到交易规模，我目前考虑的数量是五百份。",
+        "value_mentions": [
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 500,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "五百",
+            "start": 16,
+            "end": 18,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_021",
+      "kind": "REFERENCE_SELECTION",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [
+        "EA_550"
+      ],
+      "values": {
+        "T04": {
+          "value": 500,
+          "spoken_form": {
+            "requirement": "NOT_EXPLICIT"
+          }
+        }
+      },
+      "refers_to_event_id": "EV_020",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "数量就按我刚才提到的份额数下单，不作调整。",
+        "planned_text": "数量就按我刚才提到的份额数下单，不作调整。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_022",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T05"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T05": {
+          "value": "BUY",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_NATURAL_VERB"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "这次我是要[[T05]]入。",
+        "planned_text": "这次我是要买入。",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "BUY",
+            "form": "ZH_NATURAL_VERB",
+            "language": "zh",
+            "surface": "买",
+            "start": 5,
+            "end": 6,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_023",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T06"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T06": {
+          "value": "LIMIT",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "ZH_NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "请用[[T06]]下单，每份最高买入价设为[[LIMIT_PRICE]]。",
+        "planned_text": "请用限价单下单，每份最高买入价设为两百新币。",
+        "value_mentions": [
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "ZH_NATURAL_PHRASE",
+            "language": "zh",
+            "surface": "限价单",
+            "start": 2,
+            "end": 5,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 200,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "两百新币",
+            "start": 17,
+            "end": 21,
+            "source": "SCENARIO_LIMIT_PRICE"
+          }
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C01.pass_condition",
+      "evidence_event_ids": [
+        "EV_001"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C02.pass_condition",
+      "evidence_event_ids": [
+        "EV_002"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C03.pass_condition",
+      "evidence_event_ids": [
+        "EV_003",
+        "EV_004"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C04.pass_condition",
+      "evidence_event_ids": [
+        "EV_005"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C05.pass_condition",
+      "evidence_event_ids": [
+        "EV_006"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C06.pass_condition",
+      "evidence_event_ids": [
+        "EV_007",
+        "EV_008"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C07.pass_condition",
+      "evidence_event_ids": [
+        "EV_009"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C08.pass_condition",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C09.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C10.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C11.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C12.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F1296717A"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_CHARACTER_BY_CHARACTER"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_CHARACTER_BY_CHARACTER"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "OH_FOR_ZERO",
+        "DOUBLE_OR_TRIPLE_DIGIT"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "26 March 1984"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013"
+      ],
+      "final_event_id": "EV_013",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_YEAR_MONTH_DAY"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_YEAR_MONTH_DAY"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Harbor SGD Bond Fund"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_014",
+        "EV_015",
+        "EV_016"
+      ],
+      "final_event_id": "EV_016",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_FULL_PRODUCT_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_FULL_PRODUCT_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_549"
+      ]
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SGD"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_017",
+        "EV_018"
+      ],
+      "final_event_id": "EV_017",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_NATURAL_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_NATURAL_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_548"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T03.resolution_rule",
+      "evidence_event_ids": [
+        "EV_019"
+      ],
+      "final_event_id": "EV_019",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "FINANCIAL_SHORTHAND",
+        "MAGNITUDE_EXPRESSION"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 500
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T04.resolution_rule",
+      "evidence_event_ids": [
+        "EV_020",
+        "EV_021"
+      ],
+      "final_event_id": "EV_021",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_550"
+      ]
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T05.resolution_rule",
+      "evidence_event_ids": [
+        "EV_022"
+      ],
+      "final_event_id": "EV_022",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_NATURAL_VERB"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_NATURAL_VERB"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T06.resolution_rule",
+      "evidence_event_ids": [
+        "EV_023"
+      ],
+      "final_event_id": "EV_023",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "ZH_NATURAL_PHRASE"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "ZH_NATURAL_PHRASE"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    }
+  ],
+  "constraints": [
+    {
+      "type": "ORDER",
+      "before": "EV_003",
+      "after": "EV_004",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C03"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_007",
+      "after": "EV_008",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C06"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_010",
+      "after": "EV_011",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C08"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_014",
+      "after": "EV_015",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_549"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_016",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_549"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_020",
+      "after": "EV_021",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_550"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_002",
+      "after": "EV_003",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C03_AFTER_C02_DISCLOSURE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_016",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_017",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_019",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_021",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_022",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_023",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    }
+  ],
+  "derived_constraints": []
+}

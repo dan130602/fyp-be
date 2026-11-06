@@ -52,11 +52,24 @@ def discover_calls(dataset_root):
     return sorted(path.name for path in (Path(dataset_root) / "calls").glob("CALL_*") if path.is_dir())
 
 
+AUTO_RENDER = "auto"  # use the call's own single render folder (a release mixes Polly mp3 with Gemini / OmniVoice wav renders)
+
+
 def local_audio(dataset_root, call_id, render_id):
-    path = Path(dataset_root) / "calls" / call_id / "renders" / render_id / "audio.mp3"
+    renders = Path(dataset_root) / "calls" / call_id / "renders"
+    if render_id == AUTO_RENDER:
+        found = sorted(p for p in renders.glob("*/audio.*") if p.suffix in (".mp3", ".wav")) if renders.is_dir() else []
+        if len(found) != 1:
+            raise CollectError(f"{call_id}: --render-id auto needs exactly one audio.mp3 / audio.wav under {renders}, found {len(found)}")
+        return found[0]
+    path = renders / render_id / "audio.mp3"
     if not path.is_file():
         raise CollectError(f"{call_id}: no audio at {path} (render it first; the mp3 files are not committed)")
     return path
+
+
+def _render_and_extension(path):
+    return path.parent.name, path.suffix.lstrip(".")
 
 
 def handler_provenance(handler_path):
@@ -81,20 +94,22 @@ def plan(dataset_root, render_id, call_ids, bucket):
         path = local_audio(dataset_root, call_id, render_id)
         timings = path.with_name("timings.json")
         seconds = json.loads(timings.read_text(encoding="utf-8")).get("duration_seconds") if timings.is_file() else None
-        rows.append({"call_id": call_id, "bytes": path.stat().st_size, "audio_seconds": seconds, "sha256": sha256_file(path),
-                     "master_key": master_key(dataset_id, render_id, call_id)})
+        call_render, extension = _render_and_extension(path)
+        rows.append({"call_id": call_id, "render_id": call_render, "bytes": path.stat().st_size, "audio_seconds": seconds,
+                     "sha256": sha256_file(path), "master_key": master_key(dataset_id, call_render, call_id, extension)})
     return {"dataset_id": dataset_id, "render_id": render_id, "bucket": bucket, "calls": rows,
             "audio_minutes": round(sum(r["audio_seconds"] or 0 for r in rows) / 60, 1)}
 
 
 def _ensure_master(s3, bucket, key, path, digest):
+    content_type = "audio/wav" if path.suffix == ".wav" else "audio/mpeg"
     try:
         if s3.head_object(Bucket=bucket, Key=key).get("Metadata", {}).get("sha256") == digest:
             return "reused"
     except ClientError as error:
         if error.response["Error"]["Code"] not in {"404", "NoSuchKey", "NotFound"}:
             raise
-    s3.upload_file(str(path), bucket, key, ExtraArgs={"Metadata": {"sha256": digest}, "ContentType": "audio/mpeg"})
+    s3.upload_file(str(path), bucket, key, ExtraArgs={"Metadata": {"sha256": digest}, "ContentType": content_type})
     return "uploaded"
 
 
@@ -117,9 +132,9 @@ def collect(settings, handler, s3, *, dataset_root, render_id, call_ids, run_id=
     (run_dir / "raw" / "transcripts").mkdir(parents=True)
 
     transcribe = handler.transcribe
-    keys = {call_id: run_key(run_id, dataset_id, call_id) for call_id in call_ids}
-    entries = {call_id: {"call_id": call_id, "audio_bytes": audio[call_id].stat().st_size, "audio_sha256": digests[call_id],
-                         "master_key": master_key(dataset_id, render_id, call_id), "run_key": keys[call_id], "job_name": None,
+    keys = {call_id: run_key(run_id, dataset_id, call_id, _render_and_extension(audio[call_id])[1]) for call_id in call_ids}
+    entries = {call_id: {"call_id": call_id, "render_id": _render_and_extension(audio[call_id])[0], "audio_bytes": audio[call_id].stat().st_size, "audio_sha256": digests[call_id],
+                         "master_key": master_key(dataset_id, _render_and_extension(audio[call_id])[0], call_id, _render_and_extension(audio[call_id])[1]), "run_key": keys[call_id], "job_name": None,
                          "status": "NOT_STARTED", "failure_reason": None, "transcript_file": None, "job": None} for call_id in call_ids}
     metadata = {"run_id": run_id, "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None, "status": "running", "error": None,
                 "region": settings.region, "bucket": bucket, "dataset_id": dataset_id, "render_id": render_id,

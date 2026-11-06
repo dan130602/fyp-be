@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "stage": "G8",
+  "provider": "omnivoice",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_186",
+  "render_id": "omnivoice_pilot_A",
+  "dialogue_sha256": "b7c6770b3cdcab4e251e0865d91769d32beb29ae34c00f121b57697e9ca7593d",
+  "g7_report_sha256": "4cac42faafb339603d5095b65d21a07fade911bf72288100b70666b3d9cca1aa",
+  "timings_sha256": "f6528e2192248360b330dcd53fb399198dcc9ac16080b58e8a4f410d8569332f",
+  "audio_file": "audio.wav",
+  "audio_sha256": "f9dd7e00e934b3f6e54f9ab0eed78dd37ab03795b9e8644fcbf9ce7142a84017",
+  "settings": {
+    "provider": "omnivoice",
+    "backend": "slurm-gpu-worker",
+    "model": "MERaLiON/MERaLiON-OmniVoice-Hokkien-TTS",
+    "revision": "cd2fa70a18dd464dec4a429aedd5606c75985533",
+    "dtype": "float16",
+    "seed": 42,
+    "num_step": null,
+    "language": null,
+    "normalize_text": false,
+    "cloning": "create_voice_clone_prompt",
+    "employee_voice": "F02",
+    "client_voice": "M02",
+    "references": {
+      "EMPLOYEE": {
+        "voice_id": "F02",
+        "reference_file": "singlish female malay.wav",
+        "reference_sha256": "8c2b4dd647c64989cae83026470aba91c84009a439ce61a0c13aa426e8a33fc2",
+        "reference_text_sha256": "70b1abeec1cde31add91c55474d1f7b2db58a3422f292dfb0113252e1b870885"
+      },
+      "CLIENT": {
+        "voice_id": "M02",
+        "reference_file": "singlish male uncle.wav",
+        "reference_sha256": "1117e724556bd02c17c0d1ae40f081cff40544ac56dc90ca2778a1618f8df389",
+        "reference_text_sha256": "160402b0cf04e66de5672d803209018254c84d8700ff0289c688e1c779dcb681"
+      }
+    },
+    "text_transform": "spoken-percent-comma-and-millions-v3",
+    "silence_ms": 400,
+    "sample_rate": 24000
+  },
+  "timing_basis": "PER_TURN_WAV_LENGTH",
+  "word_timing": "NONE",
+  "turns": 20,
+  "total_cost_usd": 0.0,
+  "cost_basis": "school_gpu_cluster",
+  "rendered_at": "2026-11-05T20:17:00Z"
+}

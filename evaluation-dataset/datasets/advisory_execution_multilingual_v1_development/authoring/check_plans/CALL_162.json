@@ -1,0 +1,1433 @@
+{
+  "schema_version": "2.0",
+  "stage": "G4",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_162",
+  "call_spec_sha256": "51fb7a6b21056fc19aa05fcb99949819e5d1a420aca6173950bfc0c8746666cd",
+  "check_plan_skeleton_sha256": "55c553943bee9077b8ca3a716e500d614cd7cc1a7838dd1f5cd7766147e1f5c7",
+  "call_config_sha256": "0104d3136a19b11d025817605bc313e774e5105d5ff7eb9c4540f1bb203680d0",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "34181ca89b93e12667deed58d210ade888fb200a992276fd4e4d6a5e7387719c",
+    "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+    "accepted_response_sha256": "9966f94a315f50eae091870e92f3134d9b7c634189016638f0434a79d39e1acc"
+  },
+  "skeleton_header": {
+    "schema_version": "2.0",
+    "stage": "G2B",
+    "dataset_id": "advisory_execution_multilingual_v1",
+    "call_id": "CALL_162",
+    "call_spec_sha256": "51fb7a6b21056fc19aa05fcb99949819e5d1a420aca6173950bfc0c8746666cd",
+    "source": {
+      "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+      "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+      "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+      "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+      "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+    }
+  },
+  "planned_events": [
+    {
+      "event_id": "EV_001",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C01"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C01.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Your objective is to seek income and diversify your portfolio through emerging-market debt exposure, with a willingness to hold through market fluctuations. That is the objective I am using for this recommendation.",
+        "planned_text": "Your objective is to seek income and diversify your portfolio through emerging-market debt exposure, with a willingness to hold through market fluctuations. That is the objective I am using for this recommendation.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_002",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C02"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C02.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "With [[T01]], emerging-market issuers could default or suffer credit downgrades, reducing the value of the fund's bond holdings.",
+        "planned_text": "With Crest Emerging Markets Bond Fund, emerging-market issuers could default or suffer credit downgrades, reducing the value of the fund's bond holdings.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Crest Emerging Markets Bond Fund",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Crest Emerging Markets Bond Fund",
+            "start": 5,
+            "end": 37,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_003",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Do you understand how issuer defaults or credit downgrades could affect the value of this fund?",
+        "planned_text": "Do you understand how issuer defaults or credit downgrades could affect the value of this fund?",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_004",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Yes, I understand. If issuers default or their credit quality deteriorates, the fund's bond holdings can fall in value.",
+        "planned_text": "Yes, I understand. If issuers default or their credit quality deteriorates, the fund's bond holdings can fall in value.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_005",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C04"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C04.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "The transaction charge is [[FEE]] of the subscription amount.",
+        "planned_text": "The transaction charge is 0.5% of the subscription amount.",
+        "value_mentions": [
+          {
+            "placeholder": "FEE",
+            "question_id": null,
+            "value": {
+              "basis": "RATE",
+              "value": 0.5,
+              "currency": null
+            },
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "0.5%",
+            "start": 26,
+            "end": 30,
+            "source": "SCENARIO_FEE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_006",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C05"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C05.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "You could lose some or all of the capital you invest in this fund.",
+        "planned_text": "You could lose some or all of the capital you invest in this fund.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_007",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Are you willing to accept investment losses in seeking this exposure?",
+        "planned_text": "Are you willing to accept investment losses in seeking this exposure?",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_008",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Yes, I am willing to bear investment losses for this exposure, while keeping an eye on credit quality and liquidity.",
+        "planned_text": "Yes, I am willing to bear investment losses for this exposure, while keeping an eye on credit quality and liquidity.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_009",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C07"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C07.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "I recommend [[T01]] because its emerging-market debt exposure supports your income and diversification objectives. Its pooled structure also spreads exposure across underlying holdings rather than relying on an individual issuer.",
+        "planned_text": "I recommend Crest Emerging Markets Bond Fund because its emerging-market debt exposure supports your income and diversification objectives. Its pooled structure also spreads exposure across underlying holdings rather than relying on an individual issuer.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Crest Emerging Markets Bond Fund",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Crest Emerging Markets Bond Fund",
+            "start": 12,
+            "end": 44,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_010",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Please confirm your final instruction: [[T05]] [[T04]] units of [[T01]], with a transaction amount of [[T03]] in [[T02]], using [[T06]]. Is that your instruction?",
+        "planned_text": "Please confirm your final instruction: buy 250 units of Crest Emerging Markets Bond Fund, with a transaction amount of 10,000,000 in Japanese yen, using a market order. Is that your instruction?",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "BUY",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "buy",
+            "start": 39,
+            "end": 42,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 250,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "250",
+            "start": 43,
+            "end": 46,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Crest Emerging Markets Bond Fund",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Crest Emerging Markets Bond Fund",
+            "start": 56,
+            "end": 88,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 10000000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "10,000,000",
+            "start": 119,
+            "end": 129,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "JPY",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "Japanese yen",
+            "start": 133,
+            "end": 145,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "MARKET",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a market order",
+            "start": 153,
+            "end": 167,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_011",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Yes, I confirm that is my final transaction instruction. Please place the order as you have just stated it.",
+        "planned_text": "Yes, I confirm that is my final transaction instruction. Please place the order as you have just stated it.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_012",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT",
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C09"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C09.fail_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "The subscription money came from cash receipts I collected for an unrelated business contact. He asked me to pass it through my personal account so the true source would be hidden.",
+        "planned_text": "The subscription money came from cash receipts I collected for an unrelated business contact. He asked me to pass it through my personal account so the true source would be hidden.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_013",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K01"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K01": {
+          "value": "G5942327M",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "CHARACTER_BY_CHARACTER",
+              "ZH_CHARACTER_BY_CHARACTER"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "My FIN is [[K01]].",
+        "planned_text": "My FIN is G five nine four two three two seven M.",
+        "value_mentions": [
+          {
+            "placeholder": "K01",
+            "question_id": "K01",
+            "value": "G5942327M",
+            "form": "CHARACTER_BY_CHARACTER",
+            "language": "en",
+            "surface": "G five nine four two three two seven M",
+            "start": 10,
+            "end": 48,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_014",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "05 June 1982",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY",
+              "ZH_YEAR_MONTH_DAY"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "My date of birth is [[K02]].",
+        "planned_text": "My date of birth is 5 June 1982.",
+        "value_mentions": [
+          {
+            "placeholder": "K02",
+            "question_id": "K02",
+            "value": "05 June 1982",
+            "form": "DAY_MONTH_YEAR",
+            "language": "en",
+            "surface": "5 June 1982",
+            "start": 20,
+            "end": 31,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_015",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_371"
+      ],
+      "values": {
+        "T01": {
+          "value": "Pioneer Balanced Opportunities Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME",
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        }
+      },
+      "required_language": "en",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "I have been considering [[T01]], the multi-asset option.",
+        "planned_text": "I have been considering Pioneer Balanced Opportunities Fund, the multi-asset option.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Pioneer Balanced Opportunities Fund",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Pioneer Balanced Opportunities Fund",
+            "start": 24,
+            "end": 59,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_016",
+      "kind": "ANTECEDENT_MENTION",
+      "status": "ANTECEDENT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_371"
+      ],
+      "values": {
+        "T01": {
+          "value": "Crest Emerging Markets Bond Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME",
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        }
+      },
+      "required_language": "en",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "The other candidate I reviewed is [[T01]], with its emerging-market debt exposure.",
+        "planned_text": "The other candidate I reviewed is Crest Emerging Markets Bond Fund, with its emerging-market debt exposure.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Crest Emerging Markets Bond Fund",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Crest Emerging Markets Bond Fund",
+            "start": 34,
+            "end": 66,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_017",
+      "kind": "REFERENCE_SELECTION",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_371"
+      ],
+      "values": {
+        "T01": {
+          "value": "Crest Emerging Markets Bond Fund",
+          "spoken_form": {
+            "requirement": "NOT_EXPLICIT"
+          }
+        }
+      },
+      "refers_to_event_id": "EV_016",
+      "required_language": "zh",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我就选刚才提到的、投资新兴市场债券的那只。",
+        "planned_text": "我就选刚才提到的、投资新兴市场债券的那只。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_018",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T02": {
+          "value": "JPY",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_NAME",
+              "SPELLED_CODE",
+              "ZH_NATURAL_NAME"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Use [[T02]] as the transaction currency.",
+        "planned_text": "Use Japanese yen as the transaction currency.",
+        "value_mentions": [
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "JPY",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "Japanese yen",
+            "start": 4,
+            "end": 16,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_019",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T03"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T03": {
+          "value": 10000000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "The amount I want to commit to this transaction is [[T03]].",
+        "planned_text": "The amount I want to commit to this transaction is 10,000,000.",
+        "value_mentions": [
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 10000000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "10,000,000",
+            "start": 51,
+            "end": 61,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_020",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T04": {
+          "value": 250,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Let me start again: the quantity I want is [[T04]] units.",
+        "planned_text": "Let me start again: the quantity I want is 250 units.",
+        "value_mentions": [
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 250,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "250",
+            "start": 43,
+            "end": 46,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_021",
+      "kind": "FALSE_START",
+      "status": "ABANDONED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T04"
+      ],
+      "assignment_ids": [
+        "EA_372"
+      ],
+      "incomplete": true,
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "For the quantity, my note says—",
+        "planned_text": "For the quantity, my note says—",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_022",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T05"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T05": {
+          "value": "BUY",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_VERB",
+              "ZH_NATURAL_VERB"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "I want to [[T05]] the selected fund.",
+        "planned_text": "I want to buy the selected fund.",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "BUY",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "buy",
+            "start": 10,
+            "end": 13,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_023",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T06"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "T06": {
+          "value": "MARKET",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_PHRASE",
+              "ZH_NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Please use [[T06]] for this transaction.",
+        "planned_text": "Please use a market order for this transaction.",
+        "value_mentions": [
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "MARKET",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a market order",
+            "start": 11,
+            "end": 25,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C01.pass_condition",
+      "evidence_event_ids": [
+        "EV_001"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C02.pass_condition",
+      "evidence_event_ids": [
+        "EV_002"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C03.pass_condition",
+      "evidence_event_ids": [
+        "EV_003",
+        "EV_004"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C04.pass_condition",
+      "evidence_event_ids": [
+        "EV_005"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C05.pass_condition",
+      "evidence_event_ids": [
+        "EV_006"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C06.pass_condition",
+      "evidence_event_ids": [
+        "EV_007",
+        "EV_008"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C07.pass_condition",
+      "evidence_event_ids": [
+        "EV_009"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C08.pass_condition",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "required_condition_ref": "C09.fail_condition",
+      "evidence_event_ids": [
+        "EV_012"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C10.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C11.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C12.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "G5942327M"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013"
+      ],
+      "final_event_id": "EV_013",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "CHARACTER_BY_CHARACTER",
+            "ZH_CHARACTER_BY_CHARACTER"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "CHARACTER_BY_CHARACTER",
+          "ZH_CHARACTER_BY_CHARACTER"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "OH_FOR_ZERO",
+        "DOUBLE_OR_TRIPLE_DIGIT"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "05 June 1982"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_014"
+      ],
+      "final_event_id": "EV_014",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DAY_MONTH_YEAR",
+            "ORDINAL_DAY",
+            "ZH_YEAR_MONTH_DAY"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DAY_MONTH_YEAR",
+          "ORDINAL_DAY",
+          "ZH_YEAR_MONTH_DAY"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Crest Emerging Markets Bond Fund"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_015",
+        "EV_016",
+        "EV_017"
+      ],
+      "final_event_id": "EV_017",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "FULL_PRODUCT_NAME",
+            "ZH_FULL_PRODUCT_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "FULL_PRODUCT_NAME",
+          "ZH_FULL_PRODUCT_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_371"
+      ]
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "JPY"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_018"
+      ],
+      "final_event_id": "EV_018",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_NAME",
+            "SPELLED_CODE",
+            "ZH_NATURAL_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_NAME",
+          "SPELLED_CODE",
+          "ZH_NATURAL_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 10000000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T03.resolution_rule",
+      "evidence_event_ids": [
+        "EV_019"
+      ],
+      "final_event_id": "EV_019",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "FINANCIAL_SHORTHAND",
+        "MAGNITUDE_EXPRESSION"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 250
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T04.resolution_rule",
+      "evidence_event_ids": [
+        "EV_020",
+        "EV_021"
+      ],
+      "final_event_id": "EV_020",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_372"
+      ]
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T05.resolution_rule",
+      "evidence_event_ids": [
+        "EV_022"
+      ],
+      "final_event_id": "EV_022",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_VERB",
+            "ZH_NATURAL_VERB"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_VERB",
+          "ZH_NATURAL_VERB"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T06.resolution_rule",
+      "evidence_event_ids": [
+        "EV_023"
+      ],
+      "final_event_id": "EV_023",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_PHRASE",
+            "ZH_NATURAL_PHRASE"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_PHRASE",
+          "ZH_NATURAL_PHRASE"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    }
+  ],
+  "constraints": [
+    {
+      "type": "ORDER",
+      "before": "EV_003",
+      "after": "EV_004",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C03"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_007",
+      "after": "EV_008",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C06"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_010",
+      "after": "EV_011",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C08"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_016",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_371"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_016",
+      "after": "EV_017",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_371"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_021",
+      "after": "EV_020",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_372"
+      }
+    },
+    {
+      "type": "SAME_TURN",
+      "events": [
+        "EV_020",
+        "EV_021"
+      ],
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_372"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_002",
+      "after": "EV_003",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C03_AFTER_C02_DISCLOSURE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_017",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_018",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_019",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_020",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_022",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_023",
+      "after": "EV_010",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    }
+  ],
+  "derived_constraints": []
+}

@@ -104,3 +104,10 @@ def test_the_production_lambda_is_the_only_source_of_the_handler(handler, tmp_pa
     # no setting can redirect the engine to another handler
     settings = load_settings({"EVAL_BUCKET": "my-bucket", "HANDLER_PATH": str(tmp_path / "other.py")}, tmp_path / "none")
     assert settings.handler_path == config.HANDLER_PATH
+
+
+def test_every_transcribe_setting_reaches_the_handler_but_never_the_output_bucket(tmp_path):
+    env_file = tmp_path / ".env"
+    env_file.write_text("TRANSCRIBE_VOCABULARY_NAME=my-vocab\nTRANSCRIBE_OUTPUT_BUCKET=production-bucket\nOTHER=1\n", encoding="utf-8")
+    settings = load_settings({"EVAL_BUCKET": "eval-bucket", "TRANSCRIBE_LANGUAGE_CODE": "en-US"}, env_file)
+    assert settings.handler_environment() == {"TRANSCRIBE_OUTPUT_BUCKET": "eval-bucket", "TRANSCRIBE_LANGUAGE_CODE": "en-US", "TRANSCRIBE_VOCABULARY_NAME": "my-vocab"}

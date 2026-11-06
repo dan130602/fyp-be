@@ -7,6 +7,7 @@
 Output goes to runs/<run id>/ (see README). Exit code 0 only when every selected call's job completed.
 """
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -19,9 +20,10 @@ from transcribe_eval.config import FYP_BE_ROOT, ConfigError, load_settings
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dataset", help="dataset folder name under evaluation-dataset/datasets (default: DATASET_ROOT setting)")
-    parser.add_argument("--render-id", default="clean_voice_A")
+    parser.add_argument("--render-id", default="clean_voice_A", help="a render folder name, or 'auto' = each call's own single render (mixed Polly mp3 / Gemini+OmniVoice wav release)")
     pick = parser.add_mutually_exclusive_group(required=True)
     pick.add_argument("--all", action="store_true")
+    pick.add_argument("--split", choices=("DEVELOPMENT", "HELDOUT"), help="every call the frozen splits/split.v1.json assigns to this label")
     pick.add_argument("--calls", nargs="+", metavar="CALL_ID")
     parser.add_argument("--run-id")
     parser.add_argument("--poll-seconds", type=float, default=5)
@@ -37,7 +39,11 @@ def main(argv=None):
         return 2
     dataset_root = FYP_BE_ROOT / "evaluation-dataset" / "datasets" / args.dataset if args.dataset else settings.dataset_root
     try:
-        call_ids = engine.discover_calls(dataset_root) if args.all else args.calls
+        if args.split:
+            assignments = json.loads((dataset_root / "splits" / "split.v1.json").read_text(encoding="utf-8"))["assignments"]
+            call_ids = sorted(c for c, v in assignments.items() if v["split"] == args.split)
+        else:
+            call_ids = engine.discover_calls(dataset_root) if args.all else args.calls
         planned = engine.plan(dataset_root, args.render_id, call_ids, settings.bucket)
     except engine.CollectError as error:
         print(f"Cannot collect: {error}")

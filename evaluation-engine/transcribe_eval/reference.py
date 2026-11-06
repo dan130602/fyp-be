@@ -12,6 +12,8 @@ import json
 import re
 from pathlib import Path
 
+from .cjk import has_han, split_han
+
 CRITICAL_KINDS = ("VALUE_CORRECTION", "ORDER_INVALIDATION", "READBACK", "FALSE_START")
 LINK_FIELDS = ("corrects_event_id", "invalidates_event_id", "refers_to_event_id")
 
@@ -29,14 +31,29 @@ def load_turns(dataset_root, call_id):
     return turns
 
 
+def load_turn_times(dataset_root, call_id):
+    """{turn_id: (start, end)} in seconds from the call's transcript.json (the audio-derived times), or {} when they are placeholders."""
+    path = Path(dataset_root) / "calls" / call_id / "transcript.json"
+    if not path.is_file():
+        return {}
+    times = {}
+    for segment in json.loads(path.read_text(encoding="utf-8")).get("audio_segments", []):
+        start, end = float(segment["start_time"]), float(segment["end_time"])
+        if end > start:
+            times[segment["id"]] = (start, end)
+    return times
+
+
 def raw_words(turns):
     """Whitespace words of every turn, with (turn_id, start, end) positions, the turn speaker, and a phrase break after each turn."""
     words, positions, speakers, breaks = [], [], [], set()
     for turn in turns:
         for match in re.finditer(r"\S+", turn["text"]):
-            words.append(match.group())
-            positions.append((turn["turn_id"], match.start(), match.end()))
-            speakers.append(turn["speaker"])
+            pieces = split_han(match.group(), match.start()) if has_han(match.group()) else [(match.group(), match.start(), match.end())]
+            for piece, start, end in pieces:  # a Han character is its own word (see cjk.py); anything else is unchanged
+                words.append(piece)
+                positions.append((turn["turn_id"], start, end))
+                speakers.append(turn["speaker"])
         if words:
             breaks.add(len(words) - 1)
     return words, positions, speakers, breaks

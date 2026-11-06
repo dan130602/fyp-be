@@ -39,7 +39,6 @@ def test_representations_that_say_the_same_thing_match(a, b):
     ("15,000", "50,000"),
     ("not guaranteed", "guaranteed"),
     ("six five", "eleven"),
-    ("don't", "do not"),
     ("16th", "16"),
     ("1,00", "100"),
 ])
@@ -67,8 +66,8 @@ def test_origins_point_back_to_the_raw_words():
 
 
 def test_ambiguous_forms_are_left_unchanged_and_reported():
-    tokens, _, notes = normalize_words(["$50", "1,00", "thousand", "don't"])
-    assert tokens[:3] == ["5", "0", "dollars"] and "1,00" in tokens and "don't" in tokens  # mapped (1.2.0) but still reported
+    tokens, _, notes = normalize_words(["$50", "1,00", "thousand", "it's"])
+    assert tokens[:3] == ["5", "0", "dollars"] and "1,00" in tokens and "it's" in tokens  # mapped (1.2.0) but still reported
     categories = {category for category, _ in notes}
     assert {"currency_symbol", "unrecognised_number", "contraction", "multiplier_without_number"} <= categories
 
@@ -93,4 +92,4 @@ def test_a_bare_currency_symbol_on_a_number_reads_as_the_number_and_its_word():
 def test_hyphenated_words_are_split():
     assert same("long-term", "long term") and same("seven-year", "7 year")
     assert normalize_text("ninety-eight") == ["9", "8"] and normalize_text("twenty-first") == ["2", "1", "ord"]
-    assert not same("cut-off", "cutoff")  # a known, reported spelling difference
+    assert same("cut-off", "cutoff")  # a reviewed project variant since 1.3.0

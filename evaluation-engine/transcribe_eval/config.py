@@ -20,7 +20,7 @@ DATASET_ROOT = FYP_BE_ROOT / "evaluation-dataset" / "datasets" / "advisory_execu
 DEFAULT_REGION = "ap-southeast-1"
 
 # Optional mirrors of the Lambda's environment; only set variables are passed on.
-HANDLER_OPTIONAL = ("TRANSCRIBE_LANGUAGE_CODE", "TRANSCRIBE_MAX_SPEAKER_LABELS")
+HANDLER_OPTIONAL = ("TRANSCRIBE_LANGUAGE_CODE", "TRANSCRIBE_LANGUAGE_OPTIONS", "TRANSCRIBE_LANGUAGE_ID_MODE", "TRANSCRIBE_MAX_SPEAKER_LABELS")
 AWS_CREDENTIAL_NAMES = ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN")
 BUCKET_NAME = re.compile(r"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]")
 
@@ -50,6 +50,13 @@ class Settings:
         environ.update(self.handler_environment())
 
 
+def _handler_names(environ, file_values):
+    """Every TRANSCRIBE_* setting the production handler may read (the listed ones plus any new one a later handler version adds),
+    so improving the handler never needs a change here. The output bucket is always the evaluation bucket."""
+    extra = {name for name in (*environ, *file_values) if str(name).startswith("TRANSCRIBE_") and name != "TRANSCRIBE_OUTPUT_BUCKET"}
+    return sorted({*HANDLER_OPTIONAL, *extra})
+
+
 def _clean(value):
     return (value or "").strip()
 
@@ -77,5 +84,5 @@ def load_settings(environ=None, env_file=ENV_FILE):
         handler_path=HANDLER_PATH,  # fixed: the production Lambda is the one source of truth, never overridable
         dataset_root=Path(get("DATASET_ROOT") or DATASET_ROOT),
         aws_credentials={name: get(name) for name in AWS_CREDENTIAL_NAMES if get(name)},
-        handler_optional={name: get(name) for name in HANDLER_OPTIONAL if get(name)},
+        handler_optional={name: get(name) for name in _handler_names(environ, file_values) if get(name)},
     )

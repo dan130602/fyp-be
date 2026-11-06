@@ -31,7 +31,8 @@ def parsed(raw_items):
             breaks.add(len(items) - 1)
             continue
         items.append({"item": len(items), "content": raw["alternatives"][0]["content"], "speaker": raw.get("speaker_label"),
-                      "confidence": float(raw["alternatives"][0]["confidence"])})
+                      "confidence": float(raw["alternatives"][0]["confidence"]),
+                      "start": float(raw["start_time"]) if "start_time" in raw else None, "end": float(raw["end_time"]) if "end_time" in raw else None})
     return items, breaks
 
 

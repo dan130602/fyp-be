@@ -1,0 +1,1402 @@
+{
+  "schema_version": "2.0",
+  "stage": "G4",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_182",
+  "call_spec_sha256": "3b9acbaad914cc7cc2e915b45eb027897b2d6892b3ff4852030200b93ccd9f73",
+  "check_plan_skeleton_sha256": "48dfe472fd4efa319a562d69a7ead06a37e400aef8a96c7be937e3e52e1886cb",
+  "call_config_sha256": "04d039b28b57f0598e0c1d937d204711ec07b11b9623902d68b325b61751877d",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "d50139eb2f3a3995986fd3c044c087f406b167dcca2fad6488141ff72f6b0124",
+    "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+    "accepted_response_sha256": "c268e74eddf1fa281a6e94873058c9b68ad9ef1a0e7cc00f1cd87a5ace28cb95"
+  },
+  "skeleton_header": {
+    "schema_version": "2.0",
+    "stage": "G2B",
+    "dataset_id": "advisory_execution_multilingual_v1",
+    "call_id": "CALL_182",
+    "call_spec_sha256": "3b9acbaad914cc7cc2e915b45eb027897b2d6892b3ff4852030200b93ccd9f73",
+    "source": {
+      "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+      "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+      "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+      "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+      "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+    }
+  },
+  "planned_events": [
+    {
+      "event_id": "EV_001",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C01"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C01.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Your priority now is to reduce your exposure to corporate credit and free up resources for your personal commitments, rather than add to the holding.",
+        "planned_text": "Your priority now is to reduce your exposure to corporate credit and free up resources for your personal commitments, rather than add to the holding.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_002",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C02"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C02.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "If the issuer's creditworthiness deteriorates, the resale value of [[T01]] can fall. Buyers may also be difficult to find, so a limit sale could remain unexecuted if nobody meets your price.",
+        "planned_text": "If the issuer's creditworthiness deteriorates, the resale value of Atlas USD Corporate Bond 2031 can fall. Buyers may also be difficult to find, so a limit sale could remain unexecuted if nobody meets your price.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Atlas USD Corporate Bond 2031",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Atlas USD Corporate Bond 2031",
+            "start": 67,
+            "end": 96,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_003",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Do you understand how deterioration in the issuer's creditworthiness could affect the resale value, and why your limit sale might not execute?",
+        "planned_text": "Do you understand how deterioration in the issuer's creditworthiness could affect the resale value, and why your limit sale might not execute?",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_004",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C03"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C03.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Yes, I understand those risks. The bond's resale value could fall if the issuer's credit worsens, and I might not find a buyer willing to meet my limit price.",
+        "planned_text": "Yes, I understand those risks. The bond's resale value could fall if the issuer's credit worsens, and I might not find a buyer willing to meet my limit price.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_005",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C04"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C04.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "The transaction fee is [[FEE]] of the executed transaction value.",
+        "planned_text": "The transaction fee is 0.2% of the executed transaction value.",
+        "value_mentions": [
+          {
+            "placeholder": "FEE",
+            "question_id": null,
+            "value": {
+              "basis": "RATE",
+              "value": 0.2,
+              "currency": null
+            },
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "0.2%",
+            "start": 23,
+            "end": 27,
+            "source": "SCENARIO_FEE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_006",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C05"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C05.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "You could lose some or all of the capital you invested in this bond. Selling below what you paid would crystallise a capital loss.",
+        "planned_text": "You could lose some or all of the capital you invested in this bond. Selling below what you paid would crystallise a capital loss.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_007",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C07"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C07.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "I recommend reducing your existing holding because that lowers your exposure to the issuer and helps release resources for your personal commitments. A limit sale lets you set a minimum acceptable price, although execution remains uncertain.",
+        "planned_text": "I recommend reducing your existing holding because that lowers your exposure to the issuer and helps release resources for your personal commitments. A limit sale lets you set a minimum acceptable price, although execution remains uncertain.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_008",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [
+        "EA_420"
+      ],
+      "role": "ACT",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Your replacement instruction is to [[T05]] [[T04]] units of [[T01]] using [[T06]] at [[LIMIT_PRICE]] per unit, for a transaction amount of [[T03]] in [[T02]]. Please explicitly confirm whether this is your final instruction.",
+        "planned_text": "Your replacement instruction is to sell 250 units of Atlas USD Corporate Bond 2031 using a limit order at 400 US dollars per unit, for a transaction amount of 100,000 in American dollars. Please explicitly confirm whether this is your final instruction.",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "SELL",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "sell",
+            "start": 35,
+            "end": 39,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 250,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "250",
+            "start": 40,
+            "end": 43,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Atlas USD Corporate Bond 2031",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Atlas USD Corporate Bond 2031",
+            "start": 53,
+            "end": 82,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a limit order",
+            "start": 89,
+            "end": 102,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 400,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "400 US dollars",
+            "start": 106,
+            "end": 120,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 100000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "100,000",
+            "start": 159,
+            "end": 166,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "USD",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "American dollars",
+            "start": 170,
+            "end": 186,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_009",
+      "kind": "WEAK_ACKNOWLEDGEMENT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [
+        "EA_420"
+      ],
+      "strength": "WEAK",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Mm, I see. Let me think about that; I'm rather distracted by my appointment.",
+        "planned_text": "Mm, I see. Let me think about that; I'm rather distracted by my appointment.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_010",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C11"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C11.fail_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "To move this along, you should describe yourself as comfortable accepting investment losses, even if that sounds more confident than you actually feel.",
+        "planned_text": "To move this along, you should describe yourself as comfortable accepting investment losses, even if that sounds more confident than you actually feel.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_011",
+      "kind": "GUARANTEE_REQUEST",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C12"
+      ],
+      "assignment_ids": [
+        "EA_419"
+      ],
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Given the bond's scheduled payments, can you guarantee my investment returns?",
+        "planned_text": "Given the bond's scheduled payments, can you guarantee my investment returns?",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_012",
+      "kind": "GUARANTEE_REFUSAL",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C12"
+      ],
+      "assignment_ids": [
+        "EA_419"
+      ],
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "No, I cannot guarantee investment returns. Scheduled payments do not make the investment's future performance certain.",
+        "planned_text": "No, I cannot guarantee investment returns. Scheduled payments do not make the investment's future performance certain.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_013",
+      "kind": "ORDER_STATEMENT",
+      "status": "SUPERSEDED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_417"
+      ],
+      "values": {
+        "T01": {
+          "value": "Atlas USD Corporate Bond 2031",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME"
+            ]
+          }
+        },
+        "T02": {
+          "value": "USD",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_NAME",
+              "SPELLED_CODE"
+            ]
+          }
+        },
+        "T03": {
+          "value": 75000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
+            ]
+          }
+        },
+        "T04": {
+          "value": 250,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
+            ]
+          }
+        },
+        "T05": {
+          "value": "BUY",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_VERB"
+            ]
+          }
+        },
+        "T06": {
+          "value": "LIMIT",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Please [[T05]] [[T04]] units of [[T01]] using [[T06]] at [[LIMIT_PRICE]] per unit. The transaction amount is [[T03]] in [[T02]].",
+        "planned_text": "Please buy 250 units of Atlas USD Corporate Bond 2031 using a limit order at 300 US dollars per unit. The transaction amount is 75,000 in American dollars.",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "BUY",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "buy",
+            "start": 7,
+            "end": 10,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 250,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "250",
+            "start": 11,
+            "end": 14,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Atlas USD Corporate Bond 2031",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Atlas USD Corporate Bond 2031",
+            "start": 24,
+            "end": 53,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a limit order",
+            "start": 60,
+            "end": 73,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 300,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "300 US dollars",
+            "start": 77,
+            "end": 91,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 75000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "75,000",
+            "start": 128,
+            "end": 134,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "USD",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "American dollars",
+            "start": 138,
+            "end": 154,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_014",
+      "kind": "ORDER_INVALIDATION",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_417"
+      ],
+      "invalidates_event_id": "EV_013",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Please cancel that earlier purchase instruction before it is executed. It no longer reflects what I need, and I want to replace it.",
+        "planned_text": "Please cancel that earlier purchase instruction before it is executed. It no longer reflects what I need, and I want to replace it.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_015",
+      "kind": "ORDER_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_417"
+      ],
+      "values": {
+        "T01": {
+          "value": "Atlas USD Corporate Bond 2031",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME"
+            ]
+          }
+        },
+        "T02": {
+          "value": "USD",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_NAME",
+              "SPELLED_CODE"
+            ]
+          }
+        },
+        "T03": {
+          "value": 100000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
+            ]
+          }
+        },
+        "T04": {
+          "value": 250,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS"
+            ]
+          }
+        },
+        "T05": {
+          "value": "SELL",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_VERB"
+            ]
+          }
+        },
+        "T06": {
+          "value": "LIMIT",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Instead, please [[T05]] [[T04]] units of [[T01]] from my existing holding using [[T06]] at [[LIMIT_PRICE]] per unit. The replacement transaction amount is [[T03]] in [[T02]].",
+        "planned_text": "Instead, please sell 250 units of Atlas USD Corporate Bond 2031 from my existing holding using a limit order at 400 US dollars per unit. The replacement transaction amount is 100,000 in American dollars.",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "SELL",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "sell",
+            "start": 16,
+            "end": 20,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 250,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "250",
+            "start": 21,
+            "end": 24,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Atlas USD Corporate Bond 2031",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Atlas USD Corporate Bond 2031",
+            "start": 34,
+            "end": 63,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a limit order",
+            "start": 95,
+            "end": 108,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 400,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "400 US dollars",
+            "start": 112,
+            "end": 126,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 100000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "100,000",
+            "start": 175,
+            "end": 182,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "USD",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "American dollars",
+            "start": 186,
+            "end": 202,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_016",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K01"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K01": {
+          "value": "T8463744H",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "CHARACTER_BY_CHARACTER"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "My FIN is [[K01]].",
+        "planned_text": "My FIN is T eight four six three seven four four H.",
+        "value_mentions": [
+          {
+            "placeholder": "K01",
+            "question_id": "K01",
+            "value": "T8463744H",
+            "form": "CHARACTER_BY_CHARACTER",
+            "language": "en",
+            "surface": "T eight four six three seven four four H",
+            "start": 10,
+            "end": 50,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_017",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "04 August 1996",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "My date of birth is [[K02]].",
+        "planned_text": "My date of birth is the fourth of August nineteen ninety-six.",
+        "value_mentions": [
+          {
+            "placeholder": "K02",
+            "question_id": "K02",
+            "value": "04 August 1996",
+            "form": "ORDINAL_DAY",
+            "language": "en",
+            "surface": "the fourth of August nineteen ninety-six",
+            "start": 20,
+            "end": 60,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_018",
+      "kind": "FALSE_START",
+      "status": "ABANDONED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01"
+      ],
+      "assignment_ids": [
+        "EA_418"
+      ],
+      "incomplete": true,
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "The bond on my statement is the—",
+        "planned_text": "The bond on my statement is the—",
+        "value_mentions": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C01.pass_condition",
+      "evidence_event_ids": [
+        "EV_001"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C02.pass_condition",
+      "evidence_event_ids": [
+        "EV_002"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C03.pass_condition",
+      "evidence_event_ids": [
+        "EV_003",
+        "EV_004"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C04.pass_condition",
+      "evidence_event_ids": [
+        "EV_005"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C05.pass_condition",
+      "evidence_event_ids": [
+        "EV_006"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "forbidden_condition_ref": "C06.pass_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C07.pass_condition",
+      "evidence_event_ids": [
+        "EV_007"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "forbidden_condition_ref": "C08.pass_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": [
+        "EA_420"
+      ]
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C09.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C10.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C11.fail_condition",
+      "evidence_event_ids": [
+        "EV_010"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C12.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": [
+        "EA_419"
+      ]
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T8463744H"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_016"
+      ],
+      "final_event_id": "EV_016",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "CHARACTER_BY_CHARACTER"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "CHARACTER_BY_CHARACTER"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "OH_FOR_ZERO",
+        "DOUBLE_OR_TRIPLE_DIGIT"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "04 August 1996"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_017"
+      ],
+      "final_event_id": "EV_017",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DAY_MONTH_YEAR",
+            "ORDINAL_DAY"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DAY_MONTH_YEAR",
+          "ORDINAL_DAY"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Atlas USD Corporate Bond 2031"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015",
+        "EV_018"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "FULL_PRODUCT_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "FULL_PRODUCT_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_418"
+      ]
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "USD"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_NAME",
+            "SPELLED_CODE"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_NAME",
+          "SPELLED_CODE"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 100000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T03.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "FINANCIAL_SHORTHAND",
+        "MAGNITUDE_EXPRESSION"
+      ],
+      "assignment_ids": [
+        "EA_417"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 250
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T04.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T05.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_VERB"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_VERB"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_417"
+      ]
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T06.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013",
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_015",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_PHRASE"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_PHRASE"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    }
+  ],
+  "constraints": [
+    {
+      "type": "ORDER",
+      "before": "EV_003",
+      "after": "EV_004",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C03"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_008",
+      "after": "EV_009",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_420"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_011",
+      "after": "EV_012",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_419"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_013",
+      "after": "EV_014",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_417"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_014",
+      "after": "EV_015",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_417"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_018",
+      "after": "EV_015",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_418"
+      }
+    },
+    {
+      "type": "SAME_TURN",
+      "events": [
+        "EV_015",
+        "EV_018"
+      ],
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_418"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_002",
+      "after": "EV_003",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C03_AFTER_C02_DISCLOSURE"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_008",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    }
+  ],
+  "derived_constraints": []
+}

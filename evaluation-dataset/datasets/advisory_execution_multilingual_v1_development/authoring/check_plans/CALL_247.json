@@ -1,0 +1,1372 @@
+{
+  "schema_version": "2.0",
+  "stage": "G4",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_247",
+  "call_spec_sha256": "f02b68039ec5a9284a9cdc8551b81be2811d955b12960e56ab3905ee98de4483",
+  "check_plan_skeleton_sha256": "171ffd8e90762759f3585efa5922348118ed8832518d2c6bcbf360f2813b30bf",
+  "call_config_sha256": "fedf136f8206290f841fab9c2389b1abfe898cbbdb9c84ae30db409de6f73b64",
+  "source": {
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "generation": {
+    "attempt_id": "A001",
+    "model": "gpt-6.1-sol",
+    "prompt_template_sha256": "d50139eb2f3a3995986fd3c044c087f406b167dcca2fad6488141ff72f6b0124",
+    "response_schema_sha256": "bb0d510dd433a746900365bae8e8a5110239b78aea71c1f59029f29c92dc09de",
+    "accepted_response_sha256": "d69681b939941fb586e891b231fca7917c409de68d74bb3b0ae7d2243ae190e0"
+  },
+  "skeleton_header": {
+    "schema_version": "2.0",
+    "stage": "G2B",
+    "dataset_id": "advisory_execution_multilingual_v1",
+    "call_id": "CALL_247",
+    "call_spec_sha256": "f02b68039ec5a9284a9cdc8551b81be2811d955b12960e56ab3905ee98de4483",
+    "source": {
+      "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+      "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+      "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+      "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+      "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+    }
+  },
+  "planned_events": [
+    {
+      "event_id": "EV_001",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C01"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C01.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Your objective, then, is to reduce your broad equity exposure and free up cash for anticipated personal spending.",
+        "planned_text": "Your objective, then, is to reduce your broad equity exposure and free up cash for anticipated personal spending.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_002",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C02"
+      ],
+      "assignment_ids": [
+        "EA_554"
+      ],
+      "role": "ACT",
+      "condition_ref": "C02.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "With [[T01]], global stock market declines can reduce the value of the underlying holdings and the fund's market price. A limit sell instruction may also remain unexecuted if buyers will not meet your price, leaving you exposed to further market movements.",
+        "planned_text": "With Summit Global Equity ETF, global stock market declines can reduce the value of the underlying holdings and the fund's market price. A limit sell instruction may also remain unexecuted if buyers will not meet your price, leaving you exposed to further market movements.",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Summit Global Equity ETF",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Summit Global Equity ETF",
+            "start": 5,
+            "end": 29,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_003",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C04"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C04.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "这笔交易的手续费率是[[FEE]]。",
+        "planned_text": "这笔交易的手续费率是百分之零点二。",
+        "value_mentions": [
+          {
+            "placeholder": "FEE",
+            "question_id": null,
+            "value": {
+              "basis": "RATE",
+              "value": 0.2,
+              "currency": null
+            },
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "百分之零点二",
+            "start": 10,
+            "end": 16,
+            "source": "SCENARIO_FEE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_004",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C05"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C05.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "您投入的本金可能会损失部分甚至全部，卖出时也可能实现本金亏损。",
+        "planned_text": "您投入的本金可能会损失部分甚至全部，卖出时也可能实现本金亏损。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_005",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "为了减少持仓并满足您的现金需要，您是否愿意接受卖出时可能产生的投资亏损？",
+        "planned_text": "为了减少持仓并满足您的现金需要，您是否愿意接受卖出时可能产生的投资亏损？",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_006",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C06"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C06.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我愿意接受卖出时可能产生的投资亏损，减少股票持仓、留出现金更符合我现在的需要。",
+        "planned_text": "我愿意接受卖出时可能产生的投资亏损，减少股票持仓、留出现金更符合我现在的需要。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_007",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C07"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C07.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "我建议减持[[T01]]，因为这能直接降低您的环球股票敞口，成交后也能腾出现金，方便您安排个人开支。",
+        "planned_text": "我建议减持顶峰环球股票交易所交易基金，因为这能直接降低您的环球股票敞口，成交后也能腾出现金，方便您安排个人开支。",
+        "value_mentions": [
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Summit Global Equity ETF",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "顶峰环球股票交易所交易基金",
+            "start": 5,
+            "end": 18,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_008",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "EMPLOYEE"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "ACT",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "EMPLOYEE",
+        "text_template": "Please confirm your replacement instruction: [[T05]] [[T04]] units of [[T01]] using [[T06]], with a limit price of [[LIMIT_PRICE]] and a total transaction amount of [[T03]] [[T02]]. Is that your final instruction for execution?",
+        "planned_text": "Please confirm your replacement instruction: sell 10,000 units of Summit Global Equity ETF using a limit order, with a limit price of 120 euros and a total transaction amount of 1,200,000 euros. Is that your final instruction for execution?",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "SELL",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "sell",
+            "start": 45,
+            "end": 49,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 10000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "10,000",
+            "start": 50,
+            "end": 56,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Summit Global Equity ETF",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Summit Global Equity ETF",
+            "start": 66,
+            "end": 90,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a limit order",
+            "start": 97,
+            "end": 110,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 120,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "120 euros",
+            "start": 134,
+            "end": 143,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 1200000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "1,200,000",
+            "start": 178,
+            "end": 187,
+            "source": "GOLD_RESTATEMENT"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "EUR",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "euros",
+            "start": 188,
+            "end": 193,
+            "source": "GOLD_RESTATEMENT"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_009",
+      "kind": "COMPLIANCE_ACT",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "C08"
+      ],
+      "assignment_ids": [],
+      "role": "RESPONSE",
+      "condition_ref": "C08.pass_condition",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Yes, I confirm that replacement order as my final instruction. Please execute it as stated.",
+        "planned_text": "Yes, I confirm that replacement order as my final instruction. Please execute it as stated.",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_010",
+      "kind": "ORDER_STATEMENT",
+      "status": "SUPERSEDED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_551"
+      ],
+      "values": {
+        "T01": {
+          "value": "Meridian Asia Equity Fund",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME",
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        },
+        "T02": {
+          "value": "JPY",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_NAME",
+              "SPELLED_CODE",
+              "ZH_NATURAL_NAME"
+            ]
+          }
+        },
+        "T03": {
+          "value": 25000000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        },
+        "T04": {
+          "value": 10000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        },
+        "T05": {
+          "value": "SELL",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_VERB",
+              "ZH_NATURAL_VERB"
+            ]
+          }
+        },
+        "T06": {
+          "value": "LIMIT",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_PHRASE",
+              "ZH_NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "请用[[T06]][[T05]]出[[T01]]，数量是[[T04]]份，限价为每份[[LIMIT_PRICE]]。交易币种是[[T02]]，交易总金额是[[T03]]。",
+        "planned_text": "请用限价单卖出子午线亚洲股票基金，数量是一万份，限价为每份两千五百日元。交易币种是日元，交易总金额是两千五百万。",
+        "value_mentions": [
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "ZH_NATURAL_PHRASE",
+            "language": "zh",
+            "surface": "限价单",
+            "start": 2,
+            "end": 5,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "SELL",
+            "form": "ZH_NATURAL_VERB",
+            "language": "zh",
+            "surface": "卖",
+            "start": 5,
+            "end": 6,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Meridian Asia Equity Fund",
+            "form": "ZH_FULL_PRODUCT_NAME",
+            "language": "zh",
+            "surface": "子午线亚洲股票基金",
+            "start": 7,
+            "end": 16,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 10000,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "一万",
+            "start": 20,
+            "end": 22,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 2500,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "两千五百日元",
+            "start": 29,
+            "end": 35,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "JPY",
+            "form": "ZH_NATURAL_NAME",
+            "language": "zh",
+            "surface": "日元",
+            "start": 41,
+            "end": 43,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 25000000,
+            "form": "ZH_CARDINAL",
+            "language": "zh",
+            "surface": "两千五百万",
+            "start": 50,
+            "end": 55,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_011",
+      "kind": "ORDER_INVALIDATION",
+      "status": "CONTEXT",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_551"
+      ],
+      "invalidates_event_id": "EV_010",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "等等，刚才那笔指令全部撤回，请不要执行。我想改为减持更直接影响环球股票敞口的持仓。",
+        "planned_text": "等等，刚才那笔指令全部撤回，请不要执行。我想改为减持更直接影响环球股票敞口的持仓。",
+        "value_mentions": []
+      }
+    },
+    {
+      "event_id": "EV_012",
+      "kind": "ORDER_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "assignment_ids": [
+        "EA_551"
+      ],
+      "values": {
+        "T01": {
+          "value": "Summit Global Equity ETF",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "FULL_PRODUCT_NAME",
+              "ZH_FULL_PRODUCT_NAME"
+            ]
+          }
+        },
+        "T02": {
+          "value": "EUR",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_NAME",
+              "SPELLED_CODE",
+              "ZH_NATURAL_NAME"
+            ]
+          }
+        },
+        "T03": {
+          "value": 1200000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        },
+        "T04": {
+          "value": 10000,
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DIGITS_WITH_THOUSANDS_SEPARATORS",
+              "ZH_CARDINAL"
+            ]
+          }
+        },
+        "T05": {
+          "value": "SELL",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_VERB",
+              "ZH_NATURAL_VERB"
+            ]
+          }
+        },
+        "T06": {
+          "value": "LIMIT",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "NATURAL_PHRASE",
+              "ZH_NATURAL_PHRASE"
+            ]
+          }
+        }
+      },
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Instead, please [[T05]] [[T04]] units of [[T01]] using [[T06]] at a limit price of [[LIMIT_PRICE]] per unit. The transaction currency is [[T02]], and my total transaction amount is [[T03]].",
+        "planned_text": "Instead, please sell 10,000 units of Summit Global Equity ETF using a limit order at a limit price of 120 euros per unit. The transaction currency is euros, and my total transaction amount is 1,200,000.",
+        "value_mentions": [
+          {
+            "placeholder": "T05",
+            "question_id": "T05",
+            "value": "SELL",
+            "form": "NATURAL_VERB",
+            "language": "en",
+            "surface": "sell",
+            "start": 16,
+            "end": 20,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T04",
+            "question_id": "T04",
+            "value": 10000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "10,000",
+            "start": 21,
+            "end": 27,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T01",
+            "question_id": "T01",
+            "value": "Summit Global Equity ETF",
+            "form": "FULL_PRODUCT_NAME",
+            "language": "en",
+            "surface": "Summit Global Equity ETF",
+            "start": 37,
+            "end": 61,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T06",
+            "question_id": "T06",
+            "value": "LIMIT",
+            "form": "NATURAL_PHRASE",
+            "language": "en",
+            "surface": "a limit order",
+            "start": 68,
+            "end": 81,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "LIMIT_PRICE",
+            "question_id": null,
+            "value": 120,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "120 euros",
+            "start": 102,
+            "end": 111,
+            "source": "SCENARIO_LIMIT_PRICE"
+          },
+          {
+            "placeholder": "T02",
+            "question_id": "T02",
+            "value": "EUR",
+            "form": "NATURAL_NAME",
+            "language": "en",
+            "surface": "euros",
+            "start": 150,
+            "end": 155,
+            "source": "EVENT_VALUE"
+          },
+          {
+            "placeholder": "T03",
+            "question_id": "T03",
+            "value": 1200000,
+            "form": "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "language": "en",
+            "surface": "1,200,000",
+            "start": 192,
+            "end": 201,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_013",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K01"
+      ],
+      "assignment_ids": [
+        "EA_552"
+      ],
+      "values": {
+        "K01": {
+          "value": "T6684790R",
+          "spoken_form": {
+            "requirement": "REQUIRED",
+            "form": "OH_FOR_ZERO",
+            "applies_to": "ALL_ZERO_DIGITS",
+            "remaining_characters_form": "CHARACTER_BY_CHARACTER"
+          }
+        }
+      },
+      "required_language": "en",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "My identification number is [[K01]].",
+        "planned_text": "My identification number is T six six eight four seven nine oh R.",
+        "value_mentions": [
+          {
+            "placeholder": "K01",
+            "question_id": "K01",
+            "value": "T6684790R",
+            "form": "OH_FOR_ZERO",
+            "language": "en",
+            "surface": "T six six eight four seven nine oh R",
+            "start": 28,
+            "end": 64,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_014",
+      "kind": "VALUE_STATEMENT",
+      "status": "FINAL",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [],
+      "values": {
+        "K02": {
+          "value": "17 October 1960",
+          "spoken_form": {
+            "requirement": "ONE_OF",
+            "forms": [
+              "DAY_MONTH_YEAR",
+              "ORDINAL_DAY",
+              "ZH_YEAR_MONTH_DAY"
+            ]
+          }
+        }
+      },
+      "required_language": "en",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "Let me give that in English: my date of birth is [[K02]].",
+        "planned_text": "Let me give that in English: my date of birth is the seventeenth of October nineteen sixty.",
+        "value_mentions": [
+          {
+            "placeholder": "K02",
+            "question_id": "K02",
+            "value": "17 October 1960",
+            "form": "ORDINAL_DAY",
+            "language": "en",
+            "surface": "the seventeenth of October nineteen sixty",
+            "start": 49,
+            "end": 90,
+            "source": "EVENT_VALUE"
+          }
+        ]
+      }
+    },
+    {
+      "event_id": "EV_015",
+      "kind": "FALSE_START",
+      "status": "ABANDONED",
+      "allowed_speakers": [
+        "CLIENT"
+      ],
+      "question_ids": [
+        "K02"
+      ],
+      "assignment_ids": [
+        "EA_553"
+      ],
+      "incomplete": true,
+      "required_language": "zh",
+      "authoring": {
+        "speaker": "CLIENT",
+        "text_template": "我的出生日期是……",
+        "planned_text": "我的出生日期是……",
+        "value_mentions": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C01.pass_condition",
+      "evidence_event_ids": [
+        "EV_001"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C02.pass_condition",
+      "evidence_event_ids": [
+        "EV_002"
+      ],
+      "assignment_ids": [
+        "EA_554"
+      ]
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EXCHANGE",
+      "forbidden_condition_ref": "C03.pass_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": [
+        "EA_554"
+      ]
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C04.pass_condition",
+      "evidence_event_ids": [
+        "EV_003"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C05.pass_condition",
+      "evidence_event_ids": [
+        "EV_004"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C06.pass_condition",
+      "evidence_event_ids": [
+        "EV_005",
+        "EV_006"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "required_condition_ref": "C07.pass_condition",
+      "evidence_event_ids": [
+        "EV_007"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "required_condition_ref": "C08.pass_condition",
+      "evidence_event_ids": [
+        "EV_008",
+        "EV_009"
+      ],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C09.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "forbidden_condition_ref": "C10.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C11.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "forbidden_condition_ref": "C12.fail_condition",
+      "absence": {
+        "scope": "ENTIRE_DIALOGUE"
+      },
+      "evidence_event_ids": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T6684790R"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_013"
+      ],
+      "final_event_id": "EV_013",
+      "gold_restatement": {
+        "policy": "ASSIGNED_FORM_ONLY",
+        "spoken_form": {
+          "requirement": "REQUIRED",
+          "form": "OH_FOR_ZERO",
+          "applies_to": "ALL_ZERO_DIGITS",
+          "remaining_characters_form": "CHARACTER_BY_CHARACTER"
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "CHARACTER_BY_CHARACTER",
+          "ZH_CHARACTER_BY_CHARACTER"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "DOUBLE_OR_TRIPLE_DIGIT"
+      ],
+      "assignment_ids": [
+        "EA_552"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "17 October 1960"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "K02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_014",
+        "EV_015"
+      ],
+      "final_event_id": "EV_014",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DAY_MONTH_YEAR",
+            "ORDINAL_DAY",
+            "ZH_YEAR_MONTH_DAY"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DAY_MONTH_YEAR",
+          "ORDINAL_DAY",
+          "ZH_YEAR_MONTH_DAY"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_553"
+      ]
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Summit Global Equity ETF"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T01.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "FULL_PRODUCT_NAME",
+            "ZH_FULL_PRODUCT_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "FULL_PRODUCT_NAME",
+          "ZH_FULL_PRODUCT_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_551"
+      ]
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T02.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_NAME",
+            "SPELLED_CODE",
+            "ZH_NATURAL_NAME"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_NAME",
+          "SPELLED_CODE",
+          "ZH_NATURAL_NAME"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": [
+        "EA_551"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 1200000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T03.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [
+        "FINANCIAL_SHORTHAND",
+        "MAGNITUDE_EXPRESSION"
+      ],
+      "assignment_ids": [
+        "EA_551"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 10000
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T04.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "DIGITS_WITH_THOUSANDS_SEPARATORS",
+            "ZH_CARDINAL"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "DIGITS_WITH_THOUSANDS_SEPARATORS",
+          "ZH_CARDINAL"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "SELL"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T05.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_VERB",
+            "ZH_NATURAL_VERB"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_VERB",
+          "ZH_NATURAL_VERB"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "LIMIT"
+      },
+      "evidence_mode": "PRESENCE",
+      "resolution_ref": "T06.resolution_rule",
+      "evidence_event_ids": [
+        "EV_010",
+        "EV_011",
+        "EV_012"
+      ],
+      "final_event_id": "EV_012",
+      "gold_restatement": {
+        "policy": "ANY_PERMITTED_FORM",
+        "spoken_form": {
+          "requirement": "ONE_OF",
+          "forms": [
+            "NATURAL_PHRASE",
+            "ZH_NATURAL_PHRASE"
+          ]
+        }
+      },
+      "non_gold_spoken_form": {
+        "requirement": "ONE_OF",
+        "forms": [
+          "NATURAL_PHRASE",
+          "ZH_NATURAL_PHRASE"
+        ]
+      },
+      "forbidden_spoken_forms": [],
+      "assignment_ids": []
+    }
+  ],
+  "constraints": [
+    {
+      "type": "ORDER",
+      "before": "EV_005",
+      "after": "EV_006",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C06"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_008",
+      "after": "EV_009",
+      "source": {
+        "type": "PRESENCE_PATTERN",
+        "question_id": "C08"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_010",
+      "after": "EV_011",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_551"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_011",
+      "after": "EV_012",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_551"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_015",
+      "after": "EV_014",
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_553"
+      }
+    },
+    {
+      "type": "SAME_TURN",
+      "events": [
+        "EV_014",
+        "EV_015"
+      ],
+      "source": {
+        "type": "EDGE_ASSIGNMENT",
+        "id": "EA_553"
+      }
+    },
+    {
+      "type": "ORDER",
+      "before": "EV_012",
+      "after": "EV_008",
+      "source": {
+        "type": "ORDERING_RULE",
+        "id": "C08_AFTER_FINAL_TRANSACTION_STATE"
+      }
+    }
+  ],
+  "derived_constraints": []
+}
