@@ -79,14 +79,6 @@ def test_dry_run_is_deterministic_feasible_and_reports_a_batch_estimate(tmp_path
     assert fake.calls == [] and not (runner.root / "authoring").exists()
 
 
-def test_sync_is_refused_before_anything_is_sent(tmp_path, capsys):
-    runner, fake = make_runner(tmp_path)
-    with pytest.raises(RunError, match="Batch-only"):
-        runner.run_sync(X)
-    argv = ["--dataset-root", str(runner.root), "--audit-dir", str(tmp_path / "audit"), "--schema-dir", str(SCHEMAS), "--sync", "--call-id", X]
-    assert main(argv, clock=Clock()) == 2 and "Batch-only" in capsys.readouterr().err and fake.calls == []
-
-
 def test_structural_rejection_is_recorded_and_retried_only_on_request(tmp_path):
     runner, fake = make_runner(tmp_path, overrides={X: bad_response})
     submit_and_finish(runner, fake, [X, Y])

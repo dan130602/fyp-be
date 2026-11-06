@@ -9,6 +9,12 @@ from .compile import compile_artifact
 from .validate_response import ResponseValidator
 
 
+def _spoken_names(ctx, speaker, english, chinese):
+    """Schema 2.0: the person's name in each language they speak in this call (null for the others)."""
+    required = ctx.name_languages[speaker]
+    return {"en": english if "en" in required else None, "zh": chinese if "zh" in required else None}
+
+
 def synthesize_response(ctx, *, fee_basis="RATE"):
     products = {p["product_ref"]: p for p in ctx.products}
     response = {
@@ -31,6 +37,10 @@ def synthesize_response(ctx, *, fee_basis="RATE"):
                               for aid in ctx.edge_context_ids],
         "additional_discussion_topics": ["General market sentiment", "Recent portfolio review"],
     }
+    if ctx.multilingual:
+        client = {key: value for key, value in response["client"].items() if key != "name"}
+        response["client"] = {"name": "Alex Tan", "spoken_names": _spoken_names(ctx, "client", "Alex Tan", "陈亚历"), **client}
+        response["employee"] = {"name": "Jamie Lim", "spoken_names": _spoken_names(ctx, "employee", "Jamie Lim", "林佳敏")}
     if ctx.fee_required:
         if fee_basis == "AMOUNT":
             response["fee_disclosure"] = {"basis": "AMOUNT", "value": 37.5, "currency": ctx.fee_currencies[0]}

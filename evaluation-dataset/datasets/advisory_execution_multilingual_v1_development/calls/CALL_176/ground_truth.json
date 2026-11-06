@@ -1,0 +1,810 @@
+{
+  "schema_version": "2.0",
+  "stage": "G9",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_176",
+  "status": {
+    "g7_dialogue_verification": "VERIFIED",
+    "timings": "AUDIO_DERIVED"
+  },
+  "source": {
+    "call_spec_sha256": "1de432e87a7fd102ff3d18f8f68b669fbfc4a9e6a4003b933cf84f9a57c0d731",
+    "check_plan_skeleton_sha256": "dbd5f0d8f5ce296a69c5ea7d97db7c4dd8f9e45edc183dcfc29231d326052796",
+    "call_config_sha256": "c4fc71a1f02a24c40360674e21d6e7cbf6e3015d5b33dfa60a87d6a55bc2f060",
+    "check_plan_sha256": "37332b4b08128e3a18a287263ab75bb770bdb04fc7e2e3066f4affb19d8eb113",
+    "plan_verification_sha256": "3d263b9c219b2870c9862d4378a570390bf811ed869e728c8cb2805d40226541",
+    "dialogue_sha256": "2ccd76569342a5bae16cb2b34f6a6774353f5ba96dd811581ef5d0defc2557b1",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language_profile": "EN_ZH_MIXED",
+    "mixing_style": "BALANCED",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 31,
+          "text": "我了解您的投资目标是通过分散配置股票和债券，争取长期资本增长。"
+        }
+      ],
+      "gold_evidence_text": "我了解您的投资目标是通过分散配置股票和债券，争取长期资本增长。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 32,
+          "end": 88,
+          "text": "这只基金持有的债券在利率上升时可能跌价，而且市场承压时，股票和债券可能同时下跌，分散投资的保护作用也会受到限制。"
+        }
+      ],
+      "gold_evidence_text": "这只基金持有的债券在利率上升时可能跌价，而且市场承压时，股票和债券可能同时下跌，分散投资的保护作用也会受到限制。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 89,
+          "end": 123,
+          "text": "您是否理解刚才说明的债券利率风险，以及股票和债券可能同时下跌的风险？"
+        },
+        {
+          "event_id": "EV_004",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 50,
+          "text": "我理解，利率上升可能令债券跌价，市场承压时股票和债券也可能同时下跌，不能只靠分散配置来避免这些波动。"
+        }
+      ],
+      "gold_evidence_text": "您是否理解刚才说明的债券利率风险，以及股票和债券可能同时下跌的风险？\n我理解，利率上升可能令债券跌价，市场承压时股票和债券也可能同时下跌，不能只靠分散配置来避免这些波动。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10,
+        11
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 81,
+          "text": "For your long-term growth objective, are you willing to accept investment losses?"
+        },
+        {
+          "event_id": "EV_006",
+          "turn_id": 11,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 75,
+          "text": "Yes, I am willing to accept investment losses in pursuing long-term growth."
+        }
+      ],
+      "gold_evidence_text": "For your long-term growth objective, are you willing to accept investment losses?\nYes, I am willing to accept investment losses in pursuing long-term growth.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 181,
+          "text": "I recommend this fund because its managed mix of equities and bonds supports your goal of diversified long-term growth without requiring you to manage separate allocations yourself."
+        }
+      ],
+      "gold_evidence_text": "I recommend this fund because its managed mix of equities and bonds supports your goal of diversified long-term growth without requiring you to manage separate allocations yourself.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        18,
+        19
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_008",
+          "turn_id": 18,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 245,
+          "text": "Your final instruction is to buy 5,000 units of Pioneer Balanced Opportunities Fund using a market order, with a transaction amount of 1,000,000 euros. Please explicitly confirm that this is your final instruction after the currency corrections."
+        },
+        {
+          "event_id": "EV_009",
+          "turn_id": 19,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 107,
+          "text": "I confirm that the final instruction you have just stated is correct. Please place the order on that basis."
+        }
+      ],
+      "gold_evidence_text": "Your final instruction is to buy 5,000 units of Pioneer Balanced Opportunities Fund using a market order, with a transaction amount of 1,000,000 euros. Please explicitly confirm that this is your final instruction after the currency corrections.\nI confirm that the final instruction you have just stated is correct. Please place the order on that basis.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_010",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 182,
+          "end": 259,
+          "text": "I guarantee that this investment will deliver positive returns in the future."
+        }
+      ],
+      "gold_evidence_text": "I guarantee that this investment will deliver positive returns in the future.",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "T9097165Z"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_011",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 103,
+          "end": 122,
+          "text": "我的身份证件号码是T九零九七一六五Z。"
+        }
+      ],
+      "gold_evidence_text": "我的身份证件号码是T九零九七一六五Z。",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_011",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "T9097165Z"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "05 August 1982"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        5
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 5,
+          "speaker": "CLIENT",
+          "start": 123,
+          "end": 140,
+          "text": "我的出生日期是一九八二年八月五日。"
+        }
+      ],
+      "gold_evidence_text": "我的出生日期是一九八二年八月五日。",
+      "final_turn_id": 5,
+      "value_history": [
+        {
+          "turn_id": 5,
+          "event_id": "EV_012",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "05 August 1982"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Pioneer Balanced Opportunities Fund"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_013",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 76,
+          "text": "The fund I want for this transaction is Pioneer Balanced Opportunities Fund."
+        }
+      ],
+      "gold_evidence_text": "The fund I want for this transaction is Pioneer Balanced Opportunities Fund.",
+      "final_turn_id": 7,
+      "value_history": [
+        {
+          "turn_id": 7,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Pioneer Balanced Opportunities Fund"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "EUR"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        17
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 127,
+          "text": "Sorry, I need to correct that again: I've now checked the intended funding account, and the transaction currency must be euros."
+        }
+      ],
+      "gold_evidence_text": "Sorry, I need to correct that again: I've now checked the intended funding account, and the transaction currency must be euros.",
+      "final_turn_id": 17,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_014",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "SUPERSEDED",
+          "value": "CNY"
+        },
+        {
+          "turn_id": 15,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_CORRECTION",
+          "status": "SUPERSEDED",
+          "value": "SGD"
+        },
+        {
+          "turn_id": 17,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_CORRECTION",
+          "status": "FINAL",
+          "value": "EUR"
+        }
+      ],
+      "challenge_tags": [
+        "multiple_corrections"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 1000000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        17
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_017",
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "start": 128,
+          "end": 223,
+          "text": "The amount I am committing to this transaction is 1,000,000, in the final currency I specified."
+        }
+      ],
+      "gold_evidence_text": "The amount I am committing to this transaction is 1,000,000, in the final currency I specified.",
+      "final_turn_id": 17,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 1200000
+        },
+        {
+          "turn_id": 13,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "DISTRACTOR_MENTION",
+          "status": "DISTRACTOR",
+          "value": 10000
+        },
+        {
+          "turn_id": 17,
+          "event_id": "EV_017",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 1000000
+        }
+      ],
+      "challenge_tags": [
+        "multiple_monetary_values"
+      ]
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 5000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        17
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_020",
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "start": 224,
+          "end": 267,
+          "text": "The quantity for this order is 5,000 units."
+        }
+      ],
+      "gold_evidence_text": "The quantity for this order is 5,000 units.",
+      "final_turn_id": 17,
+      "value_history": [
+        {
+          "turn_id": 17,
+          "event_id": "EV_020",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 5000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        17
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_021",
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "start": 268,
+          "end": 292,
+          "text": "I want to buy the units."
+        }
+      ],
+      "gold_evidence_text": "I want to buy the units.",
+      "final_turn_id": 17,
+      "value_history": [
+        {
+          "turn_id": 17,
+          "event_id": "EV_021",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "BUY"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        17
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_022",
+          "turn_id": 17,
+          "speaker": "CLIENT",
+          "start": 293,
+          "end": 329,
+          "text": "Please place this as a market order."
+        }
+      ],
+      "gold_evidence_text": "Please place this as a market order.",
+      "final_turn_id": 17,
+      "value_history": [
+        {
+          "turn_id": 17,
+          "event_id": "EV_022",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "您好，林志安先生，我是陈慧琳。我们按约定通话，现在说话方便吗？"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "方便，我刚回到办公室。My next meeting is later, so we have a little breathing room."
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "您最近的工作安排有变化吗？以后联系您时，我可以留意避开忙碌的时段。"
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "最近不用经常去客户现场，主要在办公室处理业务，不过临时会议还是不少。Email is easier than an unexpected call; I can read it between meetings."
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "那我安排联系前先发邮件。至于日常的投资组合更新，您希望内容怎样编排？"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "Please keep the updates concise, with clear headings. 需要我处理的事项放在前面，详细资料可以另外附上，不用在正文堆很多专业术语。今天的资料也放在手边了。我的身份证件号码是T九零九七一六五Z。 我的出生日期是一九八二年八月五日。"
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "谢谢您提供资料。更新的格式我会记下来。现在我们转到今天的基金讨论。"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "The fund I want for this transaction is Pioneer Balanced Opportunities Fund."
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "我了解您的投资目标是通过分散配置股票和债券，争取长期资本增长。 这只基金持有的债券在利率上升时可能跌价，而且市场承压时，股票和债券可能同时下跌，分散投资的保护作用也会受到限制。 您是否理解刚才说明的债券利率风险，以及股票和债券可能同时下跌的风险？"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "我理解，利率上升可能令债券跌价，市场承压时股票和债券也可能同时下跌，不能只靠分散配置来避免这些波动。"
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "For your long-term growth objective, are you willing to accept investment losses?"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "Yes, I am willing to accept investment losses in pursuing long-term growth."
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "I recommend this fund because its managed mix of equities and bonds supports your goal of diversified long-term growth without requiring you to manage separate allocations yourself. I guarantee that this investment will deliver positive returns in the future."
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "Let me look at the account information beside me. 我把账户页面和以前的记录都打开了。这笔交易的结算币种就用人民币。 账户目前的总值是一百二十万欧元，这是账户背景资料，不是这笔交易的金额。 我以前投入过一万欧元，那是之前的投资金额，不是这次的投入。"
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "您可以慢慢查看手边的资料，我在这里等您。"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "不对，我刚才把账户设置记混了，交易的结算币种应该改成新元。 我切换到账户详情页面看看，刚才开的标签有点多。"
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "Take your time. There is no need to rush while you are looking through the pages."
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "Sorry, I need to correct that again: I've now checked the intended funding account, and the transaction currency must be euros. The amount I am committing to this transaction is 1,000,000, in the final currency I specified. The quantity for this order is 5,000 units. I want to buy the units. Please place this as a market order."
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "Your final instruction is to buy 5,000 units of Pioneer Balanced Opportunities Fund using a market order, with a transaction amount of 1,000,000 euros. Please explicitly confirm that this is your final instruction after the currency corrections."
+    },
+    {
+      "turn_id": 19,
+      "speaker": "CLIENT",
+      "text": "I confirm that the final instruction you have just stated is correct. Please place the order on that basis."
+    },
+    {
+      "turn_id": 20,
+      "speaker": "EMPLOYEE",
+      "text": "Thank you, Adrian. That concludes our call. I will note your preference for email before arranging future calls."
+    },
+    {
+      "turn_id": 21,
+      "speaker": "CLIENT",
+      "text": "Thank you, Rachel. 今天时间安排得刚好，我也准备回去开会了。再见。"
+    },
+    {
+      "turn_id": 22,
+      "speaker": "EMPLOYEE",
+      "text": "再见，祝您工作顺利。"
+    }
+  ],
+  "timing": {
+    "render_id": "gemini_tts_pilot_A",
+    "timings_sha256": "c969588a5434d5cdf511c1fb89dbd502d40c26ff9d76fd23b1894605f9302984",
+    "render_manifest_sha256": "2562506562c254299e0c108798f70f7914a764ec958d14b42d6eedb935a2ec26",
+    "audio_sha256": "1c5da0e03569f948137ce53732435342f4f1e62795e6fce5ccb8dd25a2689880",
+    "g7_report_sha256": "0b13ac1209af0b1ee1d7de746a5e1b41fdd9649152552b7c5bbe148ca2e37d37",
+    "duration_seconds": 237.88
+  }
+}

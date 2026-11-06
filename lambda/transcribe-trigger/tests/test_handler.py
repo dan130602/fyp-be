@@ -159,3 +159,38 @@ def test_handler_raises_after_processing_all_records_when_one_fails():
             handler.handler(event, context=None)
 
     assert mock_transcribe.start_transcription_job.call_count == 2
+
+
+# -- language selection ------------------------------------------------------
+
+def _start_kwargs(monkeypatch, **env):
+    for name in ("TRANSCRIBE_LANGUAGE_OPTIONS", "TRANSCRIBE_LANGUAGE_ID_MODE"):
+        monkeypatch.delenv(name, raising=False)
+    for name, value in env.items():
+        monkeypatch.setenv(name, value)
+    with patch.object(handler, "transcribe") as mock_transcribe:
+        handler.handler(s3_event([("input-bucket", "uploads/u1/audio.wav")]), context=None)
+    return mock_transcribe.start_transcription_job.call_args.kwargs
+
+
+def test_default_language_is_the_single_configured_code(monkeypatch):
+    kwargs = _start_kwargs(monkeypatch)
+    assert kwargs["LanguageCode"] == "en-US" and "LanguageOptions" not in kwargs and "IdentifyMultipleLanguages" not in kwargs
+
+
+def test_language_options_identify_multiple_languages_by_default(monkeypatch):
+    kwargs = _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US, zh-CN")
+    assert kwargs["IdentifyMultipleLanguages"] is True and kwargs["LanguageOptions"] == ["en-US", "zh-CN"] and "LanguageCode" not in kwargs
+    assert kwargs["Settings"]["ShowSpeakerLabels"] is True
+
+
+def test_single_language_identification_mode(monkeypatch):
+    kwargs = _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US,zh-CN", TRANSCRIBE_LANGUAGE_ID_MODE="single")
+    assert kwargs["IdentifyLanguage"] is True and "IdentifyMultipleLanguages" not in kwargs
+
+
+def test_one_language_option_or_unknown_mode_is_refused(monkeypatch):
+    with pytest.raises(RuntimeError, match="at least two"):
+        _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US")
+    with pytest.raises(RuntimeError, match="multiple' or 'single"):
+        _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US,zh-CN", TRANSCRIBE_LANGUAGE_ID_MODE="bogus")

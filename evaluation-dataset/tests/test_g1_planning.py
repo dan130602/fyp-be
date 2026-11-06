@@ -6,7 +6,6 @@ Uses the approved advisory_execution_pilot_v1 G0 inputs. No LLM, network or AWS.
 from copy import deepcopy
 import json
 import re
-import shutil
 from collections import Counter
 from pathlib import Path
 
@@ -22,6 +21,7 @@ from fyp_evaluation.planning.outputs import (
 from fyp_evaluation.planning.validate import validate_plan
 from fyp_evaluation.validation.schemas import load_json, validate_checklist
 from fyp_evaluation.validation.stage0 import load_stage0, validate_stage0
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -315,7 +315,7 @@ def test_planning_uses_no_llm_or_network_clients():
 
 def test_cli_refuses_to_overwrite_without_flag(tmp_path):
     release = tmp_path / "advisory_execution_pilot_v1"
-    shutil.copytree(RELEASE, release)
+    copy_tree(RELEASE, release)  # no rendered audio (release_copy)
     before = {name: (release / name).read_bytes() for name in outputs.OUTPUTS}
     assert main(["--dataset-root", str(release)]) == 2
     assert main(["--dataset-root", str(release), "--overwrite"]) == 0

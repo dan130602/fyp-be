@@ -4,6 +4,7 @@ It supplies the G4 paths, schemas, settings and hooks. Eligibility, attempts, th
 provenance, accepted history, `--validate` and `--check` are the shared, G3-proven implementation.
 """
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_configs.inputs import fresh_upstream_hashes
 from fyp_evaluation.call_configs.run import ConfigRunner
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
@@ -14,7 +15,7 @@ from .compile import build_record, compile_artifact
 from .context import PlanContext
 from .config import (
     ARTIFACT_DIR, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR, REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE,
-    TRANSPORT_BUDGET,
+    TRANSPORT_BUDGET, schema_names,
 )
 from .feasibility import feasibility_report, make_validator
 from .inputs import HistoricalContextError, inputs_with_config, load_inputs
@@ -29,9 +30,26 @@ G4_SPEC = StageSpec(
 
 class CheckPlanRunner(StageRunner):
     spec = G4_SPEC
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were built under
+    supports_selection = True  # the shared CLI passes --call-id so only the selected calls need an accepted G3 config
+
+    def __init__(self, root, *, selected_call_ids=None, **kwargs):
+        super().__init__(root, **kwargs)
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
+
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
+
+    def eligibility(self, call_id, **kwargs):
+        if call_id not in self.inputs.configs:  # selected-call mode: no accepted G3 config was required for this call
+            return False, "no accepted G3 call config for this call"
+        return super().eligibility(call_id, **kwargs)
 
     def _make_builder(self):
         return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)
@@ -51,11 +69,12 @@ class CheckPlanRunner(StageRunner):
     def _upstream_hashes(self, call_id):
         inputs = self.inputs
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
-                "call_config": inputs.config_hashes[call_id], **inputs.source_hashes()}
+                "call_config": inputs.config_hashes[call_id], **inputs.source_hashes(), **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         hashes = fresh_upstream_hashes(self.inputs.root, call_id)
         hashes["call_config"] = g1.sha256((self.inputs.root / "authoring/call_configs" / f"{call_id}.json").read_bytes())
+        hashes.update(register_guide.extra_hashes(self.inputs.specs[call_id]))  # re-read now, SINGLISH calls only
         return hashes
 
     # ---- version-matched context for historical / stale plans -------------------------------------------

@@ -24,7 +24,8 @@ from fyp_evaluation.llm.responses import is_transient_error_code, parse_provider
 from fyp_evaluation.llm.store import (
     AttemptStore, StageWriteLockBusy, attempt_label, canonical_request_text, dataset_write_lock, submission_label,
 )
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.llm import live_guard
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, is_multilingual
 
 IN_FLIGHT = ("PREPARED", "SUBMITTED", "RESPONDED")
 BLOCKING_SUBMISSION_STATES = ("INTENT_RECORDED", "FILE_UPLOADED", "SUBMITTED", "SUBMISSION_UNKNOWN")
@@ -148,6 +149,22 @@ class StageRunner:
     # ---- provider hooks (defaults: the OpenAI Responses/Batch behaviour G3 and G4 use) ------------------------
     # accepted/historical provenance entries carry these attempt fields into the artifact's generation block
     GENERATION_KEYS = ("attempt_id", "model", "prompt_template_sha256", "response_schema_sha256")
+    # Stages that read the SINGLISH register guide record the hash of the guide version a SINGLISH call was built under in its
+    # accepted generation metadata, so the artifact is always rebuilt under that version, never the current file.
+    USES_REGISTER_GUIDE = False
+    GUIDE_KEY = "register_guide_sha256"
+
+    def _generation(self, attempt):
+        generation = {key: attempt[key] for key in self.GENERATION_KEYS}
+        if self.USES_REGISTER_GUIDE and (guide := (attempt.get("upstream_sha256") or {}).get(self.GUIDE_KEY)):
+            generation[self.GUIDE_KEY] = guide
+        return generation
+
+    def _entry_generation(self, entry):
+        generation = {key: entry[key] for key in self.GENERATION_KEYS}
+        if self.USES_REGISTER_GUIDE and entry.get(self.GUIDE_KEY):
+            generation[self.GUIDE_KEY] = entry[self.GUIDE_KEY]
+        return generation
 
     def _default_transport_factory(self):
         from fyp_evaluation.llm.openai_transport import OpenAITransport
@@ -202,6 +219,33 @@ class StageRunner:
             self._store = AttemptStore(self.audit_root, self.inputs.dataset_id, self.spec.stage)
         return self._store
 
+    # ---- paid-run safeguards on a multilingual release (the historical release is never affected) -------------------
+    _allowlist_batch = None
+
+    def _paid_guard(self, call_ids, transport):
+        """Refuse a LIVE paid run on a multilingual release unless every call is in one human-approved allowlisted batch for this
+        stage, and the code directories are committed. Fake transports (tests, offline work) are never refused."""
+        if not is_multilingual(self.inputs.documents) or live_guard.is_fake_transport(transport):
+            return
+        try:
+            self._allowlist_batch = live_guard.authorised_batch(self.root, self.spec.stage, list(call_ids))
+        except ValueError as error:
+            raise RunError(str(error)) from error
+        state = live_guard.code_state()
+        if state["code_commit"] is None:
+            raise RunError("cannot establish the code commit (git unavailable); a live run must be reproducible")
+        if state["code_dirty_paths"]:
+            raise RunError("uncommitted code under src/, prompts/, schemas/ or scripts/ (" + ", ".join(state["code_dirty_paths"][:6])
+                           + "); commit it before a live run so the exposure is reproducible")
+
+    def _exposure(self):
+        """The exposure record persisted in every new attempt of a multilingual release (None for the historical release)."""
+        if not is_multilingual(self.inputs.documents):
+            return None
+        if live_guard.is_fake_transport(self._transport):
+            return {"run_kind": "offline", "code_commit": None, "code_dirty_paths": [], "allowlist_batch": None}
+        return {"run_kind": "live", **live_guard.code_state(), "allowlist_batch": self._allowlist_batch}
+
     def transport(self):
         """The injected transport, or a real one built on first use (raises CredentialsError before any request)."""
         if self._transport is None:
@@ -220,6 +264,23 @@ class StageRunner:
             self._prov_validator = Draft202012Validator(load_json(
                 self.schema_dir / self.spec.schema_subdir / f"{self.spec.provenance_schema}.schema.json"))
         return self._prov_validator
+
+    def _schema_names(self):
+        """(artifact, record, provenance) schema file stems. A stage overrides this when its schemas depend on the release."""
+        return self.spec.artifact_schema, self.spec.record_schema, self.spec.provenance_schema
+
+    def _schema_validators(self):
+        """The artifact/record/provenance schema validators `validate()` uses, built once per runner (read-only integrity gates
+        of later stages call `_validate_call` with these)."""
+        if getattr(self, "_stage_schemas", None) is None:
+            from jsonschema import Draft202012Validator
+
+            from fyp_evaluation.validation.schemas import load_json
+
+            artifact, record, prov = self._schema_names()
+            self._stage_schemas = {role: Draft202012Validator(load_json(self.schema_dir / self.spec.schema_subdir / f"{name}.schema.json"))
+                                   for role, name in (("artifact", artifact), ("record", record), ("provenance", prov))}
+        return self._stage_schemas
 
     def _prov_state(self, call_id):
         """(provenance, problem): the schema-valid provenance (empty if absent), or (None, reason) if unreadable/invalid."""
@@ -353,6 +414,8 @@ class StageRunner:
             "reopen": {"reason": reopen_reason, "previous_attempt_id": reopen_of} if reopen_reason else None,
             "created_at": self.clock(), "finished_at": "",
         }
+        if (exposure := self._exposure()) is not None:  # persisted in the PREPARED record, before anything is sent
+            attempt["exposure"] = exposure
         self.store.write_request(call_id, attempt_id, text)
         self.store.write_attempt(attempt)
         return attempt, body
@@ -474,7 +537,7 @@ class StageRunner:
                 if entry["attempt_id"] == previous["attempt_id"]:
                     entry["state"] = "SUPERSEDED"
             self._mark_audit_superseded(call_id, previous["attempt_id"])
-        generation = {key: attempt[key] for key in self.GENERATION_KEYS}
+        generation = self._generation(attempt)
         artifact_text = serialize_json(self._compile_artifact(ctx, parsed, generation))
         scenario = canonical_response(parsed, schema)
         record["accepted"] = {**generation, "parsed_response": scenario, "parsed_response_sha256": response_hash(parsed, schema),
@@ -660,6 +723,7 @@ class StageRunner:
         if not self._stale_submissions():
             self._select([call_id], retry_rejected=retry_rejected, reopen_call_ids=reopen_ids)  # fail early, before credentials
         transport = self.transport()  # CredentialsError here: no attempt exists yet and nothing was sent
+        self._paid_guard([call_id], transport)
         with self.store.lock():
             self._recover()
             self._ensure_fresh_inputs([call_id])
@@ -690,10 +754,11 @@ class StageRunner:
         transport = self.transport()
         with self.store.lock():
             self._recover()
-            self._ensure_fresh_inputs(self.inputs.call_ids)
+            self._ensure_fresh_inputs(getattr(self.inputs, "ready_call_ids", self.inputs.call_ids))  # selected-call mode: ready calls only
             chosen, skipped = self._select(call_ids, retry_rejected=retry_rejected, reopen_call_ids=reopen_ids)
             if not chosen:
                 return {"submission_id": None, "submitted": 0, "skipped": skipped, "state": None}
+            self._paid_guard(chosen, transport)  # before any attempt or submission is written
             submission_id = submission_label(self.store.next_submission_number())
             attempts, lines = [], []
             for call_id in chosen:
@@ -996,7 +1061,7 @@ class StageRunner:
     # ---- validate / check ----------------------------------------------------------------------------
     def _rebuild_text(self, call_id, entry):
         """Artifact text compiled from an accepted (or historical) provenance entry and the current frozen inputs."""
-        generation = {key: entry[key] for key in self.GENERATION_KEYS}
+        generation = self._entry_generation(entry)
         compile_for_entry, ctx = self._entry_context(call_id, entry)
         return serialize_json(compile_for_entry(ctx, entry["parsed_response"], generation))
 
@@ -1062,9 +1127,9 @@ class StageRunner:
         from fyp_evaluation.validation.schemas import load_json
 
         errors = []
+        artifact_name, record_name, provenance_name = self._schema_names()
         schemas = {role: Draft202012Validator(load_json(self.schema_dir / self.spec.schema_subdir / f"{name}.schema.json"))
-                   for role, name in (("artifact", self.spec.artifact_schema), ("record", self.spec.record_schema),
-                                      ("provenance", self.spec.provenance_schema))}
+                   for role, name in (("artifact", artifact_name), ("record", record_name), ("provenance", provenance_name))}
         inputs = self.inputs
         directory = self.root / self.spec.provenance_dir
         known = {f"{c}.json" for c in inputs.call_ids}

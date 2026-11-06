@@ -17,7 +17,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "stage": {
       "const": "G2A"
@@ -71,6 +74,9 @@
         },
         "checklist_sha256": {
           "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
         }
       }
     },
@@ -114,6 +120,17 @@
         "calls_with_compliance_fails": {
           "type": "integer",
           "minimum": 0
+        },
+        "calls_by_language_profile": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "edge_case_language_variants": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     }
@@ -123,5 +140,58 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "2.0"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "g1_inputs": {
+            "required": [
+              "language_profiles_sha256"
+            ]
+          },
+          "summary": {
+            "required": [
+              "calls_by_language_profile",
+              "edge_case_language_variants"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "g1_inputs": {
+            "not": {
+              "required": [
+                "language_profiles_sha256"
+              ]
+            }
+          },
+          "summary": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "calls_by_language_profile"
+                  ]
+                },
+                {
+                  "required": [
+                    "edge_case_language_variants"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

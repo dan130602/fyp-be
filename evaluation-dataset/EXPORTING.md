@@ -6,7 +6,19 @@ Run from `fyp-be/evaluation-dataset` in CMD or PowerShell:
 python -B scripts/export_dataset.py --dataset-root "datasets/legacy_pilot_v1" --destination "../../fyp-ai/evaluation/datasets/pilot"
 ```
 
-The script creates all destination folders. It does not create Git branches,
+The script creates all destination folders.
+
+For a release with a frozen split (`splits/split.v1.json`), `--split DEVELOPMENT` or `--split HELDOUT` exports only the calls that
+manifest assigns to that label, in the same layout below (so the existing loader works unchanged; ground truth sits beside the
+transcripts, so held-out answers are visible to anyone with access to the exported folder). The manifest gains an optional `split`
+object (label, split manifest hash, call counts); `dataset_sha256` still covers exactly the exported files. The exporter refuses a missing,
+altered or stale split, and the split files must be committed unless `--allow-uncommitted` is used:
+
+```bat
+python -B scripts/export_dataset.py --dataset-root "datasets/advisory_execution_multilingual_v1" --split DEVELOPMENT --destination "../../fyp-ai/evaluation/datasets/advisory_execution_multilingual_v1_development"
+python -B scripts/export_dataset.py --dataset-root "datasets/advisory_execution_multilingual_v1" --split HELDOUT --destination "../../fyp-ai/evaluation/datasets/advisory_execution_multilingual_v1_heldout"
+```
+ It does not create Git branches,
 commits, pushes or PRs. Review and commit its output in `fyp-ai` normally.
 The evaluator itself is not implemented by this change.
 
@@ -39,12 +51,12 @@ changes do not block export; commit the exporter too before sharing the tooling.
 Git must trust the source checkout under your user account. No dependencies are
 added beyond the project's existing Python requirements and Git.
 
-## Releases compiled by G8, and uncommitted exports
+## Releases compiled by G9, and uncommitted exports
 
-`--dataset-root` may be a G8 release such as `datasets/advisory_execution_pilot_v1`. The destination folder name is whatever you pass to
+`--dataset-root` may be a G9 release such as `datasets/advisory_execution_pilot_v1`. The destination folder name is whatever you pass to
 `--destination`; use the release name (for example `../../fyp-ai/evaluation/datasets/advisory_execution_pilot_v1`) and keep the legacy
 `pilot/` folder untouched. For such a release the exporter uses the release's own `normalization.json` (never
-`configs/normalization.json`), re-runs the G8 compilation in memory and refuses any `ground_truth.json`, `transcript.json` or
+`configs/normalization.json`), re-runs the G9 compilation in memory and refuses any `ground_truth.json`, `transcript.json` or
 `speaker_roles.json` that differs from a fresh compilation of the current accepted inputs (so a stale or hand-edited snapshot cannot be
 exported), and writes `dataset_status` (G7 verification and timing state) into `manifest.json`.
 
@@ -57,7 +69,8 @@ others will rely on.
 `format` versions the snapshot contract. `source.git_commit`,
 `source.dataset_path`, `source.dataset_id` and `source.checklist_id` identify
 the release inside `fyp-be`.
-`call_ids` lists the calls. `timing_status` explicitly says `placeholder_zero`.
+`call_ids` lists the calls. `timing_status` explicitly says `placeholder_zero` (provisional release) or `audio_derived` (a release whose G9 record
+names the G8 render its transcript times came from).
 `files` maps each data file to its SHA-256 hash of canonical JSON; formatting,
 object-key ordering and Windows Git line-ending conversion do not change hashes.
 `dataset_sha256` identifies the complete data-file inventory and hashes.
@@ -65,8 +78,9 @@ There is no creation timestamp or machine-specific path, so unchanged inputs
 produce identical output. Hashes detect changes; they are not signatures or
 proof of data quality. Record the source commit and dataset hash in future runs.
 
-This initial exporter rejects non-placeholder timestamps. Real timing export
-needs explicit timing provenance support later, not inferred timing status.
+For a plain (non-G9) release the exporter still rejects non-placeholder timestamps. For a G9 release it follows the render the ground-truth
+record names: the in-memory recompile uses the same render and the same gates (current G7, complete current G8 render), so audio-derived times
+are accepted only when they equal that fresh compilation, and the timing status is taken from the record, never inferred from the transcript.
 
 ## Verify or update
 

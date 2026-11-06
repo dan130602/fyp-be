@@ -45,42 +45,72 @@ def resolve_dataset_root(project, dataset_root=DEFAULT_DATASET_ROOT):
     return (dataset if dataset.is_absolute() else project / dataset).resolve()
 
 
-G8_RECORD = "authoring/ground_truth_record.json"
+G9_RECORD = "authoring/ground_truth_record.json"
 
 
-def is_g8_release(dataset):
-    """A release whose calls/ were compiled by G8 (`fyp_evaluation.ground_truths`); it owns its normalization.json."""
-    return (Path(dataset) / G8_RECORD).is_file()
+def is_g9_release(dataset):
+    """A release whose calls/ were compiled by G9 (`fyp_evaluation.ground_truths`); it owns its normalization.json."""
+    return (Path(dataset) / G9_RECORD).is_file()
 
 
-def _g8_errors(dataset, schemas, paths):
-    """G8 releases: every exported call file must equal a fresh G8 compilation from the CURRENT accepted inputs.
+def _g9_errors(dataset, schemas, paths):
+    """G9 releases: every exported call file must equal a fresh G9 compilation from the CURRENT accepted inputs.
 
     The compiler itself refuses unless G6 (and so G0-G5) is complete, valid and current, and it re-checks every evidence span
     against the plan, so an exported snapshot can never be stale or hand-edited.
     """
     from .ground_truths.cli import expected_outputs
+    from .ground_truths.timings import recorded_render_id
 
-    expected = expected_outputs(dataset, schemas)
+    # a FINAL record (audio-derived timings) names its G8 render; the in-memory recompile then uses the same render and the same gates
+    expected = expected_outputs(dataset, schemas, recorded_render_id(dataset))
     errors = []
     for name, path in paths.items():
         if name.startswith("calls/") and path.read_bytes().decode("utf-8").replace("\r\n", "\n") != expected.get(name):
-            errors.append(f"{name}: differs from a fresh G8 compilation; run scripts/compile_ground_truth.py --write first")
+            errors.append(f"{name}: differs from a fresh G9 compilation; run scripts/compile_ground_truth.py --write first")
     return errors
 
 
-def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncommitted=False):
+SPLIT_FILES = ("splits/split.v1.json", "splits/development_exposure.v1.json", "splits/split_report.v1.json")
+
+
+def split_selection(dataset, schemas, label):
+    """The call IDs a frozen split assigns to `label`, after the full offline verification of the split (stale, altered or missing
+    assignments, fingerprints, quotas and locks). The manifest is the sole authority; nothing here draws or edits assignments."""
+    from .splits import SplitError
+    from .splits.build import manifest_hash, split_calls, verify
+
+    errors = verify(dataset, schemas)
+    if errors:
+        raise ValueError("The split is missing, altered or stale: " + "; ".join(errors[:5]))
+    manifest = load_json(dataset / "splits" / "split.v1.json")
+    try:
+        call_ids = split_calls(manifest, label)
+    except SplitError as error:
+        raise ValueError(str(error)) from error
+    return {"label": label, "call_ids": call_ids, "split_version": manifest["split_version"], "split_manifest_sha256": manifest_hash(dataset),
+            "dataset_calls": len(manifest["assignments"]), "totals": manifest["totals"], "seed": manifest["seed"]}
+
+
+def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncommitted=False, split=None):
     """Validate the prepared source and return deterministic snapshot bytes.
 
     By default every input must match committed HEAD. `allow_uncommitted=True` skips that comparison (for a provisional
     export); the manifest then records `source.uncommitted: true`, because `source.git_commit` no longer identifies the data.
+    `split` ("DEVELOPMENT" or "HELDOUT") exports only the calls the frozen split assigns to it, in the same v1 layout; the manifest then
+    carries a `split` object (label, split manifest hash). Without it the export is byte-identical to before.
     """
     project = Path(project).resolve()
     repo = Path(git(project, "rev-parse", "--show-toplevel").decode().strip())
     commit = git(repo, "rev-parse", "HEAD").decode().strip()
     dataset = resolve_dataset_root(project, dataset_root)
     schemas = project / "schemas"
-    g8 = is_g8_release(dataset)
+    g9 = is_g9_release(dataset)
+    final_render = None
+    if g9:
+        from .ground_truths.timings import recorded_render_id
+
+        final_render = recorded_render_id(dataset)  # None: PROVISIONAL placeholder times; else the render whose times were stitched in
     calls = sorted(p for p in (dataset / "calls").iterdir() if p.is_dir())
     if not calls:
         raise ValueError("No call directories found")
@@ -97,6 +127,15 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
     discovered_call_ids = [call.name for call in calls]
     if source_manifest["call_ids"] != discovered_call_ids:
         raise ValueError("dataset_manifest.json call_ids must exactly match sorted call directories")
+    selection = split_selection(dataset, schemas, split) if split else None
+    if selection:
+        if selection["dataset_calls"] != len(discovered_call_ids):
+            raise ValueError("The split assignments do not cover exactly the calls of the release")
+        wanted = set(selection["call_ids"])
+        calls = [call for call in calls if call.name in wanted]
+        discovered_call_ids = [call.name for call in calls]
+        if discovered_call_ids != selection["call_ids"]:
+            raise ValueError("The split names calls that are not compiled in this release")
 
     paths = {"checklist.json": dataset / "checklist.json"}
     for call in calls:
@@ -107,8 +146,10 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
 
     # Validate the exact local bytes, and require them to match HEAD. This also
     # detects ignored/untracked inputs and works with Git's CRLF checkout rules.
-    normalization_path = dataset / "normalization.json" if g8 else project / "configs/normalization.json"
+    normalization_path = dataset / "normalization.json" if g9 else project / "configs/normalization.json"
     inputs = [source_manifest_path, *paths.values(), normalization_path, *schemas.glob("*.json")]
+    if selection:
+        inputs += [dataset / name for name in SPLIT_FILES]
     for path in inputs:
         no_links(path)
         if allow_uncommitted:
@@ -120,8 +161,8 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
             raise ValueError(f"Source differs from committed data; commit it first (or use --allow-uncommitted): {relative}")
 
     checklist = load_json(paths["checklist.json"])
-    if g8:
-        errors = _g8_errors(dataset, schemas, paths)
+    if g9:
+        errors = _g9_errors(dataset, schemas, paths)
     else:
         normalization = load_json(normalization_path)
         errors = validate_checklist(checklist, normalization, schemas)
@@ -129,11 +170,14 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
         gt, transcript, roles = [load_json(call / name) for name in CALL_FILES]
         if gt.get("call_id") != call.name:
             errors.append(f"{call.name}: ground truth call_id differs from directory")
-        if not g8:
+        if not g9:
             errors += [f"{call.name}: {e}" for e in validate_answers(gt, "ground_truth", checklist, normalization, schemas)]
             errors += [f"{call.name}: {e}" for e in validate_transcript_pair(gt, transcript, roles, schemas)]
-        if any(s["start_time"] != "0.0" or s["end_time"] != "0.0" for s in transcript["audio_segments"]):
+        placeholder = all(s["start_time"] == s["end_time"] == "0.0" for s in transcript["audio_segments"])
+        if not final_render and not placeholder:
             errors.append(f"{call.name}: v1 export supports placeholder_zero timings only")
+        if final_render and placeholder:  # already guaranteed by the recompile; kept as an explicit guard against a half-written release
+            errors.append(f"{call.name}: the record says audio-derived timings but the transcript still has placeholder times")
     if errors:
         raise ValueError("\n".join(errors))
     # Canonical JSON serialization makes hashes independent of OS line endings.
@@ -147,12 +191,16 @@ def prepare_snapshot(project, dataset_root=DEFAULT_DATASET_ROOT, *, allow_uncomm
             "checklist_id": source_manifest["checklist_id"],
         },
         "call_ids": discovered_call_ids,
-        "timing_status": "placeholder_zero",
+        "timing_status": "audio_derived" if final_render else "placeholder_zero",
         "files": {name: digest(data) for name, data in files.items()},
     }
     if allow_uncommitted:  # added only when used, so committed exports stay byte-identical to before
         manifest["source"]["uncommitted"] = True
-    if g8:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
+    if selection:  # the loader ignores extra manifest keys; dataset_sha256 still covers exactly the exported files
+        manifest["split"] = {"label": selection["label"], "split_version": selection["split_version"],
+                             "split_manifest_sha256": selection["split_manifest_sha256"], "dataset_calls": selection["dataset_calls"],
+                             "calls": len(discovered_call_ids), "totals": selection["totals"], "seed": selection["seed"]}
+    if g9:  # what has not happened yet (G7 dialogue verification, audio-derived timings), from the compiled ground truth
         manifest["dataset_status"] = load_json(calls[0] / "ground_truth.json")["status"]
     manifest["dataset_sha256"] = digest(serialize(manifest["files"]))
     files["manifest.json"] = serialize(manifest)
@@ -193,14 +241,14 @@ def verify_snapshot(destination):
     return manifest
 
 
-def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False, allow_uncommitted=False):
+def export_snapshot(project, destination, *, dataset_root=DEFAULT_DATASET_ROOT, overwrite=False, allow_uncommitted=False, split=None):
     destination = Path(destination).absolute()
     no_links(destination)
     destination = destination.resolve()
     project = Path(project).resolve()
     if destination == project or project in destination.parents or destination in project.parents:
         raise ValueError("Destination must be outside the dataset project")
-    files = prepare_snapshot(project, dataset_root, allow_uncommitted=allow_uncommitted)  # Complete validation before any writes.
+    files = prepare_snapshot(project, dataset_root, allow_uncommitted=allow_uncommitted, split=split)  # Complete validation before any writes.
     if destination.exists():
         if not overwrite:
             raise ValueError("Destination exists; use --overwrite for a verified snapshot update")
@@ -252,6 +300,8 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true", help="Verify destination only; write nothing")
     parser.add_argument("--allow-uncommitted", action="store_true",
                         help="Export without requiring the source to match committed HEAD (manifest records source.uncommitted)")
+    parser.add_argument("--split", choices=("DEVELOPMENT", "HELDOUT"),
+                        help="Export only the calls the frozen splits/split.v1.json assigns to this label (same v1 layout)")
     args = parser.parse_args(argv)
     try:
         manifest = verify_snapshot(args.destination) if args.check else export_snapshot(
@@ -260,6 +310,7 @@ def main(argv=None):
             dataset_root=args.dataset_root,
             overwrite=args.overwrite,
             allow_uncommitted=args.allow_uncommitted,
+            split=args.split,
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(f"Export error: {error}", file=sys.stderr)
@@ -268,5 +319,8 @@ def main(argv=None):
     print(f"Source commit: {manifest['source']['git_commit']}" + (" (plus UNCOMMITTED changes)" if manifest["source"].get("uncommitted") else ""))
     if manifest.get("dataset_status"):
         print(f"Dataset status: {manifest['dataset_status']}")
+    if manifest.get("split"):
+        print(f"Split: {manifest['split']['label']} ({manifest['split']['calls']} of {manifest['split']['dataset_calls']} calls), "
+              f"split manifest {manifest['split']['split_manifest_sha256']}")
     print(f"Dataset SHA256: {manifest['dataset_sha256']}")
     return 0

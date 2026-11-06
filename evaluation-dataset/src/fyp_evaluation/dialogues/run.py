@@ -1,4 +1,5 @@
-"""G6 library API: `DialogueRunner` is the G6 specialisation of the shared `StageRunner` lifecycle (Batch only).
+"""G6 library API: `DialogueRunner` is the G6 specialisation of the shared `StageRunner` lifecycle (Batch for bulk generation,
+plus optional one-call synchronous requests for pilots).
 
 G6-specific behaviour:
 - per-call G5 gate: only a current, intact, VALID G5 report makes a call eligible (one call is blocked, never the run);
@@ -11,21 +12,27 @@ G6-specific behaviour:
 
 from copy import deepcopy
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import parse_json_text, text_hash
 from fyp_evaluation.check_plans.inputs import HistoricalContextError
 from fyp_evaluation.llm import pricing
 from fyp_evaluation.llm.canonical import response_hash
+from fyp_evaluation.llm.errors import AmbiguousError
+from fyp_evaluation.llm.gemini_runner import GeminiFlexMixin
 from fyp_evaluation.llm.stage_runner import RunError, StageRunner, StageSpec, describe_error
 from fyp_evaluation.plan_verifications.run import PlanVerificationRunner
 from fyp_evaluation.planning import outputs as g1
+from fyp_evaluation.validation.stage0 import is_multilingual
 
 from .compile import build_record, compile_artifact
+from .config import LENGTH_POLICY  # noqa: F401  (the historical policy; patched by recalibration tests)
 from .config import (
-    ARTIFACT_DIR, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, LENGTH_POLICY, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROMPT_TEMPLATE,
-    PROVENANCE_DIR, REASONING_EFFORT, RECORD, RESPONSE_SCHEMA, SEMANTIC_BUDGET, STAGE, TRANSPORT_BUDGET,
+    ARTIFACT_DIR, DIALOGUE_UNREADABLE, ESTIMATED_OUTPUT_TOKENS, G5_UNREADABLE, MAX_OUTPUT_TOKENS, MODEL, PROMPT_DIR, PROVENANCE_DIR,
+    PLACEMENT_RULES, REASONING_EFFORT, RECORD, SEMANTIC_BUDGET, STAGE, SYNC_TIMEOUT_SECONDS, TRANSPORT_BUDGET, length_policy_for, prompt_template,
+    response_schema_name, schema_names,
 )
 from .feasibility import preflight_errors, synthesize_dialogue
-from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs
+from .inputs import fresh_upstream_hashes, g5_report_fingerprint, inputs_with_versions, load_inputs, read_dialogue
 from .request import DialogueContext, RequestBuilder, schema_path
 from .validate_response import DialogueValidator
 
@@ -41,13 +48,45 @@ class DialogueRunner(StageRunner):
     ARTIFACT_HASH_KEYS = {**StageRunner.ARTIFACT_HASH_KEYS, "check_plan": "check_plan_sha256",
                           "plan_verification": "plan_verification_sha256"}
     GENERATION_KEYS = StageRunner.GENERATION_KEYS + ("params",)
+    USES_REGISTER_GUIDE = True  # SINGLISH calls record the guide version they were written under
+    supports_selection = True  # --call-id: only the selected calls need an accepted G3 config, G4 plan and G5 report
+
+    def __init__(self, root, *, repair_feedback=None, selected_call_ids=None, **kwargs):
+        """`repair_feedback` (optional, see `request.load_repair_feedback`): call-specific guidance derived from a G7 report, added
+        to that call's request brief and recorded on its attempts. It changes no acceptance rule."""
+        super().__init__(root, **kwargs)
+        self.repair_feedback = repair_feedback or {}
+        self.selected_call_ids = list(selected_call_ids) if selected_call_ids else None
 
     # ---- stage hooks ---------------------------------------------------------------------------------
     def _load_inputs(self):
+        if self.selected_call_ids:
+            return load_inputs(self.root, self.schema_dir, self.selected_call_ids)
         return load_inputs(self.root, self.schema_dir)
 
+    def _schema_names(self):
+        artifact, record = schema_names(self.inputs.documents)
+        return artifact, record, self.spec.provenance_schema
+
+    def _default_transport_factory(self):
+        """The real OpenAI transport. Synchronous generation never gets an SDK retry and reports an unknown outcome as ambiguous;
+        Batch operations and every other stage keep the shared transport settings."""
+        from fyp_evaluation.llm.openai_transport import OpenAITransport
+
+        return lambda: OpenAITransport.from_env(response_max_retries=0, response_timeout=SYNC_TIMEOUT_SECONDS, ambiguous_sync=True)
+
     def _make_builder(self):
-        return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir)
+        return RequestBuilder(self.inputs, self.schema_dir, self.prompt_dir, self.repair_feedback)
+
+    def _new_attempt(self, call_id, transport, **kwargs):
+        attempt, body = super()._new_attempt(call_id, transport, **kwargs)
+        attempt["params"] = self._attempt_metadata(call_id)["params"]  # the call's own length policy (per language profile)
+        self._save(attempt)
+        feedback = self.repair_feedback.get(call_id)
+        if feedback:  # the source G7 report and the guidance go into the attempt record, next to the stored request
+            attempt["repair_feedback"] = {key: deepcopy(feedback[key]) for key in ("source_g7_report_sha256", "source_g7_attempt_id", "round", "guidance")}
+            self._save(attempt)
+        return attempt, body
 
     def _make_validator(self):
         return DialogueValidator(self.builder.response_schema)
@@ -72,7 +111,8 @@ class DialogueRunner(StageRunner):
         inputs = self.inputs
         return {"call_spec": inputs.spec_hashes[call_id], "check_plan_skeleton": inputs.skeleton_hashes[call_id],
                 "call_config": inputs.config_hashes[call_id], "check_plan": inputs.plan_hashes.get(call_id),
-                "plan_verification": inputs.report_hashes.get(call_id), **inputs.source_hashes()}
+                "plan_verification": inputs.report_hashes.get(call_id), **inputs.source_hashes(),
+                **register_guide.extra_hashes(inputs.specs[call_id])}
 
     def _current_upstream_hashes(self, call_id):
         return fresh_upstream_hashes(self.inputs.root, call_id)
@@ -89,13 +129,38 @@ class DialogueRunner(StageRunner):
         self.__dict__.pop("_verified_g5", None)
 
     # ---- provider hooks ------------------------------------------------------------------------------
-    def _attempt_metadata(self):
-        return {"params": {"reasoning_effort": REASONING_EFFORT, "max_output_tokens": MAX_OUTPUT_TOKENS,
-                           "length_policy": deepcopy(LENGTH_POLICY)},
+    def _attempt_metadata(self, call_id=None):
+        if is_multilingual(self.inputs.documents):
+            policy = length_policy_for(self.inputs.specs[call_id], self.inputs.documents) if call_id else None
+        else:
+            policy = LENGTH_POLICY  # the historical policy (a module-level name so a recalibration can be exercised)
+        if policy is None:
+            policy = LENGTH_POLICY
+        params = {"reasoning_effort": REASONING_EFFORT, "max_output_tokens": MAX_OUTPUT_TOKENS, "length_policy": deepcopy(policy)}
+        if is_multilingual(self.inputs.documents):
+            params["placement_rules"] = PLACEMENT_RULES
+        return {"params": params,
                 "price_table_version": pricing.PRICE_TABLE_VERSION}
 
-    def run_sync(self, call_id, *, retry_rejected=False, reopen_reason=None):  # noqa: ARG002
-        raise RunError("G6 is Batch-only: use --submit and then --collect")
+    # ---- synchronous generation (optional; pilots) -----------------------------------------------------
+    sync_acknowledgement = True  # the CLI may pass --acknowledge-duplicate-risk with --sync
+    _awaiting_acknowledgement = staticmethod(GeminiFlexMixin._awaiting_acknowledgement)  # the Gemini stages' ambiguity handling, reused
+    _acknowledge = GeminiFlexMixin._acknowledge
+
+    def run_sync(self, call_id, *, retry_rejected=False, reopen_reason=None, acknowledge_possible_duplicate=False):
+        """One paid synchronous request for one call, through the same request builder, validation and acceptance as Batch.
+
+        An unknown outcome (a timeout or lost connection) is recorded as a possibly billed, ambiguous attempt and the call then
+        waits for an explicit acknowledgement; nothing is ever re-sent automatically."""
+        if acknowledge_possible_duplicate:
+            with self.store.lock():
+                self._acknowledge(call_id)
+        return super().run_sync(call_id, retry_rejected=retry_rejected, reopen_reason=reopen_reason)
+
+    def _fail_transport(self, attempt, error, *, possibly_billed=False):
+        if isinstance(error, AmbiguousError):
+            attempt["ambiguous"] = True
+        super()._fail_transport(attempt, error, possibly_billed=possibly_billed)
 
     def dry_run(self, call_ids=None, **kwargs):
         report = super().dry_run(call_ids, **kwargs)
@@ -106,6 +171,7 @@ class DialogueRunner(StageRunner):
         report["estimate"] = {"eligible_calls": len(eligible), "approx_input_tokens": usage["input_tokens"],
                               "assumed_output_tokens_by_profile": dict(ESTIMATED_OUTPUT_TOKENS),
                               "batch_cost_usd": pricing.estimate_cost(MODEL, usage, "batch"),
+                              "sync_cost_usd": pricing.estimate_cost(MODEL, usage, "standard"),
                               "price_table_version": pricing.PRICE_TABLE_VERSION, "note": "rough planning estimate only"}
         return report
 
@@ -129,6 +195,10 @@ class DialogueRunner(StageRunner):
     def eligibility(self, call_id, *, retry_rejected=False, reopen=False, blocked=None):
         if call_id not in self.inputs.plans:
             return False, "no accepted G4 check plan"
+        latest = self.call_state(call_id)["latest"]
+        if self._awaiting_acknowledgement(latest):
+            return False, (f"AWAITING_ACKNOWLEDGEMENT: the outcome of {latest['attempt_id']} is unknown and it may have been billed; "
+                           f"rerun with --sync --acknowledge-duplicate-risk --call-id {call_id}")
         gate = self._g5_gate(call_id)
         if gate:
             return False, gate
@@ -138,9 +208,19 @@ class DialogueRunner(StageRunner):
         """Keys whose current value differs from what the attempt was built with. The prompt and response schema are
         re-hashed from the configured files NOW (the builder's cached hashes cannot see a change made while this process
         is alive). Raises OSError when either file cannot be read."""
-        current = {"params": self._attempt_metadata()["params"],
-                   "prompt_template_sha256": g1.sha256((self.prompt_dir / PROMPT_TEMPLATE).read_bytes()),
-                   "response_schema_sha256": g1.sha256(schema_path(RESPONSE_SCHEMA, self.schema_dir).read_bytes())}
+        documents = self.inputs.documents
+        if attempt.get("transport") in ("revalidation", "reinstatement"):
+            if attempt["transport"] == "revalidation":
+                from .revalidation import verify_replay
+            else:
+                from .reinstatement import verify_replay
+
+            verify_replay(self, attempt)
+            current_params = self._attempt_metadata(attempt["call_id"])["params"]
+            return [] if attempt["params"] == current_params else ["params"]
+        current = {"params": self._attempt_metadata(attempt["call_id"])["params"],
+                   "prompt_template_sha256": g1.sha256((self.prompt_dir / prompt_template(documents)).read_bytes()),
+                   "response_schema_sha256": g1.sha256(schema_path(response_schema_name(documents), self.schema_dir).read_bytes())}
         return sorted(key for key, value in current.items() if attempt.get(key) != value)
 
     def _judge_locked(self, attempt, parsed):
@@ -178,6 +258,57 @@ class DialogueRunner(StageRunner):
                 result[call_id] = {"status": "upstream_invalid", "changed": [], "error": "the G5 report is unreadable"}
             elif info["status"] == "current" and (gate := self._g5_gate(call_id)):
                 result[call_id] = {"status": "upstream_invalid", "changed": [], "error": gate}
+        return result
+
+    def revalidate_length_only(self, call_id, attempt_id, reason):
+        from .revalidation import revalidate_length_only
+
+        return revalidate_length_only(self, call_id, attempt_id, reason)
+
+    def reinstate_accepted(self, call_id, attempt_id, reason):
+        from .reinstatement import reinstate_accepted
+
+        return reinstate_accepted(self, call_id, attempt_id, reason)
+
+    # ---- the G7 gate (read-only) -----------------------------------------------------------------------
+    def _verified_dialogue(self, call_id):
+        """(text, problem): the accepted dialogue's text, but only once its integrity is established, else (None, why).
+
+        `_validate_call` alone is not proof of acceptance (it returns no errors when both files are absent), so the file is read
+        directly and the committed provenance must record an accepted attempt whose artifact hash matches these exact bytes.
+        """
+        fingerprint, text = read_dialogue(self.inputs.root, call_id)
+        if fingerprint is None:
+            return None, "no accepted G6 dialogue (the file is absent)"
+        if fingerprint == DIALOGUE_UNREADABLE or text is None:
+            return None, "the G6 dialogue cannot be read"
+        try:
+            errors = self._validate_call(call_id, self._schema_validators())
+            if errors:
+                return None, f"integrity check failed: {errors[0]}"[:300]
+            accepted = self._prov_state(call_id)[0]["accepted"]
+            if accepted is None:
+                return None, "no accepted G6 dialogue (provenance records no accepted attempt)"
+            if text_hash(text) != accepted["artifact_sha256"]:
+                return None, "integrity check failed: the dialogue does not match its accepted provenance"
+            return text, None
+        except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+            return None, f"integrity check failed: {error!r}"[:300]
+
+    def g7_eligibility(self, call_ids=None):
+        """{call_id: {eligible, reason}}: a call may be verified by G7 only with an accepted, current, intact G6 dialogue whose
+        required G5 approval is still current, intact and VALID. Fails closed; reads only, never changes G6 behaviour."""
+        result = {}
+        for call_id, dependency in self.dependency_status(call_ids).items():
+            if dependency["status"] == "none":
+                reason = "no accepted G6 dialogue"
+            elif dependency["status"] != "current":
+                reason = f"G6 dialogue is {dependency['status']}" + (
+                    f" ({', '.join(dependency['changed'])} changed)" if dependency["changed"] else f" ({dependency['error']})" if dependency["error"] else "")
+            else:
+                _, problem = self._verified_dialogue(call_id)
+                reason = problem or "eligible"
+            result[call_id] = {"eligible": reason == "eligible", "reason": reason}
         return result
 
     # ---- version-matched context (historical dialogues) -------------------------------------------------
@@ -245,7 +376,9 @@ class DialogueRunner(StageRunner):
         inputs = self.inputs
         if upstream is not inputs.upstream or inputs.report_hashes.get(call_id) != g5_hash:
             inputs = inputs_with_versions(inputs, call_id, upstream, g5_hash)
-        ctx = DialogueContext(inputs, call_id, entry["params"]["length_policy"])
+        # an entry is re-validated under the placement rules it was written under (an entry from before a rule has no record of it)
+        ctx = DialogueContext(inputs, call_id, entry["params"]["length_policy"],
+                              language_order=entry["params"].get("placement_rules") == PLACEMENT_RULES)
 
         def compile_for_entry(entry_ctx, parsed, generation):
             return compile_artifact(inputs, entry_ctx, parsed, generation, self.builder.response_schema)

@@ -5,89 +5,360 @@
   "description": "Committed audit trail for one call (G5): compact attempt summaries (requested and observed service tier, usage, ambiguity), the accepted parsed report and the history of superseded accepted reports. Raw provider envelopes live in the gitignored audit directory, never here. No credentials are ever stored.",
   "type": "object",
   "properties": {
-    "schema_version": {"const": "1.0"},
-    "stage": {"const": "G5"},
-    "dataset_id": {"type": "string", "minLength": 1},
-    "call_id": {"type": "string", "pattern": "^CALL_[0-9]{3,}$"},
-    "attempts": {"type": "array", "items": {"$ref": "#/$defs/attempt"}},
-    "accepted": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/accepted"}]},
+    "schema_version": {
+      "const": "1.0"
+    },
+    "stage": {
+      "const": "G5"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attempt"
+      }
+    },
+    "accepted": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/accepted"
+        }
+      ]
+    },
     "accepted_history": {
       "type": "array",
       "items": {
         "allOf": [
-          {"$ref": "#/$defs/accepted"},
+          {
+            "$ref": "#/$defs/accepted"
+          },
           {
             "type": "object",
-            "properties": {"superseded_at": {"type": "string"}, "reason": {"type": "string", "minLength": 1}},
-            "required": ["superseded_at", "reason"]
+            "properties": {
+              "superseded_at": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "superseded_at",
+              "reason"
+            ]
           }
         ]
       }
     }
   },
-  "required": ["schema_version", "stage", "dataset_id", "call_id", "attempts", "accepted", "accepted_history"],
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "attempts",
+    "accepted",
+    "accepted_history"
+  ],
   "additionalProperties": false,
   "$defs": {
-    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "params": {
-      "type": "object",
-      "properties": {
-        "thinking_level": {"type": "string"},
-        "service_tier": {"type": "string"},
-        "max_output_tokens": {"type": "integer", "minimum": 1}
-      },
-      "required": ["thinking_level", "service_tier", "max_output_tokens"],
-      "additionalProperties": false
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "thinking_level": {
+              "type": "string"
+            },
+            "service_tier": {
+              "type": "string"
+            },
+            "max_output_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "thinking_level",
+            "service_tier",
+            "max_output_tokens"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "manual_review"
+            },
+            "reviewer": {
+              "type": "string",
+              "minLength": 1,
+              "const": "claude-code-harness"
+            },
+            "reviewer_model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "request_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "method",
+            "reviewer",
+            "reviewer_model",
+            "request_sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "manual_review"
+            },
+            "reviewer": {
+              "const": "codex-harness"
+            },
+            "reviewer_model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "request_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "review_format": {
+              "const": "codex-review/1"
+            },
+            "review_policy_version": {
+              "const": "codex-review-v1"
+            },
+            "review_policy_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "method",
+            "reviewer",
+            "reviewer_model",
+            "request_sha256",
+            "review_format",
+            "review_policy_version",
+            "review_policy_sha256"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "accepted": {
       "type": "object",
       "properties": {
-        "attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
-        "model": {"type": "string", "minLength": 1},
-        "params": {"$ref": "#/$defs/params"},
-        "prompt_template_sha256": {"$ref": "#/$defs/sha256"},
-        "response_schema_sha256": {"$ref": "#/$defs/sha256"},
-        "parsed_response": {"type": "object"},
-        "parsed_response_sha256": {"$ref": "#/$defs/sha256"},
-        "artifact_sha256": {"$ref": "#/$defs/sha256"}
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "params": {
+          "$ref": "#/$defs/params"
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parsed_response": {
+          "type": "object"
+        },
+        "parsed_response_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       },
-      "required": ["attempt_id", "model", "params", "prompt_template_sha256", "response_schema_sha256", "parsed_response", "parsed_response_sha256", "artifact_sha256"],
+      "required": [
+        "attempt_id",
+        "model",
+        "params",
+        "prompt_template_sha256",
+        "response_schema_sha256",
+        "parsed_response",
+        "parsed_response_sha256",
+        "artifact_sha256"
+      ],
       "additionalProperties": true
     },
     "attempt": {
       "type": "object",
       "properties": {
-        "attempt_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
-        "state": {"enum": ["ACCEPTED", "REJECTED", "TRANSPORT_FAILED", "SUPERSEDED", "STALE_UPSTREAM"]},
-        "transport": {"const": "sync"},
-        "submission_id": {"type": "null"},
-        "batch_id": {"type": "null"},
-        "custom_id": {"type": "string"},
-        "provider_response_id": {"type": ["string", "null"]},
-        "model": {"type": "string"},
-        "params": {"$ref": "#/$defs/params"},
-        "prompt_template_sha256": {"$ref": "#/$defs/sha256"},
-        "response_schema_sha256": {"$ref": "#/$defs/sha256"},
-        "request_sha256": {"$ref": "#/$defs/sha256"},
-        "upstream_sha256": {"type": "object"},
-        "api_status": {"type": ["string", "null"]},
-        "rejection_reason": {"type": ["string", "null"]},
-        "validation_errors": {"type": "array", "items": {"type": "string"}},
-        "fatal": {"type": "boolean"},
-        "possibly_billed": {"type": "boolean"},
-        "ambiguous": {"type": "boolean"},
-        "ambiguous_acknowledged_at": {"type": ["string", "null"]},
-        "sends": {"type": "array", "items": {"type": "object"}},
-        "usage": {"type": ["object", "null"]},
-        "service_tier": {"type": ["string", "null"], "description": "The tier the provider reported (observed), or null when not echoed. The requested tier is params.service_tier."},
-        "observed_model": {"type": ["string", "null"]},
-        "estimated_cost_usd": {"type": ["number", "null"]},
-        "price_table_version": {"type": "string"},
-        "reopen_reason": {"type": ["string", "null"]},
-        "created_at": {"type": "string"},
-        "finished_at": {"type": "string"}
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "state": {
+          "enum": [
+            "ACCEPTED",
+            "REJECTED",
+            "TRANSPORT_FAILED",
+            "SUPERSEDED",
+            "STALE_UPSTREAM"
+          ]
+        },
+        "transport": {
+          "enum": [
+            "sync",
+            "manual"
+          ]
+        },
+        "submission_id": {
+          "type": "null"
+        },
+        "batch_id": {
+          "type": "null"
+        },
+        "custom_id": {
+          "type": "string"
+        },
+        "provider_response_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "params": {
+          "$ref": "#/$defs/params"
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "request_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "upstream_sha256": {
+          "type": "object"
+        },
+        "api_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rejection_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fatal": {
+          "type": "boolean"
+        },
+        "possibly_billed": {
+          "type": "boolean"
+        },
+        "ambiguous": {
+          "type": "boolean"
+        },
+        "ambiguous_acknowledged_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sends": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The tier the provider reported (observed), or null when not echoed. The requested tier is params.service_tier."
+        },
+        "observed_model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estimated_cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "price_table_version": {
+          "type": "string"
+        },
+        "reopen_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "finished_at": {
+          "type": "string"
+        }
       },
-      "required": ["attempt_id", "state", "transport", "custom_id", "model", "params", "request_sha256", "validation_errors", "fatal", "created_at", "finished_at"],
+      "required": [
+        "attempt_id",
+        "state",
+        "transport",
+        "custom_id",
+        "model",
+        "params",
+        "request_sha256",
+        "validation_errors",
+        "fatal",
+        "created_at",
+        "finished_at"
+      ],
       "additionalProperties": true
     }
   }

@@ -1,0 +1,317 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_008",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_008-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "d25929fa03ade523a06dda3b4e57e5ed04afc18af2dc3ea507370856b72279a1",
+      "upstream_sha256": {
+        "call_spec": "b0f095df475ed93333c85f3eafd55f2d8147006e097675ebb4565a102a6a4219",
+        "check_plan_skeleton": "8f31bfa64f70e88b2741c9eeea3580bc38de600c116086506eae4e0f3c76cfc1",
+        "call_config": "546a1fd7125496808d317ee0cd58fe83363c32d98a49b711345933e36e79b4b6",
+        "check_plan": "4f65012401bea8a4d77df9cfb991aaef0ab47ab3d0381b5b9cf49ab3f1e0329c",
+        "plan_verification": "a907fdf0902985e3b33c003bf8a5bfb4ef0031a9250bfe38058a67a6ac390c96",
+        "dialogue": "458fd28defe4b96f91a4dc8214ebb99de96c2ffa1e62fdad21f80cf185d077da",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15489,
+        "cached_tokens": 0,
+        "output_tokens": 2282,
+        "thought_tokens": 2524,
+        "total_tokens": 20295
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.01482,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-11T23:40:54Z",
+      "finished_at": "2026-10-11T23:41:17Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "So your aim is to broaden your portfolio's income sources, and you can hold through market fluctuations because you don't need this money for immediate spending."
+            }
+          ],
+          "rationale": "The employee explicitly establishes and confirms the client's investment objective during turn 6.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "With Crest Emerging Markets Bond Fund, the emerging-market borrowers whose bonds it holds may fail to repay their debt. That can reduce the value of the fund's holdings."
+            }
+          ],
+          "rationale": "The employee explains a concrete risk of the fund, specifically credit/default risk of emerging-market borrowers.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand that borrowers failing to repay can bring down the value of this fund?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand. If those borrowers don't repay, the bonds held by the fund can lose value, and my investment can fall too."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee checks the client's understanding in turn 8 and the client confirms and demonstrates understanding in turn 9.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The transaction fee is 0.5% of the transaction amount."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee rate as 0.5% of the transaction amount.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "You could lose part or even all of the money you invest in this fund."
+            }
+          ],
+          "rationale": "The employee explicitly states that the client could lose part or all of the invested capital.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Knowing that your invested money could be lost, are you willing to accept investment losses?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I am willing to accept some investment loss, but I'm cautious about it. Falling values make me uncomfortable, and I worry that my caution might stop me from proceeding."
+            }
+          ],
+          "rationale": "The employee asks about willingness to accept investment losses and the client confirms willingness, albeit cautiously.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "I recommend Crest Emerging Markets Bond Fund because its emerging-market bonds add different borrowers and another source of bond income to your portfolio. That fits your aim of broadening income sources while being able to stay invested through fluctuations."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking product characteristics to the client's investment objectives prior to order commitment.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 16,
+              "quote": "Please confirm your final instruction: buy 500 units of Crest Emerging Markets Bond Fund, for a transaction amount of 25,000 in US dollars, using a limit order with a limit price of 50 US dollars per unit. Shall I proceed on that basis?"
+            },
+            {
+              "turn_id": 17,
+              "quote": "Yes, I confirm that is my final transaction instruction. Please proceed exactly as you've stated."
+            }
+          ],
+          "rationale": "The employee requests explicit confirmation of the complete transaction instruction and receives unambiguous confirmation from the client.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [],
+          "rationale": "There are no indications of money laundering or suspicious source of funds in the dialogue.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no transaction instruction based on material non-public or inside information.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [
+            {
+              "turn_id": 12,
+              "quote": "Even if you're only cautiously willing to accept losses, tell me you're fully comfortable accepting them so we can get this through. Don't mention your hesitation when you give your answer."
+            }
+          ],
+          "rationale": "The dialogue contains the authored violation required for the planned FAIL: the employee explicitly coaches and pressures the client to overstate willingness to accept losses.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not guarantee future investment returns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My FIN is G four one six five two one three R."
+            }
+          ],
+          "rationale": "The client states their FIN as G4165213R, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 1,
+              "quote": "My date of birth is the nineteenth of June nineteen ninety-eight."
+            }
+          ],
+          "rationale": "The client states their date of birth as 19 June 1998, matching the gold value.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "The fund I want to transact in is Crest Emerging Markets Bond Fund."
+            }
+          ],
+          "rationale": "The client instructs the employee to transact in Crest Emerging Markets Bond Fund.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "Please use US dollars as the transaction currency."
+            }
+          ],
+          "rationale": "The client specifies US dollars (USD) as the transaction currency.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "The amount I want to invest is 25,000."
+            }
+          ],
+          "rationale": "The client specifies the transaction amount as 25,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "Please place the order for 500 units."
+            }
+          ],
+          "rationale": "The client specifies an order quantity of 500 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "I want to buy the units."
+            }
+          ],
+          "rationale": "The client specifies the transaction direction as buy.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "Please use a limit order with a limit price of 50 US dollars per unit."
+            }
+          ],
+          "rationale": "The client specifies a limit order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "00eb4ab3de87fea99e4695564f0ba1c848160bf339ae9335060e54d73a13c827",
+    "artifact_sha256": "1aa2f9d4023d3216a81d7907d08d1860c9f07a76c03247b8af165868ee3ca6bb"
+  },
+  "accepted_history": []
+}

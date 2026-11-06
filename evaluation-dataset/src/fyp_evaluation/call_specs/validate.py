@@ -16,7 +16,8 @@ from fyp_evaluation.validation.schemas import load_json
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
 from .compile import (
-    RECORD, build_record, build_specs, gold_entries, parse_json_text, project_to_g1_texts, serialize_json, spec_path,
+    RECORD, build_record, build_specs, gold_entries, language_requirements, parse_json_text, project_to_g1_texts,
+    serialize_json, spec_path,
 )
 
 SCHEMA_NAMES = ("call_spec", "call_spec_record")
@@ -49,9 +50,8 @@ def _same(left, right):
     return g1.canonical_json(left) == g1.canonical_json(right)
 
 
-def _edge_entry(assignment):
-    return {key: assignment[key] for key in (
-        "assignment_id", "edge_case_id", "family", "target_question_ids", "parameters")}
+def _edge_entry(assignment, keys):
+    return {key: assignment[key] for key in keys}
 
 
 def _spec_errors(spec, call_id, src, validator):
@@ -63,12 +63,19 @@ def _spec_errors(spec, call_id, src, validator):
     if spec["dataset_id"] != src.dataset_id:
         errors.append(f"dataset_id {spec['dataset_id']} differs from dataset_manifest.json")
 
+    if spec["schema_version"] != src.schema_version:
+        errors.append(f"schema_version {spec['schema_version']} differs from this release's {src.schema_version}")
     row = next(r for r in src.manifest if r["call_id"] == call_id)
     meta = spec["metadata"]
-    manifest_meta = {key: row[key] for key in (
-        "call_intents", "language", "duration_profile", "target_duration_min_seconds", "target_duration_max_seconds")}
+    manifest_meta = {key: row[key] for key in src.meta_keys}
     if not _same(meta, manifest_meta):
         errors.append("metadata differs from call_manifest.csv")
+    if src.multilingual:
+        wanted = language_requirements(src, row["language_profile"], row["mixing_style"])
+        if not _same(spec.get("language_requirements"), wanted):
+            errors.append("language_requirements differ from language_profiles.json for the frozen language profile")
+    elif "language_requirements" in spec:
+        errors.append("language_requirements belong only to multilingual releases")
     vocabulary = src.documents["generation_plan"]["call_intent_vocabulary"]
     intents = meta["call_intents"]
     if any(i not in vocabulary for i in intents) or intents != sorted(intents, key=vocabulary.index):
@@ -85,7 +92,7 @@ def _spec_errors(spec, call_id, src, validator):
                 errors.append(f"gold {entry['question_id']} differs from coverage_matrix.csv (value or JSON type)")
     errors += [f"floating-point number at {path}; numbers are JSON integers in this release" for path in _floats(spec)]
 
-    wanted_edges = [_edge_entry(a) for a in src.assignments if a["call_id"] == call_id]
+    wanted_edges = [_edge_entry(a, src.edge_keys) for a in src.assignments if a["call_id"] == call_id]
     if len(spec["edge_cases"]) != len(wanted_edges):
         errors.append(f"has {len(spec['edge_cases'])} edge cases; edge_case_assignments.csv assigns {len(wanted_edges)}")
     else:

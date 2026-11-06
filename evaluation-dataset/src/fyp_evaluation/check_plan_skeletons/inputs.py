@@ -11,7 +11,7 @@ from fyp_evaluation.call_specs import compile as g2a
 from fyp_evaluation.call_specs.outputs import read_disk as read_g2a_disk
 from fyp_evaluation.call_specs.validate import validate_spec_set as validate_g2a
 from fyp_evaluation.planning import outputs as g1
-from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
+from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR, LANGUAGE_PROFILES_FILE
 
 G0_SOURCES = {
     "checklist_sha256": "checklist.json",
@@ -41,7 +41,10 @@ def file_hash(path):
 
 
 def g0_hashes(root):
-    return {key: file_hash(Path(root) / relative) for key, relative in G0_SOURCES.items()}
+    hashes = {key: file_hash(Path(root) / relative) for key, relative in G0_SOURCES.items()}
+    if (Path(root) / LANGUAGE_PROFILES_FILE).is_file():  # multilingual releases
+        hashes["language_profiles_sha256"] = file_hash(Path(root) / LANGUAGE_PROFILES_FILE)
+    return hashes
 
 
 def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):

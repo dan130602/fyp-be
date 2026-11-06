@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "stage": "G8",
+  "provider": "omnivoice",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_173",
+  "render_id": "omnivoice_pilot_A",
+  "dialogue_sha256": "1826fb4a1e1a45a1b354e06e7a3f84ea55f88e8871afe389db3031682aff7e6c",
+  "g7_report_sha256": "534ff69c82c664dd9f6b136a3bcd53a903b78b0508d91778f8f33a2a616e568d",
+  "timings_sha256": "9f88d46672aee4e2241e150cf5590b2c256cb539c746529b3ef1dd479fa29b58",
+  "audio_file": "audio.wav",
+  "audio_sha256": "4fad0ded4a4c8ce736c11072dc3f9883f56b7a16295be04c289293731c95df4c",
+  "settings": {
+    "provider": "omnivoice",
+    "backend": "slurm-gpu-worker",
+    "model": "MERaLiON/MERaLiON-OmniVoice-Hokkien-TTS",
+    "revision": "cd2fa70a18dd464dec4a429aedd5606c75985533",
+    "dtype": "float16",
+    "seed": 42,
+    "num_step": null,
+    "language": null,
+    "normalize_text": false,
+    "cloning": "create_voice_clone_prompt",
+    "employee_voice": "F01",
+    "client_voice": "M01",
+    "references": {
+      "EMPLOYEE": {
+        "voice_id": "F01",
+        "reference_file": "singlish female karen.wav",
+        "reference_sha256": "c2e2d68b6b7e1bce81d3c193fcf2a9a078c40a2e1700f1201eacb2dac1adde87",
+        "reference_text_sha256": "70b1abeec1cde31add91c55474d1f7b2db58a3422f292dfb0113252e1b870885"
+      },
+      "CLIENT": {
+        "voice_id": "M01",
+        "reference_file": "singlish male young adult.wav",
+        "reference_sha256": "ce27df6455776a3f5c7c90fb6eb4e34ef8f375b875230207683105b7d04ed83b",
+        "reference_text_sha256": "160402b0cf04e66de5672d803209018254c84d8700ff0289c688e1c779dcb681"
+      }
+    },
+    "text_transform": "spoken-percent-comma-and-millions-v3",
+    "silence_ms": 400,
+    "sample_rate": 24000
+  },
+  "timing_basis": "PER_TURN_WAV_LENGTH",
+  "word_timing": "NONE",
+  "turns": 22,
+  "total_cost_usd": 0.0,
+  "cost_basis": "school_gpu_cluster",
+  "rendered_at": "2026-11-05T20:15:55Z"
+}

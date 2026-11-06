@@ -1,0 +1,802 @@
+{
+  "schema_version": "2.0",
+  "stage": "G9",
+  "dataset_id": "advisory_execution_multilingual_v1",
+  "call_id": "CALL_222",
+  "status": {
+    "g7_dialogue_verification": "VERIFIED",
+    "timings": "AUDIO_DERIVED"
+  },
+  "source": {
+    "call_spec_sha256": "b61053372c62515dfdfc2c0721ead4de976247ee2af3678f1b19de8958f17228",
+    "check_plan_skeleton_sha256": "582d57b5cbee27f7b8b26eda7783dfc997bc38d6a63d40f427b91779724160e6",
+    "call_config_sha256": "cf7da8c957a2efcf2b47a5648d9798ee9603c06f0118428d14841deb59152990",
+    "check_plan_sha256": "044529523b0e15fbfee15380cf5f0763886382242414dd8140c6e9e425af2c3b",
+    "plan_verification_sha256": "0bbb16b40bdbac1ab89401ab1df34c46f8defe88042c64856a12914ab7f1ac91",
+    "dialogue_sha256": "9aee29c3ebcc4dd4e5b851e25b11c74b43ec1bd1238e3d0d243ba5d24a7ea57c",
+    "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+    "check_semantics_sha256": "71ab8063333d48dad0f8382a27f26afdf29154d4f868332b5a31f37ba47d039d",
+    "edge_case_catalog_sha256": "9573582a1ae2b9df06bace38756e9fbf1a9dd13f0539cd829d8e261c6d3d133e",
+    "normalization_sha256": "5c74c57e4819d468b07cad1daa564435900267b683dc077e4a001406407e2670",
+    "generation_plan_sha256": "ae71941fac24b8ccc2ee7904474b0402249e322223a3dac407de0547a6d4366e",
+    "language_profiles_sha256": "894bc4dc069903213ee218ba294b4d36896dc301069d63be23e571a9f4842967"
+  },
+  "metadata": {
+    "call_intents": [
+      "ADVISORY",
+      "EXECUTION"
+    ],
+    "language_profile": "MANDARIN",
+    "mixing_style": "NONE",
+    "duration_profile": "SHORT",
+    "target_duration_min_seconds": 180,
+    "target_duration_max_seconds": 300
+  },
+  "checks": [
+    {
+      "question_id": "C01",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_001",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 26,
+          "end": 69,
+          "text": "我确认了，您的投资目标是通过分散投资全球股票，争取长期资本增长，同时避免自己挑选个股。"
+        }
+      ],
+      "gold_evidence_text": "我确认了，您的投资目标是通过分散投资全球股票，争取长期资本增长，同时避免自己挑选个股。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C02",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_002",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 11,
+          "end": 73,
+          "text": "顶峰环球股票交易所交易基金虽然分散持有全球股票，但如果全球股市普遍下跌，基金的价值仍可能下降，分散投资不能消除这种市场风险。"
+        }
+      ],
+      "gold_evidence_text": "顶峰环球股票交易所交易基金虽然分散持有全球股票，但如果全球股市普遍下跌，基金的价值仍可能下降，分散投资不能消除这种市场风险。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C03",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        6,
+        7
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_003",
+          "turn_id": 6,
+          "speaker": "EMPLOYEE",
+          "start": 74,
+          "end": 118,
+          "text": "关于刚才说明的风险，您是否理解，即使持仓分散，全球股市普遍下跌时，这只基金仍会受到影响？"
+        },
+        {
+          "event_id": "EV_004",
+          "turn_id": 7,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 40,
+          "text": "我理解，分散持仓不代表能避开整体市场下跌，全球股市下跌时，基金的价值也可能下降。"
+        }
+      ],
+      "gold_evidence_text": "关于刚才说明的风险，您是否理解，即使持仓分散，全球股市普遍下跌时，这只基金仍会受到影响？\n我理解，分散持仓不代表能避开整体市场下跌，全球股市下跌时，基金的价值也可能下降。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C04",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_005",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 18,
+          "text": "这笔交易的手续费率是百分之零点二五。"
+        }
+      ],
+      "gold_evidence_text": "这笔交易的手续费率是百分之零点二五。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C05",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_006",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 19,
+          "end": 48,
+          "text": "还需要提醒您，投资这只基金可能损失部分甚至全部投入的本金。"
+        }
+      ],
+      "gold_evidence_text": "还需要提醒您，投资这只基金可能损失部分甚至全部投入的本金。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C06",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        8,
+        9
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_007",
+          "turn_id": 8,
+          "speaker": "EMPLOYEE",
+          "start": 49,
+          "end": 83,
+          "text": "了解这些风险后，请您明确说明，您是否愿意承担这项投资可能产生的亏损？"
+        },
+        {
+          "event_id": "EV_008",
+          "turn_id": 9,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 41,
+          "text": "我愿意承担部分投资亏损。不过，大幅亏损我还是很担心，不想把自己的承受意愿说得太高。"
+        }
+      ],
+      "gold_evidence_text": "了解这些风险后，请您明确说明，您是否愿意承担这项投资可能产生的亏损？\n我愿意承担部分投资亏损。不过，大幅亏损我还是很担心，不想把自己的承受意愿说得太高。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C07",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        4
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_009",
+          "turn_id": 4,
+          "speaker": "EMPLOYEE",
+          "start": 70,
+          "end": 128,
+          "text": "我推荐顶峰环球股票交易所交易基金，是因为它提供分散的全球股票投资，贴合您追求长期资本增长、又不想自己挑选个股的偏好。"
+        }
+      ],
+      "gold_evidence_text": "我推荐顶峰环球股票交易所交易基金，是因为它提供分散的全球股票投资，贴合您追求长期资本增长、又不想自己挑选个股的偏好。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C08",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EXCHANGE",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        14,
+        15
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_010",
+          "turn_id": 14,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 66,
+          "text": "请您确认最终指示：以人民币交易，金额为二十五万，通过市价单买入顶峰环球股票交易所交易基金，数量为一千份。您确认按这项最终指示下单吗？"
+        },
+        {
+          "event_id": "EV_011",
+          "turn_id": 15,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 27,
+          "text": "我确认，刚才复述的最终交易指示准确，请按这项指示下单。"
+        }
+      ],
+      "gold_evidence_text": "请您确认最终指示：以人民币交易，金额为二十五万，通过市价单买入顶峰环球股票交易所交易基金，数量为一千份。您确认按这项最终指示下单吗？\n我确认，刚才复述的最终交易指示准确，请按这项指示下单。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C09",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C10",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "ANY_SPEAKER",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C11",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "FAIL"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        10
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_012",
+          "turn_id": 10,
+          "speaker": "EMPLOYEE",
+          "start": 0,
+          "end": 54,
+          "text": "虽然您实际上担心大幅亏损，但为了让评估通过，回答时请把愿意承受亏损的程度说高些，直接说您愿意承担较大的亏损。"
+        }
+      ],
+      "gold_evidence_text": "虽然您实际上担心大幅亏损，但为了让评估通过，回答时请把愿意承受亏损的程度说高些，直接说您愿意承担较大的亏损。",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "C12",
+      "kind": "COMPLIANCE",
+      "expected": {
+        "kind": "compliance",
+        "expected_verdict": "PASS"
+      },
+      "evidence_mode": "ABSENCE",
+      "presence_pattern": "EMPLOYEE_ONLY",
+      "absence_scope": "ENTIRE_DIALOGUE",
+      "gold_evidence_turns": [],
+      "gold_evidence": [],
+      "gold_evidence_text": "",
+      "final_turn_id": null,
+      "value_history": [],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "K01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "F0289915K"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_013",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 24,
+          "end": 51,
+          "text": "我看着证件重新报，完整的证件号码是F零二八九九一五K。"
+        }
+      ],
+      "gold_evidence_text": "我看着证件重新报，完整的证件号码是F零二八九九一五K。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_013",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "F0289915K"
+        }
+      ],
+      "challenge_tags": [
+        "false_start"
+      ]
+    },
+    {
+      "question_id": "K02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "dob_dd_month_yyyy",
+        "expected_value": "24 October 2000"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        3
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_015",
+          "turn_id": 3,
+          "speaker": "CLIENT",
+          "start": 52,
+          "end": 71,
+          "text": "我的出生日期是二〇〇〇年十月二十四日。"
+        }
+      ],
+      "gold_evidence_text": "我的出生日期是二〇〇〇年十月二十四日。",
+      "final_turn_id": 3,
+      "value_history": [
+        {
+          "turn_id": 3,
+          "event_id": "EV_015",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "24 October 2000"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T01",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "Summit Global Equity ETF"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_016",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 0,
+          "end": 25,
+          "text": "这次我要交易的产品就是顶峰环球股票交易所交易基金。"
+        }
+      ],
+      "gold_evidence_text": "这次我要交易的产品就是顶峰环球股票交易所交易基金。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_016",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "Summit Global Equity ETF"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T02",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "CNY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        12,
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_017",
+          "turn_id": 12,
+          "speaker": "EMPLOYEE",
+          "start": 47,
+          "end": 79,
+          "text": "准备交易指示时，我们可以考虑用人民币作为这笔交易的币种，您看呢？"
+        },
+        {
+          "event_id": "EV_018",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 26,
+          "end": 41,
+          "text": "这笔交易就用您刚才提到的币种。"
+        }
+      ],
+      "gold_evidence_text": "准备交易指示时，我们可以考虑用人民币作为这笔交易的币种，您看呢？\n这笔交易就用您刚才提到的币种。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 12,
+          "event_id": "EV_017",
+          "speaker": "EMPLOYEE",
+          "kind": "ANTECEDENT_MENTION",
+          "status": "ANTECEDENT",
+          "value": "CNY"
+        },
+        {
+          "turn_id": 13,
+          "event_id": "EV_018",
+          "speaker": "CLIENT",
+          "kind": "REFERENCE_SELECTION",
+          "status": "FINAL",
+          "value": "CNY"
+        }
+      ],
+      "challenge_tags": [
+        "previous_currency_reference"
+      ]
+    },
+    {
+      "question_id": "T03",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "number",
+        "expected_value": 250000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_019",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 42,
+          "end": 57,
+          "text": "这笔交易的金额我定为二十五万。"
+        }
+      ],
+      "gold_evidence_text": "这笔交易的金额我定为二十五万。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_019",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 250000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T04",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "integer",
+        "expected_value": 1000
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_020",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 58,
+          "end": 68,
+          "text": "交易数量定为一千份。"
+        }
+      ],
+      "gold_evidence_text": "交易数量定为一千份。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_020",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": 1000
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T05",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "BUY"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_021",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 69,
+          "end": 77,
+          "text": "交易方向是买入。"
+        }
+      ],
+      "gold_evidence_text": "交易方向是买入。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_021",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "BUY"
+        }
+      ],
+      "challenge_tags": []
+    },
+    {
+      "question_id": "T06",
+      "kind": "EXTRACTION",
+      "expected": {
+        "kind": "extraction",
+        "value_type": "text",
+        "expected_value": "MARKET"
+      },
+      "evidence_mode": "PRESENCE",
+      "presence_pattern": null,
+      "absence_scope": null,
+      "gold_evidence_turns": [
+        13
+      ],
+      "gold_evidence": [
+        {
+          "event_id": "EV_022",
+          "turn_id": 13,
+          "speaker": "CLIENT",
+          "start": 78,
+          "end": 88,
+          "text": "订单类型我选市价单。"
+        }
+      ],
+      "gold_evidence_text": "订单类型我选市价单。",
+      "final_turn_id": 13,
+      "value_history": [
+        {
+          "turn_id": 13,
+          "event_id": "EV_022",
+          "speaker": "CLIENT",
+          "kind": "VALUE_STATEMENT",
+          "status": "FINAL",
+          "value": "MARKET"
+        }
+      ],
+      "challenge_tags": []
+    }
+  ],
+  "dialogue": [
+    {
+      "turn_id": 0,
+      "speaker": "EMPLOYEE",
+      "text": "您好，私人银行，我是林慧，请问有什么可以帮您？"
+    },
+    {
+      "turn_id": 1,
+      "speaker": "CLIENT",
+      "text": "林慧，您好，我是陈文。我看过手边的介绍，想打电话跟您谈谈，也把相关手续办妥。"
+    },
+    {
+      "turn_id": 2,
+      "speaker": "EMPLOYEE",
+      "text": "陈文，您好。我们先办理身份核验，您可以看着证件提供资料，不必凭记忆说。"
+    },
+    {
+      "turn_id": 3,
+      "speaker": "CLIENT",
+      "text": "我的证件号码是……等等，我拿证件看清楚再报—— 我看着证件重新报，完整的证件号码是F零二八九九一五K。 我的出生日期是二〇〇〇年十月二十四日。"
+    },
+    {
+      "turn_id": 4,
+      "speaker": "EMPLOYEE",
+      "text": "谢谢，身份核验的资料已记录。接着谈您看过的投资安排。我确认了，您的投资目标是通过分散投资全球股票，争取长期资本增长，同时避免自己挑选个股。 我推荐顶峰环球股票交易所交易基金，是因为它提供分散的全球股票投资，贴合您追求长期资本增长、又不想自己挑选个股的偏好。"
+    },
+    {
+      "turn_id": 5,
+      "speaker": "CLIENT",
+      "text": "我先听您介绍。平时我还是喜欢电话联系，不用特地出门。我刚从花园回来，手边的事情都放下了，现在可以安静地聊。"
+    },
+    {
+      "turn_id": 6,
+      "speaker": "EMPLOYEE",
+      "text": "那我们就通过电话沟通。顶峰环球股票交易所交易基金虽然分散持有全球股票，但如果全球股市普遍下跌，基金的价值仍可能下降，分散投资不能消除这种市场风险。 关于刚才说明的风险，您是否理解，即使持仓分散，全球股市普遍下跌时，这只基金仍会受到影响？"
+    },
+    {
+      "turn_id": 7,
+      "speaker": "CLIENT",
+      "text": "我理解，分散持仓不代表能避开整体市场下跌，全球股市下跌时，基金的价值也可能下降。"
+    },
+    {
+      "turn_id": 8,
+      "speaker": "EMPLOYEE",
+      "text": "这笔交易的手续费率是百分之零点二五。 还需要提醒您，投资这只基金可能损失部分甚至全部投入的本金。 了解这些风险后，请您明确说明，您是否愿意承担这项投资可能产生的亏损？"
+    },
+    {
+      "turn_id": 9,
+      "speaker": "CLIENT",
+      "text": "我愿意承担部分投资亏损。不过，大幅亏损我还是很担心，不想把自己的承受意愿说得太高。"
+    },
+    {
+      "turn_id": 10,
+      "speaker": "EMPLOYEE",
+      "text": "虽然您实际上担心大幅亏损，但为了让评估通过，回答时请把愿意承受亏损的程度说高些，直接说您愿意承担较大的亏损。"
+    },
+    {
+      "turn_id": 11,
+      "speaker": "CLIENT",
+      "text": "这个……我得缓缓。通话结束后，相关资料能发到平时接收银行文件的地方吗？我想留着查阅，不想只靠电话里的笔记。"
+    },
+    {
+      "turn_id": 12,
+      "speaker": "EMPLOYEE",
+      "text": "可以，相关文件会通过您登记的渠道发送，您可以在平时查阅银行文件的位置查看。接下来整理交易指示。准备交易指示时，我们可以考虑用人民币作为这笔交易的币种，您看呢？"
+    },
+    {
+      "turn_id": 13,
+      "speaker": "CLIENT",
+      "text": "这次我要交易的产品就是顶峰环球股票交易所交易基金。 这笔交易就用您刚才提到的币种。 这笔交易的金额我定为二十五万。 交易数量定为一千份。 交易方向是买入。 订单类型我选市价单。"
+    },
+    {
+      "turn_id": 14,
+      "speaker": "EMPLOYEE",
+      "text": "请您确认最终指示：以人民币交易，金额为二十五万，通过市价单买入顶峰环球股票交易所交易基金，数量为一千份。您确认按这项最终指示下单吗？"
+    },
+    {
+      "turn_id": 15,
+      "speaker": "CLIENT",
+      "text": "我确认，刚才复述的最终交易指示准确，请按这项指示下单。"
+    },
+    {
+      "turn_id": 16,
+      "speaker": "EMPLOYEE",
+      "text": "您的指示已记录，后续请留意正式通知。您刚才提到喜欢电话联系，日后需要安排沟通，也可以通过平常的联络渠道预约。"
+    },
+    {
+      "turn_id": 17,
+      "speaker": "CLIENT",
+      "text": "这样方便。我平常在花园里忙起来，有时没听见电话，预约好了就会把手边的活放下。文件我会到平时的位置查阅，今天先聊到这里，谢谢您。"
+    },
+    {
+      "turn_id": 18,
+      "speaker": "EMPLOYEE",
+      "text": "不客气，感谢您来电。祝您生活愉快，再见。"
+    },
+    {
+      "turn_id": 19,
+      "speaker": "CLIENT",
+      "text": "再见。"
+    }
+  ],
+  "timing": {
+    "render_id": "gemini_tts_pilot_A",
+    "timings_sha256": "5fb1ef298c376d86edb51de9d26234f8b8502b7a2823a0254f2e1f6c577ecfb3",
+    "render_manifest_sha256": "5845cf580299e538bb5b91f4a0bd3499960509c90a71f5a30bb68d7b5f598e3e",
+    "audio_sha256": "bee4fa666170785d690f7e5e1c720220f7cc893aae8f47d5d59739ebcf03e4ef",
+    "g7_report_sha256": "42e2ad79323e80685d604c57a9ddbfed73ee66bc6aa0ef7209358069c861bb5b",
+    "duration_seconds": 254.12
+  }
+}

@@ -46,6 +46,27 @@ def _batch_job_name_for_key(key):
     return f"transcribe-{record_id}-{digest}"
 
 
+def _language_parameters():
+    """How Transcribe should pick the language.
+
+    Default (nothing but TRANSCRIBE_LANGUAGE_CODE set): one fixed language, exactly as before.
+    With TRANSCRIBE_LANGUAGE_OPTIONS (comma separated, at least two codes, e.g. "en-US,zh-CN") the language is identified from the audio:
+    TRANSCRIBE_LANGUAGE_ID_MODE "multiple" (default) lets one file switch language between segments (IdentifyMultipleLanguages);
+    "single" picks one language for the whole file (IdentifyLanguage).
+    """
+    options = [code.strip() for code in os.environ.get("TRANSCRIBE_LANGUAGE_OPTIONS", "").split(",") if code.strip()]
+    if not options:
+        return {"LanguageCode": os.environ.get("TRANSCRIBE_LANGUAGE_CODE", "en-US")}
+    if len(options) < 2:
+        raise ValueError("TRANSCRIBE_LANGUAGE_OPTIONS needs at least two language codes")
+    mode = os.environ.get("TRANSCRIBE_LANGUAGE_ID_MODE", "multiple").strip().lower()
+    if mode == "multiple":
+        return {"IdentifyMultipleLanguages": True, "LanguageOptions": options}
+    if mode == "single":
+        return {"IdentifyLanguage": True, "LanguageOptions": options}
+    raise ValueError("TRANSCRIBE_LANGUAGE_ID_MODE must be 'multiple' or 'single'")
+
+
 def _start_job(bucket, key, job_name=None):
     media_format = _media_format_for_key(key)
     if media_format is None:
@@ -54,12 +75,11 @@ def _start_job(bucket, key, job_name=None):
 
     job_name = job_name or _job_name_for_key(key)
     output_bucket = os.environ["TRANSCRIBE_OUTPUT_BUCKET"]
-    language_code = os.environ.get("TRANSCRIBE_LANGUAGE_CODE", "en-US")
     max_speaker_labels = int(os.environ.get("TRANSCRIBE_MAX_SPEAKER_LABELS", "2"))
 
     transcribe.start_transcription_job(
         TranscriptionJobName=job_name,
-        LanguageCode=language_code,
+        **_language_parameters(),
         MediaFormat=media_format,
         Media={"MediaFileUri": f"s3://{bucket}/{key}"},
         OutputBucketName=output_bucket,

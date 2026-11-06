@@ -8,11 +8,12 @@ skeleton bytes. Both are pure functions of (frozen inputs, accepted parsed respo
 
 from copy import deepcopy
 
+from fyp_evaluation import register_guide
 from fyp_evaluation.call_specs.compile import serialize_json, text_hash
 from fyp_evaluation.llm.canonical import canonical_response
 
 from .analysis import analyze
-from .config import GENERATOR_VERSION, HASHING, SCHEMA_VERSION, STAGE
+from .config import GENERATOR_VERSION, HASHING, STAGE, schema_version
 from .template import Lexicon
 
 FROZEN_BODY_KEYS = ("planned_events", "checks", "constraints")
@@ -25,18 +26,18 @@ def get_lexicon(inputs):
     return inputs._g4_lexicon
 
 
-def assemble(ctx, authoring, derived, generation):
+def assemble(ctx, authoring, derived, generation, extra_source=None):
     """The complete check plan. Key order is fixed: identity, upstream hashes, generation, frozen copy, G4 additions."""
     inputs, skeleton = ctx.inputs, ctx.skeleton
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "call_id": ctx.call_id,
         "call_spec_sha256": inputs.spec_hashes[ctx.call_id],
         "check_plan_skeleton_sha256": inputs.skeleton_hashes[ctx.call_id],
         "call_config_sha256": inputs.config_hashes[ctx.call_id],
-        "source": inputs.source_hashes(),
+        "source": {**inputs.source_hashes(), **(extra_source or {})},  # the guide hash, for SINGLISH calls only
         "generation": dict(generation),
         "skeleton_header": {key: deepcopy(value) for key, value in skeleton.items() if key not in FROZEN_BODY_KEYS},
         "planned_events": [{**deepcopy(event), "authoring": authoring[event["event_id"]]} for event in skeleton["planned_events"]],
@@ -79,7 +80,7 @@ def compile_artifact(inputs, ctx, parsed, generation, response_schema):
     authoring, derived, errors = analyze(ctx, get_lexicon(inputs), parsed)
     if errors:
         raise ValueError("cannot compile the check plan: " + "; ".join(errors[:5]))
-    plan = assemble(ctx, authoring, derived, generation_block(generation, parsed, response_schema))
+    plan = assemble(ctx, authoring, derived, generation_block(generation, parsed, response_schema), register_guide.recorded(generation))
     if errors := projection_errors(ctx, plan):
         raise ValueError("; ".join(errors))
     return plan
@@ -104,7 +105,7 @@ def build_record(inputs, artifact_texts, provenance_by_call):
             "previous_artifact_sha256": [entry["artifact_sha256"] for entry in history],
         }
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version(inputs.documents),
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "generator": {"package": "fyp_evaluation.check_plans", "version": GENERATOR_VERSION},

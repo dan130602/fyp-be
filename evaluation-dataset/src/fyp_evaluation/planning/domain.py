@@ -82,9 +82,10 @@ class Domain:
         (self.t01, self.t02, self.t03, self.t04, self.t05, self.t06) = self.order_ids
         self.products = {product["name"]: product for product in extraction["product_pool"]}
         self.product_names = [product["name"] for product in extraction["product_pool"]]
-        self.currencies = list(extraction["transaction_currency_counts"])
-        self.directions = list(extraction["transaction_direction_counts"])
-        self.order_types = list(extraction["order_type_counts"])
+        # A 1.0 plan names its vocabularies through its count maps; a multilingual 2.0 plan lists them once (counts are per profile).
+        self.currencies = list(extraction.get("transaction_currencies") or extraction["transaction_currency_counts"])
+        self.directions = list(extraction.get("transaction_directions") or extraction["transaction_direction_counts"])
+        self.order_types = list(extraction.get("order_types") or extraction["order_type_counts"])
         self.amounts = extraction["transaction_amount_values_by_currency"]
         self.quantities = extraction["transaction_quantity_values"]
         self.ranges = {
@@ -207,6 +208,14 @@ class Domain:
 
     def balance_distractor_ok(self, role, amount, final):
         return amount > final if role in BALANCE_ROLES else amount != final
+
+    def magnitude_partners(self, currency, amount, factor):
+        """Configured same-currency amounts equal to `amount` times or divided by `factor` (larger first)."""
+        values = self.amounts.get(currency, [])
+        partners = [amount * factor] if amount * factor in values else []
+        if amount % factor == 0 and amount // factor in values:
+            partners.append(amount // factor)
+        return partners
 
 
 def offset_date(start, days):

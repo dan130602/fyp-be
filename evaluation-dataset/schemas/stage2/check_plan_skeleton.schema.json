@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://fyp-evaluation.invalid/schemas/stage2/check_plan_skeleton.schema.json",
   "title": "G2B Check Plan Skeleton",
-  "description": "Deterministic structural evidence blueprint for one call. No natural wording, no turn IDs and no absolute positions: only symbolic events, relative constraints and provider-independent spoken-form requirements. Each planned event is realised later as one contiguous span inside a single dialogue turn.",
+  "description": "Deterministic structural evidence blueprint for one call. No natural wording, no turn IDs and no absolute positions: only symbolic events, relative constraints and provider-independent spoken-form requirements. Each planned event is realised later as one contiguous span inside a single dialogue turn. Schema 2.0 (multilingual releases) may pin an event's required_language for an assigned language variant and records the language_profiles.json hash in source.",
   "type": "object",
   "required": [
     "schema_version",
@@ -18,7 +18,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "stage": {
       "const": "G2B"
@@ -54,6 +57,9 @@
           "$ref": "#/$defs/sha256"
         },
         "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
           "$ref": "#/$defs/sha256"
         }
       }
@@ -370,6 +376,10 @@
         },
         "strength": {
           "const": "WEAK"
+        },
+        "required_language": {
+          "type": "string",
+          "pattern": "^[a-z]{2}$"
         }
       }
     },
@@ -742,5 +752,45 @@
         }
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "2.0"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "required": [
+              "language_profiles_sha256"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "source": {
+            "not": {
+              "required": [
+                "language_profiles_sha256"
+              ]
+            }
+          },
+          "planned_events": {
+            "items": {
+              "not": {
+                "required": [
+                  "required_language"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

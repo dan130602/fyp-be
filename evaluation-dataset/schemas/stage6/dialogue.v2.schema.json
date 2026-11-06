@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage6/dialogue.v2.schema.json",
+  "title": "G6 dialogue (schema 2.0, multilingual releases)",
+  "description": "One call's generated dialogue. Turn IDs, event spans, length metrics and hashes are Python-owned; text[start:end] of each aligned span equals the event's exact G4 planned_text. Structural acceptance only: G7 verifies semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "call_spec_sha256",
+    "check_plan_skeleton_sha256",
+    "call_config_sha256",
+    "check_plan_sha256",
+    "plan_verification_sha256",
+    "source",
+    "generation",
+    "metadata",
+    "length",
+    "turns",
+    "event_alignment",
+    "review_notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "stage": {
+      "const": "G6"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "call_spec_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "check_plan_skeleton_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "call_config_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "check_plan_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "plan_verification_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256",
+        "generation_plan_sha256",
+        "language_profiles_sha256"
+      ],
+      "properties": {
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generation_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "register_guide_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt_id",
+        "model",
+        "params",
+        "prompt_template_sha256",
+        "response_schema_sha256",
+        "accepted_response_sha256"
+      ],
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "params": {
+          "$ref": "#/$defs/params"
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "accepted_response_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language_profile",
+        "mixing_style",
+        "duration_profile",
+        "target_duration_min_seconds",
+        "target_duration_max_seconds"
+      ],
+      "properties": {
+        "language_profile": {
+          "enum": [
+            "ENGLISH",
+            "MANDARIN",
+            "EN_ZH_MIXED",
+            "SINGLISH"
+          ]
+        },
+        "mixing_style": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration_profile": {
+          "enum": [
+            "SHORT",
+            "LONG"
+          ]
+        },
+        "target_duration_min_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target_duration_max_seconds": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "length": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "assumed_wpm",
+        "accepted_word_range",
+        "words",
+        "turns",
+        "estimated_seconds",
+        "unit"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumed_wpm": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "accepted_word_range": {
+          "$ref": "#/$defs/word_range"
+        },
+        "words": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The count in the policy's unit (words, Han characters, or Han characters plus English words)."
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "estimated_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "enum": [
+            "words",
+            "han_chars",
+            "han_chars_plus_words"
+          ]
+        },
+        "enforcement": {
+          "const": "advisory"
+        },
+        "within_range": {
+          "type": "boolean"
+        }
+      }
+    },
+    "turns": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "turn_id",
+          "speaker",
+          "text"
+        ],
+        "properties": {
+          "turn_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speaker": {
+            "enum": [
+              "EMPLOYEE",
+              "CLIENT"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "event_alignment": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "turn_id",
+          "start",
+          "end"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^EV_[0-9]{3}$"
+          },
+          "turn_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "review_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "turn_id",
+          "question_id",
+          "surface"
+        ],
+        "properties": {
+          "turn_id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "question_id": {
+            "type": "string",
+            "pattern": "^[CKT][0-9]{2}$"
+          },
+          "surface": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reasoning_effort",
+        "max_output_tokens",
+        "length_policy"
+      ],
+      "properties": {
+        "reasoning_effort": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "length_policy": {
+          "$ref": "#/$defs/length_policy"
+        },
+        "placement_rules": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "length_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "assumed_wpm",
+        "profiles"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumed_wpm": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "profiles": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "accepted_words",
+              "target_words"
+            ],
+            "properties": {
+              "accepted_words": {
+                "$ref": "#/$defs/word_range"
+              },
+              "target_words": {
+                "$ref": "#/$defs/word_range"
+              }
+            }
+          }
+        }
+      }
+    },
+    "word_range": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}

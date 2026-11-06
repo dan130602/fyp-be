@@ -1,0 +1,270 @@
+{
+  "title": "G3 call_config authoring response (v2: language-specific spoken names)",
+  "description": "Creative scenario content only. Sent to the model as a strict Structured Output: every key is required, nullable where conditional, additionalProperties false. Conditional nullness and value rules are enforced by Python, never by this schema.",
+  "type": "object",
+  "properties": {
+    "client": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "spoken_names": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "zh": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "en",
+            "zh"
+          ],
+          "additionalProperties": false
+        },
+        "background": {
+          "type": "string"
+        },
+        "investment_objective": {
+          "type": "string"
+        },
+        "loss_attitude": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "spoken_names",
+        "background",
+        "investment_objective",
+        "loss_attitude"
+      ],
+      "additionalProperties": false
+    },
+    "employee": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "spoken_names": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "zh": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "en",
+            "zh"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "name",
+        "spoken_names"
+      ],
+      "additionalProperties": false
+    },
+    "setting": {
+      "type": "object",
+      "properties": {
+        "call_reason": {
+          "type": "string"
+        },
+        "conversation_style": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "call_reason",
+        "conversation_style"
+      ],
+      "additionalProperties": false
+    },
+    "final_product": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "concrete_risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendation_basis": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "concrete_risks",
+        "recommendation_basis"
+      ],
+      "additionalProperties": false
+    },
+    "other_products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_ref": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_ref",
+          "description"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "holding_context": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fee_disclosure": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "type": "string",
+              "enum": [
+                "RATE",
+                "AMOUNT"
+              ]
+            },
+            "value": {
+              "type": "number"
+            },
+            "currency": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "basis",
+            "value",
+            "currency"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "limit_prices": {
+      "type": "object",
+      "properties": {
+        "final": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "initial": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "final",
+        "initial"
+      ],
+      "additionalProperties": false
+    },
+    "red_flags": {
+      "type": "object",
+      "properties": {
+        "C09": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "C10": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "C09",
+        "C10"
+      ],
+      "additionalProperties": false
+    },
+    "edge_case_context": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "assignment_id": {
+            "type": "string"
+          },
+          "motivation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "assignment_id",
+          "motivation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "additional_discussion_topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "client",
+    "employee",
+    "setting",
+    "final_product",
+    "other_products",
+    "holding_context",
+    "fee_disclosure",
+    "limit_prices",
+    "red_flags",
+    "edge_case_context",
+    "additional_discussion_topics"
+  ],
+  "additionalProperties": false
+}

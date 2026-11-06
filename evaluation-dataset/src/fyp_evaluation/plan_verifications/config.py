@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from fyp_evaluation import release_versions as versions
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PROMPT_DIR = PROJECT_ROOT / "prompts" / "stage5"
 
@@ -21,6 +23,24 @@ TIMEOUT_MS = 900_000  # Flex requests can queue; Google recommends client timeou
 PROMPT_TEMPLATE = "plan_verification.v1.md"
 RESPONSE_SCHEMA = "plan_verification_response"
 
+def schema_version(documents):
+    """The artifact/record schema_version for a release: "2.0" for a multilingual release, else the historical "1.0"."""
+    return versions.generation(documents)
+
+
+def schema_names(documents):
+    """(artifact schema, record schema) file stems; the provenance schema is shared by both generations."""
+    return versions.versioned("plan_verification", documents), versions.versioned("plan_verification_record", documents)
+
+
+def response_schema_name(documents):
+    return versions.versioned(RESPONSE_SCHEMA, documents)
+
+
+def prompt_template(documents):
+    return versions.versioned_prompt(PROMPT_TEMPLATE, documents)
+
+
 ARTIFACT_DIR = "authoring/plan_verifications"
 PROVENANCE_DIR = "authoring/plan_verification_provenance"
 RECORD = "authoring/plan_verification_record.json"
@@ -35,7 +55,9 @@ CAPACITY_JITTER = 0.2  # +/- fraction applied to each backoff
 
 # Dated price table (USD per million tokens). Estimates only; thinking tokens are billed as output.
 PRICE_TABLE_VERSION = "2026-10-11"
-PRICES = {MODEL: {"flex": {"input": 0.375, "cached_input": 0.0375, "output": 1.875}}}
+PRICES = {MODEL: {"flex": {"input": 0.375, "cached_input": 0.0375, "output": 1.875},
+                  # Gemini Batch is also billed at a 50% discount; the same figures as Flex, an assumption to confirm against the invoice.
+                  "batch": {"input": 0.375, "cached_input": 0.0375, "output": 1.875}}}
 ESTIMATED_OUTPUT_TOKENS = 8000  # report + thinking, for --dry-run planning only
 
 QUESTION_IDS = ("C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12",
@@ -43,6 +65,7 @@ QUESTION_IDS = ("C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "
 ASSESSMENTS = ("MATCH", "MISMATCH", "UNCLEAR")
 ISSUE_CODES = ("SCENARIO_CONTRADICTION", "COMPLIANCE_MEANING", "OMISSION_LEAKAGE", "EXTRACTION_STATE", "EDGE_CASE",
                "PLAN_COHERENCE")
+ISSUE_CODES_V2 = ISSUE_CODES + ("LANGUAGE_REQUIREMENT_NOT_MET",)  # the multilingual (schema 2.0) generation only
 REPAIR_SCOPES = ("G4_ONLY", "G3_PLUS_G4", "REVIEW")
 VERDICTS = ("VALID", "INVALID", "UNCLEAR")
 

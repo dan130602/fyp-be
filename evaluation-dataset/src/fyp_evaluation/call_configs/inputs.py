@@ -38,15 +38,20 @@ class ConfigInputs:
         self.currency_profile = self.documents["normalization"]["profiles"]["currency_iso_4217_alpha3"]
 
     def source_hashes(self):
-        """The five hashes of frozen inputs that G3 reads (all verified by the upstream gate)."""
+        """The hashes of frozen inputs that G3 reads (all verified by the upstream gate): five G0 files, plus
+        `language_profiles_sha256` for a multilingual release (the fresh upstream hashes include it, so leaving it out
+        would make every multilingual artifact look permanently stale)."""
         hashes = self.upstream.g0_hashes
-        return {
+        source = {
             "checklist_sha256": hashes["checklist_sha256"],
             "check_semantics_sha256": hashes["check_semantics_sha256"],
             "edge_case_catalog_sha256": hashes["edge_case_catalog_sha256"],
             "normalization_sha256": hashes["normalization_sha256"],
             "generation_plan_sha256": self.generation_plan_sha256,
         }
+        if "language_profiles_sha256" in hashes:
+            source["language_profiles_sha256"] = hashes["language_profiles_sha256"]
+        return source
 
 
 def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
@@ -63,7 +68,8 @@ def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
 
 
 def fresh_upstream_hashes(root, call_id):
-    """The hashes G3 records for one call (spec, skeleton, five G0 files), re-read from the files on disk right now.
+    """The hashes G3 records for one call (spec, skeleton, the G0 files and, for a multilingual release, the language profiles),
+    re-read from the files on disk right now.
 
     Same keys and same hashing as `ConfigRunner._upstream_hashes`, but taken from disk instead of cached inputs.
     Raises OSError if an upstream file is missing or unreadable.

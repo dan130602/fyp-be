@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://fyp-evaluation.invalid/schemas/stage0/normalization.schema.json",
   "title": "Release Normalization Profiles",
-  "description": "Release-local, declarative normalization contract. Distinct from the legacy schemas/normalization.schema.json used by configs/normalization.json.",
+  "description": "Release-local, declarative normalization contract. Distinct from the legacy schemas/normalization.schema.json used by configs/normalization.json. Schema 2.0 (multilingual releases) adds languages, language_rules, a language on every spoken form, per-value generation_surfaces and product language_names; validation.stage0 enforces the 2.0-only fields.",
   "type": "object",
   "required": [
     "schema_version",
@@ -15,7 +15,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "dataset_id": {
       "type": "string",
@@ -41,6 +44,38 @@
       },
       "additionalProperties": {
         "$ref": "#/$defs/profile"
+      }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/language"
+      }
+    },
+    "language_rules": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/language"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          ]
+        }
       }
     }
   },
@@ -159,6 +194,12 @@
               },
               "reason": {
                 "$ref": "#/$defs/text"
+              },
+              "language": {
+                "$ref": "#/$defs/language"
+              },
+              "match": {
+                "const": "STANDALONE"
               }
             }
           }
@@ -199,6 +240,7 @@
                   "REMOVE_SEPARATORS",
                   "SPOKEN_CHARACTERS_TO_SYMBOLS",
                   "MAP_ALIASES",
+                  "MAP_LANGUAGE_NAMES",
                   "PARSE_CALENDAR_DATE",
                   "STRIP_CURRENCY_MARKERS",
                   "STRIP_UNIT_WORDS",
@@ -240,6 +282,55 @@
           "items": {
             "$ref": "#/$defs/spoken_form"
           }
+        },
+        "generation_surfaces": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "$ref": "#/$defs/identifier"
+            },
+            "additionalProperties": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "language_names": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "$ref": "#/$defs/language"
+            },
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "surface",
+                "status"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "surface": {
+                  "$ref": "#/$defs/text"
+                },
+                "status": {
+                  "enum": [
+                    "APPROVED",
+                    "PENDING"
+                  ]
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -277,6 +368,9 @@
         },
         "remaining_characters_form": {
           "$ref": "#/$defs/identifier"
+        },
+        "language": {
+          "$ref": "#/$defs/language"
         }
       },
       "if": {
@@ -313,6 +407,43 @@
           ]
         }
       }
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}$"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "2.0"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "languages",
+          "language_rules"
+        ]
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "languages"
+              ]
+            },
+            {
+              "required": [
+                "language_rules"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
 }

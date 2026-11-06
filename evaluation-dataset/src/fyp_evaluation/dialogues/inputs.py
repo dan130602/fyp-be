@@ -12,7 +12,7 @@ from fyp_evaluation.plan_verifications.inputs import fresh_upstream_hashes as g5
 from fyp_evaluation.plan_verifications.inputs import load_inputs as load_g5_inputs
 from fyp_evaluation.validation.stage0 import DEFAULT_SCHEMA_DIR
 
-from .config import G5_ARTIFACT_DIR, G5_RECORD, G5_UNREADABLE
+from .config import ARTIFACT_DIR, DIALOGUE_UNREADABLE, G5_ARTIFACT_DIR, G5_RECORD, G5_UNREADABLE
 
 
 def g5_report_fingerprint(root, call_id):
@@ -30,6 +30,26 @@ def g5_report_fingerprint(root, call_id):
     return g1.sha256(data)
 
 
+def read_dialogue(root, call_id):
+    """(fingerprint, text): sha256 and CRLF-normalised text of the call's G6 dialogue, (None, None) when it is confirmed
+    absent, or (DIALOGUE_UNREADABLE, None). Never raises; the read itself is the only classifier (see g5_report_fingerprint)."""
+    try:
+        data = (Path(root) / ARTIFACT_DIR / f"{call_id}.json").read_bytes()
+    except FileNotFoundError:
+        return None, None
+    except OSError:
+        return DIALOGUE_UNREADABLE, None
+    try:
+        return g1.sha256(data), data.decode("utf-8").replace("\r\n", "\n")
+    except UnicodeDecodeError:
+        return g1.sha256(data), None  # readable bytes that are not text: the integrity gate reports it
+
+
+def dialogue_fingerprint(root, call_id):
+    """sha256 of the call's G6 dialogue, None when confirmed absent, or DIALOGUE_UNREADABLE. Never raises."""
+    return read_dialogue(root, call_id)[0]
+
+
 class DialogueInputs:
     """Validated upstream state (G0-G4) plus the G5 report fingerprint of every call."""
 
@@ -40,6 +60,7 @@ class DialogueInputs:
         self.skeleton_hashes = upstream.skeleton_hashes
         self.configs, self.config_hashes = upstream.configs, upstream.config_hashes
         self.plans, self.plan_hashes = upstream.plans, upstream.plan_hashes
+        self.ready_call_ids = list(upstream.plans)  # calls whose G3 config and G4 plan are accepted (all of them unless selected)
         self.report_hashes = report_hashes  # {call_id: sha256 | None (absent) | G5_UNREADABLE}
         self.report_record_sha256 = report_record_sha256
 
@@ -47,9 +68,12 @@ class DialogueInputs:
         return self.upstream.source_hashes()
 
 
-def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR):
-    """Refuse unless G0-G4 pass G5's own gate; G5 reports are fingerprinted per call and never refuse the stage."""
-    upstream = load_g5_inputs(root, schema_dir)
+def load_inputs(root, schema_dir=DEFAULT_SCHEMA_DIR, call_ids=None):
+    """Refuse unless G0-G4 pass G5's own gate; G5 reports are fingerprinted per call and never refuse the stage.
+
+    With `call_ids` (selected-call mode) G3 must still be intact release-wide, but only the selected calls need an accepted G3
+    config and G4 plan; unrelated calls may be missing and are simply not eligible (G5's gate, unchanged)."""
+    upstream = load_g5_inputs(root, schema_dir, call_ids) if call_ids else load_g5_inputs(root, schema_dir)
     reports = {call_id: g5_report_fingerprint(root, call_id) for call_id in upstream.call_ids}
     try:
         record = g1.sha256((Path(root) / G5_RECORD).read_bytes())

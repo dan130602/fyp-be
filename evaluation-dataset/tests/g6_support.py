@@ -1,19 +1,20 @@
 """Shared helpers for the G6 tests. No network, no credentials; production files are never written."""
 
 import json
-import shutil
 from pathlib import Path
 
 from fyp_evaluation.dialogues.feasibility import synthesize_dialogue
 from fyp_evaluation.dialogues.inputs import load_inputs
 from fyp_evaluation.dialogues.run import DialogueRunner
 from fyp_evaluation.llm.fake_transport import FakeTransport, response_body
+from release_copy import copy_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
 RELEASE = ROOT / "datasets" / "advisory_execution_pilot_v1"
 CALL_IDS = [f"CALL_{n:03d}" for n in range(1, 51)]
-G6_OUTPUTS = ("authoring/dialogues", "authoring/dialogue_provenance", "authoring/dialogue_record")
+# later stages' outputs describe the real G6 dialogues, so an isolated copy that regenerates G6 must not carry them either
+G6_OUTPUTS = ("authoring/dialogues", "authoring/dialogue_provenance", "authoring/dialogue_record", "authoring/dialogue_verification")
 
 _INPUTS = None
 
@@ -35,20 +36,9 @@ class Clock:
         return f"2026-10-14T00:{self.tick // 60 % 60:02d}:{self.tick % 60:02d}Z"
 
 
-def copy_release(destination):
-    """Copy file contents only (keeps the accepted G0-G5 outputs, never any G6 output)."""
-    destination.mkdir(parents=True, exist_ok=True)
-    for path in sorted(RELEASE.rglob("*")):
-        relative = path.relative_to(RELEASE).as_posix()
-        if relative.startswith(G6_OUTPUTS) or relative.endswith(".stage_write.lock"):
-            continue
-        target = destination / path.relative_to(RELEASE)
-        if path.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-    return destination
+def copy_release(destination, *, keep_renders=False):
+    """Copy file contents only (keeps the accepted G0-G5 outputs, never any G6 output; no rendered audio unless `keep_renders`)."""
+    return copy_tree(RELEASE, destination, skip_prefixes=G6_OUTPUTS, skip_suffixes=(".stage_write.lock",), keep_renders=keep_renders)
 
 
 def good_responder(runner, overrides=None):
@@ -63,13 +53,14 @@ def good_responder(runner, overrides=None):
     return respond
 
 
-def make_runner(tmp_path, *, overrides=None):
+def make_runner(tmp_path, *, overrides=None, repair_feedback=None):
     """A runner over an EMPTY output root sharing the validated (read-only) upstream state of the real release."""
     root = tmp_path / "release"
     root.mkdir(parents=True, exist_ok=True)
     holder = {}
     fake = FakeTransport(lambda body: holder["responder"](body))
-    runner = DialogueRunner(root, audit_root=tmp_path / "audit", schema_dir=SCHEMAS, transport=fake, clock=Clock(), inputs=shared_inputs())
+    runner = DialogueRunner(root, audit_root=tmp_path / "audit", schema_dir=SCHEMAS, transport=fake, clock=Clock(), inputs=shared_inputs(),
+                            repair_feedback=repair_feedback)
     holder["responder"] = good_responder(runner, overrides)
     return runner, fake
 

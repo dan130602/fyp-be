@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/splits/split_manifest.schema.json",
+  "title": "Frozen whole-call DEVELOPMENT/HELDOUT split manifest (sole authority for export and evaluation)",
+  "type": "object",
+  "required": ["schema_version", "split_version", "dataset_id", "method", "seed", "algorithm", "quotas", "totals", "feature_definitions", "inputs", "groups", "development_locks", "assignments"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "split_version": {"const": "split.v1"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "method": {"type": "string"},
+    "seed": {"type": "integer"},
+    "algorithm": {"type": "object", "required": ["name", "version", "tie_break", "objective"]},
+    "quotas": {"type": "object", "required": ["heldout", "development", "language_totals"]},
+    "totals": {"type": "object", "required": ["DEVELOPMENT", "HELDOUT"], "properties": {"DEVELOPMENT": {"type": "integer"}, "HELDOUT": {"type": "integer"}}},
+    "feature_definitions": {"type": "object"},
+    "inputs": {
+      "type": "object",
+      "required": ["authoring/call_manifest.csv", "authoring/edge_case_assignments.csv", "authoring/planning_record.json", "authoring/call_spec_record.json", "call_specs_sha256", "call_spec_count", "registry_sha256"],
+      "additionalProperties": {"type": ["string", "integer"]}
+    },
+    "groups": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}},
+    "development_locks": {"type": "array", "items": {"type": "string", "pattern": "^CALL_[0-9]{3}$"}},
+    "assignments": {
+      "type": "object",
+      "propertyNames": {"pattern": "^CALL_[0-9]{3}$"},
+      "additionalProperties": {
+        "type": "object",
+        "required": ["split", "language", "basis"],
+        "properties": {
+          "split": {"enum": ["DEVELOPMENT", "HELDOUT"]},
+          "language": {"enum": ["ENGLISH", "MANDARIN", "EN_ZH_MIXED", "SINGLISH"]},
+          "basis": {"enum": ["DEVELOPMENT_LOCK", "ALLOCATED"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

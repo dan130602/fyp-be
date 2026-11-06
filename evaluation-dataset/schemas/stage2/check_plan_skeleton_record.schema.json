@@ -18,7 +18,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "stage": {
       "const": "G2B"
@@ -79,6 +82,9 @@
           "$ref": "#/$defs/sha256"
         },
         "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
           "$ref": "#/$defs/sha256"
         }
       }
@@ -148,6 +154,10 @@
         "edge_case_assignments": {
           "type": "integer",
           "minimum": 0
+        },
+        "events_with_required_language": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     }
@@ -164,5 +174,48 @@
         "minimum": 0
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "2.0"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "g0_inputs": {
+            "required": [
+              "language_profiles_sha256"
+            ]
+          },
+          "summary": {
+            "required": [
+              "events_with_required_language"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "g0_inputs": {
+            "not": {
+              "required": [
+                "language_profiles_sha256"
+              ]
+            }
+          },
+          "summary": {
+            "not": {
+              "required": [
+                "events_with_required_language"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

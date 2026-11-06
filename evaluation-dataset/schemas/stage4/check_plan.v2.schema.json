@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fyp-evaluation.invalid/schemas/stage4/check_plan.v2.schema.json",
+  "title": "G4 check_plan, schema 2.0 (multilingual releases; Python-owned)",
+  "description": "The frozen G2B skeleton (verbatim, under skeleton_header/planned_events/checks/constraints) plus G4-added fields: a per-event authoring block and derived_constraints. Removing exactly those additions reproduces the canonical skeleton bytes.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "stage": {
+      "const": "G4"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "pattern": "^CALL_[0-9]{3,}$"
+    },
+    "call_spec_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "check_plan_skeleton_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "call_config_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "checklist_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "check_semantics_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "edge_case_catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalization_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generation_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "register_guide_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "checklist_sha256",
+        "check_semantics_sha256",
+        "edge_case_catalog_sha256",
+        "normalization_sha256",
+        "generation_plan_sha256",
+        "language_profiles_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^A[0-9]{3,}$"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_template_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "response_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "accepted_response_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "model",
+        "prompt_template_sha256",
+        "response_schema_sha256",
+        "accepted_response_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "skeleton_header": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "2.0"
+        },
+        "stage": {
+          "const": "G2B"
+        },
+        "dataset_id": {
+          "type": "string"
+        },
+        "call_id": {
+          "type": "string"
+        },
+        "call_spec_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "schema_version",
+        "stage",
+        "dataset_id",
+        "call_id",
+        "call_spec_sha256",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "planned_events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^EV_[0-9]{3,}$"
+          },
+          "authoring": {
+            "$ref": "#/$defs/authoring"
+          }
+        },
+        "required": [
+          "event_id",
+          "kind",
+          "status",
+          "allowed_speakers",
+          "question_ids",
+          "assignment_ids",
+          "authoring"
+        ]
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "derived_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "ORDER"
+          },
+          "before": {
+            "type": "string",
+            "pattern": "^EV_[0-9]{3,}$"
+          },
+          "after": {
+            "type": "string",
+            "pattern": "^EV_[0-9]{3,}$"
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "READBACK_FIELD"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^EV_[0-9]{3,}$"
+              },
+              "question_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "question_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "type",
+          "before",
+          "after",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage",
+    "dataset_id",
+    "call_id",
+    "call_spec_sha256",
+    "check_plan_skeleton_sha256",
+    "call_config_sha256",
+    "source",
+    "generation",
+    "skeleton_header",
+    "planned_events",
+    "checks",
+    "constraints",
+    "derived_constraints"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authoring": {
+      "type": "object",
+      "properties": {
+        "speaker": {
+          "enum": [
+            "CLIENT",
+            "EMPLOYEE"
+          ]
+        },
+        "text_template": {
+          "type": "string",
+          "minLength": 1
+        },
+        "planned_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value_mentions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "placeholder": {
+                "type": "string"
+              },
+              "question_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "value": {},
+              "form": {
+                "type": "string"
+              },
+              "language": {
+                "enum": [
+                  "en",
+                  "zh"
+                ]
+              },
+              "surface": {
+                "type": "string",
+                "minLength": 1
+              },
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "source": {
+                "enum": [
+                  "EVENT_VALUE",
+                  "GOLD_RESTATEMENT",
+                  "READBACK_WRONG",
+                  "SCENARIO_FEE",
+                  "SCENARIO_LIMIT_PRICE",
+                  "DISTRACTOR_CURRENCY"
+                ]
+              }
+            },
+            "required": [
+              "placeholder",
+              "question_id",
+              "value",
+              "form",
+              "language",
+              "surface",
+              "start",
+              "end",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "readback_question_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "speaker",
+        "text_template",
+        "planned_text",
+        "value_mentions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

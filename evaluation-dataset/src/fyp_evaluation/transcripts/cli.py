@@ -16,7 +16,7 @@ from pathlib import Path
 from fyp_evaluation.validation.schemas import load_json, validate
 from fyp_evaluation.validation.transcript import validate_transcript_pair
 
-from .converter import build_transcript_artifacts
+from .converter import build_transcript_artifacts, transcript_artifacts_from_dialogue
 
 DEFAULT_DATASET_ROOT = Path("datasets/legacy_pilot_v1")
 DEFAULT_SCHEMA_DIR = Path("schemas")
@@ -43,9 +43,21 @@ def _write_atomic(path, serialized):
     tmp.replace(path)
 
 
-def _build_call(call_id, calls_dir, schema_dir):
+def _render_timings(call_id, call_dir, render_id):
+    """The per-turn rows of `renders/<render id>/timings.json` (the audio-derived times of a Polly render) for one call."""
+    path = Path(call_dir) / "renders" / render_id / "timings.json"
+    if not path.is_file():
+        raise ValueError(f"{call_id}: no timings at {path}")
+    timings = load_json(path)
+    if timings.get("call_id") != call_id or timings.get("render_id") != render_id:
+        raise ValueError(f"{call_id}: {path} belongs to {timings.get('call_id')}/{timings.get('render_id')}, not {call_id}/{render_id}")
+    return timings["turns"]
+
+
+def _build_call(call_id, calls_dir, schema_dir, render_id=None):
     """Load, validate and convert one call. Never writes; raises ValueError,
-    naming the call and the failing field/document, on any problem."""
+    naming the call and the failing field/document, on any problem.
+    With `render_id` the real audio-derived times of that render replace the placeholder times; the ground truth is never touched."""
     call_dir = Path(calls_dir) / call_id
     gt_path = call_dir / "ground_truth.json"
     if not gt_path.exists():
@@ -57,13 +69,17 @@ def _build_call(call_id, calls_dir, schema_dir):
         )
     if errors := validate(ground_truth, "ground_truth", schema_dir):
         raise ValueError(f"{call_id}: invalid ground_truth.json:\n  " + "\n  ".join(errors))
-    transcript, speaker_roles = build_transcript_artifacts(ground_truth, schema_dir=schema_dir)
+    if render_id is None:
+        transcript, speaker_roles = build_transcript_artifacts(ground_truth, schema_dir=schema_dir)
+    else:
+        transcript, speaker_roles = transcript_artifacts_from_dialogue(
+            call_id, ground_truth["dialogue"], schema_dir=schema_dir, timings=_render_timings(call_id, call_dir, render_id))
     if errors := validate_transcript_pair(ground_truth, transcript, speaker_roles, schema_dir):
         raise ValueError(f"{call_id}: generated pair failed cross-file validation:\n  " + "\n  ".join(errors))
     return ground_truth, transcript, speaker_roles
 
 
-def _check_call(call_id, calls_dir, schema_dir):
+def _check_call(call_id, calls_dir, schema_dir, render_id=None):
     """Load existing outputs and cross-validate them. Returns an error list
     (empty means valid); raises ValueError only for missing/usage problems."""
     call_dir = Path(calls_dir) / call_id
@@ -75,10 +91,15 @@ def _check_call(call_id, calls_dir, schema_dir):
     ground_truth = load_json(gt_path)
     transcript = load_json(call_dir / "transcript.json")
     speaker_roles = load_json(call_dir / "speaker_roles.json")
-    return validate_transcript_pair(ground_truth, transcript, speaker_roles, schema_dir)
+    errors = validate_transcript_pair(ground_truth, transcript, speaker_roles, schema_dir)
+    if render_id is not None and not errors:
+        expected = _build_call(call_id, calls_dir, schema_dir, render_id)[1:]
+        if (transcript, speaker_roles) != tuple(expected):
+            errors.append(f"transcript.json/speaker_roles.json do not match the times of render {render_id}")
+    return errors
 
 
-def _build_command(call_ids, calls_dir, schema_dir, overwrite):
+def _build_command(call_ids, calls_dir, schema_dir, overwrite, render_id=None):
     # Build and validate every selected call before writing anything, so one
     # malformed call cannot leave the dataset with a partially updated,
     # mismatched transcript/speaker-role pair for another call.
@@ -86,7 +107,7 @@ def _build_command(call_ids, calls_dir, schema_dir, overwrite):
     failures = []
     for call_id in call_ids:
         try:
-            built[call_id] = _build_call(call_id, calls_dir, schema_dir)
+            built[call_id] = _build_call(call_id, calls_dir, schema_dir, render_id)
         except ValueError as error:
             failures.append(str(error))
     if failures:
@@ -134,7 +155,7 @@ def _build_command(call_ids, calls_dir, schema_dir, overwrite):
     return 0
 
 
-def _check_command(call_ids, calls_dir, schema_dir):
+def _check_command(call_ids, calls_dir, schema_dir, render_id=None):
     # Check every selected call before deciding an exit code, so one missing
     # or invalid call never silently hides another call's result. A call
     # this can't even load (missing files, unreadable JSON) is a usage
@@ -145,7 +166,7 @@ def _check_command(call_ids, calls_dir, schema_dir):
     content_failures = []
     for call_id in call_ids:
         try:
-            errors = _check_call(call_id, calls_dir, schema_dir)
+            errors = _check_call(call_id, calls_dir, schema_dir, render_id)
         except ValueError as error:
             usage_failures.append(str(error))
             continue
@@ -178,6 +199,9 @@ def main(argv=None):
                         help="Read-only: validate existing transcript.json/speaker_roles.json; write nothing")
     parser.add_argument("--overwrite", action="store_true",
                         help="Explicitly replace existing transcript.json/speaker_roles.json")
+    parser.add_argument("--render-id", metavar="ID",
+                        help="Stitch the audio-derived times of this render (calls/<id>/renders/<ID>/timings.json) into transcript.json; "
+                             "with --check, also verify the existing files match that render")
     args = parser.parse_args(argv)
     calls_dir = args.calls_dir or args.dataset_root / "calls"
 
@@ -190,8 +214,8 @@ def main(argv=None):
         call_ids = [args.call]
 
     if args.check:
-        return _check_command(call_ids, calls_dir, args.schema_dir)
-    return _build_command(call_ids, calls_dir, args.schema_dir, args.overwrite)
+        return _check_command(call_ids, calls_dir, args.schema_dir, args.render_id)
+    return _build_command(call_ids, calls_dir, args.schema_dir, args.overwrite, args.render_id)
 
 
 if __name__ == "__main__":

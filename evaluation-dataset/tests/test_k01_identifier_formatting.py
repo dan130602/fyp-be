@@ -11,11 +11,13 @@ and the generated transcript, for every call that has a stated identifier.
 No AWS, Polly or LLM call is made; only local deterministic conversion.
 """
 
+import json
 import re
 from pathlib import Path
 
 import pytest
 
+from fyp_evaluation.transcripts.cli import _build_call
 from fyp_evaluation.transcripts.converter import build_transcript_artifacts
 from fyp_evaluation.validation.schemas import load_json, validate
 from fyp_evaluation.validation.transcript import validate_transcript_pair
@@ -27,7 +29,18 @@ CALLS_DIR = ROOT / "datasets/legacy_pilot_v1/calls"
 COMMA_SPELLED_IDENTIFIER = re.compile(r"[A-Z], [0-9],(?: [0-9],)* [0-9], [A-Z]")
 
 ALL_CALLS = ["CALL_001", "CALL_002", "CALL_003", "CALL_004", "CALL_005"]
+# The stored transcripts carry the audio-derived times of this render (stitched in by `transcripts.cli --render-id`).
+RENDER_ID = "clean_voice_A"
 CALLS_WITH_STATED_IDENTIFIER = ["CALL_001", "CALL_002", "CALL_003", "CALL_004"]
+
+
+def _without_times(transcript):
+    """The transcript with the per-segment start/end times removed (everything else untouched)."""
+    stripped = json.loads(json.dumps(transcript))
+    for segment in stripped["audio_segments"]:
+        segment.pop("start_time", None)
+        segment.pop("end_time", None)
+    return stripped
 
 
 def _ground_truth(call_id):
@@ -101,6 +114,15 @@ def test_on_disk_transcript_matches_a_fresh_deterministic_rebuild(call_id):
     assert validate(on_disk_roles, "speaker_roles", SCHEMAS) == []
     assert validate_transcript_pair(ground_truth, on_disk_transcript, on_disk_roles, SCHEMAS) == []
 
-    rebuilt_transcript, rebuilt_roles = build_transcript_artifacts(ground_truth, schema_dir=SCHEMAS)
+    # Timing is explicit: the stored times must equal the render's recorded timings, rebuilt through the production path.
+    _, rebuilt_transcript, rebuilt_roles = _build_call(call_id, CALLS_DIR, SCHEMAS, RENDER_ID)
     assert rebuilt_transcript == on_disk_transcript
     assert rebuilt_roles == on_disk_roles
+
+    # Everything except the per-segment times (text, identifiers, segment structure, speaker mapping) also matches the
+    # untimed placeholder rebuild, so the timing source is the only thing the render contributes.
+    placeholder_transcript, placeholder_roles = build_transcript_artifacts(ground_truth, schema_dir=SCHEMAS)
+    assert _without_times(placeholder_transcript) == _without_times(on_disk_transcript)
+    assert placeholder_roles == on_disk_roles
+    assert all(s["start_time"] == "0.0" or s["start_time"] == "0.000" for s in placeholder_transcript["audio_segments"][:1])
+    assert any(s["end_time"] != "0.0" for s in on_disk_transcript["audio_segments"]), "the stored transcript has no audio-derived times"

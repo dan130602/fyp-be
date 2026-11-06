@@ -12,7 +12,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "description": {
       "$ref": "#/$defs/text"
@@ -170,6 +173,20 @@
               "CLIENT",
               "EMPLOYEE"
             ]
+          }
+        },
+        "language_profiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/language_profile"
+          }
+        },
+        "language_variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/language_variant"
           }
         }
       }
@@ -343,6 +360,93 @@
           }
         }
       ]
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}$"
+    },
+    "language_profile": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "language_variant": {
+      "type": "object",
+      "required": [
+        "variant_id",
+        "profiles",
+        "status",
+        "purpose"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "variant_id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "profiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/language_profile"
+          }
+        },
+        "status": {
+          "enum": [
+            "READY_V1",
+            "NEEDS_REVIEW",
+            "EXCLUDED_V1"
+          ]
+        },
+        "purpose": {
+          "$ref": "#/$defs/text"
+        },
+        "event_languages": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/language"
+            },
+            "target": {
+              "$ref": "#/$defs/language"
+            }
+          }
+        },
+        "constraint": {
+          "type": "object",
+          "required": [
+            "kind",
+            "factor",
+            "distractor_count",
+            "divided_distractor_roles"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "DISTRACTOR_MAGNITUDE_FACTOR"
+            },
+            "factor": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "distractor_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "divided_distractor_roles": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/symbol"
+              }
+            }
+          }
+        }
+      }
     }
-  }
+  },
+  "description": "Release edge-case catalog. Schema 2.0 (multilingual releases) adds language_profiles and language_variants to every edge case; validation.stage0 requires them in 2.0 and forbids them in 1.0."
 }

@@ -288,7 +288,7 @@ def test_a_full_50_call_batch_with_consolidation_across_two_submissions(tmp_path
 # ============================================================================================== CLI
 @pytest.fixture()
 def fast_gate(monkeypatch):
-    monkeypatch.setattr("fyp_evaluation.check_plans.run.load_inputs", lambda root, schema_dir: shared_inputs())
+    monkeypatch.setattr("fyp_evaluation.check_plans.run.load_inputs", lambda root, schema_dir, call_ids=None: shared_inputs())
 
 
 def test_two_dry_runs_print_identical_requests_and_mutate_nothing(tmp_path, capsys):

@@ -98,16 +98,22 @@ python -m pytest -q tests/test_stage0_contracts.py
 Pipeline names for this release: G0 contracts, G1 deterministic planning, G2A
 call_spec (immutable call specifications), G2B check_plan_skeleton (deterministic check-plan
 skeletons), G3 call_config, G4 check_plan wording, G5 plan verification, G6 dialogue, G7 dialogue
-verification, G8 ground truth, G9 audio and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
+verification, G8 audio (SSML, Polly, timings), G9 ground truth and evaluation. Implemented: G0, G1 (`fyp_evaluation.planning`),
 G2A (`fyp_evaluation.call_specs`) and G2B (`fyp_evaluation.check_plan_skeletons`) without an LLM, and G3
 (`fyp_evaluation.call_configs`, model-assisted) and G4 (`fyp_evaluation.check_plans`, model-assisted, structural acceptance only),
 G5 (`fyp_evaluation.plan_verifications`, gold-aware semantic verification by Gemini, Python-adjudicated) and G6
-(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only), and a PROVISIONAL G8
-(`fyp_evaluation.ground_truths`, deterministic canonical ground-truth compilation). G7 (dialogue verification) and G9 (SSML, Polly
-audio, timings) are not yet implemented.
+(`fyp_evaluation.dialogues`, model-assisted dialogue generation, structural acceptance only), G7
+(`fyp_evaluation.dialogue_verifications`, gold-aware dialogue verification), G8 (`fyp_evaluation.rendering`, SSML conversion and Amazon
+Polly rendering with per-turn timings; the SSML and the offline gate are implemented, the billable Polly run is separate) and a
+G9 (`fyp_evaluation.ground_truths`, deterministic canonical ground-truth compilation; the FINAL compile with audio-derived timings is
+implemented and has been run). The stage numbers follow the order of work: the final canonical ground truth needs the real turn timings, so it is compiled last.
+
+G6 dialogue -> G7 verification -> G8 render (SSML, Polly audio, `timings.json`) -> **final G9 compile** (stitches the timings in) ->
+export and evaluation. The G9 files of the advisory/execution release are the FINAL compile of render `clean_voice_A`; a provisional compile
+(placeholder `0.0` times) is still available by omitting `--render-id`, but is refused over final outputs.
 
 Model decisions per stage: G3, G4 and G6 use `gpt-6.1-sol` (OpenAI). G5 uses `gemini-3.8-flash` with thinking
-level `medium` on the paid Flex tier; (future) G7 will use `gemini-3.8-flash` with thinking level `high` on Flex.
+level `medium` on the paid Flex tier; G7 uses `gemini-3.8-flash` with thinking level `high` on Flex.
 
 ```powershell
 python scripts/plan_dataset.py --dataset-root datasets/advisory_execution_pilot_v1             # write (refuses existing files)
@@ -315,8 +321,12 @@ an omission leak, a contradictory final instruction) through G4's own acceptance
 
 G6 turns each call's accepted G3 scenario and G4 evidence plan into one EMPLOYEE/CLIENT dialogue
 (`fyp_evaluation.dialogues`, `scripts/generate_dialogues.py`). It uses `gpt-6.1-sol` (medium reasoning, Responses Structured
-Outputs) and is **Batch-only**: `--sync` is refused (the OpenAI SDK retries sync generation silently). G6 acceptance means the
-dialogue is structurally valid and ready for G7; it is never semantic verification.
+Outputs). Bulk generation uses **Batch** (`--submit`, `--collect`); pilots may use one synchronous request per call (`--sync --call-id X`).
+Both send the byte-identical model-facing request and go through the same validation and acceptance; only the transport envelope,
+attempt record (`transport` is `batch` or `sync`) and price (sync is billed at the standard rate) differ. Synchronous G6 requests turn the
+SDK's automatic retries off and use a 30-minute timeout: an unknown outcome (timeout, lost connection) is recorded as a possibly billed,
+ambiguous attempt and the call is blocked until `--sync --acknowledge-duplicate-risk --call-id X`; nothing is ever re-sent automatically.
+G6 acceptance means the dialogue is structurally valid and ready for G7; it is never semantic verification.
 
 - **Evidence is inserted by Python.** The model writes whole-token markers such as `[[EV_013]]`; Python substitutes each event's
   exact G4 `planned_text`, assigns zero-based contiguous `turn_id` values and derives every span (`text[start:end]` of the turn
@@ -333,6 +343,32 @@ dialogue is structurally valid and ready for G7; it is never semantic verificati
   SHORT accepts 510-750 words, LONG 5,103-9,000, so each band stays inside the frozen duration profile for any rate from 150 to 170
   wpm. The policy is recorded in every attempt's `params` and rebuilt from there, so a later recalibration never changes an accepted
   dialogue. `estimated_seconds` is an estimate, never a guaranteed audio duration.
+- **Call intents and the recommendation.** The brief carries `call.call_intents` unchanged from the call spec and uses its array order as
+  the intended segment order (every call is ADVISORY then EXECUTION): the employee's recommendation comes before the final
+  confirmation/commitment, while preliminary client product mentions may come first. G1 requires the array to be the call's unique
+  intents in *vocabulary order*, so for this pilot the order is canonical, not independently selected per call; reading it as segment
+  order is a downstream authoring policy that may be revised if a future release varies the order. The frozen G0-G2B files are untouched.
+  The brief also carries `planned_recommendation_event_ids`, derived from the C07 plan structure (no keywords, no model call). The 43 C07
+  PASS calls have a planned recommendation event; the 7 C07 FAIL calls (an absence check with no event) have an empty list.
+- **The unplanned recommendation (C07 FAIL).** When ADVISORY is an intent and the plan has no planned recommendation event, the brief
+  also carries `advisory_recommendation`, derived by Python from frozen inputs only (`dialogues/advisory.py`; no call IDs, keywords or extra
+  model call): `product_name` (the G3 FINAL product), `direction` (BUY/SELL from gold T05, only when EXECUTION is also an intent),
+  `place_after_event_ids` (events carrying an edge-case assignment that targets the product T01 or direction T05: reference selection,
+  corrections, replacement; this is what puts CALL_031's recommendation after the client's product-reference selection, while the quantity
+  references of CALL_001/036 settle nothing about the product), `place_before_event_ids` (the final confirmation exchange, C08) and
+  `keep_apart_from_event_ids` (the C01 objective and C06 loss-tolerance evidence). The model writes ONE clear employee recommendation of that
+  action on that product, with no concrete rationale (no feature, benefit, performance, suitability or link to the client's goals,
+  situation or risk appetite), no order detail and no copy of any planned text, placed after the first list and before the second, not in
+  or immediately after the third, then the client's next turn opens with a mild acknowledgement ("Okay, noted."), never an instruction,
+  commitment, confirmation or "I understand". Earlier placement and ending the employee turn without a planned question are preferences.
+  The prompt's rule that supporting speech never states a product choice has exactly this one carve-out. G6 acceptance stays
+  structural: naming the product outside the events is a `review_notes` entry, never a rejection. `preflight_errors` also reports
+  contradictory placement requirements offline (a settled-first event ordered after the final confirmation, or a shared turn that leaves
+  no employee slot clear of objective/loss evidence) before any request. `scripts/lint_advisory.py` is an advisory-only lint of the
+  accepted dialogues (missing product name, rationale-like wording such as "because"/"since", order detail, placement, adjacency, a client
+  reaction that is more than a mild acknowledgement); its signals are hints for a human and never fail anything. Meaning and
+  naturalness are judged by G7. Changing the shared prompt changes the request bytes of all 50 calls (the other 43 have no
+  `advisory_recommendation`), so only their artifacts are required to stay untouched, never their requests.
 - **G5 gate.** A call is eligible only while its G5 report is current, intact and VALID (`g6_eligibility()`), per call. At acceptance,
   under the dataset write lock: unreadable inputs hold the response (resumable `UPSTREAM_INVALID`); changed fingerprints, a
   confirmed-deleted G5 report included, close it as terminal `STALE_UPSTREAM` (raw response kept, never resent); changed G6
@@ -341,7 +377,7 @@ dialogue is structurally valid and ready for G7; it is never semantic verificati
 - **Outputs.** `authoring/dialogues/CALL_XXX.json` (turns, `event_alignment`, length metrics), committed
   `authoring/dialogue_provenance/CALL_XXX.json` and `authoring/dialogue_record.json`; operational state under
   `.llm_audit/<dataset_id>/G6/`. Spoken-turn consumers read only `turns[].turn_id/speaker/text`. The legacy ground-truth compiler
-  does not accept this artifact; the G8 compiler (below) translates it.
+  does not accept this artifact; the G9 compiler (below) translates it.
 
 ```powershell
 python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_027] [--print-request]
@@ -352,9 +388,133 @@ python scripts/generate_dialogues.py --dataset-root datasets/advisory_execution_
 
 Credentials: `OPENAI_API_KEY` in the operating-system environment or `.env`; offline modes and tests need none.
 
-## G8: canonical ground truth (provisional until G7 and audio timings)
+## G7 dialogue verification (gold-aware semantic verification of the real dialogue)
 
-G8 (`fyp_evaluation.ground_truths`, `scripts/compile_ground_truth.py`) is deterministic: no LLM, no network. It combines the frozen gold
+G7 (`fyp_evaluation.dialogue_verifications`, `scripts/verify_dialogues.py`) checks, per call, whether the accepted G6 dialogue,
+read as a whole, implements the frozen gold and genuinely realises every assigned edge case. It never generates, repairs or changes
+a dialogue or gold. The verifier is the G5 stack with **high** thinking: `gemini-3.8-flash`, thinking `high`, paid **Flex** tier,
+`store=false`, no tools, strict JSON output, one stateless synchronous Interactions request per call (LONG calls included, no chunking),
+`max_output_tokens` 32768, timeout 900 s. There is no Standard-tier or other-model fallback and no Batch path. The Gemini send,
+capacity-retry, ambiguity and recovery loop is the one G5 proved, shared through `llm/gemini_runner.py` (`GeminiFlexMixin`).
+
+- **G7A preflight (Python, before any paid request).** A call is eligible only if `DialogueRunner.g7_eligibility()` passes: the G6
+  dialogue file exists and is readable (a read that fails with anything but `FileNotFoundError` is *unreadable*, never "deleted"),
+  committed G6 provenance records an accepted attempt whose artifact hash equals these exact bytes (`_validate_call` alone is not
+  proof, it is silent when both files are absent), the shared per-call validation passes (rebuild under the exact G3/G4/G5 versions,
+  markers, spans, speakers, constraints, recorded length policy), the dialogue is current, and its G5 approval is still current,
+  intact and VALID. An ineligible call receives no request and `--dry-run`/`--run` report why.
+- **Brief.** The stable system instruction (`prompts/stage7/dialogue_verification.v1.md`, the frozen checklist, `check_semantics.json`
+  and the release-local `normalization.json` profiles) and, per call, G5's brief (expected gold for all 20 questions, resolved pass/fail
+  conditions, G3 scenario, assigned edge cases with catalog semantics, every planned event with relations and constraints) plus the
+  **entire actual dialogue** (every integer `turn_id`, speaker and text) and the turn each event landed in. No hashes, provenance,
+  provider envelopes, offsets or G5 verdicts are sent. Gold is the target being checked, never evidence; a planned compliance FAIL is
+  not an error and MATCH means the dialogue implements the expected gold, omissions and deliberate violations included.
+- **FAIL semantics and advisory realization.** The verifier follows each compliance row's own `target.must` / `evidence_mode` and the
+  checklist's `requirement_type`: an OBLIGATION FAIL (C01-C08) is an omission or a deliberately inadequate act per the frozen
+  `fail_condition`, a PROHIBITION FAIL (C09-C12) requires the AUTHORED VIOLATION to be present (never "every FAIL is an absence").
+  It also verifies actual advisory and execution realization: `call_intents` order is the intended segment order (ADVISORY then
+  EXECUTION; see the G6 section for why this is a downstream authoring policy); the employee's recommendation must precede the final confirmation/commitment (preliminary client product mentions may come first); a
+  C07 FAIL keeps a clear recommendation of the frozen product and action without a concrete rationale. For those calls the G7 brief
+  carries `advisory_expectation`, the same Python-derived data as the G6 brief plus the turn of every named event, and G7 verifies by
+  meaning: a recommendation that names neither product nor action, or none at all, is a C07 `MISSING_SUPPORT` MISMATCH; a concrete
+  rationale is an `OMISSION_LEAKAGE` MISMATCH (adjacency alone is not one, and "as"/"since" are not decisive); naming the product before
+  the client's reference selection or correction has settled it is an `EDGE_CASE` MISMATCH; a client reaction that is an instruction,
+  confirmation or understanding statement is a MISMATCH on C08/C03. Tests pin the quadrant mapping for all 50 briefs and the prompt wording.
+- **Report.** Per checklist question (20, checklist order) and per frozen edge-case assignment (frozen order, an empty array when none):
+  evidence (`turn_id` + verbatim quote), a rationale, MATCH/MISMATCH/UNCLEAR; `issues` (codes COMPLIANCE_MEANING, OMISSION_LEAKAGE,
+  EXTRACTION_STATE, SCENARIO_CONTRADICTION, EDGE_CASE, CROSS_CHECK_INTERFERENCE, MISSING_SUPPORT; advisory `repair_scope`
+  G6_ONLY/UPSTREAM_REVIEW/REVIEW); and `quality_findings` (naturalness, NOTE/SERIOUS). The model never states a verdict or gold.
+- **Python validation (REJECTED on any failure).** Schema; exact 20 checks and exact assignments in order; two-way issue linkage and
+  severity agreement; known turns; every quote grounded in the cited turn after G5's narrow normalisation (the exact source substring is
+  stored together with **every** matching occurrence span in that turn; a quote matching different exact substrings is rejected);
+  size limits. Citation rules are mechanical: a PRESENCE check marked MATCH cites its own evidence event, an edge case marked MATCH cites an
+  event carrying it, **every MISMATCH issue except `MISSING_SUPPORT` cites the actual speech it rests on** (an explicit contrary statement
+  such as a later BUY against a SELL gold is `EXTRACTION_STATE`, never `MISSING_SUPPORT`), every quality finding cites its turn; UNCLEAR
+  issues, `MISSING_SUPPORT` and omissions may cite nothing. Python derives `event_ids` of a citation from the G6 alignment.
+- **Verdict, quality and G8/G9.** Python derives the verdict over check rows, edge-case rows and issues: any MISMATCH -> `INVALID`,
+  otherwise any UNCLEAR -> `UNCLEAR`, otherwise `VALID`; an edge-case MISMATCH or a whole-dialogue issue therefore decides the verdict even
+  when all 20 checks MATCH. `quality_review` is `REVIEW_REQUIRED` when any quality finding is SERIOUS, else `CLEAR`. It is **advisory**:
+  it never changes the verdict and never gates G8 or G9, but it is always reported (`--status`, the record): VALID does not mean quality-cleared.
+  `g8_eligibility()` (eligible for the G8 render, and so for G9) = current, intact (per-call validation passes) and VALID. INVALID and UNCLEAR are completed verifications: never
+  retried automatically; an accepted report is skipped on resume and re-verified only with `--reopen --reason` (history is kept; this is also
+  how a repaired G6 dialogue is re-verified, since its stale report reads "already accepted").
+- **Acceptance ordering** (under the dataset write lock): unreadable inputs hold the response (resumable `UPSTREAM_INVALID`); changed
+  fingerprints (G0-G6 and G5 report, a confirmed-deleted dialogue included) close it as terminal `STALE_UPSTREAM` (raw response kept, never
+  resent, no structural budget used); a changed prompt, response schema or settings, re-hashed from the files now, does the same; a failing
+  preflight with unchanged fingerprints is a resumable hold. Historical reports are rebuilt against the exact G3/G4/G5 versions and the
+  exact verified G6 dialogue they recorded (never the current one); missing or corrupted history fails explicitly.
+- **Provider limits.** As for G5: nested array bounds make Gemini answer HTTP 400, so only `checks` is bounded (20); the other limits (6
+  citations, 20 issues, 10 quality findings, 700/1200/400 characters) are enforced by Python. A truncated or malformed report is REJECTED
+  (3 per call, `--retry-rejected`). 429/503 are resent inside one attempt (up to 4 sends, same bytes); a timeout is ambiguous and blocks the
+  call until `--acknowledge-possible-duplicate`.
+
+```powershell
+python scripts/verify_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --dry-run [--call-id CALL_016] [--print-request]
+python scripts/verify_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --run --call-id CALL_016        # paid Flex request(s)
+python scripts/verify_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --status | --validate [--require-complete] | --check
+python scripts/build_g7_controls.py --dataset-root datasets/advisory_execution_pilot_v1 --out .llm_audit/g7_controls     # offline control copies
+```
+
+Credentials: `GEMINI_API_KEY` in the operating-system environment or `.env`; offline modes and tests need none. `--dry-run` is offline,
+credential-free and writes nothing; it prints the request hash, characters, UTF-8 bytes and **approximate** tokens per call and a rough
+dated Flex cost estimate (not a promise). `--status` separates lifecycle, verdict, quality review, G8 eligibility, provider sends, usage and
+estimated cost. Outputs: `authoring/dialogue_verifications/CALL_XXX.json`, committed
+`authoring/dialogue_verification_provenance/CALL_XXX.json`, `authoring/dialogue_verification_record.json`; operational state under
+`.llm_audit/<dataset_id>/G7/`. The control builder writes three isolated copies of CALL_016 (unchanged; an employee fee disclosure that
+leaks the C04 omission; a client BUY instruction after the final confirmation) by reopening G6 through its own acceptance path.
+
+## G8: SSML conversion and Amazon Polly rendering (verified dialogues only)
+
+G8 (`fyp_evaluation.rendering`, `scripts/render_dialogues.py`) turns each **G7-verified G6 dialogue** into per-turn SSML, Polly audio and
+`timings.json`. It reads `authoring/dialogues/CALL_XXX.json` directly (the same zero-based `turn_id`s G9 reuses), never
+`ground_truth.json`, so it needs no G9 output, and it never writes gold. A call is processed only when its G7 report is current, intact
+and VALID (`DialogueVerificationRunner.g8_eligibility`); every other call is listed with its reason and never sent.
+
+```powershell
+python scripts/render_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --preview                 # eligibility, characters, approximate cost; writes nothing
+python scripts/render_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --ssml                    # offline: segments/<turn_id>.ssml + ssml_manifest.json
+python scripts/render_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --check                   # offline: renders vs the CURRENT verified dialogues
+python scripts/render_dialogues.py --dataset-root datasets/advisory_execution_pilot_v1 --execute --call-id CALL_001   # BILLABLE Polly requests
+```
+
+- **SSML.** Each turn becomes `<speak>...</speak>` with XML-escaped text. Upstream already fixes how values are WRITTEN and spoken (release
+  `normalization.json` `spoken_forms` and the edge-case catalog): identifiers character by character with digits as words ("S six five ...
+  nine A", "oh" and "double"/"triple" only under their edge cases), dates as "13 March 1999" or an ordinal, currencies by natural name, and
+  financial shorthand (`500k`, `10m`, `50k`, `75k`) only under EC_FINANCIAL_SHORTHAND, where the audio must keep the shorthand. The text is
+  already in spoken form, so SSML only adds `ssml-v3` pronunciation hints where a neural voice would misread a token, and every hint is a
+  `<sub alias>` from one **closed table** (no `say-as`, `phoneme`, `break`, `prosody` or any other tag):
+  - the prefix and suffix letters of a spoken identifier use letter names ("A" -> "ay", "S" -> "ess"); a lone "A" would otherwise be read as
+    the article. "oh", "double" and "triple" in between are left exactly as written;
+  - NRIC, FIN, ETF, US and the release's currency codes are spelled by letter names ("NRIC" -> "en ar eye see"; a test keeps the list in step
+    with the release's allowed currencies);
+  - shorthand keeps its suffix: `500k` -> "five hundred kay", `10m` -> "ten em", `50k` -> "fifty kay", `75k` -> "seventy-five kay". The suffix is
+    never expanded to "thousand" or "million". (A magnitude expression written in words, such as "1.2 million" under
+    EC_LARGE_NUMBER_EXPRESSION, is plain text and is left alone.) The letter names and these shorthand readings are a project choice, not
+    something upstream spells out, and have to be confirmed by listening.
+
+  Canonical dialogue text is never changed. `assert_faithful` checks BOTH that the visible text of every SSML file is exactly the canonical turn
+  text AND that every hint is the one the table prescribes; an arbitrary alias (even on the right text) or any unsupported tag or attribute is
+  rejected. Dates, ordinals and everything else are left to the voice. `ssml_manifest.json` records the dialogue hash, the pronunciation version
+  and a hash per turn; `--check` validates the SSML even before any audio exists (missing, stale, hand-edited or old-version SSML fails).
+- **Polly.** `--execute` first checks the SSML files on disk against a fresh build and sends **those files**, one request per turn
+  (neural engine, `ap-southeast-1`, Jasmine for EMPLOYEE and Matthew for CLIENT by default; PCM 16 kHz), stitches the PCM with 400 ms of
+  silence between turns, encodes `audio.mp3` and `segments/<turn_id>.mp3` with FFmpeg (`imageio-ffmpeg`), and derives the per-turn
+  `timings.json` (the existing `timings.schema.json` shape). Polly never assigns or changes turn IDs.
+- **Provenance.** `render_manifest.json` per render records the dialogue hash, the G7 report hash, the SSML manifest hash, the timings
+  hash, the audio hash, the settings, the billed-character estimate and the time. Audio is git-ignored; SSML, timings and manifests are
+  versioned. `--check` fails a render whose dialogue changed since (stale), whose timings do not cover every turn exactly once, or whose
+  audio does not match its recorded hash.
+- **Spending.** `--preview` prints the characters and an approximate list-price cost (an estimate, not a quote; the free tier is not
+  modelled). `--execute` refuses while any selected call is ineligible, never replaces an existing render without `--overwrite`
+  (`--skip-existing` leaves complete current renders alone), stops at the first failure and lists the calls that finished. Each call is
+  written only after all its turns were synthesized, so a failure never leaves a half render. Credentials come from the standard AWS chain
+  (`--profile` optional) and are never read, printed or stored. The rendering dependencies are the `render` extra
+  (`python -m pip install -e ".[render]"`). A G6 reopen makes the G7 report stale, which makes the call ineligible until it is
+  re-verified and re-rendered.
+
+## G9: canonical ground truth (compiled last, from the G8 timings)
+
+G9 (`fyp_evaluation.ground_truths`, `scripts/compile_ground_truth.py`) is deterministic: no LLM, no network. It combines the frozen gold
 (G2A call spec), the accepted G4 check plan and the accepted G6 dialogue into the three files each call needs, written to
 `datasets/<release>/calls/CALL_XXX/`:
 
@@ -366,25 +526,40 @@ G8 (`fyp_evaluation.ground_truths`, `scripts/compile_ground_truth.py`) is determ
   PLANNED evidence; this file holds what is actually in the accepted dialogue, and the compiler refuses unless each span equals the
   planned text and is spoken by the planned speaker.
 - `transcript.json` and `speaker_roles.json`: the AWS-Transcribe-shaped pair (EMPLOYEE = spk_0 = RM, CLIENT = spk_1 = Customer),
-  from the same converter as the legacy pilot, with every segment time still the placeholder `"0.0"`.
+  from the same converter as the legacy pilot; segment times are the placeholder `"0.0"` in the provisional compile and the G8
+  audio-derived times in the final one.
 
 `authoring/ground_truth_record.json` hashes every compiled file and `dataset_manifest.json` lists the call IDs. `--write` refuses unless
 G6 is complete, valid and current, and refuses to replace differing files without `--overwrite`; `--check` rebuilds in memory and
 compares byte for byte. Outputs are therefore always regenerable and never hand-edited.
 
-**Status: PROVISIONAL.** `status.g7_dialogue_verification` is `PENDING` and `status.timings` is `PLACEHOLDER_ZERO`. The remaining order of work is:
+**Two modes.** The compile is PROVISIONAL (`status.g7_dialogue_verification` PENDING, `status.timings` PLACEHOLDER_ZERO, every transcript
+time the placeholder `"0.0"`) unless it is given a render, in which case it is FINAL:
 
-1. **G7** dialogue verification (gold-aware, report-only). Anything it flags is fixed by regenerating the affected G6 dialogue (or
-   upstream authoring), never by editing gold or the compiled files.
-2. **SSML, Polly audio and `timings.json`** (render per turn; stitch; derive per-turn start/end times).
-3. **Recompile G8** with the verified dialogues and the real timings (`--write --overwrite`), so `status` becomes `VERIFIED` /
-   `AUDIO_DERIVED` and `transcript.json` carries real start and end times in the AWS Transcribe shape. The converter already has the
-   `timings` parameter reserved for this; accepting real timings (and the exporter accepting non-placeholder times with explicit
-   timing provenance) is not implemented yet.
-4. Re-export to fyp-ai as a new version of the same snapshot folder.
+```powershell
+python scripts/compile_ground_truth.py --dataset-root datasets/advisory_execution_pilot_v1 --write --overwrite --render-id clean_voice_A   # FINAL
+python scripts/compile_ground_truth.py --dataset-root datasets/advisory_execution_pilot_v1 --check                                          # follows the record
+```
 
-The exporter (`scripts/export_dataset.py`, see EXPORTING.md) understands G8 releases (it uses the release's own `normalization.json`,
-re-compiles G8 in memory and refuses any call file that differs) and records `dataset_status` in the snapshot manifest.
+The order of work, and where this release stands (the FINAL compile of render `clean_voice_A` has been written over the provisional files):
+
+1. **G7** dialogue verification (gold-aware, report-only; production run 50/50 VALID). Anything it flags is fixed by regenerating the
+   affected G6 dialogue (or upstream authoring), never by editing gold or the compiled files.
+2. **G8 render** (above): SSML, Polly audio and `timings.json`.
+3. **FINAL G9 compile** (`--render-id`). It refuses unless every call has a G7 report that is current, intact and VALID **and** a complete,
+   current G8 render: `render_manifest.json` bound to the current accepted dialogue and G7 report, SSML equal to a fresh build, `timings.json`
+   covering every dialogue turn exactly once and in order with non-overlapping intervals, and (when present) audio matching its recorded
+   hash. Reopening G6 therefore invalidates the render as well as G7. The audio-derived per-turn times (fixed three-decimal strings, the
+   400 ms inter-turn silence included) enter **only** `transcript.json`. `ground_truth.json` gets `status` VERIFIED / AUDIO_DERIVED and a
+   `timing` block (`render_id`, `timings_sha256`, `render_manifest_sha256`, `audio_sha256`, `g7_report_sha256`, `duration_seconds`);
+   `ground_truth_record.json` records the render ID. The 20 expected answers, evidence turns, spans, value histories, challenge tags and
+   the dialogue are byte-identical to the provisional compile (a test pins this), and `speaker_roles.json` is unchanged. A PROVISIONAL
+   `--write` over FINAL outputs is refused; `--check` and the exporter follow the render the record names, so they need no flag.
+4. Re-export to fyp-ai as a new version of the same snapshot folder (NOT done yet; held until requested).
+
+The exporter (`scripts/export_dataset.py`, see EXPORTING.md) understands G9 releases (it uses the release's own `normalization.json`,
+re-compiles G9 in memory, following the render a FINAL record names, and refuses any call file that differs) and records `dataset_status`
+and `timing_status` (`placeholder_zero` or `audio_derived`) in the snapshot manifest.
 
 ## Required generation order
 
@@ -404,11 +579,14 @@ re-compiles G8 in memory and refuses any call file that differs) and records `da
 6. Independently verify the dialogue against every predetermined check,
    including speaker, absence and content constraints. Revise nonconforming
    dialogue; never derive or adjust gold from the completed dialogue.
-7. The Python compiler validates all inputs, assigns turn IDs and resolves
-   evidence deterministically, then writes canonical `ground_truth.json`.
-8. Generate per-turn SSML from canonical reference text and separate pronunciation settings.
-9. Render Polly segments, stitch them, and write timings for that specific
-   render. Canonical ground truth remains unchanged.
+7. Generate per-turn SSML from the verified dialogue's reference text (turn IDs are the dialogue's zero-based positions) and
+   separate pronunciation settings.
+8. Render Polly segments, stitch them, and write timings for that specific
+   render. No ground truth is read or changed in this step.
+9. The Python compiler validates all inputs (including that the timings cover every turn of the current verified dialogue), assigns
+   turn IDs, resolves evidence deterministically and stitches in the timings, then writes the **final** canonical `ground_truth.json`,
+   `transcript.json` and `speaker_roles.json`. Gold answers are identical to the provisional compile; only the timing fields and
+   `status` differ.
 10. Run the actual FYP system and compare its predictions against canonical
     gold. Evaluation outputs belong in `evaluation_runs/`.
 
@@ -741,6 +919,11 @@ Python assigns canonical turn IDs after dialogue generation and before
 rendering. Amazon Polly must never assign, renumber or change those IDs; it
 only produces audio and render-specific timing information.
 
+For the advisory/execution releases (G6 onwards) rendering happens **before** the final ground-truth compile: the render reads the
+G7-verified G6 dialogue, and the final G9 compile then reads the render's `timings.json`. The render therefore never depends on a
+compiled `ground_truth.json`, and ground truth is never rewritten to fit a render. The `render_polly.py` description below
+(reading `ground_truth.json`) is the legacy-pilot workflow.
+
 Future renders use `segments/<integer turn_id>.mp3`. Timings are arrays of
 objects, not objects keyed by numeric-looking strings. The validator checks
 ordered, nonoverlapping intervals within audio duration, and words within their
@@ -841,13 +1024,11 @@ reconstructs its working transcript by joining diarized segments with two
 newlines (`_TURN_SEPARATOR = "\n\n"`); `transcripts[0].transcript` uses the
 same separator so the two representations agree.
 
-The prepared transcript files still carry the documented temporary placeholder
-`"start_time": "0.0", "end_time": "0.0"`. These are not measurements. The
-same converter is meant to regenerate `transcript.json` with real
-per-turn timing from `ground_truth.json` + `timings.json` together, rather
-than patching the placeholder file in place; that enrichment path is not
-implemented yet (`build_transcript_artifacts(..., timings=...)` raises
-`NotImplementedError` for any non-`None` value).
+The legacy pilot's prepared transcript files still carry the documented temporary placeholder
+`"start_time": "0.0", "end_time": "0.0"`. These are not measurements, and `build_transcript_artifacts(..., timings=...)` for that legacy path
+still raises `NotImplementedError`. For the advisory/execution release the shared converter
+(`transcript_artifacts_from_dialogue(..., timings=...)`) regenerates `transcript.json` with the real audio-derived per-turn times in the final
+G9 compile, after the G8 render, rather than patching a placeholder file in place.
 
 Reusable API (`src/fyp_evaluation/transcripts/converter.py`, pure, no I/O):
 

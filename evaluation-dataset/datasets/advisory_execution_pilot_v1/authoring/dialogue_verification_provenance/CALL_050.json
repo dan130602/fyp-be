@@ -1,0 +1,324 @@
+{
+  "schema_version": "1.0",
+  "stage": "G7",
+  "dataset_id": "advisory_execution_pilot_v1",
+  "call_id": "CALL_050",
+  "attempts": [
+    {
+      "attempt_id": "A001",
+      "custom_id": "CALL_050-G7-A001",
+      "transport": "sync",
+      "state": "ACCEPTED",
+      "submission_id": null,
+      "batch_id": null,
+      "provider_response_id": "",
+      "model": "gemini-3.8-flash",
+      "params": {
+        "thinking_level": "high",
+        "service_tier": "flex",
+        "max_output_tokens": 32768
+      },
+      "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+      "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+      "request_sha256": "35cccc0aab10112de1e6a79a0c65681b69dc0742ac9cac9f83befc2fcd9ae36a",
+      "upstream_sha256": {
+        "call_spec": "06129d53fd7e458dcedc2706b7ecd3c90d781751dc6b6b84e4fb7a934601cd13",
+        "check_plan_skeleton": "9d2beaa0b3944b2680b9bd3aa280fcefeb427024e60035f30ce37d0e255428f3",
+        "call_config": "e4c9321b42bb1dd4f7947597d4026b72f302a1ff4fb36a1821469d6bea759d0f",
+        "check_plan": "2353f1614f0191e29319dc7751af2a9b520ede423c2ca084b01fc8d68d5bfd45",
+        "plan_verification": "78231dd49b2f54b644f3f711cdfcd0d2b91c9956ffb69add4e73aac3e9f8d6d8",
+        "dialogue": "4cd00c808e2040b89d17d5d19336ffb74b838b42a16850daf04843183bd3e237",
+        "checklist_sha256": "c8a3eb512e8fd7add0d7d63f67d50b12ccf6b9841cc94c1a0543af2fcdfc59c3",
+        "check_semantics_sha256": "e9453e62e5232263b21daaeaf321f11d5dacbfeec70cc5b0ddb6e9baa9896493",
+        "edge_case_catalog_sha256": "443e2335e0a59f991de955cdfad7e49e29ac1f105a7b8f581b914ce33368a5c3",
+        "normalization_sha256": "5fc020db696f1a67ecff178d119a397261bc32e258a463afaa88e8d44089072e",
+        "generation_plan_sha256": "dbaffe5f5669e2bba1755cc6e4e8a186c36a396116084b4d8a55a40d6d6030f1"
+      },
+      "api_status": "completed",
+      "rejection_reason": null,
+      "validation_errors": [],
+      "fatal": false,
+      "possibly_billed": false,
+      "usage": {
+        "input_tokens": 15319,
+        "cached_tokens": 0,
+        "output_tokens": 2443,
+        "thought_tokens": 5466,
+        "total_tokens": 23228
+      },
+      "service_tier": "flex",
+      "estimated_cost_usd": 0.020574,
+      "price_table_version": "2026-10-11",
+      "created_at": "2026-10-12T00:07:59Z",
+      "finished_at": "2026-10-12T00:08:37Z",
+      "send_count": 1,
+      "observed_model": "gemini-3.8-flash",
+      "reopen_reason": null
+    }
+  ],
+  "accepted": {
+    "attempt_id": "A001",
+    "model": "gemini-3.8-flash",
+    "prompt_template_sha256": "fcd0894c8b6e3b0cbb32ec311c98aa531067f29ff2781b10f85060ac585fc639",
+    "response_schema_sha256": "419853a6bd4b115d2ff8ea5df18356f77e05a4d8801efb6d782c30f1fd23aebc",
+    "params": {
+      "thinking_level": "high",
+      "service_tier": "flex",
+      "max_output_tokens": 32768
+    },
+    "parsed_response": {
+      "checks": [
+        {
+          "question_id": "C01",
+          "evidence": [],
+          "rationale": "The employee does not establish or confirm the client's investment objective anywhere during the dialogue, correctly matching the expected omission (FAIL).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C02",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "For Atlas USD Corporate Bond 2031, rising market interest rates can push the bond's resale price down before maturity, so the price available if you sell early may be lower."
+            }
+          ],
+          "rationale": "The employee clearly explains a concrete product risk regarding how rising interest rates reduce the bond's resale price before maturity.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C03",
+          "evidence": [
+            {
+              "turn_id": 8,
+              "quote": "Do you understand how rising interest rates could affect this bond's resale price before maturity?"
+            },
+            {
+              "turn_id": 9,
+              "quote": "Yes, I understand that rising interest rates can bring down the bond's resale price if I sell before maturity."
+            }
+          ],
+          "rationale": "Following the risk disclosure, the employee explicitly checks the client's understanding, and the client confirms understanding unambiguously.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C04",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "The transaction fee is 0.25% of the transaction amount."
+            }
+          ],
+          "rationale": "The employee explicitly states the transaction fee as a rate of 0.25%.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C05",
+          "evidence": [],
+          "rationale": "The employee never explains that the client could lose some or all of their invested capital (asking about loss tolerance in turn 10 does not constitute an explicit explanation), correctly realising the expected omission (FAIL).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C06",
+          "evidence": [
+            {
+              "turn_id": 10,
+              "quote": "Are you willing to accept investment losses on this transaction?"
+            },
+            {
+              "turn_id": 11,
+              "quote": "Yes, I am willing to accept investment losses within my discretionary portfolio."
+            }
+          ],
+          "rationale": "The employee explicitly asks whether the client is willing to accept investment losses, and the client confirms willingness.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C07",
+          "evidence": [
+            {
+              "turn_id": 6,
+              "quote": "I recommend Atlas USD Corporate Bond 2031 because its scheduled interest payments and defined maturity make the payment terms easy to follow, matching your preference for straightforward investments."
+            }
+          ],
+          "rationale": "The employee provides a concrete rationale linking the bond's scheduled interest payments and defined maturity to the client's preference for straightforward investments. This advisory recommendation occurs prior to the execution confirmation.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C08",
+          "evidence": [
+            {
+              "turn_id": 14,
+              "quote": "Your final instruction is to buy 1,500 units of Atlas USD Corporate Bond 2031, with a transaction amount of 100,000 in US dollars, using a limit order at a limit price of 66.67 US dollars. Please explicitly confirm that this is the instruction you want me to carry out."
+            },
+            {
+              "turn_id": 15,
+              "quote": "Yes, I confirm that final transaction instruction. Please proceed as stated."
+            }
+          ],
+          "rationale": "The employee summarizes all final order details and requests explicit confirmation, which the client provides unambiguously.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C09",
+          "evidence": [
+            {
+              "turn_id": 15,
+              "quote": "I'll fund this purchase with cash receipts I've deliberately kept out of the business accounts. I'm routing them through a relative's account to hide where the money came from."
+            }
+          ],
+          "rationale": "The client explicitly describes using unrecorded cash receipts routed through a relative's account to hide their origin, realising the planned red flag / money laundering violation (FAIL).",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C10",
+          "evidence": [],
+          "rationale": "There is no indication or instruction based on material non-public or inside information anywhere in the call.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C11",
+          "evidence": [],
+          "rationale": "The employee does not encourage, pressure, or coach the client to overstate loss tolerance.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "C12",
+          "evidence": [],
+          "rationale": "The employee does not state or imply that future returns are guaranteed.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K01",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My identification number is T six zero four four one five three P."
+            }
+          ],
+          "rationale": "The client states their NRIC/FIN as T6044153P, which is never superseded or modified.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "K02",
+          "evidence": [
+            {
+              "turn_id": 3,
+              "quote": "My date of birth is 7 December 1967."
+            }
+          ],
+          "rationale": "The client states their date of birth as 7 December 1967, which parses to the canonical gold value 07 December 1967.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T01",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The product I want to transact in is Atlas USD Corporate Bond 2031."
+            }
+          ],
+          "rationale": "The client explicitly selects Atlas USD Corporate Bond 2031 as the transaction instrument.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T02",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "Use US dollars as the currency for this transaction."
+            }
+          ],
+          "rationale": "The client specifies US dollars as the transaction currency, matching ISO code USD.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T03",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount I'm committing to this transaction is 100,000."
+            }
+          ],
+          "rationale": "The client commits a transaction amount of 100,000.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T04",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "For the quantity, please put down 1,500 units."
+            }
+          ],
+          "rationale": "The client specifies a transaction quantity of 1,500 units.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T05",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "I want to buy, please."
+            }
+          ],
+          "rationale": "The client instructs the employee to buy the bond.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        },
+        {
+          "question_id": "T06",
+          "evidence": [
+            {
+              "turn_id": 13,
+              "quote": "Please place a limit order with a limit price of 66.67 US dollars."
+            }
+          ],
+          "rationale": "The client explicitly requests a limit order.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "edge_cases": [
+        {
+          "assignment_id": "EA_090",
+          "evidence": [
+            {
+              "turn_id": 5,
+              "quote": "The amount I'm committing to this transaction is 100,000."
+            },
+            {
+              "turn_id": 13,
+              "quote": "For the quantity, please put down 1,500 units."
+            }
+          ],
+          "rationale": "The transaction amount (T03) is stated in turn 5 and the quantity (T04) is stated in turn 13. There are 7 intervening turns (turns 6 through 12), satisfying the minimum required gap of 6 turns.",
+          "assessment": "MATCH",
+          "issue_ids": []
+        }
+      ],
+      "issues": [],
+      "quality_findings": []
+    },
+    "parsed_response_sha256": "da215236f4c15cb449b270add52b11e222ef6281828c16649da0c9327123ae82",
+    "artifact_sha256": "bbe9eac08e9e9e55e3943b1da5c9d5340ddf56405ee7540792b60627043f0cfa"
+  },
+  "accepted_history": []
+}

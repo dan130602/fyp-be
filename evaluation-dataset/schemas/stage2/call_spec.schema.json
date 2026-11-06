@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://fyp-evaluation.invalid/schemas/stage2/call_spec.schema.json",
   "title": "G2A Call Spec",
-  "description": "Immutable per-call truth compiled from the frozen G1 outputs. Nothing here may be changed by a later stage. Numbers are represented as JSON integers in this release.",
+  "description": "Immutable per-call truth compiled from the frozen G1 outputs. Nothing here may be changed by a later stage. Numbers are represented as JSON integers in this release. Schema 2.0 (multilingual releases) replaces metadata.language with language_profile and mixing_style, adds the frozen language_requirements snapshot, a language_variant on every edge case and the language_profiles.json hash in source.",
   "type": "object",
   "required": [
     "schema_version",
@@ -17,7 +17,10 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
     },
     "stage": {
       "const": "G2A"
@@ -34,7 +37,6 @@
       "type": "object",
       "required": [
         "call_intents",
-        "language",
         "duration_profile",
         "target_duration_min_seconds",
         "target_duration_max_seconds"
@@ -62,6 +64,12 @@
         "target_duration_max_seconds": {
           "type": "integer",
           "minimum": 1
+        },
+        "language_profile": {
+          "$ref": "#/$defs/symbol"
+        },
+        "mixing_style": {
+          "$ref": "#/$defs/symbol"
         }
       }
     },
@@ -119,6 +127,9 @@
           },
           "parameters": {
             "type": "object"
+          },
+          "language_variant": {
+            "$ref": "#/$defs/symbol"
           }
         }
       }
@@ -148,8 +159,14 @@
         },
         "checklist_sha256": {
           "$ref": "#/$defs/sha256"
+        },
+        "language_profiles_sha256": {
+          "$ref": "#/$defs/sha256"
         }
       }
+    },
+    "language_requirements": {
+      "$ref": "#/$defs/language_requirements"
     }
   },
   "$defs": {
@@ -273,6 +290,252 @@
           }
         }
       ]
+    },
+    "language_requirements": {
+      "type": "object",
+      "required": [
+        "value_surface_languages",
+        "product_name_languages",
+        "script_rules",
+        "speakers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value_surface_languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          }
+        },
+        "product_name_languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          }
+        },
+        "script_rules": {
+          "type": "object",
+          "required": [
+            "han_characters",
+            "latin_letters",
+            "arabic_digits"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "han_characters": {
+              "enum": [
+                "ALLOWED",
+                "FORBIDDEN",
+                "K01_IDENTIFIER_SPAN_ONLY"
+              ]
+            },
+            "latin_letters": {
+              "enum": [
+                "ALLOWED",
+                "FORBIDDEN",
+                "K01_IDENTIFIER_SPAN_ONLY"
+              ]
+            },
+            "arabic_digits": {
+              "enum": [
+                "ALLOWED",
+                "FORBIDDEN",
+                "K01_IDENTIFIER_SPAN_ONLY"
+              ]
+            }
+          }
+        },
+        "speakers": {
+          "type": "object",
+          "required": [
+            "CLIENT",
+            "EMPLOYEE"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "CLIENT": {
+              "type": "object",
+              "required": [
+                "spoken_languages",
+                "required_languages",
+                "register",
+                "guidance"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "spoken_languages": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$"
+                  }
+                },
+                "required_languages": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$"
+                  }
+                },
+                "register": {
+                  "$ref": "#/$defs/symbol"
+                },
+                "within_turn_switching_required": {
+                  "type": "boolean"
+                },
+                "distributed_switching_required": {
+                  "type": "boolean"
+                },
+                "guidance": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            },
+            "EMPLOYEE": {
+              "type": "object",
+              "required": [
+                "spoken_languages",
+                "required_languages",
+                "register",
+                "guidance"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "spoken_languages": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$"
+                  }
+                },
+                "required_languages": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$"
+                  }
+                },
+                "register": {
+                  "$ref": "#/$defs/symbol"
+                },
+                "within_turn_switching_required": {
+                  "type": "boolean"
+                },
+                "distributed_switching_required": {
+                  "type": "boolean"
+                },
+                "guidance": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mixing_style_description": {
+          "$ref": "#/$defs/text"
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "2.0"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "language_requirements"
+        ],
+        "properties": {
+          "metadata": {
+            "required": [
+              "language_profile",
+              "mixing_style"
+            ],
+            "not": {
+              "required": [
+                "language"
+              ]
+            }
+          },
+          "edge_cases": {
+            "items": {
+              "required": [
+                "language_variant"
+              ]
+            }
+          },
+          "source": {
+            "required": [
+              "language_profiles_sha256"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "metadata": {
+            "required": [
+              "language"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "language_profile"
+                  ]
+                },
+                {
+                  "required": [
+                    "mixing_style"
+                  ]
+                }
+              ]
+            }
+          },
+          "edge_cases": {
+            "items": {
+              "not": {
+                "required": [
+                  "language_variant"
+                ]
+              }
+            }
+          },
+          "source": {
+            "not": {
+              "required": [
+                "language_profiles_sha256"
+              ]
+            }
+          }
+        },
+        "not": {
+          "required": [
+            "language_requirements"
+          ]
+        }
+      }
+    }
+  ]
 }

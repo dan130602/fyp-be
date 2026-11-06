@@ -12,6 +12,7 @@ Walk order (deterministic, so event IDs are stable):
 from fyp_evaluation.call_specs.compile import SCHEMA_VERSION, HASHING, text_hash
 
 from .edge_cases import COMPILERS, missing_compilers, unknown_compilers
+from .languages import pin_languages
 from .model import BOTH, CLIENT, CONSTRAINT_TYPES, EMPLOYEE, EVENT_KINDS, EVENT_STATUSES, Context, Plan
 
 STAGE = "G2B"
@@ -173,9 +174,10 @@ def compile_skeleton(spec, spec_sha256, documents, g0_hashes):
     _compile_events(plan)
     _compile_ordering_rules(plan)
     _attach_spoken_form_assignments(plan)
+    pin_languages(plan)
     checks = _compile_checks(plan)
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": spec["schema_version"],
         "stage": STAGE,
         "dataset_id": spec["dataset_id"],
         "call_id": spec["call_id"],
@@ -209,8 +211,9 @@ def build_record(inputs, skeletons, skeleton_texts):
     def ordered(counts, vocabulary):
         return {key: counts.get(key, 0) for key in vocabulary}
 
-    return {
-        "schema_version": SCHEMA_VERSION,
+    multilingual = "language_profiles_sha256" in inputs.g0_hashes
+    record = {
+        "schema_version": skeletons[0]["schema_version"] if skeletons else SCHEMA_VERSION,
         "stage": STAGE,
         "dataset_id": inputs.dataset_id,
         "generator": {"package": "fyp_evaluation.check_plan_skeletons", "version": GENERATOR_VERSION},
@@ -232,3 +235,6 @@ def build_record(inputs, skeletons, skeleton_texts):
             "edge_case_assignments": sum(len(inputs.specs[c]["edge_cases"]) for c in inputs.call_ids),
         },
     }
+    if multilingual:
+        record["summary"]["events_with_required_language"] = sum(1 for e in events if "required_language" in e)
+    return record

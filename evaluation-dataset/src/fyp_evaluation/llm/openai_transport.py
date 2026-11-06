@@ -36,20 +36,27 @@ def _message(error):
 class OpenAITransport:
     """Thin wrapper over the official SDK. Construct with `from_env()`; inject a fake in tests instead."""
 
-    def __init__(self, client):
+    def __init__(self, client, *, response_max_retries=None, response_timeout=None, ambiguous_sync=False):
+        """`response_*` override the SDK settings of `create_response` only (default: the client's own, i.e. SDK retries on).
+        `ambiguous_sync` reports a sync request whose outcome is unknown (timeout, connection loss, server error) as
+        `AmbiguousError` instead of `RetryableError`; a stage that sets it must also turn SDK retries off, so a request is never
+        silently re-sent. Only G6 synchronous generation uses these options; every other stage keeps the defaults."""
         self._client = client  # SDK retries on: idempotent reads and sync generation
         self._batch_client = client.with_options(max_retries=0)  # batch creation is never retried by the SDK
+        options = {key: value for key, value in (("max_retries", response_max_retries), ("timeout", response_timeout)) if value is not None}
+        self._response_client = client.with_options(**options) if options else client
+        self._ambiguous_sync = ambiguous_sync
 
     @classmethod
-    def from_env(cls, project_root=PROJECT_ROOT):
+    def from_env(cls, project_root=PROJECT_ROOT, **options):
         api_key = get_api_key(project_root)  # raises CredentialsError before anything is constructed or sent
         import openai
 
-        return cls(openai.OpenAI(api_key=api_key, max_retries=SYNC_MAX_RETRIES, timeout=SYNC_TIMEOUT_SECONDS))
+        return cls(openai.OpenAI(api_key=api_key, max_retries=SYNC_MAX_RETRIES, timeout=SYNC_TIMEOUT_SECONDS), **options)
 
     # ---- error mapping -------------------------------------------------------------------------------
     @staticmethod
-    def _classify(error, *, creating_batch=False):
+    def _classify(error, *, creating_batch=False, sync_ambiguous=False):
         import openai
 
         permanent = (openai.AuthenticationError, openai.PermissionDeniedError, openai.BadRequestError,
@@ -62,16 +69,16 @@ class OpenAITransport:
             if is_quota_error(error):  # a billing condition, not congestion: retrying cannot help and only burns the budget
                 return FatalRequestError(f"InsufficientQuota: {_message(error)}")
             return RetryableError(f"RateLimitError: {_message(error)}")  # definitely not processed
-        if creating_batch:
+        if creating_batch or sync_ambiguous:
             return AmbiguousError(f"{type(error).__name__}: {_message(error)}")
         return RetryableError(f"{type(error).__name__}: {_message(error)}")
 
     # ---- sync ----------------------------------------------------------------------------------------
     def create_response(self, body):
         try:
-            return self._client.responses.create(**body).model_dump(mode="json")
+            return self._response_client.responses.create(**body).model_dump(mode="json")
         except Exception as error:  # noqa: BLE001 - translated, never swallowed
-            raise self._classify(error) from error
+            raise self._classify(error, sync_ambiguous=self._ambiguous_sync) from error
 
     # ---- batch ---------------------------------------------------------------------------------------
     def upload_batch_file(self, data, filename):
