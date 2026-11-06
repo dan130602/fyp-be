@@ -10,6 +10,14 @@ Lower error rate on the **development** calls, achieved by changing the producti
 (any environment variable it reads is named `TRANSCRIBE_...`; the engine forwards all of them, so no engine change is needed). Anything you change
 elsewhere in how a score is produced would make a better number meaningless.
 
+## What to change for custom vocabulary and custom language models
+
+The engine runs `handler.handler(event, None)` once per batch of fake S3 events and polls jobs with the module-level `handler.transcribe` client. So for custom vocabulary and CLM the change goes in
+`lambda/transcribe-trigger/app/handler.py`, inside the Transcribe job parameters built in `_start_job` (for example `LanguageIdSettings` for vocabularies, `ModelSettings` for a CLM; new helper functions are fine).
+Keep these as they are: the names `handler` and `transcribe`, the `{"started_jobs": [...]}` return value, the job-name functions (Java uses the same algorithm) and the output key `transcripts/<job>.json`.
+Read every new setting from a `TRANSCRIBE_...` environment variable and default to today's behaviour when it is unset. `batch_worker.py` calls `_start_job`, so the batch path gets the same change automatically.
+The engine does not run EventBridge, SQS or the real S3 trigger: it uploads the audio to `EVAL_BUCKET` itself.
+
 ## You MAY change
 
 - Anything under `lambda/` (the transcribe-trigger handler, its helper modules, `requirements*`, Dockerfile and tests). This includes adding another STT engine or open-source model
