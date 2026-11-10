@@ -16,9 +16,7 @@ import com.fyp.be.media_processing_service.dtos.ReviewStatusResponse;
 import com.fyp.be.media_processing_service.models.ChecklistDecision;
 import com.fyp.be.media_processing_service.models.ChecklistStatus;
 import com.fyp.be.media_processing_service.models.MediaAssetStatus;
-import com.fyp.be.media_processing_service.repositories.ChecklistDecisionRepository;
 import com.fyp.be.media_processing_service.repositories.DashboardCallRow;
-import com.fyp.be.media_processing_service.repositories.MediaAssetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,19 +52,16 @@ public class DashboardService {
     private static final LocalDate LATEST = LocalDate.of(9999, 1, 1);
     private static final int MAX_PAGE_SIZE = 100;
 
-    private final MediaAssetRepository mediaAssetRepository;
-    private final ChecklistDecisionRepository checklistDecisionRepository;
+    private final DashboardDataReader dataReader;
     private final ObjectMapper objectMapper;
     private final int overdueReviewDays;
 
     public DashboardService(
-            MediaAssetRepository mediaAssetRepository,
-            ChecklistDecisionRepository checklistDecisionRepository,
+            DashboardDataReader dataReader,
             ObjectMapper objectMapper,
             @Value("${app.dashboard.overdue-review-days}") int overdueReviewDays
     ) {
-        this.mediaAssetRepository = mediaAssetRepository;
-        this.checklistDecisionRepository = checklistDecisionRepository;
+        this.dataReader = dataReader;
         this.objectMapper = objectMapper;
         this.overdueReviewDays = overdueReviewDays;
     }
@@ -159,17 +154,12 @@ public class DashboardService {
     private List<Call> load(LocalDate from, LocalDate to, String department) {
         LocalDateTime start = (from == null ? EARLIEST : from).atStartOfDay();
         LocalDateTime end = (to == null ? LATEST : to.plusDays(1)).atStartOfDay();
-        List<DashboardCallRow> rows = mediaAssetRepository.findDashboardCalls(start, end).stream()
+        DashboardDataReader.Snapshot snapshot = dataReader.read(start, end);
+        List<DashboardCallRow> rows = snapshot.rows().stream()
                 .filter(row -> department == null || department.isBlank() || department.equals(row.getDepartment()))
                 .toList();
-
-        List<UUID> reviewedChecklists = rows.stream()
-                .filter(DashboardService::isReviewed)
-                .map(DashboardCallRow::getChecklistId)
-                .toList();
-        Map<UUID, List<ChecklistDecision>> logs = reviewedChecklists.isEmpty() ? Map.of()
-                : checklistDecisionRepository.findByChecklistIdInOrderByDecidedAtAsc(reviewedChecklists).stream()
-                        .collect(Collectors.groupingBy(ChecklistDecision::getChecklistId));
+        Map<UUID, List<ChecklistDecision>> logs = snapshot.decisions().stream()
+                .collect(Collectors.groupingBy(ChecklistDecision::getChecklistId));
 
         return rows.stream()
                 .map(row -> toCall(row, row.getChecklistId() == null ? List.of()

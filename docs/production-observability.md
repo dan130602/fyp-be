@@ -44,6 +44,16 @@ zone-less timestamps. Keep that timezone when running this mode elsewhere.
 Starting Aurora resumes normal AWS database charges; ECS can remain stopped.
 Refresh the AWS session and restart the local container when credentials expire.
 
+### Management dashboard from Aurora (10 November 2026)
+
+`APP_DASHBOARD_SOURCE=rds-data` gives the management dashboard (`/api/dashboard/*`)
+the same local option, reusing the three `APP_OBSERVABILITY_RDS_*` settings above.
+Reads go through one read-only Data API transaction per request that is always
+rolled back, and the caller needs an ACTIVE ADMIN or COMPLIANCE_OFFICER row in the
+live `t_user` (the same roles the dashboard endpoints allow). Officer comments and
+transcripts are not read. Deployed backends keep using their JDBC datasource, which
+already points at Aurora, so this setting is for local development only.
+
 The older deployment notes below describe previous verification stages.
 
 The Developer -> Production dashboard reads live application records through
