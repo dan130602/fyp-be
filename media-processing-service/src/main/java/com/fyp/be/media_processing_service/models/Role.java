@@ -4,5 +4,6 @@ public enum Role {
     SUPER_ADMIN,
     ADMIN,
     COMPLIANCE_OFFICER,
-    MANAGER
+    MANAGER,
+    DEVELOPER
 }
