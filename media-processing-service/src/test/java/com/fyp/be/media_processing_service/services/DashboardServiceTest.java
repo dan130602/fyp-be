@@ -50,7 +50,7 @@ class DashboardServiceTest {
     }
 
     private DashboardService service() {
-        return new DashboardService(mediaAssetRepository, checklistDecisionRepository, new ObjectMapper(), 3);
+        return new DashboardService(new DashboardDataReader(mediaAssetRepository, checklistDecisionRepository), new ObjectMapper(), 3);
     }
 
     private void given(Row... rows) {
