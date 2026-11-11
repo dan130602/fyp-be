@@ -89,3 +89,12 @@ calls you trained or built a vocabulary from as unseen accuracy. Other STT model
 - Hash convention: the repository's own hash helper normalises CRLF to LF before hashing (even for audio), so a render manifest's `audio_sha256` is not an ordinary file SHA-256. This is why the setup check above uses `replace(b"\r\n", b"\n")`. Never change either hashing implementation.
 - `check_semantics.json`, checklists and the original authoring inputs are not read by collect/score/export, so their absence from the development folder is expected.
 - GitHub blocks files over 100 MiB and the recordings total about 2.3 GB, which is why audio is shared outside Git.
+
+
+## Refinement branch handover (12 November 2026)
+
+See [stt-experiments/meralion/README.md](stt-experiments/meralion/README.md) for the inference-only MERaLiON setup, pinned checkpoint, private audio preparation, GPU commands and corrected transcript adapter. [RESULTS.md](stt-experiments/meralion/RESULTS.md) compares the completed 175-call original and guarded-pause runs. The original energy strategy with conservative fee formatting remains the local default. Guarded 24-second chunks improved English and Mandarin but worsened mixed calls. No LoRA weights or production model switch are included.
+
+The Lambda now supports opt-in `TRANSCRIBE_VOCABULARIES=locale=resource,...` and `TRANSCRIBE_LANGUAGE_MODEL_NAME`. With neither set, request behavior remains the existing baseline. A language model is accepted only for fixed en-US, never multilingual or Mandarin jobs. Vocabulary resources must exist in the job region. Prior vocabulary candidates did not establish a broader improvement, so their inclusion is not a deployment recommendation.
+
+Read the experiment README before running anything billable or publishing. Credentials, audio, model weights, raw run outputs and reference transcripts are intentionally excluded from this branch. The scorer, dataset, split, infrastructure, publisher and frontend are unchanged.

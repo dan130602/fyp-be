@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import re
 import urllib.parse
 
 import boto3
@@ -67,6 +68,45 @@ def _language_parameters():
     raise ValueError("TRANSCRIBE_LANGUAGE_ID_MODE must be 'multiple' or 'single'")
 
 
+def _customization_parameters(language, settings):
+    """Attach configured resources using the request shape for the selected language mode."""
+    parameters = {}
+    model = os.environ.get("TRANSCRIBE_LANGUAGE_MODEL_NAME", "").strip()
+    if model:
+        if language.get("LanguageCode") != "en-US":
+            raise ValueError("TRANSCRIBE_LANGUAGE_MODEL_NAME requires fixed en-US with no language options")
+        if not re.fullmatch(r"[A-Za-z0-9._-]{1,200}", model):
+            raise ValueError("TRANSCRIBE_LANGUAGE_MODEL_NAME is not a valid Transcribe resource name")
+        parameters["ModelSettings"] = {"LanguageModelName": model}
+
+    configured = os.environ.get("TRANSCRIBE_VOCABULARIES", "").strip()
+    if not configured:
+        return parameters
+
+    vocabularies = {}
+    for entry in configured.split(","):
+        code, _, name = (part.strip() for part in entry.partition("="))
+        if not code or code in vocabularies or not re.fullmatch(r"[A-Za-z0-9._-]{1,200}", name):
+            raise ValueError("TRANSCRIBE_VOCABULARIES needs unique locale=name entries")
+        vocabularies[code] = name
+
+    if "LanguageCode" in language:
+        code = language["LanguageCode"]
+        if set(vocabularies) != {code}:
+            raise ValueError("TRANSCRIBE_VOCABULARIES must match the fixed language code")
+        settings["VocabularyName"] = vocabularies[code]
+    else:
+        options = language["LanguageOptions"]
+        if not 2 <= len(options) <= 5 or len(set(options)) != len(options):
+            raise ValueError("Custom vocabularies with language identification need two to five distinct LanguageOptions")
+        if not 2 <= len(vocabularies) <= 5 or not vocabularies.keys() <= set(options):
+            raise ValueError("TRANSCRIBE_VOCABULARIES needs two to five entries matching LanguageOptions")
+        parameters["LanguageIdSettings"] = {
+            code: {"VocabularyName": name} for code, name in vocabularies.items()
+        }
+    return parameters
+
+
 def _start_job(bucket, key, job_name=None):
     media_format = _media_format_for_key(key)
     if media_format is None:
@@ -76,20 +116,20 @@ def _start_job(bucket, key, job_name=None):
     job_name = job_name or _job_name_for_key(key)
     output_bucket = os.environ["TRANSCRIBE_OUTPUT_BUCKET"]
     max_speaker_labels = int(os.environ.get("TRANSCRIBE_MAX_SPEAKER_LABELS", "2"))
+    language = _language_parameters()
+    # Diarization adds results.speaker_labels.segments to the output JSON.
+    settings = {"ShowSpeakerLabels": True, "MaxSpeakerLabels": max_speaker_labels}
+    customization = _customization_parameters(language, settings)
 
     transcribe.start_transcription_job(
         TranscriptionJobName=job_name,
-        **_language_parameters(),
+        **language,
+        **customization,
         MediaFormat=media_format,
         Media={"MediaFileUri": f"s3://{bucket}/{key}"},
         OutputBucketName=output_bucket,
         OutputKey=f"transcripts/{job_name}.json",
-        # Diarization - who's speaking, not just what was said. Adds a top-level
-        # results.speaker_labels.segments array (spk_0, spk_1, ...) to the output JSON.
-        Settings={
-            "ShowSpeakerLabels": True,
-            "MaxSpeakerLabels": max_speaker_labels,
-        },
+        Settings=settings,
     )
     logger.info("Started Transcribe job %s for s3://%s/%s", job_name, bucket, key)
     return job_name

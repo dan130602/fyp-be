@@ -28,6 +28,12 @@ def expected_job_name(key):
 
 @pytest.fixture(autouse=True)
 def transcribe_env(monkeypatch):
+    for name in (
+        "TRANSCRIBE_LANGUAGE_OPTIONS", "TRANSCRIBE_LANGUAGE_ID_MODE",
+        "TRANSCRIBE_VOCABULARIES", "TRANSCRIBE_LANGUAGE_MODEL_NAME",
+        "TRANSCRIBE_MAX_SPEAKER_LABELS",
+    ):
+        monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("TRANSCRIBE_OUTPUT_BUCKET", "output-bucket")
     monkeypatch.setenv("TRANSCRIBE_LANGUAGE_CODE", "en-US")
 
@@ -164,8 +170,6 @@ def test_handler_raises_after_processing_all_records_when_one_fails():
 # -- language selection ------------------------------------------------------
 
 def _start_kwargs(monkeypatch, **env):
-    for name in ("TRANSCRIBE_LANGUAGE_OPTIONS", "TRANSCRIBE_LANGUAGE_ID_MODE"):
-        monkeypatch.delenv(name, raising=False)
     for name, value in env.items():
         monkeypatch.setenv(name, value)
     with patch.object(handler, "transcribe") as mock_transcribe:
@@ -194,3 +198,55 @@ def test_one_language_option_or_unknown_mode_is_refused(monkeypatch):
         _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US")
     with pytest.raises(RuntimeError, match="multiple' or 'single"):
         _start_kwargs(monkeypatch, TRANSCRIBE_LANGUAGE_OPTIONS="en-US,zh-CN", TRANSCRIBE_LANGUAGE_ID_MODE="bogus")
+
+
+@pytest.mark.parametrize("mode,flag", [("multiple", "IdentifyMultipleLanguages"), ("single", "IdentifyLanguage")])
+def test_vocabulary_matches_each_identified_locale(monkeypatch, mode, flag):
+    kwargs = _start_kwargs(
+        monkeypatch,
+        TRANSCRIBE_LANGUAGE_OPTIONS="en-US,zh-CN",
+        TRANSCRIBE_LANGUAGE_ID_MODE=mode,
+        TRANSCRIBE_VOCABULARIES=" en-US=finance-en , zh-CN=finance-zh ",
+    )
+
+    assert kwargs[flag] is True
+    assert kwargs["LanguageIdSettings"] == {
+        "en-US": {"VocabularyName": "finance-en"},
+        "zh-CN": {"VocabularyName": "finance-zh"},
+    }
+    assert kwargs["Settings"] == {"ShowSpeakerLabels": True, "MaxSpeakerLabels": 2}
+
+
+def test_fixed_language_customization_preserves_speaker_labels(monkeypatch):
+    kwargs = _start_kwargs(
+        monkeypatch, TRANSCRIBE_VOCABULARIES="en-US=finance-en", TRANSCRIBE_LANGUAGE_MODEL_NAME="finance-clm"
+    )
+
+    assert kwargs["LanguageCode"] == "en-US"
+    assert kwargs["ModelSettings"] == {"LanguageModelName": "finance-clm"}
+    assert kwargs["Settings"] == {"ShowSpeakerLabels": True, "MaxSpeakerLabels": 2, "VocabularyName": "finance-en"}
+    assert "LanguageIdSettings" not in kwargs
+
+
+@pytest.mark.parametrize(
+    "env,message",
+    [
+        ({"TRANSCRIBE_LANGUAGE_OPTIONS": "en-US,zh-CN", "TRANSCRIBE_LANGUAGE_MODEL_NAME": "clm"}, "requires fixed en-US"),
+        ({"TRANSCRIBE_LANGUAGE_CODE": "zh-CN", "TRANSCRIBE_LANGUAGE_MODEL_NAME": "clm"}, "requires fixed en-US"),
+        ({"TRANSCRIBE_LANGUAGE_MODEL_NAME": "invalid name"}, "not a valid Transcribe resource name"),
+        ({"TRANSCRIBE_LANGUAGE_OPTIONS": "en-US,zh-CN", "TRANSCRIBE_VOCABULARIES": "en-US=en"}, "matching LanguageOptions"),
+        ({"TRANSCRIBE_LANGUAGE_OPTIONS": "en-US,zh-CN", "TRANSCRIBE_VOCABULARIES": "en-US=en,en-GB=uk"}, "matching LanguageOptions"),
+        ({"TRANSCRIBE_LANGUAGE_OPTIONS": "en-US,en-US", "TRANSCRIBE_VOCABULARIES": "en-US=en"}, "distinct LanguageOptions"),
+        ({"TRANSCRIBE_VOCABULARIES": "en-US=a,en-US=b"}, "unique locale=name entries"),
+        ({"TRANSCRIBE_VOCABULARIES": "en-US="}, "unique locale=name entries"),
+        ({"TRANSCRIBE_VOCABULARIES": "zh-CN=zh"}, "match the fixed language code"),
+    ],
+)
+def test_invalid_customization_fails_before_contacting_transcribe(monkeypatch, env, message):
+    for name, value in env.items():
+        monkeypatch.setenv(name, value)
+
+    with patch.object(handler, "transcribe") as mock_transcribe:
+        with pytest.raises(RuntimeError, match=message):
+            handler.handler(s3_event([("input-bucket", "uploads/u1/audio.wav")]), context=None)
+        mock_transcribe.start_transcription_job.assert_not_called()
