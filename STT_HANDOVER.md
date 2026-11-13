@@ -61,6 +61,54 @@ python -B scripts/export_to_fyp_ai.py --run dev-<idea>-1
 `--render-id auto` finds the single `renders/*/audio.wav|mp3` of each call. Results are in `runs/<run id>/scores/summary.json` (`runs/` is git-ignored). Run production handler tests from `lambda/transcribe-trigger` with `python -m pytest tests -q`.
 Production handler tests and the engine tests are offline.
 
+### Noisy and channel-degraded audio (environment_v2)
+
+Every call has ONE fixed audio environment: C1 clean, N1 office, N2 cafe, N3 MRT/train noise, D1 telephone, D2 muffled client. Only the client's turns are changed;
+the RM, the transcripts, the gold and the timings are identical to the clean call. 146 of the 175 development calls have changed audio; the other 29 (C1) are the original recordings.
+`--audio-condition clean` (the default) is exactly the behaviour above.
+
+**What is in Git:** `audio_augmentations/environment_v2/{assignments.json, config.json}` (the frozen condition of each call) and, per changed call,
+`calls/CALL_xxx/audio_variants/environment_v2/augmentation.json` (how it was made, with the WAV's sha256). **Not in Git:** the 146 `audio.wav` files (about 2.3 GB). The owner sends them as a zip.
+
+**One-time setup (after `git pull`, and after the clean recordings above are in place).** Paste this into your Codex (replace the folder):
+
+```text
+Read fyp-be/AGENTS.md and fyp-be/STT_HANDOVER.md. This task authorises offline setup only: no AWS, no paid jobs, no publishing, no commits, no edits to any existing file.
+My unzipped folder is <ABSOLUTE LOCAL FOLDER>: it holds 146 files named CALL_xxx.wav (they may be inside an audio/ subfolder). The target dataset is
+evaluation-dataset/datasets/advisory_execution_multilingual_v1_development/ (call it DEV).
+
+Validate everything before copying anything:
+1. My folder has exactly 146 CALL_xxx.wav files: no extras, no duplicates, no other file types.
+2. Each CALL_xxx is in DEV/dataset_manifest.json and already has DEV/calls/CALL_xxx/audio_variants/environment_v2/augmentation.json (that file comes from Git). Exactly 146 calls have one.
+3. sha256 of the WAV (plain file bytes; do NOT normalise line endings) equals "output"."sha256" in that augmentation.json, and its "assignment"."condition" is not "C1"
+   and equals the call's condition in DEV/audio_augmentations/environment_v2/assignments.json.
+4. That assignments.json lists 175 calls, and the 146 above are exactly the calls whose condition is not C1 (C1 = clean: that call keeps its original recording and has no variant file; N1-N3 and D1-D2 are the changed-audio conditions).
+If anything is wrong, copy nothing and report it.
+
+Then COPY (never move) each file to DEV/calls/CALL_xxx/audio_variants/environment_v2/audio.wav: skip it if an identical file is already there, never overwrite different content.
+Confirm 146 audio.wav now exist and their sha256 still match. Then, from evaluation-engine, with EVAL_BUCKET set to any placeholder bucket name, run these (they contact no AWS):
+  python -B scripts/collect.py --dataset advisory_execution_multilingual_v1_development --render-id auto --all --audio-condition environment_v2 --skip-clean-controls --dry-run
+  python -B scripts/collect.py --dataset advisory_execution_multilingual_v1_development --render-id auto --all --audio-condition environment_v2 --dry-run
+Report the counts copied, the calls and audio minutes each dry run finds (expected 146 calls / about 870 minutes, and 175 calls / about 1,042 minutes), any error, and `git status`.
+```
+
+**Running it (billable; clean calls are not sent again):**
+
+```powershell
+python -B scripts/collect.py --dataset advisory_execution_multilingual_v1_development --render-id auto --audio-condition environment_v2 --calls CALL_033 CALL_064 CALL_147 CALL_214 CALL_028 --run-id dev-v2-<idea>-canary   # 5 calls, about 16 min
+python -B scripts/collect.py --dataset advisory_execution_multilingual_v1_development --render-id auto --all --audio-condition environment_v2 --skip-clean-controls --run-id dev-v2-<idea>-1 --timeout-minutes 120   # 146 calls, about 870 min, about US$21
+python -B scripts/assemble_v2_run.py --v2-run dev-v2-<idea>-1 --clean-run <clean run id> --out dev-v2-<idea>-1-full   # offline: adds the 29 clean calls' earlier transcripts
+python -B scripts/score.py --run dev-v2-<idea>-1-full
+python -B scripts/compare_conditions.py --clean-run <clean run id> --v2-run dev-v2-<idea>-1-full                      # offline, paired
+```
+
+- `environment_v2` needs `--render-id auto`. The file for each call comes from `assignments.json`: a clean (C1) call still points at its original recording, every other call at `audio_variants/environment_v2/audio.wav`. A missing or changed variant stops the run before anything is uploaded; it never falls back to clean audio.
+- `--skip-clean-controls` leaves the C1 calls out (they are the original audio you already transcribed). The run records which were skipped.
+- `assemble_v2_run.py` and `compare_conditions.py` reuse the clean run's transcripts only if both runs used the same Transcribe job settings (language options, speaker labels, custom vocabulary) and `TRANSCRIBE_*` settings; a changed handler file is only a warning. Otherwise they stop with "clean controls must be re-transcribed" and you run the 29 clean calls again with the current handler (`--audio-condition environment_v2` without `--skip-clean-controls`).
+  The copied transcripts keep their original dates and are marked `reused_from_run`. If you changed the handler to test an idea, the clean baseline must be re-run with that same handler before comparing.
+- Compare conditions through the PAIRED difference (same call, clean versus changed audio), never raw WER: the calls in each condition differ.
+- Publishing environment_v2 runs to the dashboard is not wired up yet (the dashboard looks for audio under `renders/`).
+
 ## Publishing results (Supabase)
 
 Check out `fyp-ai` beside `fyp-be` (the export writes its bundle to `fyp-ai/evaluation/stt_runs/<run id>/`). From `fyp-ai`: `python -m pip install -r evaluation/requirements.txt` and put `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`

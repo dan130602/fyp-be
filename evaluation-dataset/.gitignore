@@ -39,3 +39,12 @@ datasets/*/.stage_write.lock
 
 # Full 250-call authoring release: kept locally, not published. The shared dataset is the development split.
 /datasets/advisory_execution_multilingual_v1/
+
+# environment_v2 noise assets: large and licence-dependent, kept local (assets.json provenance is committed)
+/audio_assets/**/*.wav
+/audio_assets/**/*.flac
+/audio_assets/**/*.mp3
+# throwaway listening-gate previews
+datasets/*/audio_augmentations/*/previews/
+# derived V2 audio (WAV) is local like the clean renders; each variant's small augmentation.json stays in Git
+datasets/*/calls/*/audio_variants/*/*.wav
