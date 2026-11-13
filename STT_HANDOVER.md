@@ -102,12 +102,25 @@ python -B scripts/score.py --run dev-v2-<idea>-1-full
 python -B scripts/compare_conditions.py --clean-run <clean run id> --v2-run dev-v2-<idea>-1-full                      # offline, paired
 ```
 
+**One command instead of the steps above** (it stops at the first failing step and never publishes):
+
+```powershell
+python -B scripts/run_eval.py --run-id dev-v2-<idea>-1 --audio-condition environment_v2 --clean-run <clean run id>                        # sends all 175 calls (clean ones with their original audio)
+python -B scripts/run_eval.py --run-id dev-v2-<idea>-1 --audio-condition environment_v2 --clean-run <clean run id> --skip-clean-controls  # 146 calls; adds the clean transcripts
+python -B scripts/run_eval.py --run-id dev-clean-<idea>-1                                                                              # clean recordings: collect, score, export
+```
+
+Add `--dry-run` to print the steps with a free collect dry run. The steps are collect, (assemble), score, (compare), export.
+
+**Dashboard.** A noisy run is exported under its own dataset, `<dataset>__environment_v2`, so the fyp-ai dashboard shows a separate card, "... (noisy and channel-degraded)", beside the clean baseline.
+Its run page has a "By audio condition" table and the paired clean-versus-changed table (the comparison saved by `compare_conditions.py` is embedded in the exported `run.json`, so run it before the export).
+Changed calls play their variant recording. Publishing to Supabase stays a separate, deliberate step from the fyp-ai folder: `python -B evaluation/scripts/upload_stt_run.py --run-id <final run id>` (the assembled `-full` run when you skipped the clean calls).
+
 - `environment_v2` needs `--render-id auto`. The file for each call comes from `assignments.json`: a clean (C1) call still points at its original recording, every other call at `audio_variants/environment_v2/audio.wav`. A missing or changed variant stops the run before anything is uploaded; it never falls back to clean audio.
 - `--skip-clean-controls` leaves the C1 calls out (they are the original audio you already transcribed). The run records which were skipped.
 - `assemble_v2_run.py` and `compare_conditions.py` reuse the clean run's transcripts only if both runs used the same Transcribe job settings (language options, speaker labels, custom vocabulary) and `TRANSCRIBE_*` settings; a changed handler file is only a warning. Otherwise they stop with "clean controls must be re-transcribed" and you run the 29 clean calls again with the current handler (`--audio-condition environment_v2` without `--skip-clean-controls`).
   The copied transcripts keep their original dates and are marked `reused_from_run`. If you changed the handler to test an idea, the clean baseline must be re-run with that same handler before comparing.
 - Compare conditions through the PAIRED difference (same call, clean versus changed audio), never raw WER: the calls in each condition differ.
-- Publishing environment_v2 runs to the dashboard is not wired up yet (the dashboard looks for audio under `renders/`).
 
 ## Publishing results (Supabase)
 

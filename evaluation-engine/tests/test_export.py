@@ -76,3 +76,43 @@ def test_frequent_errors_put_entity_errors_first_and_count_every_occurrence():
                                          unit(2, {"ref": "x", "hyp": "y", "op": "substitute", "entity": False})]})
     assert [(r["ref"], r["count"], r["entity_count"]) for r in rows] == [("p", 1, 1), ("x", 2, 0)]
     assert [o["unit"] for o in rows[1]["occurrences"]] == [0, 2]
+
+
+def v2_run(tmp_path, condition="N1", comparison=True):
+    run = scored_run(tmp_path)
+    meta = json.loads((run / "metadata.json").read_text(encoding="utf-8"))
+    meta["audio_condition"] = "environment_v2"
+    meta["calls"][0].update({"audio_condition": "environment_v2", "v2_condition": condition, "render_id": "environment_v2"})
+    (run / "metadata.json").write_text(json.dumps(meta), encoding="utf-8")
+    if comparison:
+        (run / "comparison_vs_clean1.json").write_text(json.dumps({"clean_run": "clean1", "v2_run": "run1", "paired_by_condition": {condition: {"calls": 1}}}), encoding="utf-8")
+    return run
+
+
+def test_a_changed_environment_v2_call_gets_its_own_card_a_variant_audio_reference_and_a_condition(tmp_path):
+    bundle = export_run(v2_run(tmp_path), tmp_path / "out", dataset_root=ADVISORY)
+    run = json.loads((bundle / "run.json").read_text(encoding="utf-8"))
+    call = json.loads((bundle / "calls" / "CALL_001.json").read_text(encoding="utf-8"))
+    assert run["dataset_id"] == ADVISORY.name + "__environment_v2" and run["base_dataset_id"] == ADVISORY.name
+    assert run["audio_condition"] == "environment_v2" and run["comparison"]["paired_by_condition"] == {"N1": {"calls": 1}}
+    assert call["audio"]["dataset_id"] == ADVISORY.name and call["audio"]["variant"] == "environment_v2"  # the files live in the real dataset
+    assert call["condition"] == "N1" and run["calls"][0]["condition"] == "N1" and len(run["dataset_call_ids"]) == 50
+
+
+def test_a_clean_c1_call_of_a_v2_run_still_points_at_the_original_recording(tmp_path):
+    bundle = export_run(v2_run(tmp_path, condition="C1"), tmp_path / "out", dataset_root=ADVISORY)
+    call = json.loads((bundle / "calls" / "CALL_001.json").read_text(encoding="utf-8"))
+    assert "variant" not in call["audio"] and call["condition"] == "C1"
+
+
+def test_a_clean_run_is_exported_exactly_as_before(tmp_path):
+    bundle = export_run(scored_run(tmp_path), tmp_path / "out", dataset_root=ADVISORY)
+    run = json.loads((bundle / "run.json").read_text(encoding="utf-8"))
+    call = json.loads((bundle / "calls" / "CALL_001.json").read_text(encoding="utf-8"))
+    assert run["dataset_id"] == ADVISORY.name and not {"audio_condition", "base_dataset_id", "comparison"} & run.keys()
+    assert "variant" not in call["audio"] and "condition" not in call and "condition" not in run["calls"][0]
+
+
+def test_a_v2_run_without_a_saved_comparison_still_exports(tmp_path):
+    bundle = export_run(v2_run(tmp_path, comparison=False), tmp_path / "out", dataset_root=ADVISORY)
+    assert "comparison" not in json.loads((bundle / "run.json").read_text(encoding="utf-8"))

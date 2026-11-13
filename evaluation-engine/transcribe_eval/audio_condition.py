@@ -39,17 +39,17 @@ def manifest(dataset_root):
     config_path = folder / "config.json"
     if not config_path.is_file():
         raise AudioConditionError(f"no environment_v2 config at {config_path}")
-    key = (str(path), path.stat().st_mtime_ns, config_path.stat().st_mtime_ns)    # either file changing invalidates the check
+    raw, config_raw = path.read_bytes(), config_path.read_bytes()
+    key = (str(path), hashlib.sha256(raw).hexdigest(), hashlib.sha256(config_raw).hexdigest())    # content, not file time: an edit within the same clock tick must not be missed
     if key not in _CACHE:
-        raw = path.read_bytes()
         document = json.loads(raw)
-        config = _read(config_path)
+        config = json.loads(config_raw)
         if config.get("status") != "FROZEN":
             raise AudioConditionError("environment_v2 config is not FROZEN; freeze it before evaluating")
         pinned = (document.get("subset") or {}).get("source_assignments_sha256") or hashlib.sha256(raw).hexdigest()
         if config.get("frozen_assignments_sha256") != pinned:
             raise AudioConditionError("assignments.json does not match the hash pinned when the config was frozen")
-        _CACHE[key] = (document, hashlib.sha256(raw).hexdigest(), hashlib.sha256(config_path.read_bytes()).hexdigest())
+        _CACHE[key] = (document, key[1], key[2])
     return _CACHE[key]
 
 
