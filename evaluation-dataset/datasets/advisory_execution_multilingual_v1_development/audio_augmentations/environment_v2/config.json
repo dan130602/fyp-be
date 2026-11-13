@@ -1,0 +1,97 @@
+{
+  "assets": {
+    "cafe": [
+      {
+        "id": "cafe_02",
+        "path": "cafe/demand_pcafeter_ch01.wav",
+        "sha256": "af249ff8026cf3866f3fec6e4dd9d36cec44968083a4f004113dea6bbb995e8d"
+      }
+    ],
+    "office": [
+      {
+        "id": "office_01",
+        "path": "office/office.wav",
+        "sha256": "20791842f4e43e4e2bfcf4398ea565d1c852380b384e319d675a24e137584c4e"
+      }
+    ],
+    "train": [
+      {
+        "id": "train_01",
+        "path": "train/demand_tmetro_ch01.wav",
+        "sha256": "4672ffe1f6ece93e1ee2f426cf0cc22eebbe66112d171c62f2cb4d4cffa24005"
+      }
+    ]
+  },
+  "code_version": "1.0",
+  "conditions": {
+    "D1": {
+      "codec": "mulaw_8k",
+      "kind": "telephone",
+      "level": {
+        "band_hz": [
+          600,
+          2100
+        ]
+      },
+      "order": 4
+    },
+    "D2": {
+      "gain_db": -6.0,
+      "kind": "muffle",
+      "level": {
+        "cutoff_hz": 1200
+      },
+      "order": 2
+    },
+    "N1": {
+      "asset_category": "office",
+      "kind": "noise",
+      "level": {
+        "snr_db": 3,
+        "target_ai": 0.57
+      }
+    },
+    "N2": {
+      "asset_category": "cafe",
+      "kind": "noise",
+      "level": {
+        "snr_db": 3,
+        "target_ai": 0.65
+      }
+    },
+    "N3": {
+      "asset_category": "train",
+      "kind": "noise",
+      "level": {
+        "snr_db": 2,
+        "target_ai": 0.59
+      }
+    }
+  },
+  "cutoff_definition": "Butterworth design frequency; sosfiltfilt (zero phase) squares the response, so about -6 dB at the nominal edge",
+  "frozen_assignments_sha256": "a3e240f925c57fe0d315ee676f12f54fa0082afba6c3810334c939a63647bbf1",
+  "frozen_at": "2026-11-12T21:33:57.385770+00:00",
+  "headroom_peak": 0.98,
+  "noise": {
+    "crest_limit_db": 12,
+    "excerpt_calm_fraction": 0.4,
+    "fade_ms": 150,
+    "highpass_hz": 100,
+    "level_mode": "target_ai",
+    "level_mode_note": "target_ai: each call gets the SNR (nominal +-max_snr_shift_db) at which the noise masks THAT call client speech to the level target_ai; snr_db is the nominal centre. level_mode snr: use snr_db as is.",
+    "max_snr_shift_db": 3,
+    "pad_ms": 200,
+    "snr_definition": "active client speech power (20 ms frames within 40 dB of the loudest, after 100 Hz high-pass) over mean noise power on the client turn interiors; one gain per call"
+  },
+  "notch_definition": "one notch = 0.03 on the masking target (about 1 dB of SNR on a typical call); for D1/D2 one notch = both filter edges 20% further in (D1 500-2500 -> 600-2100 Hz, D2 1500 -> 1200 Hz)",
+  "output": {
+    "channels": 1,
+    "format": "WAV",
+    "sample_rate": "source",
+    "subtype": "PCM_16"
+  },
+  "schema_version": "1.0",
+  "seed": 20261112,
+  "status": "FROZEN",
+  "variant_id": "environment_v2"
+}

@@ -21,6 +21,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dataset", help="dataset folder name under evaluation-dataset/datasets (default: DATASET_ROOT setting)")
     parser.add_argument("--render-id", default="clean_voice_A", help="a render folder name, or 'auto' = each call's own single render (mixed Polly mp3 / Gemini+OmniVoice wav release)")
+    parser.add_argument("--audio-condition", choices=("clean", "environment_v2"), default="clean",
+                        help="clean = the original recording (default). environment_v2 = the audio assigned to each call by the frozen environment_v2 "
+                             "manifest (clean calls still point at their original recording); needs --render-id auto")
+    parser.add_argument("--skip-clean-controls", action="store_true",
+                        help="with environment_v2: do not send the clean (C1) calls, so only the changed audio is transcribed; recorded in metadata")
     pick = parser.add_mutually_exclusive_group(required=True)
     pick.add_argument("--all", action="store_true")
     pick.add_argument("--split", choices=("DEVELOPMENT", "HELDOUT"), help="every call the frozen splits/split.v1.json assigns to this label")
@@ -44,13 +49,16 @@ def main(argv=None):
             call_ids = sorted(c for c, v in assignments.items() if v["split"] == args.split)
         else:
             call_ids = engine.discover_calls(dataset_root) if args.all else args.calls
-        planned = engine.plan(dataset_root, args.render_id, call_ids, settings.bucket)
+        planned = engine.plan(dataset_root, args.render_id, call_ids, settings.bucket, args.audio_condition, args.skip_clean_controls)
     except engine.CollectError as error:
         print(f"Cannot collect: {error}")
         return 2
-    print(f"dataset {planned['dataset_id']}, render {args.render_id}, bucket {settings.bucket}, region {settings.region}")
+    print(f"dataset {planned['dataset_id']}, render {args.render_id}, audio {args.audio_condition}, bucket {settings.bucket}, region {settings.region}")
     for row in planned["calls"]:
-        print(f"  {row['call_id']}: {row['bytes']:,} bytes, {row['audio_seconds']}s, sha256 {row['sha256'][:12]} -> {row['master_key']}")
+        tag = f" [{row['v2_condition']}]" if row["v2_condition"] else ""
+        print(f"  {row['call_id']}{tag}: {row['bytes']:,} bytes, {row['audio_seconds']}s, sha256 {row['sha256'][:12]} -> {row['master_key']}")
+    if planned["skipped_clean_controls"]:
+        print(f"  skipping {len(planned['skipped_clean_controls'])} clean control call(s): not transcribed in this run")
     print(f"  total audio about {planned['audio_minutes']} minutes")
     if args.dry_run:
         print("dry run: nothing uploaded, no jobs started")
@@ -66,7 +74,7 @@ def main(argv=None):
     try:
         metadata = engine.collect(settings, handler, s3, dataset_root=dataset_root, render_id=args.render_id, call_ids=call_ids,
                                   run_id=args.run_id, poll_seconds=args.poll_seconds, timeout_seconds=args.timeout_minutes * 60,
-                                  keep_uploads=args.keep_uploads)
+                                  keep_uploads=args.keep_uploads, audio_condition=args.audio_condition, skip_clean_controls=args.skip_clean_controls)
     except Exception as error:  # noqa: BLE001 - metadata.json already records it
         print(f"collect failed: {type(error).__name__}: {error}")
         return 1

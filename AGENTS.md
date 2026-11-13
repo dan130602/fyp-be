@@ -43,6 +43,12 @@ The engine does not run EventBridge, SQS or the real S3 trigger: it uploads the 
 ## Running and publishing
 
 - Running `collect.py` on the development set is allowed (Amazon Transcribe is billable: a full 175-call run is roughly 1,042 audio minutes, about US$25). Use a descriptive new `--run-id` each time; never reuse an id; do not retry a failing run in a loop.
+- Noisy / channel-degraded audio (`environment_v2`) is a separate, explicit choice: `collect.py ... --audio-condition environment_v2 --skip-clean-controls` (see `STT_HANDOVER.md`).
+  - Never mix it into a clean run; report it separately, per condition (C1, N1, N2, N3, D1, D2) and per language, and compare through `compare_conditions.py` (paired: same call, clean versus changed audio), never raw WER across conditions.
+  - Do not edit, regenerate, re-mix, denoise on disk or replace the variant WAVs, `augmentation.json`, `assignments.json` or `config.json`, and do not run `build_environment_v2.py` or ask for the noise recordings. Do not ask for the held-out noisy audio.
+  - The condition labels are for scoring and diagnosis only. Production code must not read `assignments.json`, `augmentation.json` or a call's condition to choose a setting; one configuration must handle every condition. Anything that cleans audio (for example a denoiser) belongs in the production handler, applied to the whole call, and is measured on all conditions including C1, so you can see whether it hurts clean audio.
+  - Cost: a full V2 run is about 870 audio minutes (about US$21). Run the 5-call canary first and a given configuration once; do not re-run it to chase noise.
+  - Reuse of the earlier clean transcripts is allowed only through `assemble_v2_run.py`. If your change alters the Transcribe job settings or how audio is processed before or during transcription (vocabulary, language options, a denoiser), the earlier clean transcripts are no longer comparable: re-run the clean calls with the same change before comparing.
 - Score offline with `score.py`, export with `export_to_fyp_ai.py`, and publish complete development runs with fyp-ai's `upload_stt_run.py` (see `STT_HANDOVER.md`). Published results are compared in Supabase/the dashboard, so no separate baseline file is needed.
   Publish only complete runs; a published run is immutable.
 - Report, for every run: the one-line change made, the effective `TRANSCRIBE_...` settings, and WER, entity WER and speaker attribution overall **and per language** (including what got worse). Do not claim an improvement without a comparable measured run.

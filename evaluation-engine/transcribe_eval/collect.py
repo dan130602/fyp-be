@@ -18,6 +18,7 @@ from pathlib import Path
 
 from botocore.exceptions import ClientError
 
+from . import audio_condition as ac
 from .config import ENGINE_ROOT, FYP_BE_ROOT
 from .events import master_key, run_key, s3_event
 
@@ -55,7 +56,19 @@ def discover_calls(dataset_root):
 AUTO_RENDER = "auto"  # use the call's own single render folder (a release mixes Polly mp3 with Gemini / OmniVoice wav renders)
 
 
-def local_audio(dataset_root, call_id, render_id):
+def _resolved(dataset_root, call_id, render_id):
+    """environment_v2: the explicit file for this call (clean original for C1, the variant otherwise). Never a fallback."""
+    if render_id != AUTO_RENDER:
+        raise CollectError("--audio-condition environment_v2 needs --render-id auto: the assignment manifest decides the file, not a render name")
+    try:
+        return ac.resolve(dataset_root, call_id)
+    except ac.AudioConditionError as error:
+        raise CollectError(str(error)) from error
+
+
+def local_audio(dataset_root, call_id, render_id, audio_condition=ac.CLEAN):
+    if audio_condition == ac.ENVIRONMENT_V2:
+        return _resolved(dataset_root, call_id, render_id)["path"]
     renders = Path(dataset_root) / "calls" / call_id / "renders"
     if render_id == AUTO_RENDER:
         found = sorted(p for p in renders.glob("*/audio.*") if p.suffix in (".mp3", ".wav")) if renders.is_dir() else []
@@ -86,19 +99,41 @@ def handler_provenance(handler_path):
     return info
 
 
-def plan(dataset_root, render_id, call_ids, bucket):
+def _v2_selection(dataset_root, call_ids, audio_condition, skip_clean_controls):
+    if skip_clean_controls and audio_condition != ac.ENVIRONMENT_V2:
+        raise CollectError("--skip-clean-controls only applies to --audio-condition environment_v2")
+    if audio_condition == ac.ENVIRONMENT_V2:
+        try:
+            return ac.select_calls(dataset_root, call_ids, skip_clean_controls)
+        except ac.AudioConditionError as error:
+            raise CollectError(str(error)) from error
+    return list(call_ids), []
+
+
+def _check_variant(call_id, info, digest):
+    if info["expected_sha256"] is not None and digest != info["expected_sha256"]:
+        raise CollectError(f"{call_id}: the {info['condition']} variant on disk differs from the one that was built (sha256 mismatch)")
+
+
+def plan(dataset_root, render_id, call_ids, bucket, audio_condition=ac.CLEAN, skip_clean_controls=False):
     """What a collect would do, without any AWS access: keys, sizes, hashes and audio minutes."""
     dataset_id = dataset_id_of(dataset_root)
+    call_ids, skipped = _v2_selection(dataset_root, call_ids, audio_condition, skip_clean_controls)
     rows = []
     for call_id in call_ids:
-        path = local_audio(dataset_root, call_id, render_id)
+        info = _resolved(dataset_root, call_id, render_id) if audio_condition == ac.ENVIRONMENT_V2 else None
+        path = info["path"] if info else local_audio(dataset_root, call_id, render_id)
         timings = path.with_name("timings.json")
-        seconds = json.loads(timings.read_text(encoding="utf-8")).get("duration_seconds") if timings.is_file() else None
+        seconds = info["seconds"] if info else (json.loads(timings.read_text(encoding="utf-8")).get("duration_seconds") if timings.is_file() else None)
         call_render, extension = _render_and_extension(path)
+        digest = sha256_file(path)
+        if info:
+            _check_variant(call_id, info, digest)
         rows.append({"call_id": call_id, "render_id": call_render, "bytes": path.stat().st_size, "audio_seconds": seconds,
-                     "sha256": sha256_file(path), "master_key": master_key(dataset_id, call_render, call_id, extension)})
-    return {"dataset_id": dataset_id, "render_id": render_id, "bucket": bucket, "calls": rows,
-            "audio_minutes": round(sum(r["audio_seconds"] or 0 for r in rows) / 60, 1)}
+                     "sha256": digest, "master_key": master_key(dataset_id, call_render, call_id, extension),
+                     "v2_condition": info["condition"] if info else None})
+    return {"dataset_id": dataset_id, "render_id": render_id, "bucket": bucket, "calls": rows, "audio_condition": audio_condition,
+            "skipped_clean_controls": skipped, "audio_minutes": round(sum(r["audio_seconds"] or 0 for r in rows) / 60, 1)}
 
 
 def _ensure_master(s3, bucket, key, path, digest):
@@ -118,28 +153,36 @@ def _job_record(job):
 
 
 def collect(settings, handler, s3, *, dataset_root, render_id, call_ids, run_id=None, runs_root=RUNS_ROOT, poll_seconds=5,
-            timeout_seconds=1800, sleep=time.sleep, clock=time.monotonic, progress=print, keep_uploads=False):
+            timeout_seconds=1800, sleep=time.sleep, clock=time.monotonic, progress=print, keep_uploads=False,
+            audio_condition=ac.CLEAN, skip_clean_controls=False):
     """Run the collect phase; returns the metadata dict (also saved as `metadata.json`). Raises CollectError before anything is uploaded
     when an input is missing. Per-call job failures are recorded, not raised."""
     dataset_root, bucket = Path(dataset_root), settings.bucket
     dataset_id = dataset_id_of(dataset_root)
+    call_ids, skipped = _v2_selection(dataset_root, call_ids, audio_condition, skip_clean_controls)
     run_id = run_id or new_run_id()
     run_dir = Path(runs_root) / run_id
     if run_dir.exists():
         raise CollectError(f"run folder already exists: {run_dir}")
-    audio = {call_id: local_audio(dataset_root, call_id, render_id) for call_id in call_ids}
+    v2 = audio_condition == ac.ENVIRONMENT_V2
+    infos = {call_id: _resolved(dataset_root, call_id, render_id) for call_id in call_ids} if v2 else {}
+    audio = {call_id: infos[call_id]["path"] if v2 else local_audio(dataset_root, call_id, render_id) for call_id in call_ids}
     digests = {call_id: sha256_file(path) for call_id, path in audio.items()}
+    for call_id, info in infos.items():
+        _check_variant(call_id, info, digests[call_id])
     (run_dir / "raw" / "transcripts").mkdir(parents=True)
 
     transcribe = handler.transcribe
     keys = {call_id: run_key(run_id, dataset_id, call_id, _render_and_extension(audio[call_id])[1]) for call_id in call_ids}
     entries = {call_id: {"call_id": call_id, "render_id": _render_and_extension(audio[call_id])[0], "audio_bytes": audio[call_id].stat().st_size, "audio_sha256": digests[call_id],
                          "master_key": master_key(dataset_id, _render_and_extension(audio[call_id])[0], call_id, _render_and_extension(audio[call_id])[1]), "run_key": keys[call_id], "job_name": None,
-                         "status": "NOT_STARTED", "failure_reason": None, "transcript_file": None, "job": None} for call_id in call_ids}
+                         "status": "NOT_STARTED", "failure_reason": None, "transcript_file": None, "job": None,
+                         "audio_condition": audio_condition, "v2_condition": infos[call_id]["condition"] if v2 else None} for call_id in call_ids}
     metadata = {"run_id": run_id, "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None, "status": "running", "error": None,
                 "region": settings.region, "bucket": bucket, "dataset_id": dataset_id, "render_id": render_id,
                 "handler": handler_provenance(settings.handler_path), "handler_environment": settings.handler_environment(),
-                "calls": list(entries.values())}
+                "audio_condition": audio_condition, "skip_clean_controls": bool(skip_clean_controls), "skipped_clean_controls": skipped,
+                "assignments_sha256": ac.manifest(dataset_root)[1] if v2 else None, "calls": list(entries.values())}
     still_running = False
     try:
         for call_id in call_ids:
