@@ -102,6 +102,18 @@ variable "github_repository" {
   type        = string
   default     = "dan130602/fyp-be"
 }
+variable "transcribe_language_options" {
+  description = "Comma-separated language codes for Transcribe language identification; empty = fixed language"
+  type        = string
+  default     = "en-US,zh-CN"
+}
+
+variable "transcribe_language_id_mode" {
+  description = "Transcribe language identification mode: multiple or single"
+  type        = string
+  default     = "multiple"
+}
+
 variable "transcribe_max_speaker_labels" {
   description = "Maximum number of speaker labels to detect in a transcription job"
   type        = number

@@ -55,6 +55,18 @@ variable "transcribe_language_code" {
   default     = "en-US"
 }
 
+variable "transcribe_language_options" {
+  description = "Comma-separated language codes for Transcribe language identification (e.g. en-US,zh-CN). Empty = fixed transcribe_language_code."
+  type        = string
+  default     = ""
+}
+
+variable "transcribe_language_id_mode" {
+  description = "multiple (language can switch within a file) or single (one language per file)"
+  type        = string
+  default     = "multiple"
+}
+
 variable "transcribe_max_speaker_labels" {
   description = "Max distinct speakers Transcribe's diarization will identify per job (2-30)"
   type        = number
