@@ -37,7 +37,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         working-directory: lambda/transcribe-trigger
         run: |
-          docker build \
+          docker build --provenance=false --sbom=false \
             -t "$REGISTRY/$REPOSITORY:$IMAGE_TAG" \
             -t "$REGISTRY/$REPOSITORY:latest" \
             .

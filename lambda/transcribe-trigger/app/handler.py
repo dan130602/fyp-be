@@ -52,7 +52,7 @@ def _language_parameters():
     Default (nothing but TRANSCRIBE_LANGUAGE_CODE set): one fixed language, exactly as before.
     With TRANSCRIBE_LANGUAGE_OPTIONS (comma separated, at least two codes, e.g. "en-US,zh-CN") the language is identified from the audio:
     TRANSCRIBE_LANGUAGE_ID_MODE "multiple" (default) lets one file switch language between segments (IdentifyMultipleLanguages);
-    "single" picks one language for the whole file (IdentifyLanguage). test
+    "single" picks one language for the whole file (IdentifyLanguage).
     """
     options = [code.strip() for code in os.environ.get("TRANSCRIBE_LANGUAGE_OPTIONS", "").split(",") if code.strip()]
     if not options:
