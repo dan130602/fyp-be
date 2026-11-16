@@ -146,6 +146,8 @@ resource "aws_lambda_function" "worker" {
     variables = merge(local.db_env, {
       TRANSCRIBE_OUTPUT_BUCKET      = var.output_bucket_name
       TRANSCRIBE_LANGUAGE_CODE      = var.transcribe_language_code
+      TRANSCRIBE_LANGUAGE_OPTIONS   = var.transcribe_language_options
+      TRANSCRIBE_LANGUAGE_ID_MODE   = var.transcribe_language_id_mode
       TRANSCRIBE_MAX_SPEAKER_LABELS = tostring(var.transcribe_max_speaker_labels)
       # Same value as the queue's redrive maxReceiveCount - the worker marks a record FAILED on
       # its last allowed attempt, just before SQS moves it to the DLQ.

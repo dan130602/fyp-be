@@ -89,6 +89,16 @@ variable "transcribe_language_code" {
   default = "en-US"
 }
 
+variable "transcribe_language_options" {
+  type    = string
+  default = ""
+}
+
+variable "transcribe_language_id_mode" {
+  type    = string
+  default = "multiple"
+}
+
 variable "transcribe_max_speaker_labels" {
   type = number
 }

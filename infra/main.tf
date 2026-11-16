@@ -66,6 +66,8 @@ module "lambda" {
   ecr_repository_name           = module.ecr.repository_name
   image_tag                     = var.transcribe_lambda_image_tag
   transcribe_max_speaker_labels = var.transcribe_max_speaker_labels
+  transcribe_language_options   = var.transcribe_language_options
+  transcribe_language_id_mode   = var.transcribe_language_id_mode
 
   input_bucket_id  = module.s3.ingestion_audio_bucket_id
   input_bucket_arn = module.s3.ingestion_audio_bucket_arn
@@ -379,6 +381,8 @@ module "batch_processing" {
   db_secret_arn = module.media_processing_secrets.rds_credentials_secret_arn
 
   transcribe_max_speaker_labels = var.transcribe_max_speaker_labels
+  transcribe_language_options   = var.transcribe_language_options
+  transcribe_language_id_mode   = var.transcribe_language_id_mode
 
   schedule_expression = var.batch_schedule_expression
   schedule_timezone   = var.batch_schedule_timezone
