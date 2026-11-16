@@ -38,7 +38,7 @@ import java.util.UUID;
 @ConditionalOnProperty(name = "app.dashboard.source", havingValue = "rds-data")
 public class RdsDashboardDataReader extends DashboardDataReader {
 
-    static final Set<String> DASHBOARD_ROLES = Set.of("ADMIN", "COMPLIANCE_OFFICER");
+    static final Set<String> DASHBOARD_ROLES = Set.of("SUPER_ADMIN", "ADMIN", "MANAGER", "COMPLIANCE_OFFICER");
     static final int CALL_PAGE = 25;
     static final int DECISION_PAGE = 100;
     static final DateTimeFormatter DATA_API_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");

@@ -22,7 +22,7 @@ public class AdvisorController {
 
     /** Full active list - small enough (tens of rows) that the upload dialog searches it client-side. */
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<List<AdvisorResponse>> list() {
         return ResponseEntity.ok(advisorService.listActive());
     }

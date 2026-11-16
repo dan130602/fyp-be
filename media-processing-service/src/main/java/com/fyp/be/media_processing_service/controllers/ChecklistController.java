@@ -23,7 +23,7 @@ public class ChecklistController {
     }
 
     @GetMapping("/default")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<List<ChecklistItemResponse>> getDefault() {
         return ResponseEntity.ok(checklistService.getDefaultChecklist());
     }

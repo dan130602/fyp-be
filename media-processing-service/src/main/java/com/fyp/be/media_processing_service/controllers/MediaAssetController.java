@@ -37,27 +37,27 @@ public class MediaAssetController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<List<MediaAssetResponse>> list(Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);
         return ResponseEntity.ok(mediaAssetService.listForUser(currentUser.getId()));
     }
 
     @GetMapping("/{id}/playback-url")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<PlaybackUrlResponse> playbackUrl(@PathVariable UUID id, Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);
         return ResponseEntity.ok(mediaAssetService.getPlaybackUrl(id, currentUser.getId()));
     }
 
     @GetMapping("/{id}/analysis")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id) {
         return ResponseEntity.ok(mediaAssetService.getAnalysis(id));
     }
 
     @PutMapping("/{id}/review")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<ChecklistReviewResponse> submitReview(
             @PathVariable UUID id, @Valid @RequestBody SubmitReviewRequest request, Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);

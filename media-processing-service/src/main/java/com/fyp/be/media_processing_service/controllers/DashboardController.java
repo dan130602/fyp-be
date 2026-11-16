@@ -22,7 +22,7 @@ import java.util.UUID;
 /** Org-wide on purpose: unlike /api/media-assets, these figures cover every user's uploads. from and to are inclusive. */
 @RestController
 @RequestMapping("/api/dashboard")
-@PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'COMPLIANCE_OFFICER')")
 public class DashboardController {
 
     private final DashboardService dashboardService;

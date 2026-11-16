@@ -42,7 +42,7 @@ public class UploadController {
     }
 
     @PostMapping("/presigned-urls")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<PresignedUploadResponse> presignedUrls(
             @Valid @RequestBody PresignedUploadRequest request,
             Authentication authentication
@@ -54,7 +54,7 @@ public class UploadController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<MediaAssetStatusResponse> getStatus(@PathVariable UUID id, Authentication authentication) {
         User currentUser = currentUserService.getCurrentUser(authentication);
         MediaAsset asset = mediaAssetService.getForUser(id, currentUser);
