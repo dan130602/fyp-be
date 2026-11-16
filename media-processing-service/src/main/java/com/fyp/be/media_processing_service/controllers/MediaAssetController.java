@@ -51,7 +51,7 @@ public class MediaAssetController {
     }
 
     @GetMapping("/{id}/analysis")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'COMPLIANCE_OFFICER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'COMPLIANCE_OFFICER')")
     public ResponseEntity<MediaAssetAnalysisResponse> analysis(@PathVariable UUID id) {
         return ResponseEntity.ok(mediaAssetService.getAnalysis(id));
     }

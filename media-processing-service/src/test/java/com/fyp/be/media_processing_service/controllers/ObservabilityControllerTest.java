@@ -87,6 +87,18 @@ class ObservabilityControllerTest {
                 .andExpect(status().isForbidden());
         verifyNoInteractions(media, currentUser, reader);
     }
+    @Test void manager_can_read_call_analysis() throws Exception {
+        mvc.perform(get("/api/media-assets/00000000-0000-0000-0000-000000000001/analysis")
+                .with(user("manager").roles("MANAGER")))
+                .andExpect(status().isOk());
+    }
+    @Test void manager_cannot_submit_an_officer_review() throws Exception {
+        mvc.perform(put("/api/media-assets/00000000-0000-0000-0000-000000000001/review")
+                .with(user("manager").roles("MANAGER")).with(csrf())
+                .contentType("application/json").content("{\"overrides\":[]}"))
+                .andExpect(status().isForbidden());
+        verifyNoInteractions(media, currentUser);
+    }
     @Test void developer_cannot_change_account_roles() throws Exception {
         mvc.perform(patch("/api/users/00000000-0000-0000-0000-000000000001/role")
                 .with(user("developer").roles("DEVELOPER")).with(csrf())
