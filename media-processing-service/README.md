@@ -64,10 +64,10 @@ The Transcribe job name is derived from the object key (`PresignedUrlService.job
 docker compose up -d postgres
 
 # from this folder
-./mvnw spring-boot:run
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/ingestion ./mvnw spring-boot:run
 ```
 
-The defaults in `application.properties` point at `jdbc:postgresql://localhost:5433/ingestion` (user `postgres`, password `root`), which matches the compose database. Flyway applies the migrations on startup, and Hibernate runs with `ddl-auto=validate`, so the schema must match the entities.
+Set `SPRING_DATASOURCE_URL` as above: its default in `application.properties` is the old project's Aurora cluster endpoint, not the compose database. The user and password defaults (`postgres` / `root`) already match compose. Flyway applies the migrations on startup, and Hibernate runs with `ddl-auto=validate`, so the schema must match the entities.
 
 ### With Docker Compose
 
@@ -149,7 +149,7 @@ Every setting has an environment variable. Defaults come from `src/main/resource
 
 | Variable | Default | Notes |
 |---|---|---|
-| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5433/ingestion` | |
+| `SPRING_DATASOURCE_URL` | the old project's Aurora cluster endpoint | Set it. Locally: `jdbc:postgresql://localhost:5433/ingestion` (compose sets its own). |
 | `DB_USERNAME` | `postgres` | `SPRING_DATASOURCE_USERNAME` also works (Spring relaxed binding); compose uses that one. |
 | `DB_PASSWORD` | `root` | Likewise `SPRING_DATASOURCE_PASSWORD`. |
 

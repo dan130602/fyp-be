@@ -40,7 +40,8 @@ The full flow, configuration and security model are described in [`media-process
 ```bash
 docker compose up -d postgres                 # PostgreSQL on localhost:5433
 cd media-processing-service
-API_DOCS_ENABLED=true ./mvnw spring-boot:run  # API on http://localhost:8080
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/ingestion \
+  API_DOCS_ENABLED=true ./mvnw spring-boot:run  # API on http://localhost:8080
 ```
 
 Then open http://localhost:8080/swagger-ui.html. You need JDK 25 and Docker. Uploads and user management also need AWS credentials. See the service README for every environment variable.
