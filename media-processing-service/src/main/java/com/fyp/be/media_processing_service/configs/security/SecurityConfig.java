@@ -46,6 +46,9 @@ public class SecurityConfig {
                         // Unauthenticated by design - UserService#createFirstAdmin is the actual
                         // gate, and it refuses the instant any user already exists.
                         .requestMatchers(HttpMethod.POST, "/api/users/first-admin").permitAll()
+                        // API docs 404 unless API_DOCS_ENABLED is set, so permitting them is safe in production.
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml",
+                                "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
