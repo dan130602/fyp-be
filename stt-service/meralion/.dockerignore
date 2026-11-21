@@ -1,0 +1,18 @@
+# Allow-list: nothing is in the build context unless it is re-included below. Tests, tools, run outputs, local caches and anything else stay out of the image.
+*
+!requirements-*.lock
+!configs/
+!configs/**
+!model/
+!model/**
+!artifacts/
+!artifacts/*.whl
+!meralion_worker/
+!meralion_worker/**
+!patches/
+!patches/manifest.json
+!patches/*.patch
+**/__pycache__
+**/*.pyc
+model/.cache
+model/**/.cache

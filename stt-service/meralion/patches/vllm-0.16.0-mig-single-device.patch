@@ -1,0 +1,29 @@
+--- a/vllm/platforms/cuda.py
++++ b/vllm/platforms/cuda.py
+@@ -629,7 +629,25 @@
+     if nvml_available:
+         pynvml.nvmlShutdown()
+ 
+-CudaPlatform = NvmlCudaPlatform if nvml_available else NonNvmlCudaPlatform
++def _single_mig_device_in_process() -> bool:
++    """Patched by the MERaLiON worker (patches/vllm-0.16.0-mig-single-device.patch).
++
++    True only for ONE visible MIG device AND the in-process engine (VLLM_ENABLE_V1_MULTIPROCESSING=0): NVML is addressed by index here, and a MIG
++    UUID in CUDA_VISIBLE_DEVICES is not an index. Everything else keeps the unpatched choice.
++    """
++    devices = os.environ.get("CUDA_VISIBLE_DEVICES", "").split(",")
++    return (
++        len(devices) == 1
++        and devices[0].strip().startswith("MIG-")
++        and os.environ.get("VLLM_ENABLE_V1_MULTIPROCESSING") == "0"
++    )
++
++
++CudaPlatform = (
++    NvmlCudaPlatform
++    if nvml_available and not _single_mig_device_in_process()
++    else NonNvmlCudaPlatform
++)
+ 
+ CudaPlatform.log_warnings()
+ 

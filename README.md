@@ -11,6 +11,8 @@ Backend for **ClearCall**, an AI-powered regulatory compliance system for monito
 | `infra/` | Terraform for AWS (VPC, ALB, CloudFront, ECS, ECR, RDS, S3, SQS, EventBridge, Cognito, Lambda, Secrets Manager, batch processing). |
 | [`evaluation-engine/`](evaluation-engine/README.md) | Measures the production speech-to-text step against ground truth. It runs the real Lambda handler unchanged. |
 | [`evaluation-dataset/`](evaluation-dataset/README.md) | Evaluation dataset: synthetic advisory calls with ground-truth transcripts and checklist outcomes. |
+| [`stt-service/meralion/`](stt-service/meralion/README.md) | GPU speech-to-text worker built on MERaLiON-3-3B-ASR (long-audio pipeline, Docker packaging). Runs the original or the fine-tuned model. |
+| [`stt-experiments/meralion-sft/`](stt-experiments/meralion-sft/README.md) | Code that trained, exported and evaluated the fine-tuned MERaLiON model (decoder LoRA + encoder LoRA + full speech adapter). |
 | `docs/` | Operational notes: [developer release](docs/developer-release.md), [production observability](docs/production-observability.md). |
 | `local-dev/` | Local-only helpers, e.g. `seed-dashboard.sql` (fake calls for the officer dashboard). |
 | `docker-compose.yml` | Local PostgreSQL plus the backend container. |
@@ -34,6 +36,44 @@ S3 (audio) ──S3 event──▶ transcribe-trigger Lambda ──▶ Amazon Tr
 4. `fyp-ai` returns a verdict for each checklist item. Officers review those verdicts and can override them in the frontend. Managers see the totals on the dashboard.
 
 The full flow, configuration and security model are described in [`media-processing-service/README.md`](media-processing-service/README.md).
+
+## Fine-tuned speech-to-text model (MERaLiON)
+
+Besides Amazon Transcribe, this repository contains a fine-tuned version of [`MERaLiON-3-3B-ASR`](https://huggingface.co/MERaLiON/MERaLiON-3-3B-ASR) for advisory-call speech:
+decoder LoRA + encoder LoRA + a fully trained speech adapter, trained on 140 synthetic development calls (English, Singlish, Mandarin and English-Mandarin code-switching).
+On the 75 held-out calls (same calls for every system, scored with the same rules) it makes far fewer errors than Amazon Transcribe:
+
+| Held-out 75 calls | Noisy / channel-degraded: WER, entity WER | Clean: WER, entity WER |
+|---|---:|---:|
+| Amazon Transcribe | 3.57%, 6.24% | 1.95%, 4.31% |
+| MERaLiON + long-audio pipeline, no fine-tuning | 1.80%, 4.01% | 1.01%, 3.59% |
+| **Fine-tuned MERaLiON (this model)** | **1.18%, 2.37%** | **0.47%, 1.68%** |
+
+The data is synthetic text-to-speech, and the fine-tuned model is worse than the original at some amounts and quantities (digits dropped in comma-grouped English numbers), so treat it as a
+research checkpoint; the full table, training data, known weaknesses and licence are in the model card:
+**[huggingface.co/tanedric/meralion-3-3b-asr-clearcall-j5xe](https://huggingface.co/tanedric/meralion-3-3b-asr-clearcall-j5xe)**.
+
+**Get the weights (6.6 GB) and verify them with one command.** On the GPU machine, in a checkout of the `stt/meralion-release` branch, after setting up the environment once
+(`pip install --no-deps -r requirements-vllm.lock` and `pip install --no-deps meralion-3-asr==0.1.0`, Linux x86-64 and CPython 3.12; see [`stt-service/meralion`](stt-service/meralion/README.md)):
+
+```bash
+pip install -U huggingface_hub && python stt-service/meralion/tools/get_finetuned_model.py
+```
+
+It downloads the model to `stt-service/meralion/models/clearcall-j5xe/`, checks all 14 files against the manifest committed here, and prints the command that transcribes your calls:
+
+```bash
+cd stt-service/meralion
+python -m meralion_worker run --invocation-id my-first-run --jobs jobs.json \
+    --model-dir models/clearcall-j5xe/model --config configs/runtime/j5xe-ep2-vllm-rp105-sched0.json \
+    --output-dir out --state-dir state --summary-output summary.json
+```
+
+Download only, without a checkout: `hf download tanedric/meralion-3-3b-asr-clearcall-j5xe --local-dir clearcall-j5xe`.
+
+The base model's licence (MERaLiON Public Licence, including the Gemma terms) applies to the weights; the development of this work was assisted by MERaLiON, an AI model developed by the Agency for
+Science, Technology and Research (A\*STAR). Training and exporting code, and how to reproduce the checkpoint, are in
+[`stt-experiments/meralion-sft/`](stt-experiments/meralion-sft/README.md). Speaker attribution is a separate component and is not part of the worker or its Docker image.
 
 ## Quick start (backend, local)
 
