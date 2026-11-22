@@ -49,9 +49,8 @@ Download the pinned base revision into `model/` (`hf download MERaLiON/MERaLiON-
 
 ## Docker
 
-The [Dockerfile](Dockerfile) bakes one model and one runtime configuration into the image and verifies them when it is built and at every start. **The image has not been built or GPU-tested
-with either model** (see the header of the Dockerfile for what has and has not been verified). By reading the code, the fine-tuned model needs no Dockerfile change, because the manifest that
-the build checks is the one named by the runtime configuration:
+The [Dockerfile](Dockerfile) bakes one model and one runtime configuration into the image and verifies them when it is built and at every start. The fine-tuned model needs no Dockerfile
+change, because the manifest that the build checks is the one named by the runtime configuration:
 
 ```bash
 cd stt-service/meralion
@@ -63,7 +62,7 @@ docker run --rm --gpus all -v "$PWD/calls:/in:ro" -v "$PWD/out:/var/meralion/out
        run --invocation-id my-first-run --jobs /in/jobs.json --output-dir /var/meralion/out --state-dir /var/meralion/state
 ```
 
-The Dockerfile's header still describes the 21-file base checkpoint; the fine-tuned model has 14 files, which the manifest lists. To bake the original model instead, put the base model in `model/`
+To run the image as a GPU batch job on AWS (ECR, Batch, S3 input/output and resumable state), see [tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md](tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md). The fine-tuned model has 14 files, which its manifest lists. To bake the original model instead, put the base model in `model/`
 and build with the original model's runtime configuration (see above). A different checkpoint needs a separate image.
 
 ## What is in this folder

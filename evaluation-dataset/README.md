@@ -7,16 +7,81 @@ Independent evaluation contracts for **AI-Powered Regulatory Compliance
 Automation for Call Monitoring**. This project lives in the existing `fyp-be`
 repository. It does not import or change the production backend or `fyp-ai`.
 
-**Status: the checklist, matrix, five call configs, five check plans, five
-dialogues, and five compiled canonical `ground_truth.json` files exist. Polly
-audio has been generated locally for all five calls. Turn timing JSON, SSML,
-and speaker manifests are versioned; MP3 files are ignored by Git.**
-Check-plan and ground-truth versions are `0.6.0`;
-approved call configs and their schema remain `0.5.0`, normalization remains `0.3.0`.
-Tests cover artificial contract fixtures, the actual
-checklist, the fixed pilot CSV, and regression cases mirroring the approved
-real artifacts without duplicating their content. Matrix values are
-predetermined and must not be reinterpreted from later dialogue.
+**Status.** Two releases live here. `advisory_execution_pilot_v1` is the 50-call pilot (the five-call `legacy_pilot_v1` is the original scaffold); the detailed sections below were written
+as the pilot was built and describe its state at that time. `advisory_execution_multilingual_v1` is the current release: 250 calls (75 English, 75 Mandarin, 50 English-Mandarin mixed, 50 Singlish) generated through the same gold-first
+pipeline and rendered to audio, with a frozen 175 development / 75 held-out split and noisy / channel-degraded variants; its rules are in [MULTILINGUAL.md](MULTILINGUAL.md). The pilot's
+contracts are unchanged and still reproduce byte for byte. Matrix values are predetermined and must not be reinterpreted from later dialogue.
+
+## The G0-G9 pipeline at a glance
+
+Gold first: the expected answers (checklist outcomes, values, events) are fixed in G0-G2 and are never derived from a dialogue. Each later stage writes immutable, hash-linked files, so a change
+upstream makes everything downstream visibly stale instead of silently inconsistent.
+
+| Stage | Purpose | Output | API |
+|---|---|---|---|
+| G0 | contracts and quotas | `checklist.json`, `coverage_matrix.csv` / `call_manifest.csv`, `edge_case_catalog.json`, `normalization.json`, `language_profiles.json`, `authoring/generation_plan.json` | none |
+| G1 | deterministic planning | `planning_record.json`, edge-case assignments, per-call matrix columns | none |
+| G2A | per-call specification | `authoring/call_specs/CALL_xxx.json` | none |
+| G2B | check-plan skeletons | `authoring/check_plan_skeletons/CALL_xxx.json` | none |
+| G3 | scenario generation (model-assisted) | `authoring/call_configs/CALL_xxx.json` | OpenAI |
+| G4 | evidence-plan generation (model-assisted, then deterministic validation) | `authoring/check_plans/CALL_xxx.json` | OpenAI |
+| G5 | gold-aware verification of G3 + G4 | `authoring/plan_verifications/CALL_xxx.json` | Gemini |
+| G6 | dialogue generation around the accepted plan | `authoring/dialogues/CALL_xxx.json` | OpenAI |
+| G7 | gold-aware verification of the dialogue | `authoring/dialogue_verifications/CALL_xxx.json` | Gemini |
+| G8 | per-turn SSML, text-to-speech rendering, timings | `calls/CALL_xxx/renders/<render>/` (audio is git-ignored) | TTS |
+| G9 | canonical ground truth, compiled from the G8 timings | `calls/CALL_xxx/ground_truth.json`, `transcript.json`, `speaker_roles.json` | none |
+
+Model-assisted stages submit work only with an explicit `--submit` / `--run` / `--execute`; `--dry-run`, `--check`, `--validate` and `--status` are offline. Live calls to a provider are refused
+unless the batch is covered by a committed allowlist (`authoring/live_allowlist.json` of a multilingual release), and `scripts/report_exposure.py` derives which calls have been sent to a real provider.
+
+### Command reference
+
+Run from `fyp-be/evaluation-dataset` (Python 3.11+, `pip install -e ".[dev]"`). Credentials go in a git-ignored `.env` (see `.env.example`): `OPENAI_API_KEY` for G3, G4 and G6; `GEMINI_API_KEY` for G5
+and G7. `R` is the release folder: `R=datasets/advisory_execution_pilot_v1` runs from a plain clone. The full 250-call release `datasets/advisory_execution_multilingual_v1` is git-ignored (it holds the
+held-out gold); only its 175-call development split (`..._development`: plans, dialogues and ground-truth files, no audio) is committed, so commands on the multilingual release run only where the full folder
+exists. The stages and their options are the same for both releases, except `resolve_multilingual_quotas.py`, `report_multilingual_plan.py`, `build_split.py` and `build_environment_v2.py`, which apply only to a multilingual release.
+
+```bash
+# G0 / G1 / G2: deterministic, free
+python scripts/resolve_multilingual_quotas.py --dataset-root $R --check            # --write replaces the quotas of a multilingual release
+python scripts/plan_dataset.py               --dataset-root $R [--check | --validate]
+python scripts/compile_call_specs.py         --dataset-root $R [--overwrite | --validate | --check]
+python scripts/build_check_plan_skeletons.py --dataset-root $R [--overwrite | --validate | --check]
+python scripts/report_multilingual_plan.py   --dataset-root $R --composition       # also --compatibility, --coverage (read-only reports)
+
+# G3 scenarios, G4 evidence plans (model-assisted)
+python scripts/generate_call_configs.py  --dataset-root $R --dry-run | --sync --call-id CALL_001 | --submit | --collect
+python scripts/generate_check_plans.py   --dataset-root $R --dry-run | --sync --call-id CALL_010 | --submit | --collect
+
+# G5 plan verification (Gemini)
+python scripts/verify_authoring_plans.py --dataset-root $R --dry-run | --run [--call-id CALL_021] | --status
+python scripts/build_g5_controls.py      --dataset-root $R --out ../g5_controls    # offline semantic controls that the verifier must catch
+
+# G6 dialogues (OpenAI, Batch API), advisory lint
+python scripts/generate_dialogues.py     --dataset-root $R --dry-run | --submit [--call-id CALL_027] | --collect | --status | --validate | --check
+python scripts/lint_advisory.py          --dataset-root $R [--call-id CALL_001 ...]  # advisory only, never a gate
+
+# G7 dialogue verification (Gemini)
+python scripts/verify_dialogues.py       --dataset-root $R --dry-run | --run [--call-id CALL_016] | --status
+python scripts/build_g7_controls.py      --dataset-root $R --out .llm_audit/g7_controls
+
+# G8 rendering (English: Amazon Polly; billable only with --execute)
+python scripts/render_dialogues.py       --dataset-root $R --preview | --ssml | --check | --execute --call-id CALL_001
+
+# G9 ground truth (offline)
+python scripts/compile_ground_truth.py   --dataset-root $R --write | --check
+
+# after G9: split, noisy variants, export
+python scripts/build_split.py            --dataset-root $R --check                 # frozen 175 / 75 split (see MULTILINGUAL.md)
+python scripts/build_environment_v2.py   assign --check | preview | build --split DEVELOPMENT   # noisy and channel-degraded variants
+python scripts/export_dataset.py ...                                               # export a validated snapshot, see EXPORTING.md
+```
+
+Audio of the released multilingual dataset: Amazon Polly (English, `polly_standard_A`), Gemini text-to-speech (Mandarin and mixed, `gemini_tts_pilot_A`) and OmniVoice (Singlish,
+`omnivoice_pilot_A`). Only the Polly renderer is in this repository so far; each call records its render id in `ground_truth.json` (`timing.render_id`).
+
+Tests: `python -m pytest -q` (the full suite takes about half an hour; the multilingual subset is listed in MULTILINGUAL.md under "Commands"). The detailed per-stage sections follow below;
+start with "Required generation order".
 
 ## Layout
 
