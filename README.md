@@ -11,7 +11,7 @@ Backend for **ClearCall**, an AI-powered regulatory compliance system for monito
 | `infra/` | Terraform for AWS (VPC, ALB, CloudFront, ECS, ECR, RDS, S3, SQS, EventBridge, Cognito, Lambda, Secrets Manager, batch processing). |
 | [`evaluation-engine/`](evaluation-engine/README.md) | Measures the production speech-to-text step against ground truth. It runs the real Lambda handler unchanged. |
 | [`evaluation-dataset/`](evaluation-dataset/README.md) | Evaluation dataset: synthetic advisory calls with ground-truth transcripts and checklist outcomes. |
-| [`stt-service/meralion/`](stt-service/meralion/README.md) | GPU speech-to-text worker built on MERaLiON-3-3B-ASR (long-audio pipeline, Docker packaging). Runs the original or the fine-tuned model. |
+| [`stt-service/meralion/`](stt-service/meralion/README.md) | **The dockerised speech-to-text worker**: a Dockerfile that builds a GPU image (pinned vLLM stack, hash-verified model baked in, S3 input/output and resumable state) around MERaLiON-3-3B-ASR with the long-audio pipeline. Runs our fine-tuned model or the original. See [Production](#from-this-repository-to-production). |
 | [`stt-experiments/meralion-sft/`](stt-experiments/meralion-sft/README.md) | Code that trained, exported and evaluated the fine-tuned MERaLiON model (decoder LoRA + encoder LoRA + full speech adapter). |
 | `docs/` | Operational notes: [developer release](docs/developer-release.md), [production observability](docs/production-observability.md). |
 | `local-dev/` | Local-only helpers, e.g. `seed-dashboard.sql` (fake calls for the officer dashboard). |
@@ -53,7 +53,9 @@ The data is synthetic text-to-speech, and the fine-tuned model is worse than the
 research checkpoint; the full table, training data, known weaknesses and licence are in the model card:
 **[huggingface.co/tanedric/meralion-3-3b-asr-clearcall-j5xe](https://huggingface.co/tanedric/meralion-3-3b-asr-clearcall-j5xe)**.
 
-**Get the weights (6.6 GB) and verify them with one command.** On the GPU machine, in a checkout of the `stt/meralion-release` branch, after setting up the environment once
+**Get OUR fine-tuned weights (6.6 GB) from Hugging Face and verify them with one command.** The weights are published by this project at
+[`tanedric/meralion-3-3b-asr-clearcall-j5xe`](https://huggingface.co/tanedric/meralion-3-3b-asr-clearcall-j5xe), not downloaded from the original MERaLiON repository (the original model is not
+needed). On the GPU machine, in a checkout of the `stt/meralion-release` branch, after setting up the environment once
 (`pip install --no-deps -r requirements-vllm.lock` and `pip install --no-deps meralion-3-asr==0.1.0`, Linux x86-64 and CPython 3.12; see [`stt-service/meralion`](stt-service/meralion/README.md)):
 
 ```bash
@@ -74,6 +76,25 @@ Download only, without a checkout: `hf download tanedric/meralion-3-3b-asr-clear
 The base model's licence (MERaLiON Public Licence, including the Gemma terms) applies to the weights; the development of this work was assisted by MERaLiON, an AI model developed by the Agency for
 Science, Technology and Research (A\*STAR). Training and exporting code, and how to reproduce the checkpoint, are in
 [`stt-experiments/meralion-sft/`](stt-experiments/meralion-sft/README.md). Speaker attribution is a separate component and is not part of the worker or its Docker image.
+
+### From this repository to production
+
+The worker is a **batch job in a container**, not a service with an API: it reads audio, writes one transcript JSON per call, and exits. The steps, in order:
+
+1. **Build the image with our model.** Download the weights as above, copy `models/clearcall-j5xe/model` to `stt-service/meralion/model`, and build with
+   `--build-arg BACKEND=vllm --build-arg RUNTIME_CONFIG=j5xe-ep2-vllm-rp105-sched0.json`. The build and every start check all 14 model files against the committed manifest, so a wrong or
+   corrupt model never runs. Exact commands: [`stt-service/meralion`](stt-service/meralion/README.md#docker).
+2. **Push to ECR and run it as a GPU batch job** (AWS Batch on EC2, `ap-southeast-1`). In S3 mode the worker takes `--input s3://...`, `--output-bucket` and `--state-uri`, writes
+   `transcripts/<job>.json`, and keeps resume state in S3, so an interrupted job continues where it stopped. Registry, IAM, compute-environment and job-definition details are in
+   [`stt-service/meralion/tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md`](stt-service/meralion/tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md).
+3. **Choose the GPU for the configuration.** The fine-tuned configuration uses BF16, which needs a GPU with compute capability 8.0 or higher (for example L4, A10G, L40S, A100). A T4 (`g4dn`)
+   needs the FP16 profile; one exists for the original model but not for the fine-tuned one. Measured on the development calls (17.4 hours of audio): about 10 minutes on an L40S and 17 minutes on a
+   Blackwell slice. Each start hashes the 6.6 GB model first (a few minutes), so keep job timeouts generous.
+4. **Connect it to the product.** The backend and the Lambda still use Amazon Transcribe; this worker is a standalone producer of transcript JSON. Wiring it in means triggering a batch job per upload
+   and reading `out/transcripts/<job>.json` (plain text at `results.transcripts[0].transcript`) back into the existing flow. The output has no timestamps or speaker labels, so speaker attribution
+   still has to come from a separate component.
+5. **Guard what matters.** The fine-tuned model is worse than the original at some amounts and quantities (see the model card). For compliance use, check extracted amounts and quantities against a
+   second source (for example the Amazon Transcribe transcript) or route them to review.
 
 ## Quick start (backend, local)
 

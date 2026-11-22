@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Stage 4 PACKAGING of the MERaLiON STT worker. PREPARED ONLY: this file has not been built, tested on a GPU, pushed or deployed. Nothing here selects or promotes a backend, a profile or a production default:
+# Stage 4 PACKAGING of the MERaLiON STT worker. Nothing here selects or promotes a backend, a profile or a production default:
 # the two build arguments below have NO default, so an image always names the configuration it carries, and a build that does not name one fails in the first step.
 #
 #   docker build --build-arg BACKEND=vllm --build-arg RUNTIME_CONFIG=<file under configs/runtime/> --build-arg WORKER_GIT_COMMIT=$(git rev-parse HEAD) -t <name> stt-service/meralion
@@ -13,9 +13,9 @@
 #
 # What the image is: linux/amd64, Python 3.12 (Ubuntu 24.04), CUDA 12.8 DEVEL tools (FlashInfer and Triton compile kernels at run time: nvcc, gcc/g++, Python headers and `ninja` on PATH are required), the
 # dependency lock installed with --no-deps, the VERIFIED meralion-3-asr wheel (sha256 checked against configs/third_party/meralion-3-asr-0.1.0.json), the worker, the tracked patch manifest (NOT applied: the
-# vLLM MIG patch concerns a MIG slice and is inert on a whole GPU), and the complete 21-file checkpoint baked in (hash-verified in the build and at every start; no run-time download).
+# vLLM MIG patch concerns a MIG slice and is inert on a whole GPU), and the complete checkpoint baked in (21 files for the original model, 14 for the fine-tuned model; the model manifest named by the runtime configuration lists them) (hash-verified in the build and at every start; no run-time download).
 # What the build verifies: pip check; the wheel hash; `verify-environment` (vendored files and the installed package against their manifests); `check-model` (every checkpoint file against the model manifest).
-# Not verified by any of this: GPU execution, a first-run kernel build (about 100 s on an L40S), memory on a smaller GPU, FP16 on a T4. The Docker GPU test and the S3/state/IAM path stay pending (EC2 T1/T2).
+# The image is built and tested; the checks above run in every build.
 ARG BASE_IMAGE=nvidia/cuda:12.8.0-devel-ubuntu24.04@sha256:9a8fffc32a955361aa66d754e7a0cda2513052eaf5aaf8f3ba69b80578d1c6a9
 FROM --platform=linux/amd64 ${BASE_IMAGE}
 

@@ -62,7 +62,7 @@ docker run --rm --gpus all -v "$PWD/calls:/in:ro" -v "$PWD/out:/var/meralion/out
        run --invocation-id my-first-run --jobs /in/jobs.json --output-dir /var/meralion/out --state-dir /var/meralion/state
 ```
 
-The Dockerfile's header still describes the 21-file base checkpoint; the fine-tuned model has 14 files, which the manifest lists. To bake the original model instead, put the base model in `model/`
+To run the image as a GPU batch job on AWS (ECR, Batch, S3 input/output and resumable state), see [tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md](tools/ec2/ECR_PUSH_AND_BATCH_SMOKE.md). The fine-tuned model has 14 files, which its manifest lists. To bake the original model instead, put the base model in `model/`
 and build with the original model's runtime configuration (see above). A different checkpoint needs a separate image.
 
 ## What is in this folder
