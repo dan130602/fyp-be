@@ -1,5 +1,7 @@
 # Multilingual release contract (`advisory_execution_multilingual_v1`)
 
+> **Status note (November 2026).** The "Implemented so far" paragraph below dates from the first phases. The 250-call release has since been generated through G9 and rendered to audio (Amazon Polly for English, Gemini text-to-speech for Mandarin and mixed, OmniVoice for Singlish), with the frozen 175 / 75 split and the noisy variants. For the stages and commands see the [README](README.md#the-g0-g9-pipeline-at-a-glance).
+
 A multilingual release keeps the gold-first G0 -> G9 pipeline and adds language profiles. Canonical gold stays
 language-independent: the coverage matrix stores `T04 = 700`, never `七百`. A profile only constrains how values and
 dialogue are spoken. The historical `advisory_execution_pilot_v1` release is unchanged and still reproduces byte-for-byte.

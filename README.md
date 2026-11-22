@@ -96,6 +96,58 @@ The worker is a **batch job in a container**, not a service with an API: it read
 5. **Guard what matters.** The fine-tuned model is worse than the original at some amounts and quantities (see the model card). For compliance use, check extracted amounts and quantities against a
    second source (for example the Amazon Transcribe transcript) or route them to review.
 
+## Synthetic evaluation dataset (the G0-G9 generation pipeline)
+
+The speech-to-text results above are measured on a synthetic dataset of advisory phone calls (`advisory_execution_multilingual_v1`: 250 calls, English, Mandarin, English-Mandarin mixed and
+Singlish, with ground-truth transcripts, annotated financial values and compliance checklist outcomes). It is produced by a **gold-first pipeline**: the expected answers are fixed *before*
+any dialogue exists, the dialogue is written around them, and it is independently verified against them before it is rendered to audio. The code is in
+[`evaluation-dataset/`](evaluation-dataset/README.md); the multilingual rules are in [`evaluation-dataset/MULTILINGUAL.md`](evaluation-dataset/MULTILINGUAL.md).
+
+| Stage | What it produces | Needs an API (paid)? | Script (`evaluation-dataset/scripts/`) |
+|---|---|---|---|
+| **G0** | the frozen contracts: checklist, coverage matrix, edge-case catalogue, normalisation, language profiles, quotas | no | `resolve_multilingual_quotas.py` |
+| **G1** | deterministic plan of the release: which call gets which language, edge cases and checklist outcomes | no | `plan_dataset.py` |
+| **G2A / G2B** | immutable per-call specs and check-plan skeletons | no | `compile_call_specs.py`, `build_check_plan_skeletons.py` |
+| **G3** | a scenario (client, product, values, story) for each call | yes (OpenAI) | `generate_call_configs.py` |
+| **G4** | the evidence plan: which turn must say what, exactly | yes (OpenAI) + deterministic checks | `generate_check_plans.py` |
+| **G5** | independent verification of the plan against the frozen gold | yes (Gemini) | `verify_authoring_plans.py` |
+| **G6** | the employee/client dialogue written around the plan | yes (OpenAI) | `generate_dialogues.py` |
+| **G7** | independent verification of the dialogue against the gold and edge cases | yes (Gemini) | `verify_dialogues.py` |
+| **G8** | per-turn SSML and text-to-speech audio, with timings (English: Amazon Polly) | yes (TTS) | `render_dialogues.py` |
+| **G9** | the canonical `ground_truth.json`, `transcript.json`, `speaker_roles.json` of each call, compiled from the G8 timings | no | `compile_ground_truth.py` |
+
+After G9: `build_split.py` (frozen 175 development / 75 held-out split), `build_environment_v2.py` (noisy and channel-degraded variants of the audio) and `export_dataset.py`.
+Every stage can be checked offline (`--check`, `--validate`, `--dry-run`); a live model call is refused unless a committed allowlist covers it, and the billable steps (`--submit`, `--run`, `--execute`) are never
+the default.
+
+```bash
+cd evaluation-dataset
+python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"        # Python 3.11+
+cp .env.example .env                                                                # then set OPENAI_API_KEY (G3, G4, G6) and GEMINI_API_KEY (G5, G7)
+R=datasets/advisory_execution_pilot_v1          # the committed 50-call pilot; see "What is in Git" below for the 250-call release
+
+# offline: check that every stage's stored files still match what the code produces
+python scripts/plan_dataset.py                 --dataset-root $R --check
+python scripts/compile_call_specs.py           --dataset-root $R --check
+python scripts/build_check_plan_skeletons.py   --dataset-root $R --check
+python scripts/compile_ground_truth.py         --dataset-root $R --check
+
+# model-assisted stages (paid): preview first, then one call, then the batch
+python scripts/generate_dialogues.py --dataset-root $R --dry-run
+python scripts/generate_dialogues.py --dataset-root $R --submit --call-id CALL_027
+python scripts/generate_dialogues.py --dataset-root $R --collect
+```
+
+**What is in Git.** The code for every stage, the 50-call pilot release (`datasets/advisory_execution_pilot_v1`) and the **175-call development split** of the 250-call release
+(`datasets/advisory_execution_multilingual_v1_development`: the plans, dialogues and ground-truth files, no audio) are committed. The full 250-call release is git-ignored because it contains the
+held-out gold, and the audio is shared outside Git. The multilingual commands in the dataset README (`--dataset-root datasets/advisory_execution_multilingual_v1`) therefore run only where that
+folder exists; the same stages run unchanged on the pilot release.
+
+**Where to go next:** [`evaluation-dataset/README.md`](evaluation-dataset/README.md) has the full command reference for every stage, the required generation order, the JSON contracts and the tests;
+[`evaluation-dataset/MULTILINGUAL.md`](evaluation-dataset/MULTILINGUAL.md) covers language profiles, quotas, the development/held-out split and the review adapters;
+[`evaluation-engine/`](evaluation-engine/README.md) scores speech-to-text systems against the finished dataset; [`STT_HANDOVER.md`](STT_HANDOVER.md) explains how the audio and noisy variants are used.
+Note: the audio of the released dataset was rendered with Amazon Polly (English), Gemini text-to-speech (Mandarin and mixed) and OmniVoice (Singlish); this repository currently contains the Polly renderer.
+
 ## Quick start (backend, local)
 
 ```bash
