@@ -1,0 +1,28 @@
+{
+  "config_id": "fg175-m2ax-seq-ap-lmonly-m5-fee2-amt1-nobudget-vllm-rp105",
+  "strategy": {
+    "id": "fg-m2ax-seq-ap-lmonly-v2",
+    "window_seconds": 30,
+    "stride_seconds": 15,
+    "merge_policy": "m2ax_seq_ap_lm",
+    "retry_kinds": [
+      "unresolved",
+      "low_margin_conflict"
+    ],
+    "unresolved_call_cap": 0.1,
+    "run_cap": null,
+    "run_cap_scope": "none",
+    "reconcile": {
+      "conflict_tiebreak": false,
+      "low_margin_tiebreak": true,
+      "exclude_critical_from_low_margin": true
+    }
+  },
+  "decoder": {
+    "backend": "vllm",
+    "settings_id": "vllm-rp105-v1"
+  },
+  "formatter": "percentages-v2+amount-v1",
+  "output_schema": "meralion-worker-output-v0",
+  "model_manifest": "meralion-3-3b-asr-base-9f226d7"
+}

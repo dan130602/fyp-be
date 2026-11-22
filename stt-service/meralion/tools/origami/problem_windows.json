@@ -1,0 +1,14 @@
+{
+  "purpose": "the windows examined by Stage 3 follow-up D: ordinary windows and the windows behind the failures of the stock vLLM run (bounds are sample positions at 16 kHz in the recording)",
+  "windows": [
+    {"label": "ordinary-064-w0", "call": "CALL_064", "start": 0, "end": 480000, "kind": "ordinary"},
+    {"label": "ordinary-023-mid", "call": "CALL_023", "start": 1200000, "end": 1680000, "kind": "ordinary"},
+    {"label": "runaway-134", "call": "CALL_134", "start": 24960000, "end": 25440000, "kind": "problem: 512-token runaway under stock vLLM"},
+    {"label": "early-stop-217-last", "call": "CALL_217", "start": 4560000, "end": 4935680, "kind": "problem: stops after 45 tokens, drops the closing turns"},
+    {"label": "early-stop-217-retry", "call": "CALL_217", "start": 4200000, "end": 4680000, "kind": "retry window beside the 217 omission"},
+    {"label": "drop-103-a", "call": "CALL_103", "start": 2880000, "end": 3360000, "kind": "problem: shorter than Transformers"},
+    {"label": "drop-103-b", "call": "CALL_103", "start": 6720000, "end": 7200000, "kind": "problem: shorter than Transformers"},
+    {"label": "drop-103-c", "call": "CALL_103", "start": 15360000, "end": 15840000, "kind": "problem: shorter than Transformers"},
+    {"label": "retry-103", "call": "CALL_103", "start": 120000, "end": 600000, "kind": "retry window"}
+  ]
+}

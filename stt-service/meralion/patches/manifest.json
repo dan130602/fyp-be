@@ -1,0 +1,16 @@
+{
+ "schema": "worker-patches-v1",
+ "patches": [
+  {
+   "id": "vllm-0.16.0-mig-single-device",
+   "target": "vllm/platforms/cuda.py",
+   "target_version": "0.16.0",
+   "patch_file": "vllm-0.16.0-mig-single-device.patch",
+   "original_sha256": "3842bf17fccd6883b692f752cdb776f6acf2cd57a6f302cb762e2c414ce20b8f",
+   "patched_sha256": "73244e676fd5d9d6163df78a99275d450ec3aa3f2ae06bb59cef5ff9b35a63e1",
+   "patch_sha256": "f8436614ae916b1a726b7c39dd0bc37303df2245f7da2a6a4b69a223538473f9",
+   "scope": "ONE visible MIG device AND VLLM_ENABLE_V1_MULTIPROCESSING=0: select NonNvmlCudaPlatform; every other configuration keeps the unpatched choice",
+   "reason": "vllm 0.16.0 NvmlCudaPlatform converts CUDA_VISIBLE_DEVICES entries with int() (platforms/interface.py:215), which fails for a MIG UUID at import time"
+  }
+ ]
+}

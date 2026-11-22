@@ -1,0 +1,19 @@
+# REV 4.1 A1: the working tree holds exactly the committed bytes (LF), whatever core.autocrlf says. Raw file hashes (the plugin test's tool_sha256) are compared with the committed blob, and
+# tools/origami/sync_code.sh ships the working tree. These generic rules come FIRST: the last matching line wins per attribute, so the byte-preservation exceptions below keep precedence.
+*.py text eol=lf
+*.json text eol=lf
+
+# The vendored files are byte-identical copies of git blobs: never translate their line endings.
+meralion_worker/vendored/*.py -text
+meralion_worker/vendored/SOURCES.json text eol=lf
+*.sh text eol=lf
+*.sbatch text eol=lf
+Dockerfile text eol=lf
+
+# The tracked vLLM patch must stay byte-exact: its sha256 is in the manifest and it is applied by comparing lines.
+patches/*.patch -text
+patches/manifest.json text eol=lf
+
+# Packaging inputs are copied into the image as they are: LF everywhere (a CRLF lock or ignore file would change what pip and Docker read).
+*.lock text eol=lf
+.dockerignore text eol=lf
