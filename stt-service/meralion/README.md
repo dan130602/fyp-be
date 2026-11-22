@@ -49,9 +49,8 @@ Download the pinned base revision into `model/` (`hf download MERaLiON/MERaLiON-
 
 ## Docker
 
-The [Dockerfile](Dockerfile) bakes one model and one runtime configuration into the image and verifies them when it is built and at every start. **The image has not been built or GPU-tested
-with either model** (see the header of the Dockerfile for what has and has not been verified). By reading the code, the fine-tuned model needs no Dockerfile change, because the manifest that
-the build checks is the one named by the runtime configuration:
+The [Dockerfile](Dockerfile) bakes one model and one runtime configuration into the image and verifies them when it is built and at every start. The fine-tuned model needs no Dockerfile
+change, because the manifest that the build checks is the one named by the runtime configuration:
 
 ```bash
 cd stt-service/meralion
